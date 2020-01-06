@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<div th:fragment="header">
+		<nav class="navbar is-info">
+			<div class="navbar-brand">
+				<a class="navbar-item" href="/"> <img src="img/icon.png"
+					width="28" height="28">
+				</a> <a class="navbar-item" href="/">Alovoa </a>
+			</div>
+
+			<div style="width: 100%; display: flex;">
+				<div class="navbar-end">
+					<span class="navbar-item" id="navbar-item-register"> <a
+						class="button is-white is-outlined" href="/register"> <span>Sign
+								up</span>
+					</a>
+					</span> <span class="navbar-item"> <a
+						class="button is-white is-outlined" href="/login"> <span>Login</span>
+					</a>
+					</span>
+				</div>
+			</div>
+		</nav>
+	</div>
+
+	<div th:fragment="header-logged-in">
+		<nav class="navbar is-info">
+			<div class="navbar-brand">
+				<a class="navbar-item"> <img src="img/icon.png"
+					width="28" height="28">
+				</a> <a class="navbar-item">Alovoa </a>
+			</div>
+
+			<div style="width: 100%; display: flex;">
+				<div class="navbar-end">
+					<form th:action="@{/logout}" method="post">
+						<span class="navbar-item">
+							<button class="button is-white is-outlined" href="/logout">
+								<span>Logout</span>
+							</button>
+						</span>
+					</form>
+				</div>
+			</div>
+		</nav>
+	</div>
+
+	<footer class="footer" th:fragment="footer">
+		<div class="container">
+			<div class="columns">
+				<div class="column">
+					<ul>
+						<li class="has-text-centered"><a href="/privacy">Privacy
+								Policy</a></li>
+					</ul>
+				</div>
+				<div class="column">
+					<ul>
+						<li class="has-text-centered"><a href="/terms-conditions">Terms
+								and conditions</a></li>
+					</ul>
+				</div>
+				<div class="column">
+					<ul>
+						<li class="has-text-centered"><a href="/impressum">Impressum</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<div th:fragment="navigation">
+		<nav class="navbar is-link is-fixed-bottom" role="navigation"
+			style="display: block;">
+			<div class="navbar-brand">
+				<a class="navbar-item is-expanded navigation-item">
+					<div>
+						<i class="fa fa-search"></i><span>Find</span>
+					</div>
+				</a> 
+				<a class="navbar-item is-expanded navigation-item">
+					<div>
+						<i class="fa fa-coins"></i><span>Donations</span>
+					</div>
+				</a> 
+				<a class="navbar-item is-expanded navigation-item">
+					<div>
+						<i class="fa fa-bell"></i> <span>Alerts</span>
+					</div>
+				</a> 
+				<a class="navbar-item is-expanded navigation-item">
+					<div>
+						<i class="fa fa-user"></i> <span>Profile</span>
+					</div>
+				</a>
+			</div>
+		</nav>
+	</div>
+</body>
+</html>

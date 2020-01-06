@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Alovoa">
+<link rel="manifest" href="/json/manifest.json">
+
+<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+<link rel="stylesheet" href="/css/alovoa.css" />
+<title>Login</title>
+</head>
+<body>
+	<div id="main">
+		<header th:insert="fragments.html::header"></header>
+		<div class="section">
+			<div class="container">
+				<div class="column">
+					<h3 class="title">Login</h3>
+					<p class="subtitle">Please login to proceed.</p>
+					<div class="box">
+						<form th:action="@{/login}" method="POST">
+							<div class="field">
+								<div class="control">
+									<input class="input" type="email" placeholder="Your Email"
+										autofocus="" name="username">
+								</div>
+							</div>
+
+							<div class="field">
+								<div class="control">
+									<input class="input" type="password"
+										placeholder="Your Password" name="password">
+								</div>
+							</div>
+							<!-- TODO: Causes exception 
+							<div class="field">
+								<label class="checkbox"> <input type="checkbox"
+									name="remember-me"> Remember me
+								</label>
+							</div>
+							-->
+							<button class="button">Login</button>
+						</form>
+					</div>
+					
+					<p>
+						<!-- //TODO -->
+						<a href="/">Forgot Password</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer th:replace="fragments.html::footer"></footer>
+</body>
+</html>

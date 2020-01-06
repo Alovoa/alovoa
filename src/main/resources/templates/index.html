@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Alovoa">
+<link rel="manifest" href="/json/manifest.json">
+
+<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+<link rel="stylesheet" href="/css/alovoa.css" />
+<link rel="stylesheet" href="/css/index.css" />
+<title>Alovoa</title>
+</head>
+
+<body>
+	<div id="main">
+		<header th:replace="fragments.html::header"></header>
+
+		<div class="box" id="cookie-banner">
+			<div class="has-text-centered">
+				This site uses cookies to store the session and user preferences to
+				function properly. Your data is safe with us, as we don't store any
+				personal information in the cookies nor do we send any information
+				to a third party. By continuing to use this site you agree to the
+				use of cookies. <a href="#">Click here to learn more</a>
+
+			</div>
+		</div>
+		<section class="hero is-info is-medium is-bold">
+			<div class="hero-body">
+				<div class="container has-text-centered">
+					<h1 class="title is-size-1">Alovoa</h1>
+					<h2 class="subtitle is-size-4">The platform that is
+						specifically built for to meet new people and form relationships</h2>
+				</div>
+			</div>
+		</section>
+
+		<div>
+			<img id="banner">
+		</div>
+
+		<section class="container">
+			<div class="columns features">
+				<div class="column is-4">
+					<div class="card is-shady">
+						<div class="card-image has-text-centered">
+							<i class="fa fa-hand-holding-usd"></i>
+						</div>
+						<div class="card-content">
+							<div class="content">
+								<h4>Forever free</h4>
+								<p>This platform does not require you to pay any kind of
+									fee, you are free to use all features without limitations. We
+									solely rely on your generous donations to keep this platform
+									running.</p>
+								<p>
+									<a href="#">Donate</a>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="column is-4">
+					<div class="card is-shady">
+						<div class="card-image has-text-centered">
+							<i class="fa fa-door-open"></i>
+						</div>
+						<div class="card-content">
+							<div class="content">
+								<h4>Open-source</h4>
+								<p>We believe in transparency, not obfuscation. Every line
+									of code and every used library is free and open-source,
+									allowing everyone to view and improve on the platform if they
+									so desire.</p>
+								<p>
+									<a href="#">Source code</a>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="column is-4">
+					<div class="card is-shady">
+						<div class="card-image has-text-centered">
+							<i class="fa fa-lock"></i>
+						</div>
+						<div class="card-content">
+							<div class="content">
+								<h4>Private and secure</h4>
+								<p>We do not sell any of your information to anyone, that's
+									a promise we will always keep. Additionally, your most
+									sensitive data is heavily encrypted and will be safe even if a
+									data breach were to occur.</p>
+								<p>
+									<a href="/privacy">Privacy policy</a>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="container">
+			<div class="columns features">
+				<div class="column is-4">
+					<div class="card is-shady">
+						<div class="card-image has-text-centered">
+							<i class="fa fa-ad"></i>
+						</div>
+						<div class="card-content">
+							<div class="content">
+								<h4>Ad-free</h4>
+								<p>Ads slow down the browser, are intrusive, annoying and
+									can potentially inject malware to your device. That's why you
+									won't see any ads on this platform as believe that your
+									experience is more important than our profit.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="column is-4">
+					<div class="card is-shady">
+						<div class="card-image has-text-centered">
+							<i class="fa fa-microchip"></i>
+						</div>
+						<div class="card-content">
+							<div class="content">
+								<h4>Latest technologies</h4>
+								<p>
+									We use the latest technologies so that you can benefit from the
+									latest features the web can offer. For example, you can install
+									this platform as a <a
+										href="https://wikipedia.org/wiki/Progressive_web_application">progressive
+										web application</a> directly from your browser!
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="column is-4">
+					<div class="card is-shady">
+						<div class="card-image has-text-centered">
+							<i class="fa fa-child"></i>
+						</div>
+						<div class="card-content">
+							<div class="content">
+								<h4>Built for you</h4>
+								<p>With advanced filters, we only show you the people that
+									meet your criteria. That way, you spend less time searching and
+									more time finding and meeting new people.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="hero is-info is-small is-bold"
+			style="margin-top: 1.5em">
+			<a href="/register">
+				<div class="hero-body">
+
+					<div class="container has-text-centered">
+						<h1 class="title">Sign up now!</h1>
+					</div>
+
+				</div>
+			</a>
+		</section>
+
+		<footer th:replace="fragments.html::footer"></footer>
+	</div>
+
+
+	<script src="/js/lib/fontawesome.all.js"></script>
+	<script src="/js/service-worker.js"></script>
+	<script src="/js/service-worker-register.js"></script>
+</body>
+
+
+</html>
