@@ -8,6 +8,9 @@ import java.net.URL;
 
 public class Tools {
 	
+	public static final float BASE64FACTOR = 0.75f;
+	public static final int MILLION = 1000000;
+	
     public static File getFileFromResources(String fileName) {
 
         ClassLoader classLoader = Tools.class.getClassLoader();
@@ -37,5 +40,14 @@ public class Tools {
         }
         
         return false;
+    }
+    
+    
+    public static boolean binaryStringToBoolean(String b) {
+    	if(b.equals("0")) {
+    		return false;
+    	} else {
+    		return true;
+    	}
     }
 }

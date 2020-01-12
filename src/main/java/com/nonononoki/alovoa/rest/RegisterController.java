@@ -1,7 +1,5 @@
 package com.nonononoki.alovoa.rest;
 
-import javax.mail.MessagingException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +17,7 @@ public class RegisterController {
 	private RegisterService registerService;
 	
 	@PostMapping(value="/register", consumes = "application/json")
-	public void register(@RequestBody RegisterDto dto) throws MessagingException {	
+	public void register(@RequestBody RegisterDto dto) throws Exception {	
 		registerService.register(dto);
 	}
 }

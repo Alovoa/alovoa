@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.nonononoki.alovoa.repo.GenderRepository;
+import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.service.CaptchaService;
 import com.nonononoki.alovoa.service.RegisterService;
 
@@ -18,10 +20,19 @@ public class RegisterResource {
 	@Autowired
 	private RegisterService registerService;
 	
+	@Autowired
+	private GenderRepository genderRepo;
+	
+	@Autowired
+	private UserIntentionRepository userIntentionRepo;
+	
+	
 	@GetMapping("/register")
 	public ModelAndView register() {
 		ModelAndView mav = new ModelAndView("register");
 		mav.addObject("captcha", captchaService.generate());
+		mav.addObject("genders", genderRepo.findAll());
+		mav.addObject("intentions", userIntentionRepo.findAll());
 		return mav;
 	}
 	

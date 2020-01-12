@@ -42,13 +42,30 @@ svg {
 	padding-right: 4px;
 }
 
+.center-children {
+	display: flex;
+	justify-content: center;
+}
+
+.slider-container {
+	display: flex;
+}
+
+.slider {
+	flex: 1;
+}
+
+.slider-container p {
+	padding-left: 8px;
+}
+
 @media screen and (max-width: 400px) {
-	#navbar-item-register {
+	#navbar-text {
 		display: none;
 	}
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 700px) {
 	.navigation-item span {
 		display: none;
 	}

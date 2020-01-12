@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -43,9 +44,17 @@ public class User {
 
 	@Convert(converter = TextEncryptorConverter.class)
 	private String firstName;
+	
+	private String description;
 
+	//TODO
 	private String donationUsername;
+	
+	private int preferedMinAge;
+	
+	private int preferedMaxAge;
 
+	@Column(nullable = false)
 	private Date dateOfBirth;
 
 	@Column(columnDefinition = "mediumtext")
@@ -59,9 +68,6 @@ public class User {
 	@Convert(converter = TextEncryptorConverter.class)
 	private Location lastLocation;
 
-	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
-	private UserIntention intention;
-
 	@JsonIgnore
 	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private UserRegisterToken registerToken;
@@ -74,12 +80,15 @@ public class User {
 	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private UserDeleteToken deleteToken;
 
-	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@ManyToOne
 	private Gender gender;
 
 	@ManyToMany
 	@JoinTable(name = "user2genders")
 	private Set<Gender> preferedGenders;
+	
+	@ManyToOne
+	private UserIntention intention;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	private List<UserImage> images;

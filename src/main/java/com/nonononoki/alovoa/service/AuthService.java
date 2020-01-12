@@ -2,42 +2,23 @@ package com.nonononoki.alovoa.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.nonononoki.alovoa.model.AuthSession;
+import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.repo.UserRepository;
 
 @Service
 public class AuthService {
 	
+	@Autowired
+	private UserRepository userRepo;
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 	
-	public AuthSession getCurrentSession() {
-		Object obj = SecurityContextHolder.getContext().getAuthentication().getDetails();
-        if (obj instanceof AuthSession) {
-        	AuthSession session = (AuthSession) obj;
-            return session;
-        } else {
-        	return null;
-        }
+	public User getCurrentUser() {
+		return userRepo.findByEmail((String)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 	}
-	
-	public long getCurrentUserId() {
-		AuthSession session = getCurrentSession();
-		if(session != null) {
-			return session.getId();
-		} else {
-			return -1;
-		}
-	}
-	
-	public String getCurrentUserEmail() {
-		AuthSession session = getCurrentSession();
-		if(session != null) {
-			return session.getEmail();
-		} else {
-			return null;
-		}
-    }
 }

@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.config;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -7,7 +9,11 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.nonononoki.alovoa.entity.Gender;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.UserIntention;
+import com.nonononoki.alovoa.repo.GenderRepository;
+import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 
 @Component
@@ -15,6 +21,12 @@ public class EventListenerConfig {
 	
 	@Autowired
 	private UserRepository userRepo;
+	
+	@Autowired
+	private GenderRepository genderRepo;
+	
+	@Autowired
+	private UserIntentionRepository userIntentionRepo;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -28,13 +40,42 @@ public class EventListenerConfig {
     @EventListener
     public void handleContextRefresh(ApplicationStartedEvent event) {
     	long noUsers = userRepo.count();
+    	long noGenders = genderRepo.count();
+    	long noIntentions = userIntentionRepo.count();
     	if(noUsers == 0) {
     		User user = new User();
+    		user.setDateOfBirth(new Date());
     		user.setAdmin(true);
     		user.setEmail(adminEmail);
     		String enc = passwordEncoder.encode(adminKey);
     		user.setPassword(enc);
     		userRepo.save(user);
+    	}
+    	if(noGenders == 0) {		
+    		Gender male = new Gender();
+    		male.setText("male");
+    		genderRepo.saveAndFlush(male);
+    		
+    		Gender female = new Gender();
+    		female.setText("female");
+    		genderRepo.saveAndFlush(female);
+    		
+    		Gender other = new Gender();
+    		other.setText("other");
+    		genderRepo.saveAndFlush(other);
+    	}
+    	if(noIntentions == 0) {
+    		UserIntention meet = new UserIntention();
+    		meet.setText("meet");
+    		userIntentionRepo.saveAndFlush(meet);
+    		
+    		UserIntention date = new UserIntention();
+    		date.setText("date");
+    		userIntentionRepo.saveAndFlush(date);
+    		
+    		UserIntention sex = new UserIntention();
+    		sex.setText("sex");
+    		userIntentionRepo.saveAndFlush(sex);
     	}
     }
 	

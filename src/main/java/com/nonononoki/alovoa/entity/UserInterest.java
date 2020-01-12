@@ -19,8 +19,31 @@ public class UserInterest {
 	private Long id;
 	
 	private String text;
-	private String icon;
 	
 	@ManyToMany
 	private List<User> users;
+	
+	@Override
+    public boolean equals(Object o) { 
+		
+        if (o == this) { 
+            return true; 
+        } 
+  
+        if (!(o instanceof UserInterest)) { 
+            return false; 
+        } 
+        
+        UserInterest i = (UserInterest)o;
+        if(i.getId() == id) {
+        	return true;
+        } else {
+        	return false;
+        }
+    } 
+	
+    @Override
+    public int hashCode() {
+        return this.id.hashCode();
+    }
 }

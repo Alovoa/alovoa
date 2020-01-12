@@ -5,7 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.nonononoki.alovoa.repo.UserRepository;
+import com.nonononoki.alovoa.repo.GenderRepository;
+import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.service.AuthService;
 
 @Controller
@@ -15,13 +16,18 @@ public class ProfileResource {
 	private AuthService authService;
 	
 	@Autowired
-	private UserRepository userRepo;
+	private GenderRepository genderRepo;
+	
+	@Autowired
+	private UserIntentionRepository userIntentionRepo;
 	
 	@GetMapping("/profile")
 	public ModelAndView profile() {
 
 		ModelAndView mav = new ModelAndView("profile");
-		mav.addObject("user", userRepo.findById(authService.getCurrentUserId()));
+		mav.addObject("user", authService.getCurrentUser());
+		mav.addObject("genders", genderRepo.findAll());
+		mav.addObject("intentions", userIntentionRepo.findAll());
 		return mav;
 	}
 }
