@@ -21,19 +21,19 @@
 				<div class="column">
 					<form th:action="@{/register}" method="POST" id="register-form">
 						<div class="field">
-							<label class="label">First name</label>
+							<label class="label">First name<span class="asterisk">*</span></label>
 							<div class="control">
 								<input class="input" type="text" name="firstName" required>
 							</div>
 						</div>
 						<div class="field">
-							<label class="label">Email</label>
+							<label class="label">Email<span class="asterisk">*</span></label>
 							<div class="control">
 								<input class="input" type="email" name="email" required>
 							</div>
 						</div>
 						<div class="field">
-							<label class="label">Date of birth</label>
+							<label class="label">Date of birth<span class="asterisk">*</span></label>
 							<div class="control">
 								<input type="date" name="dateOfBirth" required>
 							</div>
@@ -58,7 +58,7 @@
 						</div>
 
 						<div class="field">
-							<label class="label">Gender</label>
+							<label class="label">Gender<span class="asterisk">*</span></label>
 							<div class="select">
 								<select name="gender" required>
 									<option value=""></option>
@@ -110,6 +110,8 @@
 								</label>
 							</div>
 						</div>
+						
+						<div class="register-warning">Fields with an asterisk (*) cannot be changed in the future</div>
 
 						<div class="field is-grouped">
 							<div class="control">

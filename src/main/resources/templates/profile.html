@@ -10,6 +10,7 @@
 
 <link rel="stylesheet" href="/css/lib/bulma.min.css" />
 <link rel="stylesheet" href="/css/lib/bulma-switch.min.css" />
+<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <title>Profile</title>
 </head>
@@ -63,7 +64,7 @@
 						<div class="column">
 							<label class="label">Minimum Age</label>
 							<div class="slider-container">
-								<input class="slider" step="1" min="16" max="100"
+								<input class="slider is-info" step="1" min="16" max="100"
 									th:value="${user.preferedMinAge}" type="range"
 									id="min-age-slider">
 								<p id="min-age-display" th:text="${user.preferedMinAge}"></p>
@@ -72,7 +73,7 @@
 						<div class="column">
 							<label class="label">Maximum Age</label>
 							<div class="slider-container">
-								<input class="slider" step="1" min="16" max="100"
+								<input class="slider is-info" step="1" min="16" max="100"
 									th:value="${user.preferedMaxAge}" type="range"
 									id="max-age-slider">
 								<p id="max-age-display" th:text="${user.preferedMaxAge}"></p>
@@ -83,24 +84,7 @@
 
 
 				<div class="field">
-					<label class="label">Looking for</label>
-					<!-- 
-					<div class="field">
-						<input id="male" type="checkbox" class="switch"
-							style="position: absolute"> <label for="male">Male</label>
-					</div>
-					<div class="field">
-						<input id="female" type="checkbox" class="switch"
-							style="position: absolute"> <label for="female">Female</label>
-					</div>
-					-->
-					<!-- 
-					<div class="other">
-						<input id="other" type="checkbox" class="switch"
-							style="position: absolute"> <label for="other">Other</label>
-					</div>
-					 -->
-					 
+					<label class="label">Looking for</label>					 
 					<th:block th:each="gender : ${genders}">
 						<div class="field">
 						<input th:id="${'gender-' + gender.id}" type="checkbox" class="switch gender-switch" th:value="${gender.id}"

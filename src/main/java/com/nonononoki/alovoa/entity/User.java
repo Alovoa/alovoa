@@ -19,7 +19,6 @@ import javax.persistence.OneToOne;
 
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 
 import lombok.Data;
@@ -28,34 +27,30 @@ import lombok.Data;
 @Data
 @Entity
 public class User {
-
-	@JsonIgnore
+ 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@JsonIgnore
 	@Column(nullable = false, unique = true)
 	@Convert(converter = TextEncryptorConverter.class)
 	private String email;
-
-	@JsonIgnore
 	private String password;
 
 	@Convert(converter = TextEncryptorConverter.class)
 	private String firstName;
-	
+
 	private String description;
 
-	//TODO
 	private String donationUsername;
-	
+
 	private int preferedMinAge;
-	
+
 	private int preferedMaxAge;
 
 	@Column(nullable = false)
 	private Date dateOfBirth;
+	private int age;
 
 	@Column(columnDefinition = "mediumtext")
 	private String profilePicture;
@@ -67,16 +62,13 @@ public class User {
 	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
 	@Convert(converter = TextEncryptorConverter.class)
 	private Location lastLocation;
-
-	@JsonIgnore
+	
 	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private UserRegisterToken registerToken;
 
-	@JsonIgnore
 	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private UserPasswordToken passwordToken;
-
-	@JsonIgnore
+	 
 	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private UserDeleteToken deleteToken;
 
@@ -86,58 +78,46 @@ public class User {
 	@ManyToMany
 	@JoinTable(name = "user2genders")
 	private Set<Gender> preferedGenders;
-	
+
 	@ManyToOne
 	private UserIntention intention;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	private List<UserImage> images;
-
-	@JsonIgnore
+	 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	private List<UserDonation> donations;
-
-	@JsonIgnore
+	 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<UserLike> likes;
-
-	@JsonIgnore
+	 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
 	private List<UserLike> likedBy;
-
-	@JsonIgnore
+	 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<Conversation> conversations;
-
-	@JsonIgnore
+	 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
 	private List<Conversation> conversationsBy;
-
-	@JsonIgnore
+	 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<Message> messageSent;
-
-	@JsonIgnore
+	 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
 	private List<Message> messageReceived;
-
-	@JsonIgnore
+	 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<UserNotification> notificationsFrom;
-
-	@JsonIgnore
+	 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
 	private List<UserNotification> notifications;
-
-	@JsonIgnore
+	 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<UserHide> hiddenUsers;
-
-	@JsonIgnore
+	 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
 	private List<UserHide> hiddenByUsers;
-
-	@JsonIgnore
+	 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<UserBlock> blockedUsers;
 
@@ -147,18 +127,20 @@ public class User {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<UserReport> reported;
 
-	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
+	private List<UserReport> reportedByUsers;
+	 
 	private boolean admin;
-	@JsonIgnore
+	 
 	private boolean confirmed;
-	@JsonIgnore
+	 
 	private boolean disabled;
 
 	private Date activeDate;
 
-	@JsonIgnore
+	 
 	private Date creationDate;
 
-	@JsonIgnore
+	
 	private Date intentionChangeDate;
 }

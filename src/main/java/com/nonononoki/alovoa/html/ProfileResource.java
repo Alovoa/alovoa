@@ -23,6 +23,8 @@ public class ProfileResource {
 	
 	@GetMapping("/profile")
 	public ModelAndView profile() {
+		
+		//TODO Tell user if profile is not searchable yet
 
 		ModelAndView mav = new ModelAndView("profile");
 		mav.addObject("user", authService.getCurrentUser());

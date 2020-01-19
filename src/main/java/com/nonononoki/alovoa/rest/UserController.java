@@ -13,7 +13,7 @@ import com.nonononoki.alovoa.service.UserService;
 
 @RestController
 @RequestMapping("/user")
-public class UserRestController {
+public class UserController {
 	
 	@Autowired
 	private UserService userService;

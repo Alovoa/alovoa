@@ -103,7 +103,7 @@ public class UserService {
 			userMaxAge = maxAge;
 		}
 		User user = authService.getCurrentUser();
-		user.setPreferedMinAge(userMaxAge);
+		user.setPreferedMaxAge(userMaxAge);
 		userRepo.save(user);	
 	}
 	
