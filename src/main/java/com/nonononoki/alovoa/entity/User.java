@@ -59,7 +59,7 @@ public class User {
 	@JoinTable(name = "user2interest")
 	private List<UserInterest> interests;
 
-	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@Convert(converter = TextEncryptorConverter.class)
 	private Location lastLocation;
 	
@@ -137,10 +137,8 @@ public class User {
 	private boolean disabled;
 
 	private Date activeDate;
-
 	 
 	private Date creationDate;
 
-	
 	private Date intentionChangeDate;
 }

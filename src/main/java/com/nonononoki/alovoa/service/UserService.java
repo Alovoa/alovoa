@@ -194,7 +194,7 @@ public class UserService {
 		ImageIO.write(image, "png", out);
 		byte[] bytes = out.toByteArray();
 		String base64bytes = Base64.getEncoder().encodeToString(bytes);
-		String src = "data:image/png;base64," + base64bytes;
+		String src = Tools.B64IMAGEPREFIX + base64bytes;
 		return src;
 
 	}

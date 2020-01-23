@@ -1,0 +1,22 @@
+package com.nonononoki.alovoa.rest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.nonononoki.alovoa.service.AdminService;
+
+@RestController
+@RequestMapping("/admin")
+public class AdminController {
+	
+	@Autowired
+	private AdminService adminService;	
+
+	@GetMapping("/addTestUsers/{latitude}/{longitude}")
+    public void addTestUsers(@PathVariable String latitude, @PathVariable String longitude) throws Exception{
+		adminService.addTestUsers(latitude, longitude);
+    }
+}

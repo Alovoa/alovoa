@@ -18,12 +18,12 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	//GDPR
 	@GetMapping("/delete/request")
     public void deleteRequest(String password){
         //TODO
 		
-    }
-	
+    }	
 	@GetMapping("/userdata")
     public void getUserdata(String password){
         //TODO

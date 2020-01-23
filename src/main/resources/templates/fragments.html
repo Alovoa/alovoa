@@ -102,5 +102,53 @@
 			</div>
 		</nav>
 	</div>
+	
+	<div th:fragment="search-users">
+		<div class="card is-horizontal" th:each="user : ${users}">
+				<div class="card-image">
+					<figure class="image">
+						<img th:src="${user.profilePicture}">
+					</figure>
+				</div>
+				<div class="card-content">
+					<div class="content">
+						<div class="media">
+							<div class="full-width">
+								<div class="left" style="font-size: 2em" th:text="${user.firstName}"></div>
+								<div class="right" style="font-size: 1.5em">
+									<span>Age: </span><span th:text="${user.age}"></span>
+								</div>
+							</div>
+						</div>
+						<div class="media">
+							<div class="full-width">
+								<div class="left" style="font-size: 1.2em">
+									<span>Last active: </span><span th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
+								</div>
+								<div class="right" style="font-size: 1.2em">
+									<span th:text="${user.distanceToUser}"></span><span> meters from you</span>
+								</div>
+							</div>
+						</div>
+
+						<div style="font-size: 1.1em" th:text="${user.description}"></div>
+					</div>
+					<div class="profile-bottom full-width"
+						style="display: inline-block;">
+						<button class="button left is-info is-inverted">View
+							profile</button>
+						<div class="right">
+							<button class="button is-rounded is-danger">
+								<i class="fa fa-thumbs-down"></i>
+							</button>
+							<button class="button is-rounded is-success">
+								<i class="fa fa-thumbs-up"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+	</div>
 </body>
 </html>
