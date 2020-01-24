@@ -8,14 +8,14 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - No closed-source libraries
 - No seeing people you don't want to see
 
-## DONE
+### DONE
 - Home view
 - Profile view and edit
 - Registration
 - Login
 - Search and filter
 
-## TODO:
+### TODO
 - Liking user
 - Hiding user
 - Blocking user
