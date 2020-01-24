@@ -7,6 +7,7 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - No unsecure servers
 - No closed-source libraries
 - No seeing people you don't want to see
+- Encryption your most private data
 
 ### DONE
 - Home view
