@@ -1,1 +1,26 @@
-# alovoa
+# Alovoa
+
+Alovoa aims to be the first widespread open-source dating web application on the web. What differs us from other platform?
+- No ads
+- No selling your data
+- No paid features (no "pay super-likes", "pay to swipe", "pay to view profile" or "pay to start a chat")
+- No unsecure servers
+- No closed-source libraries
+- No seeing people you don't want to see
+
+## DONE
+- Home view
+- Profile view and edit
+- Registration
+- Login
+- Search and filter
+
+## TODO:
+- Liking user
+- Hiding user
+- Blocking user
+- Reporting user
+- View details of user
+- Donation view and functions
+- Notification view and functions
+- Chat view and functions
