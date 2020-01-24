@@ -24,8 +24,12 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Donation view and functions
 - Notification view and functions
 - Chat view and functions
+- Resetting password
+- GDPR compliance (see saved data, delete all data)
+- PWA compability
 
 ### How to build:
+- Install a JDK (OpenJDK 8 is officially supported)
 - Install maven: https://maven.apache.org/install.html
 - Setup a database (MariaDB is officially supported)
 - (Optional) Setup an email server
