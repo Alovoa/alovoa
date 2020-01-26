@@ -38,23 +38,26 @@
 								<input type="date" name="dateOfBirth" required>
 							</div>
 						</div>
-						
+
 						<div class="field">
 							<label class="label">Password</label>
 							<div class="control">
-								<input class="input" type="password" name="password" id="password" required >
+								<input class="input" type="password" name="password"
+									id="password" required>
 							</div>
 						</div>
 						<div class="field">
 							<label class="label">Password repeat</label>
 							<div class="control">
-								<input class="input" type="password" id="password-repeat" required>
+								<input class="input" type="password" id="password-repeat"
+									required>
 							</div>
 						</div>
 
 						<div style="height: 2px"></div>
 						<div class="notification is-danger" id="password-info">
-							Your password needs to be at least <span>7</span> characters long and must contain characters and numbers.
+							Your password needs to be at least <span>7</span> characters long
+							and must contain characters and numbers.
 						</div>
 
 						<div class="field">
@@ -62,13 +65,19 @@
 							<div class="select">
 								<select name="gender" required>
 									<option value=""></option>
-									<option value="0">Male</option>
-									<option value="1">Female</option>
-									<option value="2">Other</option>
+									<th:block th:each="gender : ${genders}">
+										<option th:value="${gender.id}"
+											th:if="${gender.text == 'male'}">Male</option>
+										<option th:value="${gender.id}"
+											th:if="${gender.text == 'female'}">Female</option>
+										<option th:value="${gender.id}"
+											th:if="${gender.text == 'other'}">Other</option>
+									</th:block>
 								</select>
 							</div>
 						</div>
 
+						<!-- 
 						<div class="field">
 							<label class="label">I want...</label>
 							<div class="select">
@@ -80,20 +89,25 @@
 								</select>
 							</div>
 						</div> 
- 						<div class="field">
- 							<label class="label">Captcha</label>
- 						
- 							<input id="captcha-id" name="captchaId" type="hidden" th:value="${captcha.id}">
- 							
+						 -->
+						<div class="field">
+							<label class="label">Captcha</label> <input id="captcha-id"
+								name="captchaId" type="hidden" th:value="${captcha.id}">
+
 							<div class="field">
-								<img id="captcha-image" th:src="'data:image/png;base64,' + ${captcha.image}">
-								<button type="button" class="button" onclick="refreshCaptcha()" style="height: 70px; width: 70px; font-size: 1.7rem; margin-left: 12px;"><i class="fa fa-sync"></i></button>
+								<img id="captcha-image"
+									th:src="'data:image/png;base64,' + ${captcha.image}">
+								<button type="button" class="button" onclick="refreshCaptcha()"
+									style="height: 70px; width: 70px; font-size: 1.7rem; margin-left: 12px;">
+									<i class="fa fa-sync"></i>
+								</button>
 							</div>
 							<div class="field">
-								<input class="input" id="captcha" name="captchaText" autocomplete="off"  required>
+								<input class="input" id="captcha" name="captchaText"
+									autocomplete="off" required>
 							</div>
 						</div>
-						
+
 						<div style="height: 24px"></div>
 
 						<div class="field">
@@ -110,8 +124,9 @@
 								</label>
 							</div>
 						</div>
-						
-						<div class="register-warning">Fields with an asterisk (*) cannot be changed in the future</div>
+
+						<div class="register-warning">Fields with an asterisk (*)
+							cannot be changed in the future</div>
 
 						<div class="field is-grouped">
 							<div class="control">
@@ -129,7 +144,7 @@
 	</div>
 
 	<footer th:replace="fragments.html::footer"></footer>
-	
+
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/bulma-calendar.min.js"></script>

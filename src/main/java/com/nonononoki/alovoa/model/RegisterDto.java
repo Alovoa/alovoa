@@ -21,14 +21,4 @@ public class RegisterDto {
 	
 	private boolean termsConditions;
 	private boolean privacy;
-	
-	public User convertToUser() {
-		User user = new User();
-		user.setEmail(email);
-		user.setPassword(captchaText);
-		user.setFirstName(firstName);
-		user.setDateOfBirth(dateOfBirth);
-		
-		return user;
-	}
 }

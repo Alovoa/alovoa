@@ -1,11 +1,12 @@
 package com.nonononoki.alovoa.component;
 
+import java.util.Base64;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.persistence.AttributeConverter;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -59,12 +60,14 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 
 	public String encode(String attribute) throws Exception {
 		byte[] ba = getEnCipher().doFinal(attribute.getBytes());
-		return Base64.encodeBase64String(ba);
+		String e = Base64.getUrlEncoder().encodeToString(ba);
+		return e;
 	}
 
 	public String decode(String dbData) throws Exception {
-		byte[] ba = getDeCipher().doFinal(Base64.decodeBase64(dbData));
-		return new String(ba);
+		byte[] ba = getDeCipher().doFinal(Base64.getUrlDecoder().decode(dbData));
+		String s = new String(ba);
+		return s;
 	}
 
 	@Override

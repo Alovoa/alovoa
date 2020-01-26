@@ -85,6 +85,8 @@ public class RegisterService {
 		
 		//TODO check if email is already in use
 		User user = new User();
+		user.setActiveDate(new Date());
+		user.setCreationDate(new Date());
 		user.setEmail(dto.getEmail().toLowerCase());
 		user.setDateOfBirth(dto.getDateOfBirth());
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -97,9 +99,13 @@ public class RegisterService {
 		if(userMaxAge > maxAge) {
 			userMaxAge = maxAge;
 		}
+		user.setAge(userAge);
 		user.setPreferedMinAge(userMinAge);
 		user.setPreferedMaxAge(userMaxAge);
 		user.setGender(genderRepo.findById(dto.getGender()).orElse(null));
+		if(user.getGender() == null) {
+			throw new Exception("");
+		}
 		user.setIntention(userIntentionRepo.findById(dto.getIntention()).orElse(null));
 		
 		//check if email is in spam mail list

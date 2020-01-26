@@ -70,9 +70,9 @@ public class AdminService {
 		
 		u.setId(null);
 		loc.setLatitude(String.valueOf(lat + KM_LAT));
-		u.setFirstName("Anna");
-		u.setEmail("test5000@test.com");
-		u.setProfilePicture(Tools.imageToB64(Tools.getFileFromResources("img/profile1.png")));
+		u.setFirstName("Bertha");
+		u.setEmail("test5001@test.com");
+		u.setProfilePicture(Tools.imageToB64(Tools.getFileFromResources("img/profile2.png")));
 		userRepo.saveAndFlush(u);
 	}
 

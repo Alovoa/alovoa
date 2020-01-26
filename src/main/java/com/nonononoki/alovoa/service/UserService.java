@@ -18,13 +18,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Gender;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.UserBlock;
+import com.nonononoki.alovoa.entity.UserHide;
 import com.nonononoki.alovoa.entity.UserIntention;
 import com.nonononoki.alovoa.entity.UserInterest;
+import com.nonononoki.alovoa.entity.UserLike;
+import com.nonononoki.alovoa.entity.UserNotification;
+import com.nonononoki.alovoa.entity.UserReport;
 import com.nonononoki.alovoa.repo.GenderRepository;
+import com.nonononoki.alovoa.repo.UserBlockRepository;
+import com.nonononoki.alovoa.repo.UserHideRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserInterestRepository;
+import com.nonononoki.alovoa.repo.UserLikeRepository;
+import com.nonononoki.alovoa.repo.UserNotificationRepository;
+import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 
 @Service
@@ -35,111 +46,128 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepo;
-	
+
 	@Autowired
 	private GenderRepository genderRepo;
-	
+
 	@Autowired
 	private UserIntentionRepository userIntentionRepo;
-	
+
 	@Autowired
 	private UserInterestRepository userInterestRepo;
 
+	@Autowired
+	private UserLikeRepository userLikeRepo;
+	
+	@Autowired
+	private UserHideRepository userHideRepo;
+	
+	@Autowired
+	private UserBlockRepository userBlockRepo;
+	
+	@Autowired
+	private UserReportRepository userReportRepo;
+	
+	@Autowired
+	private UserNotificationRepository userNotificationRepo;
+
 	@Value("${app.age.min}")
 	private int minAge;
-	
+
 	@Value("${app.age.max}")
 	private int maxAge;
-	
+
 	@Value("${app.profile.image.size}")
 	private int imageSize;
-	
+
 	@Value("${app.profile.image.length}")
 	private int imageLength;
 
 	@Value("${app.profile.description.size}")
 	private int descriptionSize;
-	
+
+	@Autowired
+	private TextEncryptorConverter textEncryptor;
+
 	public void updateProfilePicture(String imgB64) throws Exception {
-		if(imgB64.length() > Tools.BASE64FACTOR * Tools.MILLION * imageSize) {
+		if (imgB64.length() > Tools.BASE64FACTOR * Tools.MILLION * imageSize) {
 			throw new Exception("");
 		}
-		
+
 		User user = authService.getCurrentUser();
 		String newImgB64 = adjustPicture(imgB64);
 		user.setProfilePicture(newImgB64);
 		userRepo.save(user);
 	}
-	
+
 	public void updateDescription(String description) throws Exception {
-		if(description.length() > descriptionSize) {
+		if (description.length() > descriptionSize) {
 			throw new Exception("");
 		}
 		User user = authService.getCurrentUser();
 		user.setDescription(description);
-		userRepo.save(user);	
+		userRepo.save(user);
 	}
-	
+
 	public void updateIntention(long intention) {
-		//TODO Limit intention changing time
+		// TODO Limit intention changing time
 		User user = authService.getCurrentUser();
 		UserIntention i = userIntentionRepo.findById(intention).orElse(null);
 		user.setIntention(i);
 		user.setIntentionChangeDate(new Date());
-		userRepo.save(user);	
+		userRepo.save(user);
 	}
-	
+
 	public void updateMinAge(int userMinAge) throws Exception {
-		if(userMinAge < minAge) {
+		if (userMinAge < minAge) {
 			userMinAge = minAge;
 		}
 		User user = authService.getCurrentUser();
 		user.setPreferedMinAge(userMinAge);
-		userRepo.save(user);	
+		userRepo.save(user);
 	}
-	
+
 	public void updateMaxAge(int userMaxAge) throws Exception {
-		if(userMaxAge > maxAge) {
+		if (userMaxAge > maxAge) {
 			userMaxAge = maxAge;
 		}
 		User user = authService.getCurrentUser();
 		user.setPreferedMaxAge(userMaxAge);
-		userRepo.save(user);	
+		userRepo.save(user);
 	}
-	
+
 	public void updateInterest(long interest, boolean activated) {
 		User user = authService.getCurrentUser();
 		List<UserInterest> list = user.getInterests();
 		UserInterest i = userInterestRepo.findById(interest).orElse(null);
-		if(activated) {
-			if(list.contains(i)) {
+		if (activated) {
+			if (list.contains(i)) {
 				list.remove(i);
 			}
 		} else {
-			if(!list.contains(i)) {
+			if (!list.contains(i)) {
 				list.add(i);
 			}
 		}
 		user.setInterests(list);
-		userRepo.save(user);	
+		userRepo.save(user);
 	}
-	
-	
+
 	public void updatePreferedGender(long genderId, boolean activated) {
 		User user = authService.getCurrentUser();
 		Set<Gender> list = user.getPreferedGenders();
 		Gender g = genderRepo.findById(genderId).orElse(null);
-		if(activated) {
-			if(!list.contains(g)) {
+		if (activated) {
+			if (!list.contains(g)) {
 				list.add(g);
 			}
 		} else {
-			if(list.contains(g)) {
+			if (list.contains(g)) {
 				list.remove(g);
 			}
 		}
 		user.setPreferedGenders(list);
-		userRepo.save(user);	
+		userRepo.save(user);
 	}
 
 	private String adjustPicture(String imgB64) throws IOException {
@@ -172,24 +200,24 @@ public class UserService {
 			image = image.getSubimage(x, y, idealLength, idealLength);
 		}
 
-		
 		if (image.getWidth() > imageSize) {
 			// scale image if it's too big
 			BufferedImage scaledImage = new BufferedImage(imageLength, imageLength, image.getType());
-            Graphics2D graphics2D = scaledImage.createGraphics();
-            
-            //chose one
-            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            //graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            //graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            
-            graphics2D.drawImage(image, 0, 0, imageLength, imageLength, null);
-            graphics2D.dispose();
-            image = scaledImage;
+			Graphics2D graphics2D = scaledImage.createGraphics();
+
+			// chose one
+			graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			// graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING,
+			// RenderingHints.VALUE_RENDER_QUALITY);
+			// graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+			// RenderingHints.VALUE_ANTIALIAS_ON);
+
+			graphics2D.drawImage(image, 0, 0, imageLength, imageLength, null);
+			graphics2D.dispose();
+			image = scaledImage;
 		}
-		
-		
-		//image to b64
+
+		// image to b64
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		ImageIO.write(image, "png", out);
 		byte[] bytes = out.toByteArray();
@@ -198,12 +226,82 @@ public class UserService {
 		return src;
 
 	}
-	
+
 	private String stripImageType(String s) {
-		if(s.contains(",")) {
+		if (s.contains(",")) {
 			return s.split(",")[1];
 		}
 		return s;
 	}
 
+	public void likeUser(String idEnc) throws NumberFormatException, Exception {
+		User user = encodedIdToUser(idEnc);
+		User currUser = authService.getCurrentUser();
+		if (userLikeRepo.findByUserFromAndUserTo(currUser, user) == null) {
+			UserLike like = new UserLike();
+			like.setDate(new Date());
+			like.setUserFrom(currUser);
+			like.setUserTo(user);
+			userLikeRepo.save(like);
+			
+			UserNotification not = new UserNotification();
+			not.setContent(not.getUSER_LIKE());
+			not.setCreationDate(new Date());
+			not.setUserFrom(currUser);
+			not.setUserTo(user);
+			userNotificationRepo.save(not);
+		}
+	}
+
+	public void hideUser(String idEnc) throws NumberFormatException, Exception {
+		User user = encodedIdToUser(idEnc);
+		User currUser = authService.getCurrentUser();
+		if (userHideRepo.findByUserFromAndUserTo(currUser, user) == null) {
+			UserHide hide = new UserHide();
+			hide.setDate(new Date());
+			hide.setUserFrom(currUser);
+			hide.setUserTo(user);
+			userHideRepo.save(hide);
+		}
+	}
+
+	public void blockUser(String idEnc) throws NumberFormatException, Exception {
+		User user = encodedIdToUser(idEnc);
+		User currUser = authService.getCurrentUser();
+		if (userBlockRepo.findByUserFromAndUserTo(currUser, user) == null) {
+			UserBlock block = new UserBlock();
+			block.setDate(new Date());
+			block.setUserFrom(currUser);
+			block.setUserTo(user);
+			userBlockRepo.save(block);
+		}
+	}
+	
+	public void unblockUser(String idEnc) throws NumberFormatException, Exception {
+		User user = encodedIdToUser(idEnc);
+		User currUser = authService.getCurrentUser();
+		
+		UserBlock block = userBlockRepo.findByUserFromAndUserTo(currUser, user);
+		if (block != null) {
+			userBlockRepo.delete(block);
+		}
+	}
+
+	public void reportUser(String idEnc) throws NumberFormatException, Exception {
+		User user = encodedIdToUser(idEnc);
+		User currUser = authService.getCurrentUser();
+		if (userReportRepo.findByUserFromAndUserTo(currUser, user) == null) {
+			UserReport report = new UserReport();
+			report.setDate(new Date());
+			report.setUserFrom(currUser);
+			report.setUserTo(user);
+			userReportRepo.save(report);
+		}
+	}
+	
+	public User encodedIdToUser(String idEnc) throws NumberFormatException, Exception {
+		long id = Long.parseLong(textEncryptor.decode(idEnc));
+		User user = userRepo.findById(id).orElse(null);
+		return user;
+	}
 }

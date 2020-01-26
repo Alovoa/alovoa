@@ -1,17 +1,17 @@
 .card-image {
 	font-size: 8rem;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    color: #209cee;
+	padding-top: 2rem;
+	padding-bottom: 2rem;
+	color: #209cee;
 }
 
 #banner {
-	background-image: url('/img/banner.jpg'); 
-	height: 460px; 
-	position: relative; 
+	background-image: url('/img/banner.jpg');
+	height: 460px;
+	position: relative;
 	width: 100%;
-	background-position: center; 
-	background-size: cover; 
+	background-position: center;
+	background-size: cover;
 	background-repeat: no-repeat;
 }
 

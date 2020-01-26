@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Location;
 import com.nonononoki.alovoa.entity.User;
@@ -24,7 +23,6 @@ public class SearchService {
 	private final int SORT_DISTANCE = 1;
 	private final int SORT_ACTIVE_DATE = 2;
 	
-
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
@@ -51,8 +49,7 @@ public class SearchService {
 		List<User> users = userRepo.findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullAndAgeBetween(user.getPreferedMinAge(), user.getPreferedMaxAge());
 		List<UserDto> userDtos = new ArrayList<>();
 		for(int i = 0; i < users.size(); i++) {
-			UserDto dto = new UserDto();
-			dto = dto.userToUserDto(users.get(i), user, textEncryptor);
+			UserDto dto = UserDto.userToUserDto(users.get(i), user, textEncryptor);
 			userDtos.add(dto);
 		}
 		
@@ -67,6 +64,9 @@ public class SearchService {
 				continue;
 			}		
 			if(user.getBlockedUsers().contains(dto)) {
+				continue;
+			}
+			if(dto.getBlockedUsers().contains(user)) {
 				continue;
 			}
 			if(!user.getPreferedGenders().contains(dto.getGender())) {

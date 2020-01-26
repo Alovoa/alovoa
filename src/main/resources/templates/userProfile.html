@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Alovoa">
+<link rel="manifest" href="/json/manifest.json">
+
+<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
+<link rel="stylesheet" href="/css/alovoa.css" />
+<link rel="stylesheet" href="/css/search.css" />
+<title th:value="${user.firstName}"></title>
+</head>
+<body>
+	<div id="main-logged-in">
+		<header th:insert="fragments.html::header-logged-in"></header>
+		<div class="section">
+			<div class="container">
+				<div class="field">
+					<div class="columns is-mobile is-centered">
+						<div class="column is-half center-children">
+
+							<img id="profilePicture" src="/img/profile.jpg"
+								style="cursor: pointer;" height=400 width="400"
+								th:unless="${user.profilePicture}" /> <img id="profilePicture"
+								style="cursor: pointer;" height=400 width="400"
+								th:if="${user.profilePicture}" th:src="${user.profilePicture}" />
+							<input id="profilePictureUpload" type="file" accept="image/*"
+								style="display: none">
+						</div>
+					</div>
+				</div>
+				<div class="content">
+					<div class="media">
+						<div class="full-width">
+							<div class="left" style="font-size: 2em"
+								th:text="${user.firstName}"></div>
+							<div class="right" style="font-size: 1.5em">
+								<span>Age: </span><span th:text="${user.age}"></span>
+							</div>
+						</div>
+					</div>
+					<div class="media">
+						<div class="full-width">
+							<div class="left" style="font-size: 1.2em">
+								<span>Last active: </span><span
+									th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="field">
+					<label class="label">Description</label>
+					<textarea class="textarea" id="description"
+						th:text="${user.description}" readOnly></textarea>
+				</div>
+
+				<table class="table" style="width: 100%">
+					<tbody>
+						<tr>
+							<th>Gender</th>
+							<td th:if="${user.gender.text == 'male'}">Male</td>
+							<td th:if="${user.gender.text == 'female'}">Female</td>
+							<td th:if="${user.gender.text == 'other'}">Other</td>
+						</tr>
+						<tr>
+							<th>Intention</th>
+							<td th:if="${user.intention.text == 'meet'}">Meeting new people</td>
+							<td th:if="${user.intention.text == 'date'}">Romantic relationship</td>
+							<td th:if="${user.intention.text == 'sex'}">Sexual intimacy</td>
+						</tr>
+						<tr>
+							<th>Donated</th>
+							<td th:text="${user.donationAmount} + ' €'"></td>
+						</tr>
+						<tr>
+							<th># Blocks by users</th>
+							<td th:text="${#lists.size(user.blockedByUsers)}"></td>
+						</tr>
+						<tr>
+							<th># Reports by users</th>
+							<td th:text="${#lists.size(user.reportedByUsers)}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div style="padding-top: 8px;"></div>
+				<!-- TODO Buttons -->
+			</div>
+		</div>
+	</div>
+
+	<footer th:replace="fragments.html::navigation"></footer>
+	<footer th:replace="fragments.html::footer"></footer>
+
+	<script src="/js/lib/fontawesome.all.js"></script>
+	<script src="/js/lib/jquery.min.js"></script>
+	<script src="/js/search.js"></script>
+</body>
+</html>

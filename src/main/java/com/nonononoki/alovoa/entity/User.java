@@ -51,6 +51,8 @@ public class User {
 	@Column(nullable = false)
 	private Date dateOfBirth;
 	private int age;
+	
+	private int donationAmount;
 
 	@Column(columnDefinition = "mediumtext")
 	private String profilePicture;

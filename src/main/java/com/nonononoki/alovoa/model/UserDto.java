@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.model;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +12,7 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Gender;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.UserBlock;
 import com.nonononoki.alovoa.entity.UserImage;
 import com.nonononoki.alovoa.entity.UserIntention;
 
@@ -43,11 +45,14 @@ public class UserDto {
 
 	private long numberOfBlocks;
 	private long numberOfReports;
+	
+	private List<UserBlock> blockedUsers;
 
-	public UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor) throws Exception {
+	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor) throws Exception {
 		UserDto dto = new UserDto();
 		dto.setId(user.getId());
-		dto.setIdEncoded(textEncryptor.encode(Long.toString(user.getId())));
+		String en = textEncryptor.encode(Long.toString(user.getId()));
+		dto.setIdEncoded(en);
 		dto.setActiveDate(user.getActiveDate());
 		dto.setAge(user.getAge());
 		dto.setDescription(user.getDescription());
@@ -58,6 +63,7 @@ public class UserDto {
 		dto.setGender(user.getGender());
 		dto.setIntention(user.getIntention());
 		dto.setProfilePicture(user.getProfilePicture());
+		dto.setBlockedUsers(user.getBlockedUsers());
 		try {
 			dto.setNumberOfReports(user.getReportedByUsers().size());
 		} catch (Exception e) {
