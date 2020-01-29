@@ -67,28 +67,28 @@ public class UserController {
 	}
 
 	@PostMapping(value = "/like/{idEnc}")
-	public void likeUser(@RequestBody String idEnc) throws Exception {
+	public void likeUser(@PathVariable String idEnc) throws Exception {
 		userService.likeUser(idEnc);
 	}
 
 	@PostMapping(value = "/hide/{idEnc}")
-	public void hideUser(@RequestBody String idEnc) throws Exception {
+	public void hideUser(@PathVariable String idEnc) throws Exception {
 		userService.hideUser(idEnc);
 	}
 
 	@PostMapping(value = "/block/{idEnc}")
-	public void blockUser(@RequestBody String idEnc) throws Exception {
+	public void blockUser(@PathVariable String idEnc) throws Exception {
 		userService.blockUser(idEnc);
 	}
 	
 	@PostMapping(value = "/unblock/{idEnc}")
-	public void unblockUser(@RequestBody String idEnc) throws Exception {
+	public void unblockUser(@PathVariable String idEnc) throws Exception {
 		userService.unblockUser(idEnc);
 	}
 
 	//TODO Captcha
 	@PostMapping(value = "/report/{idEnc}")
-	public void reportUser(@RequestBody String idEnc) throws Exception {
+	public void reportUser(@PathVariable String idEnc) throws Exception {
 		userService.reportUser(idEnc);
 	}
 }

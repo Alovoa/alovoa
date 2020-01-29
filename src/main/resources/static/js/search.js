@@ -31,7 +31,7 @@ function viewProfile(idEnc) {
 	window.open('/profile/view/' + idEnc, '_blank');
 }
 
-function likeUser(idEnc) {
+function likeUser(btn, idEnc) {
 	$.ajax({
 		type : "POST",
 		url : "/user/like/" + idEnc,
@@ -39,7 +39,7 @@ function likeUser(idEnc) {
 			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 		},
 		success : function() {
-			$('#'+idEnc).hide();
+			hideProfileTile(btn);
 		},
 		error : function(e) {
 			// TODO
@@ -49,7 +49,7 @@ function likeUser(idEnc) {
 
 }
 
-function hideUserProfile(idEnc) {
+function hideUser(btn, idEnc) {
 	$.ajax({
 		type : "POST",
 		url : "/user/hide/" + idEnc,
@@ -57,11 +57,22 @@ function hideUserProfile(idEnc) {
 			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 		},
 		success : function() {
-			$('#'+idEnc).hide();
+			hideProfileTile(btn);
 		},
 		error : function(e) {
 			// TODO
 			console.log(e);
 		}
 	});
+}
+
+function hideProfileTile(btn) {
+	let parent = getUserDivFromButton(btn);
+	$(parent).fadeOut(500, function() {
+		parent.hide();
+	});
+}
+
+function getUserDivFromButton(btn) {
+	return $(btn).parent().parent().parent().parent();
 }

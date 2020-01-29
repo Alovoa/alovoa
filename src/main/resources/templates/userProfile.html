@@ -70,13 +70,15 @@
 						</tr>
 						<tr>
 							<th>Intention</th>
-							<td th:if="${user.intention.text == 'meet'}">Meeting new people</td>
-							<td th:if="${user.intention.text == 'date'}">Romantic relationship</td>
+							<td th:if="${user.intention.text == 'meet'}">Meeting new
+								people</td>
+							<td th:if="${user.intention.text == 'date'}">Romantic
+								relationship</td>
 							<td th:if="${user.intention.text == 'sex'}">Sexual intimacy</td>
 						</tr>
 						<tr>
 							<th>Donated</th>
-							<td th:text="${user.donationAmount} + ' €'"></td>
+							<td th:text="${user.totalDonations} + ' €'"></td>
 						</tr>
 						<tr>
 							<th># Blocks by users</th>
@@ -89,7 +91,35 @@
 					</tbody>
 				</table>
 				<div style="padding-top: 8px;"></div>
-				<!-- TODO Buttons -->
+			</div>
+			<div class="container">
+				<div class="profile-bottom full-width"
+					style="display: inline-block;">
+					<div class="left">
+						<button class="button is-rounded is-danger" th:unless="${user.blockedByCurrentUser}"
+							th:onclick="blockUser([[${user.idEncoded}]])">
+							<i class="fa fa-ban"></i>
+						</button>
+						<button class="button is-rounded is-success" th:if="${user.blockedByCurrentUser}"
+							th:onclick="unblockUser([[${user.idEncoded}]])">
+							<i class="fa fa-ban"></i>
+						</button>
+						<button class="button is-rounded is-info" th:unless="${user.reportedByCurrentUser}"
+							th:onclick="reportUser([[${user.idEncoded}]])">
+							<i class="fa fa-flag"></i>
+						</button>
+					</div>
+					<div class="right" th:unless="${user.likedOrHiddenByCurrentUser}">
+						<button class="button is-rounded is-danger"
+							th:onclick="hideUser([[${user.idEncoded}]])">
+							<i class="fa fa-thumbs-down"></i>
+						</button>
+						<button class="button is-rounded is-success"
+							th:onclick="likeUser([[${user.idEncoded}]])">
+							<i class="fa fa-thumbs-up"></i>
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -99,6 +129,6 @@
 
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
-	<script src="/js/search.js"></script>
+	<script src="/js/userProfile.js"></script>
 </body>
 </html>

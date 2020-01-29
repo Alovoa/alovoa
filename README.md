@@ -15,19 +15,22 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Registration
 - Login
 - Search and filter
-
-### TODO
 - Liking user
 - Hiding user
 - Blocking user
 - Reporting user
 - View details of user
+
+### TODO
 - Donation view and functions
 - Notification view and functions
 - Chat view and functions
 - Resetting password
 - GDPR compliance (see saved data, delete all data)
 - PWA compability
+- Alerts in home upon registration
+- Alerts in login when not successful
+- Translations
 
 ### How to build:
 - Install a JDK (OpenJDK 8 is officially supported)

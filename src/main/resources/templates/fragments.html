@@ -27,7 +27,7 @@
 	<div th:fragment="header-logged-in">
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
-				<a class="navbar-item"> <img src="img/icon.png" width="28"
+				<a class="navbar-item"> <img src="/img/icon.png" width="28"
 					height="28">
 				</a> <a class="navbar-item">Alovoa </a>
 			</div>
@@ -139,11 +139,11 @@
 						profile</button>
 					<div class="right">
 						<button class="button is-rounded is-danger"
-							th:onclick="likeUser([[${user.idEncoded}]])">
+							th:onclick="hideUser(this, [[${user.idEncoded}]])">
 							<i class="fa fa-thumbs-down"></i>
 						</button>
 						<button class="button is-rounded is-success"
-							th:onclick="hideUser([[${user.idEncoded}]])">
+							th:onclick="likeUser(this, [[${user.idEncoded}]])">
 							<i class="fa fa-thumbs-up"></i>
 						</button>
 					</div>

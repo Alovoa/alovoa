@@ -237,6 +237,10 @@ public class UserService {
 	public void likeUser(String idEnc) throws NumberFormatException, Exception {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
+		
+		if(user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
+			throw new Exception();
+		}
 		if (userLikeRepo.findByUserFromAndUserTo(currUser, user) == null) {
 			UserLike like = new UserLike();
 			like.setDate(new Date());
