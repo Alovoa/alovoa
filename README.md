@@ -1,13 +1,13 @@
 # Alovoa
 
-Alovoa aims to be the first widespread open-source dating web application on the web. What differs us from other platform?
+Alovoa aims to be the first widespread open-source dating web application on the web. What differs this from other platform?
 - No ads
 - No selling your data
 - No paid features (no "pay super-likes", "pay to swipe", "pay to view profile" or "pay to start a chat")
 - No unsecure servers
 - No closed-source libraries
 - No seeing people you don't want to see
-- Encryption your most private data
+- Encrypting your most private data
 
 ### DONE
 - Home view
