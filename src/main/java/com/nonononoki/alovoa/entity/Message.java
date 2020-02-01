@@ -19,6 +19,9 @@ public class Message{
 	private Long id;
 	
 	@ManyToOne
+	private Conversation conversation;
+	
+	@ManyToOne
 	private User userFrom;
 	
 	@ManyToOne

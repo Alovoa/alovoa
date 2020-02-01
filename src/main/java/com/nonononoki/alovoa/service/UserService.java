@@ -327,4 +327,14 @@ public class UserService {
 		User user = userRepo.findById(id).orElse(null);
 		return user;
 	}
+
+	public boolean newNotification() {
+		User currUser = authService.getCurrentUser();
+		return currUser.getNotificationDate().after(currUser.getNotificationCheckedDate());
+	}
+
+	public boolean newMessage() {
+		User currUser = authService.getCurrentUser();
+		return currUser.getMessageDate().after(currUser.getMessageCheckedDate());
+	}
 }

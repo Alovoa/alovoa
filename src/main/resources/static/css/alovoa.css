@@ -44,6 +44,10 @@ svg {
 	font-size: 1.5em;
 }
 
+.navigation-item.new svg {
+	color: #FFA000;
+}
+
 .navigation-item div {
 	margin: auto;
 }

@@ -91,4 +91,15 @@ public class UserController {
 	public void reportUser(@PathVariable String idEnc) throws Exception {
 		userService.reportUser(idEnc);
 	}
+	
+	@PostMapping(value = "/status/new-notification")
+	public boolean newNotification() throws Exception {
+		return userService.newNotification();
+	}
+	
+	@PostMapping(value = "/status/new-status")
+	public boolean newMessage() throws Exception {
+		return userService.newMessage();
+	}
+	
 }

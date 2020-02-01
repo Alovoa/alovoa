@@ -34,8 +34,16 @@ public class SearchService {
 
 	@Value("${app.search.max}")
 	private int maxResults;
+	
+	@Value("${app.search.max.distance}")
+	private int maxDistance;
 
 	public List<UserDto> search(String latitude, String longitude, int distance, int sort) throws Exception {
+		
+		if(distance > maxDistance) {
+			throw new Exception("");
+		}
+		
 		User user = authService.getCurrentUser();
 		user.setActiveDate(new Date());
 		Location loc = new Location();

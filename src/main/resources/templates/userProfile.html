@@ -110,11 +110,11 @@
 						</button>
 					</div>
 					<div class="right">
-						<button class="button is-rounded is-danger" th:unless="${user.hiddenByCurrentUser}"
+						<button class="button is-rounded is-danger" th:unless="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
 							th:onclick="hideUser([[${user.idEncoded}]])">
 							<i class="fa fa-thumbs-down"></i>
 						</button>
-						<button class="button is-rounded is-danger" th:if="${user.hiddenByCurrentUser}"
+						<button class="button is-rounded is-danger" th:if="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
 							th:onclick="hideUser([[${user.idEncoded}]])" disabled>
 							<i class="fa fa-thumbs-down"></i>
 						</button>
