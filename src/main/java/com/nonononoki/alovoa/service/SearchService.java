@@ -99,7 +99,7 @@ public class SearchService {
 			Collections.sort(filteredUserDtos, new Comparator<UserDto>() {
 				@Override
 				public int compare(UserDto a, UserDto b) {
-					return a.getActiveDate().compareTo(b.getActiveDate());
+					return b.getActiveDate().compareTo(a.getActiveDate());
 				}
 			});
 			Collections.reverse(filteredUserDtos);

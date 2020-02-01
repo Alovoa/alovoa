@@ -26,4 +26,6 @@ public class Conversation {
 	
 	private Date creationDate;
 	
+	private Date lastUpdated;
+	
 }

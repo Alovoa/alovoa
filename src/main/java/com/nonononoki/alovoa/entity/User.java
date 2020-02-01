@@ -141,4 +141,12 @@ public class User {
 	private Date creationDate;
 
 	private Date intentionChangeDate;
+	
+	private Date notificationDate;
+	
+	private Date notificationCheckedDate;
+	
+	private Date messageDate;
+	
+	private Date messageCheckedDate;
 }

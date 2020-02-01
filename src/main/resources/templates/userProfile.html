@@ -109,13 +109,21 @@
 							<i class="fa fa-flag"></i>
 						</button>
 					</div>
-					<div class="right" th:unless="${user.likedOrHiddenByCurrentUser}">
-						<button class="button is-rounded is-danger"
+					<div class="right">
+						<button class="button is-rounded is-danger" th:unless="${user.hiddenByCurrentUser}"
 							th:onclick="hideUser([[${user.idEncoded}]])">
 							<i class="fa fa-thumbs-down"></i>
 						</button>
-						<button class="button is-rounded is-success"
+						<button class="button is-rounded is-danger" th:if="${user.hiddenByCurrentUser}"
+							th:onclick="hideUser([[${user.idEncoded}]])" disabled>
+							<i class="fa fa-thumbs-down"></i>
+						</button>
+						<button class="button is-rounded is-success" th:unless="${user.likedByCurrentUser}"
 							th:onclick="likeUser([[${user.idEncoded}]])">
+							<i class="fa fa-thumbs-up"></i>
+						</button>
+						<button class="button is-rounded is-success" th:if="${user.likedByCurrentUser}"
+							th:onclick="likeUser([[${user.idEncoded}]])" disabled>
 							<i class="fa fa-thumbs-up"></i>
 						</button>
 					</div>

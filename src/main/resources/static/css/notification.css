@@ -1,12 +1,13 @@
 .image img {
-	max-height: 300px;
-	max-width: 300px;
+	max-height: 400px;
+	max-width: 400px;
 }
 
 .card {
 	padding: 24px;
 	border: 1px solid #dbdbdb;
 	margin-bottom: 24px;
+	cursor: pointer;
 }
 
 .button svg {
@@ -21,13 +22,25 @@
 	height: 313px;
 }
 
+.profile-bottom {
+	font-size: 2em;
+	line-height: 190px;
+}
+
+.profile-bottom {
+	text-align: center;
+}
+
 @media screen and (max-width: 1024px) {
 	.card.is-horizontal {
 		flex-direction: column !important;
 	}
 	.card {
+		/*
 		border: initial;
 		border-top: 1px solid #d3d3d3;
+		*/
+		
 	}
 	.card-content .content {
 		height: initial;
@@ -35,7 +48,10 @@
 	.image img {
 		max-height: initial;
 		max-width: initial;
-		padding-bottom: 24px;
+		margin-bottom: 24px;
+	}
+	.profile-bottom {
+		line-height: initial;
 	}
 }
 /*https://github.com/jgthms/bulma/pull/1596#issuecomment-556416927*/

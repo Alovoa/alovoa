@@ -51,7 +51,8 @@ public class UserDto {
 	
 	private boolean blockedByCurrentUser;
 	private boolean reportedByCurrentUser;
-	private boolean likedOrHiddenByCurrentUser;
+	private boolean likedByCurrentUser;
+	private boolean hiddenByCurrentUser;
 
 	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor)
 			throws Exception {
@@ -80,8 +81,8 @@ public class UserDto {
 		
 		dto.blockedByCurrentUser = currentUser.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
 		dto.reportedByCurrentUser = currentUser.getReported().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
-		dto.likedOrHiddenByCurrentUser = currentUser.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId())) || 
-				currentUser.getHiddenUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
+		dto.likedByCurrentUser = currentUser.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
+		dto.hiddenByCurrentUser = currentUser.getHiddenUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
 		double dist = Tools.getDistanceToUser(user, currentUser);
 		dto.setDistanceToUser((int) Math.round(dist));
 		return dto;

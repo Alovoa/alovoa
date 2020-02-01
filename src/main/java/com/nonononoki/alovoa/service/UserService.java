@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
+import com.nonononoki.alovoa.entity.Conversation;
 import com.nonononoki.alovoa.entity.Gender;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserBlock;
@@ -28,6 +29,7 @@ import com.nonononoki.alovoa.entity.UserInterest;
 import com.nonononoki.alovoa.entity.UserLike;
 import com.nonononoki.alovoa.entity.UserNotification;
 import com.nonononoki.alovoa.entity.UserReport;
+import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
@@ -58,18 +60,21 @@ public class UserService {
 
 	@Autowired
 	private UserLikeRepository userLikeRepo;
-	
+
 	@Autowired
 	private UserHideRepository userHideRepo;
-	
+
 	@Autowired
 	private UserBlockRepository userBlockRepo;
-	
+
 	@Autowired
 	private UserReportRepository userReportRepo;
-	
+
 	@Autowired
 	private UserNotificationRepository userNotificationRepo;
+	
+	@Autowired
+	private ConversationRepository conversationRepo;
 
 	@Value("${app.age.min}")
 	private int minAge;
@@ -254,6 +259,20 @@ public class UserService {
 			not.setUserFrom(currUser);
 			not.setUserTo(user);
 			userNotificationRepo.save(not);
+			
+			if(user.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
+				Conversation convo = new Conversation();
+				convo.setCreationDate(new Date());
+				convo.setUserFrom(currUser);
+				convo.setUserTo(user);
+				convo.setLastUpdated(new Date());
+				conversationRepo.save(convo);
+				user.setMessageDate(new Date());
+				userRepo.saveAndFlush(user);
+			}
+			
+			user.setNotificationDate(new Date());
+			userRepo.saveAndFlush(user);
 		}
 	}
 
@@ -280,11 +299,11 @@ public class UserService {
 			userBlockRepo.save(block);
 		}
 	}
-	
+
 	public void unblockUser(String idEnc) throws NumberFormatException, Exception {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
-		
+
 		UserBlock block = userBlockRepo.findByUserFromAndUserTo(currUser, user);
 		if (block != null) {
 			userBlockRepo.delete(block);
@@ -302,7 +321,7 @@ public class UserService {
 			userReportRepo.save(report);
 		}
 	}
-	
+
 	public User encodedIdToUser(String idEnc) throws NumberFormatException, Exception {
 		long id = Long.parseLong(textEncryptor.decode(idEnc));
 		User user = userRepo.findById(id).orElse(null);

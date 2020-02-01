@@ -2,8 +2,6 @@ package com.nonononoki.alovoa.model;
 
 import java.util.Date;
 
-import com.nonononoki.alovoa.entity.User;
-
 import lombok.Value;
 
 @Value
