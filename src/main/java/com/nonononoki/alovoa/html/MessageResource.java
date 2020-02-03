@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Conversation;
 import com.nonononoki.alovoa.entity.Message;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.ConversationDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.AuthService;
@@ -27,9 +29,12 @@ public class MessageResource {
 
 	@Autowired
 	private UserRepository userRepo;
-	
+
 	@Autowired
 	private ConversationRepository conversationRepo;
+
+	@Autowired
+	private TextEncryptorConverter textEncryptor;
 
 	@GetMapping("/chats")
 	public ModelAndView chats() throws Exception {
@@ -38,10 +43,19 @@ public class MessageResource {
 		User user = authService.getCurrentUser();
 		user.setMessageCheckedDate(new Date());
 		userRepo.saveAndFlush(user);
-		List<Conversation> convos = new ArrayList<>();
-		Collections.sort(convos, new Comparator<Conversation>() {
+		List<ConversationDto> convos = new ArrayList<>();
+		for (int i = 0; i < user.getConversations().size(); i++) {
+			Conversation c = user.getConversations().get(i);
+			convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
+		}
+		for (int i = 0; i < user.getConversationsBy().size(); i++) {
+			Conversation c = user.getConversationsBy().get(i);
+			convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
+		}
+
+		Collections.sort(convos, new Comparator<ConversationDto>() {
 			@Override
-			public int compare(Conversation a, Conversation b) {
+			public int compare(ConversationDto a, ConversationDto b) {
 				return b.getLastUpdated().compareTo(a.getLastUpdated());
 			}
 		});
@@ -49,16 +63,36 @@ public class MessageResource {
 		mav.addObject("user", user);
 		return mav;
 	}
-	
+
 	@GetMapping("/chats/{id}")
 	public ModelAndView chatsDetail(@PathVariable long id) throws Exception {
 
 		ModelAndView mav = new ModelAndView("messageDetail");
 		User user = authService.getCurrentUser();
 		Conversation c = conversationRepo.findById(id).orElse(null);
+		User u = c.getUserFrom();
+		if(u.equals(user)) {
+			u = c.getUserTo();
+		}
+		
+		if(!c.getUserFrom().equals(user) || !c.getUserTo().equals(user)) {
+			throw new Exception("");
+		}
+		
 		List<Message> messages = c.getMessages();
+		Collections.sort(messages, new Comparator<Message>() {
+			@Override
+			public int compare(Message a, Message b) {
+				return b.getCreationDate().compareTo(a.getCreationDate());
+			}
+		});
 		mav.addObject("user", user);
 		mav.addObject("messages", messages);
+		
+		mav.addObject("partner", u);
+		
+		c.setLastOpened(new Date());
+		conversationRepo.saveAndFlush(c);
 		return mav;
 	}
 }

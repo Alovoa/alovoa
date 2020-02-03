@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/notification.css" />
-<title>Notification</title>
+<title>Messages</title>
 </head>
 <body>
 	<div id="main-logged-in">
@@ -20,22 +20,26 @@
 		<section class="container" id="main-container">
 			<div class="section">
 				<div class="container" style="width: 100%;">
-					<div class="card is-horizontal"
-						th:each="notification : ${notifications}" style="width: 100%;"
-						th:onclick="viewProfile([[${notification.userFromDto.idEncoded}]])">
+					<div class="card is-horizontal" th:each="convo : ${conversations}">
 						<div class="card-image">
-							<figure class="image">
-								<img th:src="${notification.userFromDto.profilePicture}">
+							<figure class="image" style="max-width: 200px; max-height: 200px;">
+								<img th:src="${convo.userProfilePicture}"
+									th:onclick="viewProfile([[${convo.userIdEncoded}]])">
 							</figure>
 						</div>
-						<div class="card-content">
-							<div class="profile-bottom full-width"
-								style="display: inline-block;">
-								<span>You have been liked by </span><span
-									th:text="${notification.userFromDto.firstName}"></span>
+						<div class="card-content" th:onclick="viewMessageDetail([[${convo.id}]])">
+							<div class="content">
+								<div class="media">
+									<div class="full-width">
+										<div class="left" style="font-size: 2em"
+											th:text="${convo.userName}"></div>
+									</div>
+								</div>
+								<div style="font-size: 1.1em" th:text="${convo.lastMessage}" th:if="${convo.lastMessage != null}"></div>
+								<!-- TODO -->
+								<div style="font-size: 1.1em" th:unless="${convo.lastMessage != null}">You got a match! Tap here to send a message.</div>
 							</div>
 						</div>
-
 					</div>
 				</div>
 			</div>
@@ -48,5 +52,6 @@
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/search.js"></script>
+	<script src="/js/message.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 .image img {
-	max-height: 400px;
-	max-width: 400px;
+	max-height: 150px;
+	max-width: 150px;
 }
 
 .card {
@@ -19,12 +19,12 @@
 }
 
 .card-content .content {
-	height: 313px;
+	/*height: 313px;*/
 }
 
 .profile-bottom {
 	font-size: 2em;
-	line-height: 190px;
+	line-height: 150px;
 }
 
 .profile-bottom {

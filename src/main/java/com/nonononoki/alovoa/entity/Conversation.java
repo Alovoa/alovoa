@@ -34,4 +34,8 @@ public class Conversation {
 	
 	private Date lastUpdated;
 	
+	private Date lastOpened;
+	
+	private String lastMessage;
+	
 }
