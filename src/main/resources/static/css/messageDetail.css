@@ -1,0 +1,65 @@
+#top {
+	height: 100px;
+	border-bottom: 1px solid #dbdbdb;
+}
+
+#first-name {
+	font-size: 2em
+}
+
+#messages-div {
+	min-height: calc(100vh - 400px);
+	max-height: calc(100vh - 400px);
+	overflow: auto;
+}
+
+#message-send-div {
+	height: 50px;
+}
+
+#message-send-input {
+	float: left;
+	width: calc(100% - 52px - 14px);
+}
+
+#message-send-padding {
+	float: left;
+	margin-left: 14px;
+	margin-top: 1px;
+}
+
+#message-send-button {
+	float: left;
+	width: 52px;
+}
+
+#message-send-button svg {
+	color: white;
+}
+
+.profile-pic {
+	height: 80px;
+	width: 80px;
+}
+
+.section {
+	padding-top: 24px;
+	padding-bottom: 24px;
+}
+
+@media only screen and (max-height: 900px) {
+	#top {
+		height: 60px;
+	}
+	#messages-div {
+		min-height: calc(100vh - 350px);
+		max-height: calc(100vh - 350px);
+	}
+	#first-name {
+		font-size: 1.7em
+	}
+	.profile-pic {
+		height: 40px;
+		width: 40px;
+	}
+}

@@ -23,7 +23,6 @@ Alovoa aims to be the first widespread open-source dating web application on the
 
 ### TODO
 - Donation view and functions
-- Notification view and functions
 - Chat view and functions
 - Resetting password
 - GDPR compliance (see saved data, delete all data)
@@ -31,6 +30,7 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Alerts in home upon registration
 - Alerts in login when not successful
 - Translations
+- Logging
 
 ### How to build:
 - Install a JDK (OpenJDK 8 is officially supported)

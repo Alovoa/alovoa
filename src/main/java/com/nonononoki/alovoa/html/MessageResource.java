@@ -75,7 +75,7 @@ public class MessageResource {
 			u = c.getUserTo();
 		}
 		
-		if(!c.getUserFrom().equals(user) || !c.getUserTo().equals(user)) {
+		if(!c.getUserFrom().getId().equals(user.getId()) && !c.getUserTo().getId().equals(user.getId())) {
 			throw new Exception("");
 		}
 		

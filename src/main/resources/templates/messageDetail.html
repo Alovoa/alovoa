@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Alovoa">
+<link rel="manifest" href="/json/manifest.json">
+
+<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
+<link rel="stylesheet" href="/css/alovoa.css" />
+<link rel="stylesheet" href="/css/messageDetail.css" />
+<title>Messages</title>
+</head>
+<body>
+	<div id="main-logged-in">
+		<header th:insert="fragments.html::header-logged-in"></header>
+		<section class="container" id="main-container">
+			<div class="section">
+				<div class="container" id="top">
+					<img class="profile-pic left" th:src="${partner.profilePicture}">
+					<div class="left" style="padding: 12px;"></div>
+					<div class="left" th:text="${partner.firstName}" id="first-name"></div>
+				</div>
+			</div>
+			<div class="section">
+				<div class="container" style="width: 100%;" id="messages-div"></div>
+			</div>
+			<div class="section">
+				<div class="container" style="width: 100%;" id="message-send-div">
+					 <input class="input is-medium is-rounded" type="text" id="message-send-input" placeholder="...">
+					 <div id="message-send-padding"></div>
+					 <button class="button is-info is-medium is-rounded" id="message-send-button"><i class="fa fa-paper-plane"></i></button>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<footer th:replace="fragments.html::navigation"></footer>
+	<footer th:replace="fragments.html::footer"></footer>
+
+	<script src="/js/lib/fontawesome.all.js"></script>
+	<script src="/js/lib/jquery.min.js"></script>
+	<script src="/js/messageDetail.js"></script>
+</body>
+</html>
