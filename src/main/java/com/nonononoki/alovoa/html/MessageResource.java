@@ -70,14 +70,11 @@ public class MessageResource {
 		ModelAndView mav = new ModelAndView("messageDetail");
 		User user = authService.getCurrentUser();
 		Conversation c = conversationRepo.findById(id).orElse(null);
-		User u = c.getUserFrom();
-		if(u.equals(user)) {
-			u = c.getUserTo();
-		}
-		
-		if(!c.getUserFrom().getId().equals(user.getId()) && !c.getUserTo().getId().equals(user.getId())) {
+		if(!c.containsUser(user)) {
 			throw new Exception("");
 		}
+		
+		User u = c.getPartner(user);
 		
 		List<Message> messages = c.getMessages();
 		Collections.sort(messages, new Comparator<Message>() {
@@ -88,7 +85,7 @@ public class MessageResource {
 		});
 		mav.addObject("user", user);
 		mav.addObject("messages", messages);
-		
+		mav.addObject("convoId", id);
 		mav.addObject("partner", u);
 		
 		c.setLastOpened(new Date());

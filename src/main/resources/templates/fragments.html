@@ -100,7 +100,7 @@
 	</div>
 
 	<div th:fragment="search-users">
-		<div class="card is-horizontal" th:each="user : ${users}" th:id="${user.idEncoded}"> 
+		<div class="card is-horizontal" th:each="user : ${users}">
 			<div class="card-image">
 				<figure class="image">
 					<img th:src="${user.profilePicture}">
@@ -150,6 +150,15 @@
 				</div>
 			</div>
 
+		</div>
+	</div>
+
+	<div th:fragment="message-detail">
+		<div th:each="message : ${messages}" style="display: inline-block; width: 100%;">
+			<div th:if="${message.from}" class="message right"
+				th:text="${message.content}"></div>
+			<div th:unless="${message.from}" class="message left"
+				th:text="${message.content}"></div>
 		</div>
 	</div>
 

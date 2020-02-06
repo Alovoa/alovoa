@@ -38,4 +38,19 @@ public class Conversation {
 	
 	private String lastMessage;
 	
+	public boolean containsUser(User user) {
+		if(!getUserFrom().getId().equals(user.getId()) && !getUserTo().getId().equals(user.getId())) {
+			return false;
+		}	
+		return true;
+	}
+	
+	public User getPartner(User user) {
+		User u = getUserFrom();
+		if(u.equals(user)) {
+			u = getUserTo();
+		}		
+		return u;
+	}
+	
 }

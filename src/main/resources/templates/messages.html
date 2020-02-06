@@ -35,9 +35,9 @@
 											th:text="${convo.userName}"></div>
 									</div>
 								</div>
-								<div style="font-size: 1.1em" th:text="${convo.lastMessage}" th:if="${convo.lastMessage != null}"></div>
+								<div style="font-size: 1.1em; word-break: break-all;" th:text="${convo.lastMessage}" th:if="${convo.lastMessage != null}"></div>
 								<!-- TODO -->
-								<div style="font-size: 1.1em" th:unless="${convo.lastMessage != null}">You got a match! Tap here to send a message.</div>
+								<div style="font-size: 1.1em; word-break: break-all;" th:unless="${convo.lastMessage != null}">You got a match! Tap here to send a message.</div>
 							</div>
 						</div>
 					</div>
