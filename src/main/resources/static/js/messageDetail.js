@@ -3,7 +3,7 @@ var messageMaxLength = 255;
 var reloadInterval = 10000;
 
 $(document).ready(function() {
-	reloadMessages();
+	reloadMessages(true);
 
 	setInterval(reloadMessages, reloadInterval);
 
@@ -38,7 +38,7 @@ function sendMessage() {
 		data : $("#message-send-input").val(),
 		success : function() {
 			$("#message-send-input").val("");
-			reloadMessages();
+			reloadMessages(true);
 		},
 		error : function(e) {
 			// TODO
@@ -47,12 +47,14 @@ function sendMessage() {
 	});
 }
 
-function reloadMessages() {
+function reloadMessages(scrollToBottom) {
 	$("#messages-div").load(
 			"/message/get-messages/" + getConvoId(),
 			function() {
-				$("#messages-div")
-						.scrollTop($("#messages-div")[0].scrollHeight);
+				if (scrollToBottom) {
+					$("#messages-div").scrollTop(
+							$("#messages-div")[0].scrollHeight);
+				}
 			});
 
 }

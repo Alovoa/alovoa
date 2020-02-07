@@ -20,14 +20,14 @@
 		<section class="container" id="main-container">
 			<div class="section">
 				<div class="container" style="width: 100%;">
-					<div class="card is-horizontal" th:each="convo : ${conversations}">
+					<div class="card is-horizontal" th:each="convo : ${conversations}" th:onclick="viewMessageDetail(this, [[${convo.id}]])">
 						<div class="card-image">
 							<figure class="image" style="max-width: 200px; max-height: 200px;">
 								<img th:src="${convo.userProfilePicture}"
 									th:onclick="viewProfile([[${convo.userIdEncoded}]])">
 							</figure>
 						</div>
-						<div class="card-content" th:onclick="viewMessageDetail([[${convo.id}]])">
+						<div class="card-content">
 							<div class="content">
 								<div class="media">
 									<div class="full-width">
