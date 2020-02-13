@@ -48,3 +48,6 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Images (except the official logo, which is still WIP) are public domain.
 - Third-party web libraries can be found under resources/css/lib and resources/js/lib and have their own license.
 - Third-party Java libraries can be found in the pom.xml and have their own license.
+
+### Note:
+- Pull requests are not currently accepted, as it's still in early development. Suggestions are always welcome!
