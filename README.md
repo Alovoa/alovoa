@@ -1,5 +1,7 @@
 # Alovoa
 
+Support us on Kickstarter! https://www.kickstarter.com/projects/nonononoki/alovoa-the-private-dating-app-for-you
+
 Alovoa aims to be the first widespread open-source dating web application on the web. What differs this from other platform?
 - No ads
 - No selling your data
@@ -20,10 +22,10 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Blocking user
 - Reporting user
 - View details of user
+- Chat view and functions
 
 ### TODO
 - Donation view and functions
-- Chat view and functions
 - Resetting password
 - GDPR compliance (see saved data, delete all data)
 - PWA compability
