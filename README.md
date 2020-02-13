@@ -39,7 +39,7 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Install a JDK (OpenJDK 8 is officially supported)
 - Install maven: https://maven.apache.org/install.html
 - Setup a database (MariaDB is officially supported)
-- (Optional) Setup an email server
+- Setup an email server or use an existing one (any provider with IMAP support should work)
 - Enter credentials for database server, email server and encryption keys in application.properties
 - Execute "mvn install" in the folder where the pom.xml resides.
 
