@@ -34,6 +34,7 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Translations
 - Logging
 - Integration Tests
+- Design a cool logo and maybe a new name?
 
 ### How to build:
 - Install a JDK (OpenJDK 8 is officially supported)
