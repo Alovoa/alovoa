@@ -1,5 +1,7 @@
 # Alovoa
 
+Support us on Kickstarter! https://www.kickstarter.com/projects/nonononoki/alovoa-the-private-dating-app-for-you
+
 Alovoa aims to be the first widespread open-source dating web application on the web. What differs this from other platform?
 - No ads
 - No selling your data
@@ -20,6 +22,7 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Blocking user
 - Reporting user
 - View details of user
+- Chat view and functions
 
 ### TODO
 - Donation view and functions
@@ -31,12 +34,13 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Translations
 - Logging
 - Integration Tests
+- Design a cool logo and maybe a new name?
 
 ### How to build:
 - Install a JDK (OpenJDK 8 is officially supported)
 - Install maven: https://maven.apache.org/install.html
 - Setup a database (MariaDB is officially supported)
-- (Optional) Setup an email server
+- Setup an email server or use an existing one (any provider with IMAP support should work)
 - Enter credentials for database server, email server and encryption keys in application.properties
 - Execute "mvn install" in the folder where the pom.xml resides.
 
@@ -45,3 +49,6 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Images (except the official logo, which is still WIP) are public domain.
 - Third-party web libraries can be found under resources/css/lib and resources/js/lib and have their own license.
 - Third-party Java libraries can be found in the pom.xml and have their own license.
+
+### Note:
+- Pull requests are not currently accepted, as it's still in early development. Suggestions are always welcome!
