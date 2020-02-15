@@ -54,6 +54,8 @@ public class User {
 
 	@Column(columnDefinition = "mediumtext")
 	private String profilePicture;
+	
+	private double totalDonations;
 
 	@ManyToMany
 	@JoinTable(name = "user2interest")

@@ -161,6 +161,60 @@
 				th:text="${message.content}"></div>
 		</div>
 	</div>
+	
+	<div th:fragment="donate-filter">
+		<div class="card is-horizontal" th:each="donation : ${donations}">
+			<div class="card-image">
+				<figure class="image">
+					<img th:src="${donation.user.profilePicture}">
+				</figure>
+			</div>
+			<div class="card-content">
+				<div class="content">
+					<div class="media">
+						<div class="full-width">
+							<div class="left" style="font-size: 2em"
+								th:text="${donation.user.firstName}"></div>
+							<div class="right" style="font-size: 1.5em">
+								<span>Age: </span><span th:text="${donation.user.age}"></span>
+							</div>
+						</div>
+					</div>
+					<div class="media">
+						<div class="full-width">
+							<div class="left" style="font-size: 1.2em">
+								<span>Last active: </span><span
+									th:text="${#dates.format(donation.user.activeDate, 'yyyy-MM-dd')}"></span>
+							</div>
+							<div class="right" style="font-size: 1.2em">
+								<span th:text="${donation.distanceToUser}"></span><span>
+									meters from you</span>
+							</div>
+						</div>
+					</div>
+
+					<div style="font-size: 1.1em" th:text="${donation.amount}"></div>
+				</div>
+				<div class="profile-bottom full-width"
+					style="display: inline-block;">
+					<button class="button left is-info is-inverted"
+						th:onclick="viewProfile([[${user.idEncoded}]])">View
+						profile</button>
+					<div class="right">
+						<button class="button is-rounded is-danger"
+							th:onclick="hideUser(this, [[${user.idEncoded}]])">
+							<i class="fa fa-thumbs-down"></i>
+						</button>
+						<button class="button is-rounded is-success"
+							th:onclick="likeUser(this, [[${user.idEncoded}]])">
+							<i class="fa fa-thumbs-up"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
 
 </body>
 </html>

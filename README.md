@@ -23,7 +23,6 @@ Alovoa aims to be the first widespread open-source dating web application on the
 
 ### TODO
 - Donation view and functions
-- Chat view and functions
 - Resetting password
 - GDPR compliance (see saved data, delete all data)
 - PWA compability

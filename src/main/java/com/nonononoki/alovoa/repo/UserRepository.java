@@ -11,5 +11,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	public User findByEmail(String email);
 	
 	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullAndAgeBetween(int minAge, int maxAge);
+	
+	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullOrderByTotalDonationsDesc();
 }
 
