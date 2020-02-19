@@ -84,6 +84,10 @@ svg {
 .full-width {
 	width: 100%;
 }
+
+.button svg {
+	margin-right: 4px;
+}
 input[type=range].slider {
 	margin: initial;
 }
