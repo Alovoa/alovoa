@@ -45,7 +45,7 @@ public class SearchService {
 		}
 		
 		User user = authService.getCurrentUser();
-		user.setActiveDate(new Date());
+		user.getDates().setActiveDate(new Date());
 		Location loc = new Location();
 		loc.setLatitude(latitude);
 		loc.setLongitude(longitude);

@@ -62,7 +62,6 @@ public class User {
 	private List<UserInterest> interests;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	@Convert(converter = TextEncryptorConverter.class)
 	private Location lastLocation;
 	
 	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -73,6 +72,9 @@ public class User {
 	 
 	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private UserDeleteToken deleteToken;
+	
+	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private UserDates dates;
 
 	@ManyToOne
 	private Gender gender;
@@ -138,17 +140,17 @@ public class User {
 	 
 	private boolean disabled;
 
-	private Date activeDate;
+	//private Date activeDate;
 	 
-	private Date creationDate;
+	//private Date creationDate;
 
-	private Date intentionChangeDate;
+	//private Date intentionChangeDate;
 	
-	private Date notificationDate;
+	//private Date notificationDate;
 	
-	private Date notificationCheckedDate;
+	//private Date notificationCheckedDate;
 	
-	private Date messageDate;
+	//private Date messageDate;
 	
-	private Date messageCheckedDate;
+	//private Date messageCheckedDate;
 }

@@ -83,10 +83,13 @@ public class RegisterService {
 			throw new Exception("");
 		}
 		
-		//TODO check if email is already in use
-		User user = new User();
-		user.setActiveDate(new Date());
-		user.setCreationDate(new Date());
+		User user = userRepo.findByEmail(dto.getEmail().toLowerCase());
+		if(user != null) {
+			throw new Exception("");
+		}
+		user = new User();
+		user.getDates().setActiveDate(new Date());
+		user.getDates().setCreationDate(new Date());
 		user.setEmail(dto.getEmail().toLowerCase());
 		user.setDateOfBirth(dto.getDateOfBirth());
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));

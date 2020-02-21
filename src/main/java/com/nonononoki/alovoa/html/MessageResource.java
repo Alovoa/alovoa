@@ -41,7 +41,7 @@ public class MessageResource {
 
 		ModelAndView mav = new ModelAndView("messages");
 		User user = authService.getCurrentUser();
-		user.setMessageCheckedDate(new Date());
+		user.getDates().setMessageCheckedDate(new Date());
 		userRepo.saveAndFlush(user);
 		List<ConversationDto> convos = new ArrayList<>();
 		for (int i = 0; i < user.getConversations().size(); i++) {

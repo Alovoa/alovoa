@@ -54,8 +54,8 @@ public class AdminService {
 		preferedGenders.add(genderMale);
 		UserIntention datingIntention = intentRepo.findByText("date");
 		
-		u.setCreationDate(new Date());
-		u.setActiveDate(new Date());
+		u.getDates().setCreationDate(new Date());
+		u.getDates().setActiveDate(new Date());
 		u.setAge(18);
 		u.setConfirmed(true);
 		u.setDateOfBirth(new Date());

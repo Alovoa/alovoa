@@ -119,7 +119,7 @@ public class UserService {
 		User user = authService.getCurrentUser();
 		UserIntention i = userIntentionRepo.findById(intention).orElse(null);
 		user.setIntention(i);
-		user.setIntentionChangeDate(new Date());
+		user.getDates().setIntentionChangeDate(new Date());
 		userRepo.save(user);
 	}
 
@@ -267,11 +267,11 @@ public class UserService {
 				convo.setUserTo(user);
 				convo.setLastUpdated(new Date());
 				conversationRepo.save(convo);
-				user.setMessageDate(new Date());
+				user.getDates().setMessageDate(new Date());
 				userRepo.saveAndFlush(user);
 			}
 			
-			user.setNotificationDate(new Date());
+			user.getDates().setNotificationDate(new Date());
 			userRepo.saveAndFlush(user);
 		}
 	}
@@ -330,11 +330,11 @@ public class UserService {
 
 	public boolean newNotification() {
 		User currUser = authService.getCurrentUser();
-		return currUser.getNotificationDate().after(currUser.getNotificationCheckedDate());
+		return currUser.getDates().getNotificationDate().after(currUser.getDates().getNotificationCheckedDate());
 	}
 
 	public boolean newMessage() {
 		User currUser = authService.getCurrentUser();
-		return currUser.getMessageDate().after(currUser.getMessageCheckedDate());
+		return currUser.getDates().getMessageDate().after(currUser.getDates().getMessageCheckedDate());
 	}
 }
