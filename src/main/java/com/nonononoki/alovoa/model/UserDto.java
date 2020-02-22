@@ -53,6 +53,8 @@ public class UserDto {
 	private boolean reportedByCurrentUser;
 	private boolean likedByCurrentUser;
 	private boolean hiddenByCurrentUser;
+	
+	private static final int LOCATION_ROUNDING = 100;
 
 	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor)
 			throws Exception {
@@ -84,7 +86,9 @@ public class UserDto {
 		dto.likedByCurrentUser = currentUser.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
 		dto.hiddenByCurrentUser = currentUser.getHiddenUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
 		double dist = Tools.getDistanceToUser(user, currentUser);
-		dto.setDistanceToUser((int) Math.round(dist));
+		int distRounded = (int) Math.round(dist);
+		distRounded  = distRounded - distRounded % LOCATION_ROUNDING;
+		dto.setDistanceToUser(distRounded);
 		return dto;
 	}
 }
