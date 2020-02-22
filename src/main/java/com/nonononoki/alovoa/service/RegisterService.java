@@ -16,10 +16,12 @@ import org.springframework.stereotype.Service;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.UserDates;
 import com.nonononoki.alovoa.entity.UserRegisterToken;
 import com.nonononoki.alovoa.model.RegisterDto;
 import com.nonononoki.alovoa.repo.CaptchaRepository;
 import com.nonononoki.alovoa.repo.GenderRepository;
+import com.nonononoki.alovoa.repo.UserDatesRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserRegisterTokenRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -49,6 +51,9 @@ public class RegisterService {
 	
 	@Autowired
 	private UserRepository userRepo;
+	
+	@Autowired
+	private UserDatesRepository userDatesRepo;
 	
 	@Autowired
 	private GenderRepository genderRepo;
@@ -88,8 +93,6 @@ public class RegisterService {
 			throw new Exception("");
 		}
 		user = new User();
-		user.getDates().setActiveDate(new Date());
-		user.getDates().setCreationDate(new Date());
 		user.setEmail(dto.getEmail().toLowerCase());
 		user.setDateOfBirth(dto.getDateOfBirth());
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -121,6 +124,12 @@ public class RegisterService {
 		}
 		
 		user = userRepo.save(user);
+		UserDates dates = new UserDates();	
+		dates.setActiveDate(new Date());
+		dates.setCreationDate(new Date());
+		dates.setUser(user);
+		userDatesRepo.saveAndFlush(dates);
+		
 		createUserToken(user);
 	}
 	
