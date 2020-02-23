@@ -1,7 +1,5 @@
 package com.nonononoki.alovoa.config;
 
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -44,7 +42,6 @@ public class EventListenerConfig {
     	long noIntentions = userIntentionRepo.count();
     	if(noUsers == 0) {
     		User user = new User();
-    		user.setDateOfBirth(new Date());
     		user.setAdmin(true);
     		user.setEmail(adminEmail);
     		String enc = passwordEncoder.encode(adminKey);

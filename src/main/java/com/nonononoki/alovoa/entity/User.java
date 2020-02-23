@@ -1,6 +1,5 @@
 package com.nonononoki.alovoa.entity;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -48,8 +47,6 @@ public class User {
 
 	private int preferedMaxAge;
 
-	@Column(nullable = false)
-	private Date dateOfBirth;
 	private int age;
 
 	@Column(columnDefinition = "mediumtext")

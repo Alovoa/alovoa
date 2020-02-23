@@ -94,7 +94,6 @@ public class RegisterService {
 		}
 		user = new User();
 		user.setEmail(dto.getEmail().toLowerCase());
-		user.setDateOfBirth(dto.getDateOfBirth());
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 		user.setFirstName(dto.getFirstName());
 		int userMinAge = userAge - ageRange;
@@ -125,10 +124,19 @@ public class RegisterService {
 		
 		user = userRepo.save(user);
 		UserDates dates = new UserDates();	
-		dates.setActiveDate(new Date());
-		dates.setCreationDate(new Date());
+		Date today = new Date();
+		dates.setActiveDate(today);
+		dates.setCreationDate(today);
+		dates.setDateOfBirth(dto.getDateOfBirth());
+		dates.setIntentionChangeDate(today);
+		dates.setMessageCheckedDate(today);
+		dates.setMessageDate(today);
+		dates.setNotificationCheckedDate(today);
+		dates.setNotificationDate(today);
 		dates.setUser(user);
-		userDatesRepo.saveAndFlush(dates);
+		dates = userDatesRepo.saveAndFlush(dates);
+		user.setDates(dates);
+		user = userRepo.save(user);
 		
 		createUserToken(user);
 	}

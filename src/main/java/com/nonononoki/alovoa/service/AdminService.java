@@ -58,7 +58,6 @@ public class AdminService {
 		u.getDates().setActiveDate(new Date());
 		u.setAge(18);
 		u.setConfirmed(true);
-		u.setDateOfBirth(new Date());
 		u.setDescription("");
 		u.setGender(genderFemale);
 		u.setPreferedGenders(preferedGenders);
