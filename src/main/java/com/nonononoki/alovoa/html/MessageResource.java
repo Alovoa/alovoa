@@ -16,10 +16,8 @@ import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Conversation;
 import com.nonononoki.alovoa.entity.Message;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.UserDates;
 import com.nonononoki.alovoa.model.ConversationDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
-import com.nonononoki.alovoa.repo.UserDatesRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.AuthService;
 
@@ -31,9 +29,6 @@ public class MessageResource {
 
 	@Autowired
 	private UserRepository userRepo;
-	
-	@Autowired
-	private UserDatesRepository userDatesRepo;
 
 	@Autowired
 	private ConversationRepository conversationRepo;

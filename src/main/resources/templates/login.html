@@ -35,6 +35,22 @@
 										placeholder="Your Password" name="password">
 								</div>
 							</div>
+							<div class="field">
+								<input id="captcha-id"
+									name="captchaId" type="hidden">
+
+								<div class="field">
+									<img id="captcha-image">
+									<button type="button" class="button" onclick="refreshCaptcha()"
+										style="height: 70px; width: 70px; font-size: 1.7rem; margin-left: 12px;">
+										<i class="fa fa-sync"></i>
+									</button>
+								</div>
+								<div class="field">
+									<input class="input" id="captcha" name="captchaText" placeholder="Captcha"
+										autocomplete="off" required>
+								</div>
+							</div>
 							<!-- TODO: Causes exception 
 							<div class="field">
 								<label class="checkbox"> <input type="checkbox"
@@ -57,6 +73,8 @@
 	<footer th:replace="fragments.html::footer"></footer>
 
 	<script src="/js/lib/jquery.min.js"></script>
+	<script src="/js/lib/fontawesome.all.js"></script>
+	<script src="/js/tools/refreshCaptcha.js"></script>
 	<script src="/js/login.js"></script>
 </body>
 </html>

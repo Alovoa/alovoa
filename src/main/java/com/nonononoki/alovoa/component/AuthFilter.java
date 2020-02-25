@@ -1,0 +1,34 @@
+package com.nonononoki.alovoa.component;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.nonononoki.alovoa.model.AuthToken;
+
+public class AuthFilter extends UsernamePasswordAuthenticationFilter {
+
+	private final String USERNAME = "username";
+	private final String PASSWORD = "password";
+	private final String CAPTCHA_ID = "captchaId";
+	private final String CAPTCHA_TEXT = "captchaText";
+	
+	@Override
+	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+			throws AuthenticationException {
+
+		String username = request.getParameter(USERNAME);
+		String password = request.getParameter(PASSWORD);
+		long captchaId = Long.parseLong(request.getParameter(CAPTCHA_ID));
+		String captchaText = request.getParameter(CAPTCHA_TEXT);
+		
+		AuthToken auth = new AuthToken(username, password, captchaId, captchaText);
+		AuthenticationManager am = this.getAuthenticationManager();
+		Authentication a = am.authenticate(auth);
+		return a;	
+	}
+}

@@ -13,60 +13,76 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.AuthToken;
+import com.nonononoki.alovoa.repo.CaptchaRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.RegisterService;
 
 @Component
 public class AuthProvider implements AuthenticationProvider {
-	
+
 	@Autowired
 	private RegisterService registerService;
-	
+
 	@Autowired
 	private UserRepository userRepo;
-	
+
+	@Autowired
+	private CaptchaRepository captchaRepo;
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-	    String email = null;
-	    String password = null; 
 
-	    try {
-	    	email = authentication.getPrincipal().toString();
-	    	password = authentication.getCredentials().toString();
-	    } catch(Exception e) {
-	    	throw new BadCredentialsException("");
-	    }
+		AuthToken a = (AuthToken) authentication;
+		String email = a.getUsername();
+		String password = a.getPassword();
+		long captchaId = a.getCaptchaId();
+		String captchaText = a.getCaptchaText();
 
-	    User user = userRepo.findByEmail(email);
-	    
-	    if (user == null) {
-	        throw new BadCredentialsException("");
-	    }
-	    if (user.isDisabled()) {
-	        throw new DisabledException("");
-	    }
-	    if (!passwordEncoder.matches(password, user.getPassword())) {
-	        throw new BadCredentialsException("");
-	    } 
-	    if(!user.isConfirmed() && !user.isAdmin()) {
-	    	
-	    	try {
+		Captcha c = captchaRepo.findById(captchaId).orElse(null);
+		if (c == null) {
+			throw new BadCredentialsException("");
+		}
+
+		captchaRepo.delete(c);
+
+		if (!c.getText().toLowerCase().equals(captchaText.toLowerCase())) {
+			throw new BadCredentialsException("");
+		}
+
+		User user = userRepo.findByEmail(email);
+
+		if (user == null) {
+			throw new BadCredentialsException("");
+		}
+		if (user.isDisabled()) {
+			throw new DisabledException("");
+		}
+		if (!passwordEncoder.matches(password, user.getPassword())) {
+			throw new BadCredentialsException("");
+		}
+		if (!user.isConfirmed() && !user.isAdmin()) {
+
+			try {
 				registerService.createUserToken(user);
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			}
-	    	
-	    	throw new InsufficientAuthenticationException("");
-	    }
-	    
-	    return new UsernamePasswordAuthenticationToken(email, password, null);
+
+			throw new InsufficientAuthenticationException("");
+		}
+
+		return new UsernamePasswordAuthenticationToken(email, password, null);
 	}
 
 	@Override
 	public boolean supports(Class<?> authentication) {
-		return authentication.equals(UsernamePasswordAuthenticationToken.class);
+		return authentication.equals(UsernamePasswordAuthenticationToken.class) ||
+				authentication.equals(AuthToken.class);
 	}
 }

@@ -8,14 +8,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
-import com.nonononoki.alovoa.service.CaptchaService;
 import com.nonononoki.alovoa.service.RegisterService;
 
 @Controller
 public class RegisterResource {
 
-	@Autowired
-	private CaptchaService captchaService;
+	//@Autowired
+	//private CaptchaService captchaService;
 	
 	@Autowired
 	private RegisterService registerService;
@@ -30,7 +29,7 @@ public class RegisterResource {
 	@GetMapping("/register")
 	public ModelAndView register() {
 		ModelAndView mav = new ModelAndView("register");
-		mav.addObject("captcha", captchaService.generate());
+		//mav.addObject("captcha", captchaService.generate());
 		mav.addObject("genders", genderRepo.findAll());
 		mav.addObject("intentions", userIntentionRepo.findAll());
 		return mav;

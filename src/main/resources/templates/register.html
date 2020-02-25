@@ -92,11 +92,10 @@
 						 -->
 						<div class="field">
 							<label class="label">Captcha</label> <input id="captcha-id"
-								name="captchaId" type="hidden" th:value="${captcha.id}">
+								name="captchaId" type="hidden">
 
 							<div class="field">
-								<img id="captcha-image"
-									th:src="'data:image/png;base64,' + ${captcha.image}">
+								<img id="captcha-image">
 								<button type="button" class="button" onclick="refreshCaptcha()"
 									style="height: 70px; width: 70px; font-size: 1.7rem; margin-left: 12px;">
 									<i class="fa fa-sync"></i>
@@ -148,7 +147,11 @@
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/bulma-calendar.min.js"></script>
+	<script src="/js/tools/refreshCaptcha.js"></script>
+	
 	<script src="/js/register.js"></script>
+
+
 
 </body>
 </html>

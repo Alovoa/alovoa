@@ -9,8 +9,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.nonononoki.alovoa.component.AuthFilter;
 import com.nonononoki.alovoa.component.AuthProvider;
+import com.nonononoki.alovoa.component.FailureHandler;
+import com.nonononoki.alovoa.component.SuccessHandler;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
@@ -20,11 +24,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
     private AuthProvider authProvider;
+	
+	@Autowired
+	private SuccessHandler successHandler;
+	
+	@Autowired
+	private FailureHandler failureHandler;
 	 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 	    http
-	    .authenticationProvider(authProvider)
         .authorizeRequests()
 	        .antMatchers("/css/**").permitAll()
 	        .antMatchers("/js/**").permitAll()
@@ -45,13 +54,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         .and()
         .formLogin()
 	        .loginPage("/login")
-	        .defaultSuccessUrl("/profile", true)
-	        .failureUrl("/login?error")
+	        //.successHandler(successHandler)
+	        //.failureHandler(failureHandler)
+	        //.defaultSuccessUrl("/profile", true)
+	        //.failureUrl("/login?error")
 	        .and()
 	        .logout().deleteCookies("JSESSIONID")
 	        .logoutUrl("/logout")
 	        .logoutSuccessUrl("/?logout")
         .and()
+        .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
         .rememberMe().key(key);
         //.and().csrf().disable();
 	}
@@ -59,6 +71,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authProvider);
+    }
+    
+    @Bean
+    public AuthFilter authenticationFilter() throws Exception {
+    	AuthFilter filter = new AuthFilter();
+    	filter.setAuthenticationManager(authenticationManager());
+    	filter.setAuthenticationSuccessHandler(successHandler);
+    	filter.setAuthenticationFailureHandler(failureHandler);
+        return filter;
     }
 	
 	@Bean

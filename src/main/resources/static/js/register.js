@@ -3,6 +3,8 @@ const minPasswordLength = 7;
 const minAge = 16;
 
 $(function() {
+	
+	refreshCaptcha();
 
 	let today = new Date();
 	let startDate = new Date(today.setFullYear(today.getFullYear() - minAge));
@@ -90,15 +92,4 @@ function isPasswordSecure(password) {
 	} else {
 		return false;
 	}
-}
-
-function refreshCaptcha() {
-	$.get("/captcha/generate", function(data) {
-		console.log(data);
-		let captcha = data;
-		$("#captcha").val("");
-		$("#captcha-id").val(captcha.id);
-		$("#captcha-image").attr("src",
-				"data:image/png;base64," + captcha.image);
-	});
 }
