@@ -34,6 +34,6 @@ public class DonateController {
 	@PostMapping(value="/received/kofi", consumes = "application/x-www-form-urlencoded")
     public void receivedKofi(@RequestBody DonationKofi d, HttpServletRequest request) throws Exception{
 		//TODO Check if RequestBody works
-		donateService.donationReceivedKofi(d, request);
+		donateService.donationReceivedKofi(d);
 	}
 }

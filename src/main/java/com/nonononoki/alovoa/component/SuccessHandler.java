@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 @Component
-public class SuccessHandler implements AuthenticationSuccessHandler{
+public class SuccessHandler implements AuthenticationSuccessHandler {
 
 	@Value("${app.url.auth.success}")
 	private String url;
@@ -21,7 +21,7 @@ public class SuccessHandler implements AuthenticationSuccessHandler{
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		response.setStatus(HttpServletResponse.SC_OK);
-        response.sendRedirect(url);	
+		response.sendRedirect(url);
 	}
 
 }

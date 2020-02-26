@@ -31,6 +31,9 @@ public class DonateService {
 	@Autowired
 	private UserRepository userRepo;
 	
+	@Autowired
+	private HttpServletRequest request;
+	
 	@Value("${app.donate.users.max}")
 	private int maxEntries;
 
@@ -48,7 +51,7 @@ public class DonateService {
 		return donationsToDtos.stream().limit(maxEntries).collect(Collectors.toList());
 	}
 	
-	public void donationReceivedKofi(DonationKofi d, HttpServletRequest request) {
+	public void donationReceivedKofi(DonationKofi d) {
 		if(request.getRemoteAddr().trim().equals(IP_KOFI)) {	
 			User u = null;
 			u = userRepo.findByEmail(d.getFrom_name());

@@ -3,6 +3,8 @@ package com.nonononoki.alovoa.service;
 import java.util.Base64;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,10 +17,13 @@ import com.nonononoki.alovoa.repo.CaptchaRepository;
 
 @Service
 public class CaptchaService {
-	
+
 	@Autowired
 	private CaptchaRepository captchaRepo;
-	
+
+	@Autowired
+	private HttpServletRequest request;
+
 	@Value("${app.captcha.length}")
 	private int captchaLength;
 
@@ -31,7 +36,26 @@ public class CaptchaService {
 		captcha.setDate(new Date());
 		captcha.setImage(encoded);
 		captcha.setText(rand);
+		captcha.setIp(request.getRemoteAddr());
 		captcha = captchaRepo.saveAndFlush(captcha);
 		return captcha;
+	}
+
+	public boolean isValid(long id, String text) {
+		
+		Captcha captcha = captchaRepo.getOne(id);
+		if (captcha == null) {
+			return false;
+		}		
+		
+		captchaRepo.delete(captcha);	
+		
+		if(!captcha.getIp().equals(request.getRemoteAddr())) {
+			return false;
+		}		
+		if (!captcha.getText().toLowerCase().equals(text.toLowerCase())) {
+			return false;
+		}		
+		return true;
 	}
 }

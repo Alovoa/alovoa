@@ -29,4 +29,6 @@ public class Captcha {
 	@JsonIgnore
 	private Date date;
 	
+	@JsonIgnore
+	private String ip;
 }

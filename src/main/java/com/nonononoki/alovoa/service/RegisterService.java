@@ -6,6 +6,7 @@ import java.time.Period;
 import java.util.Date;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.Tools;
-import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserDates;
 import com.nonononoki.alovoa.entity.UserRegisterToken;
 import com.nonononoki.alovoa.model.RegisterDto;
-import com.nonononoki.alovoa.repo.CaptchaRepository;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserDatesRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
@@ -62,10 +61,13 @@ public class RegisterService {
 	private UserIntentionRepository userIntentionRepo;
 	
 	@Autowired
-	private CaptchaRepository captchaRepo;
+	private UserRegisterTokenRepository registerTokenRepo;
 	
 	@Autowired
-	private UserRegisterTokenRepository registerTokenRepo;
+	private CaptchaService captchaService;
+	
+	@Autowired
+	private HttpServletRequest request;
 
 	public void register(RegisterDto dto) throws Exception {
 		
@@ -77,14 +79,8 @@ public class RegisterService {
 			throw new Exception("");
 		}
 		
-		//check valid captcha
-		Captcha captcha = captchaRepo.getOne(dto.getCaptchaId());
-		if(captcha == null) {
-			throw new Exception("");
-		}
-		if(!captcha.getText().toLowerCase().equals(dto.getCaptchaText().toLowerCase())) {
-			
-			captchaRepo.delete(captcha);
+		boolean isValid = captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText());
+		if(!isValid) {
 			throw new Exception("");
 		}
 		
