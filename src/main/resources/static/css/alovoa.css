@@ -85,9 +85,10 @@ svg {
 	width: 100%;
 }
 
-.button svg {
+.button.icon-and-text svg {
 	margin-right: 4px;
 }
+
 input[type=range].slider {
 	margin: initial;
 }

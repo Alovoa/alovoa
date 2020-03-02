@@ -75,6 +75,9 @@ public class UserService {
 	
 	@Autowired
 	private ConversationRepository conversationRepo;
+	
+	@Autowired
+	private CaptchaService captchaService;
 
 	@Value("${app.age.min}")
 	private int minAge;
@@ -310,10 +313,15 @@ public class UserService {
 		}
 	}
 
-	public void reportUser(String idEnc) throws NumberFormatException, Exception {
+	public void reportUser(String idEnc, long captchaId, String captchaText) throws NumberFormatException, Exception {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
 		if (userReportRepo.findByUserFromAndUserTo(currUser, user) == null) {
+			
+			boolean isValid = captchaService.isValid(captchaId, captchaText);
+			if(!isValid) {
+				throw new Exception("");
+			}
 			UserReport report = new UserReport();
 			report.setDate(new Date());
 			report.setUserFrom(currUser);

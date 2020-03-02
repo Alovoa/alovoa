@@ -80,25 +80,24 @@ function unblockUser(idEnc) {
 	}
 }
 
-function reportUser(idEnc) {
-	
-	// TODO
-	var r = confirm("Report user for violating the TOS? Examples: pornographic pictures or impersonation.");
-	if (r == true) {
+function reportUser() {
+	openModal("report-user-modal");
+}
 
-		$.ajax({
-			type : "POST",
-			url : "/user/report/" + idEnc,
-			headers : {
-				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
-			},
-			success : function() {
-				location.reload();
-			},
-			error : function(e) {
-				// TODO
-				console.log(e);
-			}
-		});
-	}
+function reportUserSubmit() {
+	$.ajax({
+		type : "POST",
+		url : "/user/report/" +  $("#id-enc").val() + "/" + $("#captcha-id").val() + "/" + $("#captcha").val() ,
+		headers : {
+			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+		},
+		success : function() {
+			//TODO
+			alert("User has been successfully reported!")
+			location.reload();
+		},
+		error : function(e) {
+			refreshCaptcha();
+		}
+	});
 }

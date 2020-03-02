@@ -86,10 +86,9 @@ public class UserController {
 		userService.unblockUser(idEnc);
 	}
 
-	//TODO Captcha
-	@PostMapping(value = "/report/{idEnc}")
-	public void reportUser(@PathVariable String idEnc) throws Exception {
-		userService.reportUser(idEnc);
+	@PostMapping(value = "/report/{idEnc}/{captchaId}/{captchaText}")
+	public void reportUser(@PathVariable String idEnc, @PathVariable long captchaId, @PathVariable String captchaText) throws Exception {
+		userService.reportUser(idEnc, captchaId, captchaText);
 	}
 	
 	@PostMapping(value = "/status/new-notification")

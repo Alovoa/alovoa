@@ -39,3 +39,4 @@ attach_**
 ### Keys Properties ###
 application-dev.properties
 application-prod.properties
+application-test.properties

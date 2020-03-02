@@ -8,3 +8,5 @@ function refreshCaptcha() {
 				"data:image/png;base64," + captcha.image);
 	});
 }
+
+refreshCaptcha();
