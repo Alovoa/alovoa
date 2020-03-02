@@ -30,6 +30,9 @@ public class MailService {
 
 	@Value("${app.name}")
 	private String appName;
+	
+	@Value("${app.domain}")
+	private String appDomain;
 
 	public void sendMail(String to, String from, String subject, String body) throws MessagingException {
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -46,7 +49,7 @@ public class MailService {
 		String subject = messageSource.getMessage("backend.mail.register.subject", new String[] { appName }, "",
 				locale);
 		String body = messageSource.getMessage("backend.mail.register.body",
-				new String[] { user.getFirstName(), appName, appName.toLowerCase(), token.getContent() }, "", locale);
+				new String[] { user.getFirstName(), appName, appDomain, token.getContent() }, "", locale);
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 }
