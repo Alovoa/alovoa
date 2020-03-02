@@ -2,11 +2,14 @@ package com.nonononoki.alovoa.entity;
 
 import java.util.Date;
 
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
 
 import lombok.Data;
 
@@ -27,6 +30,7 @@ public class Message{
 	@ManyToOne
 	private User userTo;
 	
+	@Convert(converter = TextEncryptorConverter.class)
 	private String content;
 	private Date creationDate;
 	
