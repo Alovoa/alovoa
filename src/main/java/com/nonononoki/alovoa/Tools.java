@@ -14,6 +14,7 @@ public class Tools {
 	
 	public static final float BASE64FACTOR = 0.75f;
 	public static final int MILLION = 1000000;
+	public static final int THOUSAND = 1000;
 	public static final String B64IMAGEPREFIX = "data:image/png;base64,"; 
 	
     public static File getFileFromResources(String fileName) {

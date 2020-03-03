@@ -98,7 +98,7 @@ public class UserService {
 	private TextEncryptorConverter textEncryptor;
 
 	public void updateProfilePicture(String imgB64) throws Exception {
-		if (imgB64.length() > Tools.BASE64FACTOR * Tools.MILLION * imageSize) {
+		if (imgB64.length() > Tools.BASE64FACTOR * Tools.THOUSAND * imageSize) {
 			throw new Exception("");
 		}
 
