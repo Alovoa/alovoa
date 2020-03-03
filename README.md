@@ -2,7 +2,7 @@
 
 Support us on Kickstarter! https://www.kickstarter.com/projects/nonononoki/alovoa-the-private-dating-app-for-you
 
-Demo: https://alovoa.herokuapp.com/. Database WILL be deleted after each update. A public MySQL update is used (thanks to remotemysql), do NOT post your personal information on the demo page, even though most of your info is encrypted.
+Demo: https://alovoa.herokuapp.com/. Database WILL be deleted after each update. A public MySQL update is used, do NOT post your personal information on the demo page, even though most of your info is encrypted. Profile picture size limit had to be lowered to 5KB for money reasons.
 
 Alovoa aims to be the first widespread open-source dating web application on the web. What differs this from other platform?
 - No ads
