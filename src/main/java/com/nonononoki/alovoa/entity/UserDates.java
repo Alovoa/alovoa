@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.entity;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -23,7 +24,8 @@ public class UserDates {
 	private User user;
 	
 	@Column(nullable = false)
-	private Date dateOfBirth;
+	//private Date dateOfBirth;
+	private LocalDate dateOfBirth;
 
 	private Date activeDate  = new Date();
 	private Date creationDate = new Date();

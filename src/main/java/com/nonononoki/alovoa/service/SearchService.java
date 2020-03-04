@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,10 +52,13 @@ public class SearchService {
 		loc.setLongitude(longitude);
 		user.setLastLocation(loc);
 		userRepo.saveAndFlush(user);
+		
+		LocalDate minDate = LocalDate.now().minusYears(user.getPreferedMaxAge());
+		LocalDate maxDate = LocalDate.now().minusYears(user.getPreferedMinAge());
 
 		List<User> users = userRepo
-				.findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullAndAgeBetween(
-						user.getPreferedMinAge(), user.getPreferedMaxAge());
+				.findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqual(
+						minDate, maxDate);
 		List<UserDto> userDtos = new ArrayList<>();
 		for (int i = 0; i < users.size(); i++) {
 			UserDto dto = UserDto.userToUserDto(users.get(i), user, textEncryptor);

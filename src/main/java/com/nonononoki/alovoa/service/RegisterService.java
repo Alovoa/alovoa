@@ -73,7 +73,7 @@ public class RegisterService {
 		
 		//check minimum age
 		LocalDate now = LocalDate.now();
-		Period period = Period.between(new java.sql.Date(dto.getDateOfBirth().getTime()).toLocalDate(), now);
+		Period period = Period.between(dto.getDateOfBirth(), now);
 		int userAge = period.getYears();
 		if(userAge < minAge) {
 			throw new Exception("");
@@ -100,7 +100,7 @@ public class RegisterService {
 		if(userMaxAge > maxAge) {
 			userMaxAge = maxAge;
 		}
-		user.setAge(userAge);
+		//user.setAge(userAge);
 		user.setPreferedMinAge(userMinAge);
 		user.setPreferedMaxAge(userMaxAge);
 		user.setGender(genderRepo.findById(dto.getGender()).orElse(null));

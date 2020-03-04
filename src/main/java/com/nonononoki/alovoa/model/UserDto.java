@@ -63,7 +63,7 @@ public class UserDto {
 		String en = textEncryptor.encode(Long.toString(user.getId()));
 		dto.setIdEncoded(en);
 		dto.setActiveDate(user.getDates().getActiveDate());
-		dto.setAge(user.getAge());
+		//dto.setAge(user.getAge());
 		dto.setDescription(user.getDescription());
 		dto.setFirstName(user.getFirstName());
 		dto.setGender(user.getGender());

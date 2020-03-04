@@ -47,7 +47,7 @@ public class User {
 
 	private int preferedMaxAge;
 
-	private int age;
+	//private int age;
 
 	@Column(columnDefinition = "mediumtext")
 	private String profilePicture;
