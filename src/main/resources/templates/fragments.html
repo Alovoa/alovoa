@@ -5,7 +5,7 @@
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
 				<a class="navbar-item" href="/"> <img src="img/icon.png"
-					width="28" height="28">
+					width="40" height="40">
 				</a> <a class="navbar-item" href="/" id="navbar-text">Alovoa </a>
 			</div>
 
@@ -27,8 +27,8 @@
 	<div th:fragment="header-logged-in">
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
-				<a class="navbar-item"> <img src="/img/icon.png" width="28"
-					height="28">
+				<a class="navbar-item"> <img src="/img/icon.png" width="40"
+					height="40">
 				</a> <a class="navbar-item">Alovoa </a>
 			</div>
 
@@ -154,14 +154,15 @@
 	</div>
 
 	<div th:fragment="message-detail">
-		<div th:each="message : ${messages}" style="display: inline-block; width: 100%;">
+		<div th:each="message : ${messages}"
+			style="display: inline-block; width: 100%;">
 			<div th:if="${message.from}" class="message right"
 				th:text="${message.content}"></div>
 			<div th:unless="${message.from}" class="message left"
 				th:text="${message.content}"></div>
 		</div>
 	</div>
-	
+
 	<div th:fragment="donate-filter">
 		<div class="card is-horizontal" th:each="donation : ${donations}">
 			<div class="card-image">

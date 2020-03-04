@@ -3,12 +3,12 @@
   "name": "Alovoa",
   "icons": [
     {
-      "src": "/img/icon_192.png",
+      "src": "/img/android-chrome-192x192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/img/icon_512.png",
+      "src": "/img/android-chrome-512x512.png",
       "type": "image/png",
       "sizes": "512x512"
     }

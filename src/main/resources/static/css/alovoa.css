@@ -14,6 +14,10 @@ svg {
 	color: #209cee;
 }
 
+.navbar-item img {
+    max-height: initial;
+}
+
 .select, .select select {
 	width: 100%;
 }
