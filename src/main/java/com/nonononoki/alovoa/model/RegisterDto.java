@@ -1,6 +1,6 @@
 package com.nonononoki.alovoa.model;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import lombok.Value;
 
@@ -10,8 +10,8 @@ public class RegisterDto {
 	private String email;
 	private String password;
 	private String firstName;
-	//private Date dateOfBirth;
-	private LocalDate dateOfBirth;
+	private Date dateOfBirth;
+	//private LocalDate dateOfBirth;
 	private long gender;
 	private long intention;
 	

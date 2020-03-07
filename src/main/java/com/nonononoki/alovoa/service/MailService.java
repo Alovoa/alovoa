@@ -14,6 +14,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.UserPasswordToken;
 import com.nonononoki.alovoa.entity.UserRegisterToken;
 
 @Service
@@ -49,6 +50,15 @@ public class MailService {
 		String subject = messageSource.getMessage("backend.mail.register.subject", new String[] { appName }, "",
 				locale);
 		String body = messageSource.getMessage("backend.mail.register.body",
+				new String[] { user.getFirstName(), appName, appDomain, token.getContent() }, "", locale);
+		sendMail(user.getEmail(), defaultFrom, subject, body);
+	}
+	
+	public void sendPasswordResetMail(User user, UserPasswordToken token) throws MessagingException {
+		Locale locale = LocaleContextHolder.getLocale();
+		String subject = messageSource.getMessage("backend.mail.password-reset.subject", new String[] { appName }, "",
+				locale);
+		String body = messageSource.getMessage("backend.mail.password-reset.body",
 				new String[] { user.getFirstName(), appName, appDomain, token.getContent() }, "", locale);
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}

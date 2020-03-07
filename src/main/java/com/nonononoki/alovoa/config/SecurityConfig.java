@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	public void configure(HttpSecurity http) throws Exception {
 	    http
         .authorizeRequests()
+        
 	        .antMatchers("/css/**").permitAll()
 	        .antMatchers("/js/**").permitAll()
 	        .antMatchers("/img/**").permitAll()
@@ -49,8 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	        .antMatchers("/register").permitAll()
 	        .antMatchers("/register/**").permitAll()
 	        .antMatchers("/captcha/**").permitAll()
-	        .antMatchers("/donate-list/**").permitAll()
-	        .antMatchers("/reset-password/**").permitAll()
+	        .antMatchers("/donate-list").permitAll()
+	        .antMatchers("/password/**").permitAll()
 	        .antMatchers("/favicon.ico").permitAll()
         .anyRequest().authenticated()
         .and()

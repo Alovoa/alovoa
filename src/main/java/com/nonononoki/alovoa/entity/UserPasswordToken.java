@@ -23,6 +23,6 @@ public class UserPasswordToken{
 	
 	private String content;
 	
-	private Date creationDate;
+	private Date date;
 	
 }

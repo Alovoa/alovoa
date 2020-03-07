@@ -8,5 +8,9 @@ $(function() {
 		alert("Confirmation succeeded, you can now login and meet new people in your area!")
 	} else if(url.includes("?registration-confirm-failed")) {
 		alert("Confirmation failed, please try again!")
-	}
+	} else if(url.includes("?password-reset-requested")) {
+		alert("An email for resetting your password has been sent, please check your emails and follow the instructions.")
+	}  else if(url.includes("?password-change-success")) {
+		alert("Your password has been successfully changed!")
+	} 
 });
