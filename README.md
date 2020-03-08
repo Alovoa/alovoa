@@ -25,6 +25,19 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Enter credentials for database server, email server and encryption keys in application.properties
 - Execute "mvn install" in the folder where the pom.xml resides.
 
+### Emoji support
+1. Edit my.conf
+2. Add following lines to the bottom <br>
+`character-set-server = utf8mb4` <br>
+`collation-server = utf8mb4_general_ci` <br>
+`skip-character-set-client-handshake`
+3. Restart mariadb
+
+Example (Fedora):
+- sudo nano /etc/my.cnf
+- sudo systemctl restart mysqld
+
+
 ### Licenses:
 - All code not otherwise stated is licensed under the AGPLv3 license. 
 - Third-party web libraries can be found under resources/css/lib and resources/js/lib and have their own license.
