@@ -20,6 +20,9 @@
 		<div class="section">
 			<div class="container">
 				<div class="field">
+					<div id="profile-warning"></div>
+				</div>
+				<div class="field">
 					<div class="columns is-mobile is-centered">
 						<div class="column is-half center-children">
 
@@ -84,15 +87,19 @@
 
 
 				<div class="field">
-					<label class="label">Looking for</label>					 
+					<label class="label">Looking for</label>
 					<th:block th:each="gender : ${genders}">
 						<div class="field">
-						<input th:id="${'gender-' + gender.id}" type="checkbox" class="switch gender-switch" th:value="${gender.id}"
-							style="position: absolute"
-							th:checked="${user.preferedGenders != null && not user.preferedGenders.?[id == __${gender.id}__].isEmpty()}"> 
-							<label th:for="${'gender-' + gender.id}" th:if="${gender.text == 'male'}">Male</label>
-							<label th:for="${'gender-' + gender.id}" th:if="${gender.text == 'female'}">Female</label>
-							<label th:for="${'gender-' + gender.id}" th:if="${gender.text == 'other'}">Other</label>
+							<input th:id="${'gender-' + gender.id}" type="checkbox"
+								class="switch gender-switch" th:value="${gender.id}"
+								style="position: absolute"
+								th:checked="${user.preferedGenders != null && not user.preferedGenders.?[id == __${gender.id}__].isEmpty()}">
+							<label th:for="${'gender-' + gender.id}"
+								th:if="${gender.text == 'male'}">Male</label> <label
+								th:for="${'gender-' + gender.id}"
+								th:if="${gender.text == 'female'}">Female</label> <label
+								th:for="${'gender-' + gender.id}"
+								th:if="${gender.text == 'other'}">Other</label>
 						</div>
 					</th:block>
 				</div>

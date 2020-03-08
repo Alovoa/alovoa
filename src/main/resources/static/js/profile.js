@@ -32,6 +32,9 @@ $(function() {
 		});
 	});
 
+	var timerDescription;
+	var timeoutDescription = 500;
+	
 	$('#description').on('keyup paste', function() {
 
 		let data = $('#description').val();
@@ -44,19 +47,29 @@ $(function() {
 			alert("You have reached the maximum number of characters.");
 			$('#description').val(data.substring(0, maxlength));
 		} else {
-			$.ajax({
-				type : "POST",
-				url : "/user/update/description",
-				headers : {
-					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
-				},
-				contentType : "text/plain",
-				data : data,
-				error : function(e) {
-					// TODO
-					console.log(e);
-				}
-			});
+			
+			if(timerDescription) {
+				clearTimeout(timerDescription);
+			}
+			if ($('#desctiprion').val) {
+				timerDescription = setTimeout(function(){
+					
+					console.log("uploading description")
+					$.ajax({
+						type : "POST",
+						url : "/user/update/description",
+						headers : {
+							"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+						},
+						contentType : "text/plain",
+						data : data,
+						error : function(e) {
+							// TODO
+							console.log(e);
+						}
+					});
+				}, timeoutDescription);
+			}
 		}
 	});
 
@@ -69,6 +82,9 @@ $(function() {
 				url : "/user/update/intention/" + data,
 				headers : {
 					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+				},
+				success : function(e) {
+					updateProfileWarning();
 				},
 				error : function(e) {
 					// TODO
@@ -140,6 +156,9 @@ $(function() {
 				headers : {
 					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 				},
+				success : function(e) {
+					updateProfileWarning();
+				},
 				error : function(e) {
 					// TODO
 					console.log(e);
@@ -151,28 +170,8 @@ $(function() {
 
 });
 
-function checkPassword() {
-	var password = $("#password").val();
-	var passwordRepeat = $("#password-repeat").val();
-
-	if (password != passwordRepeat) {
-		// TODO
-		$("#password-info").html("Passwords do not match!");
-		$("#password-info").show();
-		return false;
-	} else {
-		if (isPasswordSecure(password)) {
-			$("#password-info").hide();
-			return true;
-		} else {
-			// TODO
-			$("#password-info")
-					.html(
-							"Your password needs to be at least 7 characters long and must contain characters as well as numbers.");
-			$("#password-info").show();
-			return false;
-		}
-	}
+function updateProfileWarning() {
+	
 }
 
 function getBase64(file, callback) {
