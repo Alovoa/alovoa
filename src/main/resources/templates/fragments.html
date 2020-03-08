@@ -100,6 +100,12 @@
 	</div>
 
 	<div th:fragment="search-users">
+
+		<div th:if="${#lists.isEmpty(users)}"
+			style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+			<span>No users found, please try again later.</span>
+		</div>
+
 		<div class="card is-horizontal" th:each="user : ${users}">
 			<div class="card-image">
 				<figure class="image">
@@ -217,5 +223,22 @@
 		</div>
 	</div>
 
+	<div th:fragment="profile-warning">
+		<div th:if="${hasWarning}">
+			<div class="notification is-danger">User profile is incomplete,
+				you won't be seen by other users.</div>
+			<div class="notification is-warning" th:if="${noProfilePicture}">No
+				profile picture found!</div>
+			<div class="notification is-warning" th:if="${noDescription}">No
+				description found!</div>
+			<div class="notification is-warning" th:if="${noIntention}">No
+				dating preference found!</div>
+			<div class="notification is-warning" th:if="${noGender}">No
+				gender preference found!</div>
+			<div class="notification is-warning" th:if="${noLocation}">No
+				location found! It will be set automatically when you search for
+				other users!</div>
+		</div>
+	</div>
 </body>
 </html>

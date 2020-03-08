@@ -3,6 +3,8 @@ const descriptionMaxLength = 255;
 
 $(function() {
 
+	updateProfileWarning();
+	
 	$("#profilePicture").click(function(e) {
 		$("#profilePictureUpload").click();
 	});
@@ -63,6 +65,9 @@ $(function() {
 						},
 						contentType : "text/plain",
 						data : data,
+						success : function(e) {
+							updateProfileWarning();
+						},
 						error : function(e) {
 							// TODO
 							console.log(e);
@@ -171,7 +176,8 @@ $(function() {
 });
 
 function updateProfileWarning() {
-	
+	let url = "/profile/warning";
+	$("#profile-warning").load(url);
 }
 
 function getBase64(file, callback) {
