@@ -25,7 +25,7 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Enter credentials for database server, email server and encryption keys in application.properties
 - Execute "mvn install" in the folder where the pom.xml resides.
 
-### Emoji support
+### Emoji support (not available on the test server)
 1. Edit my.conf
 2. Add following lines to the bottom <br>
 `character-set-server = utf8mb4` <br>
