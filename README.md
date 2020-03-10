@@ -4,7 +4,7 @@
 <img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/src/main/resources/static/img/android-chrome-512x512.png">
 </p>
 
-Support us on Kickstarter! https://www.kickstarter.com/projects/nonononoki/alovoa-the-private-dating-app-for-you
+Support us on Liberapay! https://liberapay.com/Alovoa/
 
 Demo: https://alovoa.herokuapp.com/. Database WILL be deleted after each update. A public MySQL update is used, do NOT post your personal information on the demo page, even though most of your info is encrypted. Profile picture size limit had to be lowered to 5KB for money reasons.
 
