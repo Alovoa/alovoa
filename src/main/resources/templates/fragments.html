@@ -82,11 +82,11 @@
 					<div>
 						<i class="fa fa-coins"></i><span>Donate</span>
 					</div>
-				</a> <a class="navbar-item is-expanded navigation-item" href="/alerts">
+				</a> <a class="navbar-item is-expanded navigation-item" id="nav-alerts" href="/alerts">
 					<div>
 						<i class="fa fa-bell"></i> <span>Alerts</span>
 					</div>
-				</a> <a class="navbar-item is-expanded navigation-item" href="/chats">
+				</a> <a class="navbar-item is-expanded navigation-item" id="nav-chats" href="/chats">
 					<div>
 						<i class="fa fa-comments"></i> <span>Chats</span>
 					</div>
@@ -162,9 +162,9 @@
 	<div th:fragment="message-detail">
 		<div th:each="message : ${messages}"
 			style="display: inline-block; width: 100%;">
-			<div th:if="${message.from}" class="message right"
+			<div th:if="${message.from}" class="message left"
 				th:text="${message.content}"></div>
-			<div th:unless="${message.from}" class="message left"
+			<div th:unless="${message.from}" class="message right"
 				th:text="${message.content}"></div>
 		</div>
 	</div>

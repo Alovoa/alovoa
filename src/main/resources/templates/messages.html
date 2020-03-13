@@ -20,9 +20,11 @@
 		<section class="container" id="main-container">
 			<div class="section">
 				<div class="container" style="width: 100%;">
-					<div class="card is-horizontal" th:each="convo : ${conversations}" th:onclick="viewMessageDetail(this, [[${convo.id}]])">
+					<div class="card is-horizontal" th:each="convo : ${conversations}"
+						th:onclick="viewMessageDetail(this, [[${convo.id}]])">
 						<div class="card-image">
-							<figure class="image" style="max-width: 200px; max-height: 200px;">
+							<figure class="image"
+								style="max-width: 200px; max-height: 200px;">
 								<img th:src="${convo.userProfilePicture}"
 									th:onclick="viewProfile([[${convo.userIdEncoded}]])">
 							</figure>
@@ -35,9 +37,13 @@
 											th:text="${convo.userName}"></div>
 									</div>
 								</div>
-								<div style="font-size: 1.1em; word-break: break-all;" th:text="${convo.lastMessage}" th:if="${convo.lastMessage != null}"></div>
+								<div style="font-size: 1.1em; word-break: break-all;"
+									th:text="${convo.lastMessage}"
+									th:if="${convo.lastMessage != null}"></div>
 								<!-- TODO -->
-								<div style="font-size: 1.1em; word-break: break-all;" th:unless="${convo.lastMessage != null}">You got a match! Tap here to send a message.</div>
+								<div style="font-size: 1.1em; word-break: break-all;"
+									th:unless="${convo.lastMessage != null}">You got a match!
+									Tap here to send a message.</div>
 							</div>
 						</div>
 					</div>
@@ -51,7 +57,7 @@
 
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
-	<script src="/js/search.js"></script>
+	<script src="/js/tools/getNotification.js"></script>
 	<script src="/js/message.js"></script>
 </body>
 </html>

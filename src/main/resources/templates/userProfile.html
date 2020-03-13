@@ -140,28 +140,29 @@
 			<div class="modal-background" onclick="closeModal()"></div>
 			<div class="modal-content">
 				<div class="box">
-					<div style="margin-bottom:24px">Report user for violating the ToS? Examples: NSFW
-						profile picture or impersonation.</div>
-						
-						<div class="field">
-							<input id="captcha-id" name="captchaId" type="hidden">
-							<input id="id-enc" type="hidden" name="id" th:value="${user.idEncoded}">
+					<div style="margin-bottom: 24px">Report user for violating
+						the ToS? Examples: NSFW profile picture or impersonation.</div>
 
-							<div class="field">
-								<img id="captcha-image">
-								<button type="button" class="button" onclick="refreshCaptcha()"
-									style="height: 70px; width: 70px; font-size: 1.7rem; margin-left: 12px;">
-									<i class="fa fa-sync"></i>
-								</button>
-							</div>
-							<div class="field">
-								<input class="input" id="captcha" name="captchaText" placeholder="Captcha"
-									autocomplete="off" required>
-							</div>
-							<div class="field" style="height: 42px">
-								<button class="button is-info" style="float: right" th:onclick="reportUserSubmit([[${user.idEncoded}]])">Submit</button>
-							</div>
+					<div class="field">
+						<input id="captcha-id" name="captchaId" type="hidden"> <input
+							id="id-enc" type="hidden" name="id" th:value="${user.idEncoded}">
+
+						<div class="field">
+							<img id="captcha-image">
+							<button type="button" class="button" onclick="refreshCaptcha()"
+								style="height: 70px; width: 70px; font-size: 1.7rem; margin-left: 12px;">
+								<i class="fa fa-sync"></i>
+							</button>
 						</div>
+						<div class="field">
+							<input class="input" id="captcha" name="captchaText"
+								placeholder="Captcha" autocomplete="off" required>
+						</div>
+						<div class="field" style="height: 42px">
+							<button class="button is-info" style="float: right"
+								th:onclick="reportUserSubmit([[${user.idEncoded}]])">Submit</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -174,6 +175,7 @@
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/tools/refreshCaptcha.js"></script>
 	<script src="/js/tools/modal.js"></script>
+	<script src="/js/tools/getNotification.js"></script>
 	<script src="/js/userProfile.js"></script>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.model;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -64,6 +66,9 @@ public class UserDto {
 		dto.setIdEncoded(en);
 		dto.setActiveDate(user.getDates().getActiveDate());
 		//dto.setAge(user.getAge());
+		LocalDate now = LocalDate.now();
+		Period period = Period.between(user.getDates().getDateOfBirth(), now);
+		dto.setAge(period.getYears());
 		dto.setDescription(user.getDescription());
 		dto.setFirstName(user.getFirstName());
 		dto.setGender(user.getGender());

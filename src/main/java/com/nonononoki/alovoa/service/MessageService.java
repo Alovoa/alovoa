@@ -27,12 +27,22 @@ public class MessageService {
 	@Autowired
 	private ConversationRepository conversationRepo;
 	
+	@Autowired
+	private NotificationService notificationService;
+	
+	
 	public void send(Conversation c, String message) throws Exception {
+		
 		if(message.length() > maxMessageSize) {
 			throw new Exception("");	
-		}
+		}	
 		
-		User user = authService.getCurrentUser();
+		User currUser = authService.getCurrentUser();
+		User user = c.getPartner(currUser);
+		
+		if(user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
+			throw new Exception();
+		}
 		
 		Message m = new Message();
 		m.setContent(message);
@@ -45,6 +55,8 @@ public class MessageService {
 		c.setLastMessage(message);
 		c.setLastUpdated(new Date());
 		conversationRepo.saveAndFlush(c);
+		
+		notificationService.newMessage(user);
 	}
 
 }

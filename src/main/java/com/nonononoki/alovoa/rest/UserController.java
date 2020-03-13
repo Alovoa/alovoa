@@ -91,14 +91,14 @@ public class UserController {
 		userService.reportUser(idEnc, captchaId, captchaText);
 	}
 	
-	@PostMapping(value = "/status/new-notification")
-	public boolean newNotification() throws Exception {
-		return userService.newNotification();
+	@GetMapping(value = "/status/new-alert")
+	public boolean newAlert() throws Exception {
+		return userService.hasNewAlert();
 	}
 	
-	@PostMapping(value = "/status/new-status")
+	@GetMapping(value = "/status/new-message")
 	public boolean newMessage() throws Exception {
-		return userService.newMessage();
+		return userService.hasNewMessage();
 	}
 	
 }

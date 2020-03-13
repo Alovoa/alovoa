@@ -72,12 +72,15 @@ public class UserService {
 
 	@Autowired
 	private UserNotificationRepository userNotificationRepo;
-	
+
 	@Autowired
 	private ConversationRepository conversationRepo;
-	
+
 	@Autowired
 	private CaptchaService captchaService;
+
+	@Autowired
+	private NotificationService notificationService;
 
 	@Value("${app.age.min}")
 	private int minAge;
@@ -98,7 +101,8 @@ public class UserService {
 	private TextEncryptorConverter textEncryptor;
 
 	public void updateProfilePicture(String imgB64) throws Exception {
-		if (imgB64.length() > Tools.BASE64FACTOR * Tools.THOUSAND * imageSize) {
+		int maxSize = (int) (Tools.BASE64FACTOR * Tools.THOUSAND * imageSize);
+		if (imgB64.length() > maxSize) {
 			throw new Exception("");
 		}
 
@@ -245,8 +249,8 @@ public class UserService {
 	public void likeUser(String idEnc) throws NumberFormatException, Exception {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
-		
-		if(user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
+
+		if (user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
 			throw new Exception();
 		}
 		if (userLikeRepo.findByUserFromAndUserTo(currUser, user) == null) {
@@ -255,25 +259,29 @@ public class UserService {
 			like.setUserFrom(currUser);
 			like.setUserTo(user);
 			userLikeRepo.save(like);
-			
+
 			UserNotification not = new UserNotification();
 			not.setContent(not.getUSER_LIKE());
 			not.setCreationDate(new Date());
 			not.setUserFrom(currUser);
 			not.setUserTo(user);
 			userNotificationRepo.save(not);
-			
-			if(user.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
+			notificationService.newLike(user);
+
+			if (user.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
 				Conversation convo = new Conversation();
 				convo.setCreationDate(new Date());
 				convo.setUserFrom(currUser);
 				convo.setUserTo(user);
 				convo.setLastUpdated(new Date());
 				conversationRepo.save(convo);
-				user.getDates().setMessageDate(new Date());
-				userRepo.saveAndFlush(user);
+//				user.getDates().setMessageDate(new Date());
+//				userRepo.saveAndFlush(user);
+
+				notificationService.newMatch(user);
+				notificationService.newMatch(currUser);
 			}
-			
+
 			user.getDates().setNotificationDate(new Date());
 			userRepo.saveAndFlush(user);
 		}
@@ -317,9 +325,9 @@ public class UserService {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
 		if (userReportRepo.findByUserFromAndUserTo(currUser, user) == null) {
-			
+
 			boolean isValid = captchaService.isValid(captchaId, captchaText);
-			if(!isValid) {
+			if (!isValid) {
 				throw new Exception("");
 			}
 			UserReport report = new UserReport();
@@ -336,13 +344,21 @@ public class UserService {
 		return user;
 	}
 
-	public boolean newNotification() {
+	public boolean hasNewAlert() {
 		User currUser = authService.getCurrentUser();
+		// user always check their alerts periodically in the background, so just update
+		// it here
+		updateActiveDate(currUser);
 		return currUser.getDates().getNotificationDate().after(currUser.getDates().getNotificationCheckedDate());
 	}
 
-	public boolean newMessage() {
+	public boolean hasNewMessage() {
 		User currUser = authService.getCurrentUser();
 		return currUser.getDates().getMessageDate().after(currUser.getDates().getMessageCheckedDate());
+	}
+
+	private void updateActiveDate(User user) {
+		user.getDates().setActiveDate(new Date());
+		userRepo.save(user);
 	}
 }
