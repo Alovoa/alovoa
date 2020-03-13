@@ -4,7 +4,7 @@
 <img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/src/main/resources/static/img/android-chrome-512x512.png">
 </p>
 
-Support us on Kickstarter! https://www.kickstarter.com/projects/nonononoki/alovoa-the-private-dating-app-for-you
+Support us on Liberapay! https://liberapay.com/Alovoa/
 
 Demo: https://alovoa.herokuapp.com/. Database WILL be deleted after each update. A public MySQL update is used, do NOT post your personal information on the demo page, even though most of your info is encrypted. Profile picture size limit had to be lowered to 5KB for money reasons.
 
@@ -24,6 +24,19 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Setup an email server or use an existing one (any provider with IMAP support should work)
 - Enter credentials for database server, email server and encryption keys in application.properties
 - Execute "mvn install" in the folder where the pom.xml resides.
+
+### Emoji support (not available on the test server)
+1. Edit my.conf
+2. Add following lines to the bottom <br>
+`character-set-server = utf8mb4` <br>
+`collation-server = utf8mb4_general_ci` <br>
+`skip-character-set-client-handshake`
+3. Restart mariadb
+
+Example (Fedora):
+- sudo nano /etc/my.cnf
+- sudo systemctl restart mysqld
+
 
 ### Licenses:
 - All code not otherwise stated is licensed under the AGPLv3 license. 
