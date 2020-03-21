@@ -2,8 +2,6 @@ package com.nonononoki.alovoa.model;
 
 import java.util.Date;
 
-import org.springframework.stereotype.Component;
-
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserNotification;
@@ -11,7 +9,6 @@ import com.nonononoki.alovoa.entity.UserNotification;
 import lombok.Data;
 
 @Data
-@Component
 public class NotificationDto {
 
 	private long id;

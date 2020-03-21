@@ -19,4 +19,19 @@ public class AdminController {
     public void addTestUsers(@PathVariable String latitude, @PathVariable String longitude) throws Exception{
 		adminService.addTestUsers(latitude, longitude);
     }
+	
+	@GetMapping("/test/notification/like")
+    public void testNotificationLike() throws Exception{
+		adminService.testNotificationLike();
+    }
+	
+	@GetMapping("/test/notification/match")
+    public void testNotificationMatch() throws Exception{
+		adminService.testNotificationMatch();
+    }
+	
+	@GetMapping("/test/notification/message")
+    public void testNotificationMessage() throws Exception{
+		adminService.testNotificationMessage();
+    }
 }

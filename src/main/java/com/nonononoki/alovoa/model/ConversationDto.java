@@ -2,8 +2,6 @@ package com.nonononoki.alovoa.model;
 
 import java.util.Date;
 
-import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Conversation;
@@ -12,7 +10,6 @@ import com.nonononoki.alovoa.entity.User;
 import lombok.Data;
 
 @Data
-@Component
 public class ConversationDto {
 
 	@JsonIgnore

@@ -130,6 +130,9 @@ public class User {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
 	private List<UserReport> reportedByUsers;
+	
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+	private List<UserWebPush> webPush;
 	 
 	private boolean admin;
 	 

@@ -2,6 +2,7 @@ package com.nonononoki.alovoa.entity;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,7 +32,9 @@ public class Message{
 	private User userTo;
 	
 	@Convert(converter = TextEncryptorConverter.class)
+	@Column(columnDefinition="mediumtext")
 	private String content;
+	
 	private Date creationDate;
 	
 }

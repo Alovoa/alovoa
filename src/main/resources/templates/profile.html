@@ -23,6 +23,12 @@
 				<div class="field">
 					<div id="profile-warning"></div>
 				</div>
+
+				<div class="field">
+					<button class="button is-info" id="btnPushNotifications"
+						name="btnPushNotifications" style="width: 100%;">Receive Notifications</button>
+				</div>
+
 				<div class="field">
 					<div class="columns is-mobile is-centered">
 						<div class="column is-half center-children">
@@ -112,8 +118,15 @@
 	<footer th:replace="fragments.html::navigation"></footer>
 	<footer th:replace="fragments.html::footer"></footer>
 
+	<script>
+		/*<![CDATA[*/		
+		    var applicationServerPublicKey = /*[[${vapidPublicKey}]]*/ 'default';
+		/*]]>*/
+	</script>
+
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
+	<script src="/js/lib/notification.js"></script>
 	<script src="/js/tools/getNotification.js"></script>
 	<script src="/js/profile.js"></script>
 </body>

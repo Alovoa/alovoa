@@ -53,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	        .antMatchers("/donate-list").permitAll()
 	        .antMatchers("/password/**").permitAll()
 	        .antMatchers("/favicon.ico").permitAll()
+	        .antMatchers("/sw.js").permitAll()
         .anyRequest().authenticated()
         .and()
         .formLogin()

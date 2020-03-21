@@ -2,6 +2,7 @@ package com.nonononoki.alovoa.service;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import com.nonononoki.alovoa.entity.Gender;
 import com.nonononoki.alovoa.entity.Location;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserIntention;
+import com.nonononoki.alovoa.entity.UserWebPush;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -21,6 +23,9 @@ public class AdminService {
 
 	@Autowired
 	private AuthService authService;
+	
+	@Autowired
+	private NotificationService notificationService;
 
 	@Autowired
 	private UserRepository userRepo;
@@ -73,6 +78,21 @@ public class AdminService {
 		u.setEmail("test5001@test.com");
 		u.setProfilePicture(Tools.imageToB64(Tools.getFileFromResources("img/profile2.png")));
 		userRepo.saveAndFlush(u);
+	}
+
+	public void testNotificationLike() throws Exception {
+		User user = authService.getCurrentUser();
+		notificationService.newLike(user);
+	}
+	
+	public void testNotificationMatch() throws Exception {
+		User user = authService.getCurrentUser();
+		notificationService.newMatch(user);
+	}
+	
+	public void testNotificationMessage() throws Exception {
+		User user = authService.getCurrentUser();
+		notificationService.newMessage(user);
 	}
 
 }

@@ -6,8 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
@@ -21,7 +19,6 @@ import com.nonononoki.alovoa.entity.UserReport;
 import lombok.Data;
 
 @Data
-@Component
 public class UserDto {
 
 	@JsonIgnore

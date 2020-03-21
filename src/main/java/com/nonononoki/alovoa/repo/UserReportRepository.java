@@ -8,4 +8,3 @@ import com.nonononoki.alovoa.entity.UserReport;
 public interface UserReportRepository extends JpaRepository<UserReport, Long> {
 	public UserReport findByUserFromAndUserTo(User userFrom, User userTo);
 }
-
