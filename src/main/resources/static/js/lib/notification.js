@@ -3,9 +3,8 @@
 
 var notificationSubscriptionUrl = '/notification/subscribe';
 
-//TODO
 // Vapid public key.
-var applicationServerPublicKey = 'BC5Ur3Wq8-2djUYGD-VSXbMByIgxFFqtXoewSOYrthgxNUTOeueIHSB2b_81UT7p0By8MoFI2Bv9hrWeB8P3k2Q';
+// var applicationServerPublicKey = 'BC5Ur3Wq8-2djUYGD-VSXbMByIgxFFqtXoewSOYrthgxNUTOeueIHSB2b_81UT7p0By8MoFI2Bv9hrWeB8P3k2Q';
 
 var serviceWorkerName = '/sw.js';
 

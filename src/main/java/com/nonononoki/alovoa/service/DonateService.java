@@ -59,11 +59,15 @@ public class DonateService {
 				u = userRepo.findByEmail(d.getMessage());
 			}
 			if(u != null) {
+				double amount = Double.parseDouble(d.getAmount());
 				UserDonation userDonation = new UserDonation();
-				userDonation.setAmount(Double.parseDouble(d.getAmount()));
+				userDonation.setAmount(amount);
 				userDonation.setDate(new Date());
 				userDonation.setUser(u);
 				userDonationRepo.saveAndFlush(userDonation);
+				
+				u.setTotalDonations(u.getTotalDonations() + amount);
+				userRepo.save(u);
 			}
 		}
 	}

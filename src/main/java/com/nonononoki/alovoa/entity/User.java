@@ -41,8 +41,6 @@ public class User {
 
 	private String description;
 
-	private String donationUsername;
-
 	private int preferedMinAge;
 
 	private int preferedMaxAge;

@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 
 import lombok.Data;
@@ -15,10 +16,12 @@ import lombok.Data;
 @Entity
 public class Location {
 	
+	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
+	@JsonIgnore
 	@OneToOne
 	private User user;
 

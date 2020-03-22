@@ -19,16 +19,15 @@ public class UserController {
 	private UserService userService;
 
 	// GDPR
-	@GetMapping("/delete/request")
+	@GetMapping("/delete")
 	public void deleteRequest(String password) {
 		// TODO
 
 	}
 
-	@GetMapping("/userdata")
-	public void getUserdata(String password) {
-		// TODO
-
+	@PostMapping(value = "/userdata", consumes = "text/plain")
+	public void getUserdata(@RequestBody String password) throws Exception {
+		userService.getUserdata(password);
 	}
 
 	@PostMapping(value = "/update/profile-picture", consumes = "text/plain")

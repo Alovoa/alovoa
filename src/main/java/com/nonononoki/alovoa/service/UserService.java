@@ -15,6 +15,8 @@ import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.Tools;
@@ -78,9 +80,15 @@ public class UserService {
 
 	@Autowired
 	private CaptchaService captchaService;
+	
+	@Autowired
+	private MailService mailService;
 
 	@Autowired
 	private NotificationService notificationService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Value("${app.age.min}")
 	private int minAge;
@@ -360,5 +368,13 @@ public class UserService {
 	private void updateActiveDate(User user) {
 		user.getDates().setActiveDate(new Date());
 		userRepo.save(user);
+	}
+
+	public void getUserdata(String password) throws Exception {
+		User user = authService.getCurrentUser();
+		if (!passwordEncoder.matches(password, user.getPassword())) {
+			throw new BadCredentialsException("");
+		}
+		mailService.sendUserDataMail(user);
 	}
 }

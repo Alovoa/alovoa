@@ -172,6 +172,58 @@ $(function() {
 		}
 		
 	});
+	
+	$("#userdata-submit").click(function(e) {
+
+		let password = $("#userdata-password").val();
+		
+		if (password) {
+			$.ajax({
+				type : "POST",
+				contentType : "text/plain",
+				data: password,
+				url : "/user/userdata/",
+				headers : {
+					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+				},
+				success : function(e) {
+					//TODO
+					alert("Success!");
+				},
+				error : function(e) {
+					// TODO
+					console.log(e);
+					alert("Unknown error. Please try again later");
+				}
+			});
+		}
+	});
+	
+	$("#delete-acc-submit").click(function(e) {
+
+		let password = $("#delete-acc-password").val();
+		
+		if (password) {
+			$.ajax({
+				type : "POST",
+				contentType : "text/plain",
+				data: password,
+				url : "/user/delete-account/",
+				headers : {
+					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+				},
+				success : function(e) {
+					//TODO
+					alert("Success!");
+				},
+				error : function(e) {
+					// TODO
+					console.log(e);
+					alert("Unknown error. Please try again later");
+				}
+			});
+		}
+	});
 
 });
 

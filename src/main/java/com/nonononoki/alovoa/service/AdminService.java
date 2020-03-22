@@ -2,7 +2,6 @@ package com.nonononoki.alovoa.service;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import com.nonononoki.alovoa.entity.Gender;
 import com.nonononoki.alovoa.entity.Location;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserIntention;
-import com.nonononoki.alovoa.entity.UserWebPush;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserRepository;

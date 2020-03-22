@@ -75,11 +75,7 @@ public class UserDto {
 		dto.setIntention(user.getIntention());
 		dto.setProfilePicture(user.getProfilePicture());
 		dto.setBlockedUsers(user.getBlockedUsers());
-		double donations = 0;
-		for (int i = 0; user.getDonations() != null && i < user.getDonations().size(); i++) {
-			donations += user.getDonations().get(i).getAmount();
-		}
-		dto.setTotalDonations(donations);
+		dto.setTotalDonations(user.getTotalDonations());
 		dto.setBlockedByUsers(user.getBlockedByUsers());
 		dto.setReportedByUsers(user.getReportedByUsers());
 		

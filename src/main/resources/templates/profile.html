@@ -43,74 +43,101 @@
 						</div>
 					</div>
 				</div>
-				<div class="field">
-					<label class="label">Description</label>
-					<textarea class="textarea" id="description"
-						th:text="${user.description}"></textarea>
-				</div>
-
-				<div class="field">
-					<label class="label">I want...</label>
-					<div class="select">
-						<select id="intention">
-							<option value=""></option>
-							<th:block th:each="intention : ${intentions}">
-								<option th:value="${intention.id}"
-									th:selected="${user.intention != null && user.intention.id == intention.id}"
-									th:if="${intention.text == 'meet'}">to meet new people</option>
-								<option th:value="${intention.id}"
-									th:selected="${user.intention != null && user.intention.id == intention.id}"
-									th:if="${intention.text == 'date'}">a relationship</option>
-								<option th:value="${intention.id}"
-									th:selected="${user.intention != null && user.intention.id == intention.id}"
-									th:if="${intention.text == 'sex'}">sexual intimacy</option>
-							</th:block>
-						</select>
+				
+				<div class="box">
+					<div class="field">
+						<label class="label">Description</label>
+						<textarea class="textarea" id="description"
+							th:text="${user.description}"></textarea>
 					</div>
-				</div>
-
-				<div class="field">
-					<div class="columns">
-						<div class="column">
-							<label class="label">Minimum Age</label>
-							<div class="slider-container">
-								<input class="slider is-info" step="1" min="16" max="100"
-									th:value="${user.preferedMinAge}" type="range"
-									id="min-age-slider">
-								<p id="min-age-display" th:text="${user.preferedMinAge}"></p>
-							</div>
-						</div>
-						<div class="column">
-							<label class="label">Maximum Age</label>
-							<div class="slider-container">
-								<input class="slider is-info" step="1" min="16" max="100"
-									th:value="${user.preferedMaxAge}" type="range"
-									id="max-age-slider">
-								<p id="max-age-display" th:text="${user.preferedMaxAge}"></p>
-							</div>
+	
+					<div class="field">
+						<label class="label">I want...</label>
+						<div class="select">
+							<select id="intention">
+								<option value=""></option>
+								<th:block th:each="intention : ${intentions}">
+									<option th:value="${intention.id}"
+										th:selected="${user.intention != null && user.intention.id == intention.id}"
+										th:if="${intention.text == 'meet'}">to meet new people</option>
+									<option th:value="${intention.id}"
+										th:selected="${user.intention != null && user.intention.id == intention.id}"
+										th:if="${intention.text == 'date'}">a relationship</option>
+									<option th:value="${intention.id}"
+										th:selected="${user.intention != null && user.intention.id == intention.id}"
+										th:if="${intention.text == 'sex'}">sexual intimacy</option>
+								</th:block>
+							</select>
 						</div>
 					</div>
+	
+					<div class="field">
+						<div class="columns">
+							<div class="column">
+								<label class="label">Minimum Age</label>
+								<div class="slider-container">
+									<input class="slider is-info" step="1" min="16" max="100"
+										th:value="${user.preferedMinAge}" type="range"
+										id="min-age-slider">
+									<p id="min-age-display" th:text="${user.preferedMinAge}"></p>
+								</div>
+							</div>
+							<div class="column">
+								<label class="label">Maximum Age</label>
+								<div class="slider-container">
+									<input class="slider is-info" step="1" min="16" max="100"
+										th:value="${user.preferedMaxAge}" type="range"
+										id="max-age-slider">
+									<p id="max-age-display" th:text="${user.preferedMaxAge}"></p>
+								</div>
+							</div>
+						</div>
+					</div>
+	
+	
+					<div class="field">
+						<label class="label">Looking for</label>
+						<th:block th:each="gender : ${genders}">
+							<div class="field">
+								<input th:id="${'gender-' + gender.id}" type="checkbox"
+									class="switch gender-switch" th:value="${gender.id}"
+									style="position: absolute"
+									th:checked="${user.preferedGenders != null && not user.preferedGenders.?[id == __${gender.id}__].isEmpty()}">
+								<label th:for="${'gender-' + gender.id}"
+									th:if="${gender.text == 'male'}">Male</label> <label
+									th:for="${'gender-' + gender.id}"
+									th:if="${gender.text == 'female'}">Female</label> <label
+									th:for="${'gender-' + gender.id}"
+									th:if="${gender.text == 'other'}">Other</label>
+							</div>
+						</th:block>
+					</div>
 				</div>
-
-
-				<div class="field">
-					<label class="label">Looking for</label>
-					<th:block th:each="gender : ${genders}">
+				
+				<div style="padding-top: 32px;"></div>
+				
+				<div class="box">					
+					<div class="field">
+						<label class="label">Request user data</label>
 						<div class="field">
-							<input th:id="${'gender-' + gender.id}" type="checkbox"
-								class="switch gender-switch" th:value="${gender.id}"
-								style="position: absolute"
-								th:checked="${user.preferedGenders != null && not user.preferedGenders.?[id == __${gender.id}__].isEmpty()}">
-							<label th:for="${'gender-' + gender.id}"
-								th:if="${gender.text == 'male'}">Male</label> <label
-								th:for="${'gender-' + gender.id}"
-								th:if="${gender.text == 'female'}">Female</label> <label
-								th:for="${'gender-' + gender.id}"
-								th:if="${gender.text == 'other'}">Other</label>
+							<input class="input" type="password" placeholder="Password" id="userdata-password">
+							<div style="padding-top: 4px;"></div>
+							<button class="button" id="userdata-submit">Submit</button>
 						</div>
-					</th:block>
+					</div>
 				</div>
-				<div style="padding-top: 8px;"></div>
+				
+				<div class="box">					
+					<div class="field">
+						<label class="label">Delete account</label>
+						<div class="field">
+							<input class="input" type="password" placeholder="Password" id="delete-acc-password">
+							<div style="padding-top: 4px;"></div>
+							<button class="button" id="delete-acc-submit">Submit</button>
+						</div>
+					</div>
+				</div>
+				
 			</div>
 		</div>
 	</div>
