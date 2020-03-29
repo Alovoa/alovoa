@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.rest;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.service.UserService;
 
 @RestController
@@ -19,10 +22,14 @@ public class UserController {
 	private UserService userService;
 
 	// GDPR
-	@GetMapping("/delete")
-	public void deleteRequest(String password) {
-		// TODO
-
+	@PostMapping(value = "/delete-account", consumes = "text/plain") 
+	public void deleteAccount(@RequestBody String password) throws MessagingException {
+		userService.deleteAccountRequest(password);
+	}
+	
+	@PostMapping(value = "/delete-account-confirm", consumes = "application/json")
+	public void deleteAccount(@RequestBody UserDeleteAccountDto dto) throws Exception {
+		userService.deleteAccountConfirm(dto);
 	}
 
 	@PostMapping(value = "/userdata", consumes = "text/plain")

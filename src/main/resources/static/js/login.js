@@ -1,7 +1,5 @@
 $(function() {
-	
-	refreshCaptcha();
-	
+
 	let url = window.location.href;
 	
 	//TODO

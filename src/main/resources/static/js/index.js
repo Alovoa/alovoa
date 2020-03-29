@@ -10,7 +10,9 @@ $(function() {
 		alert("Confirmation failed, please try again!")
 	} else if(url.includes("?password-reset-requested")) {
 		alert("An email for resetting your password has been sent, please check your emails and follow the instructions.")
-	}  else if(url.includes("?password-change-success")) {
+	} else if(url.includes("?password-change-success")) {
 		alert("Your password has been successfully changed!")
-	} 
+	} else if(url.includes("?confirm-account-deleted")) {
+		alert("Your account has been successfully deleted!")
+	}
 });

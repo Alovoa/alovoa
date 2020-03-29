@@ -2,8 +2,6 @@
 const minAge = 16;
 
 $(function() {
-	
-	refreshCaptcha();
 
 	let today = new Date();
 	let startDate = new Date(today.setFullYear(today.getFullYear() - minAge));

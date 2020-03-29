@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.UserDeleteToken;
 import com.nonononoki.alovoa.entity.UserPasswordToken;
 import com.nonononoki.alovoa.entity.UserRegisterToken;
 import com.nonononoki.alovoa.model.UserGdpr;
@@ -93,6 +94,23 @@ public class MailService {
 		String json = objectMapper.writeValueAsString(ug);
 		ByteArrayResource resource = new ByteArrayResource(json.getBytes());
 		sendMailWithAttachment(user.getEmail(), defaultFrom, subject, body, "userdata.json", resource);
-		
+	}
+	
+	public void sendAccountDeleteRequest(User user, UserDeleteToken token) throws MessagingException {
+		Locale locale = LocaleContextHolder.getLocale();
+		String subject = messageSource.getMessage("backend.mail.account-delete-request.subject", new String[] { appName }, "",
+				locale);
+		String body = messageSource.getMessage("backend.mail.account-delete-request.body",
+				new String[] { user.getFirstName(), appName, appDomain, token.getContent() }, "", locale);
+		sendMail(user.getEmail(), defaultFrom, subject, body);
+	}
+	
+	public void sendAccountDeleteConfirm(User user) throws MessagingException {
+		Locale locale = LocaleContextHolder.getLocale();
+		String subject = messageSource.getMessage("backend.mail.account-delete-confirm.subject", new String[] { appName }, "",
+				locale);
+		String body = messageSource.getMessage("backend.mail.account-delete-confirm.body",
+				new String[] { user.getFirstName(), appName }, "", locale);
+		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 }

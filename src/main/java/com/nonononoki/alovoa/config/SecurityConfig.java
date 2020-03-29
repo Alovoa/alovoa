@@ -52,6 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	        .antMatchers("/captcha/**").permitAll()
 	        .antMatchers("/donate-list").permitAll()
 	        .antMatchers("/password/**").permitAll()
+	        
 	        .antMatchers("/favicon.ico").permitAll()
 	        .antMatchers("/sw.js").permitAll()
         .anyRequest().authenticated()

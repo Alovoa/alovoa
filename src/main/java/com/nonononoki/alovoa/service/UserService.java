@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
+import javax.mail.MessagingException;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,15 +27,18 @@ import com.nonononoki.alovoa.entity.Conversation;
 import com.nonononoki.alovoa.entity.Gender;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserBlock;
+import com.nonononoki.alovoa.entity.UserDeleteToken;
 import com.nonononoki.alovoa.entity.UserHide;
 import com.nonononoki.alovoa.entity.UserIntention;
 import com.nonononoki.alovoa.entity.UserInterest;
 import com.nonononoki.alovoa.entity.UserLike;
 import com.nonononoki.alovoa.entity.UserNotification;
 import com.nonononoki.alovoa.entity.UserReport;
+import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
+import com.nonononoki.alovoa.repo.UserDeleteTokenRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserInterestRepository;
@@ -77,6 +82,9 @@ public class UserService {
 
 	@Autowired
 	private ConversationRepository conversationRepo;
+	
+	@Autowired
+	private UserDeleteTokenRepository userDeleteTokenRepo;
 
 	@Autowired
 	private CaptchaService captchaService;
@@ -104,9 +112,67 @@ public class UserService {
 
 	@Value("${app.profile.description.size}")
 	private int descriptionSize;
+	
+	@Value("${app.token.length}")
+	private int tokenLength;
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
+	
+
+	public void deleteAccountRequest(String password) throws MessagingException {
+		User user = authService.getCurrentUser();
+		if (!passwordEncoder.matches(password, user.getPassword())) {
+			throw new BadCredentialsException("");
+		}
+		
+		
+		UserDeleteToken token = null;
+		
+		if(user.getDeleteToken() != null) {
+//			userDeleteTokenRepo.delete(user.getDeleteToken());
+			token = user.getDeleteToken();
+		} else {
+			token = new UserDeleteToken();
+		}
+		
+		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
+		token.setCreationDate(new Date());
+		token.setUser(user);
+		userDeleteTokenRepo.save(token);
+		
+		user.setDeleteToken(token);
+		userRepo.save(user);
+		
+		mailService.sendAccountDeleteRequest(user, token);
+	}
+	
+	public void deleteAccountConfirm(UserDeleteAccountDto dto) throws Exception {
+		User user = authService.getCurrentUser();
+		String userTokenString = user.getDeleteToken().getContent();
+		
+		if(!dto.isConfirm()) {
+			throw new Exception("");
+		}
+		
+		if( !dto.getTokenString().equals(userTokenString)) {
+			throw new Exception("");
+		}
+		
+		if( !dto.getEmail().equals(user.getEmail())) {
+			throw new Exception("");
+		}
+		
+		if( !captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
+			throw new Exception("");
+		}
+		
+		conversationRepo.deleteAll(conversationRepo.findAllByUserFrom(user));
+		conversationRepo.deleteAll(conversationRepo.findAllByUserTo(user));
+		userRepo.delete(user);
+		mailService.sendAccountDeleteConfirm(user);
+	}
+
 
 	public void updateProfilePicture(String imgB64) throws Exception {
 		int maxSize = (int) (Tools.BASE64FACTOR * Tools.THOUSAND * imageSize);
