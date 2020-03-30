@@ -6,6 +6,26 @@
  */
 // Apache 2.0
 
+const cacheName = 'v1';
+const staticAssets = [
+  './',
+  '/index.html',
+  '/css/lib/bulma.min.css',
+  '/css/alovoa.css',
+  '/css/index.css',
+  
+  '/sw.js',
+  '/js/lib/fontawesome.all.js',
+  '/js/lib/jquery.min.js',
+  '/js/index.js',
+  
+  '/img/android-chrome-512x512.png',
+  '/img/android-chrome-192x192.png',
+  '/manifest.json',
+  '/favicon.ico'
+  
+];
+
 self.addEventListener('push', function(event) {
     if (!(self.Notification && self.Notification.permission === 'granted')) {
         return;
@@ -38,3 +58,13 @@ self.addEventListener('notificationclick', function(event) {
         event.waitUntil(clients.openWindow(self.clickTarget));
     }
 });
+
+self.addEventListener('install', async event => {
+	  console.log('install event')
+	  const cache = await caches.open(cacheName); 
+	  await cache.addAll(staticAssets); 
+	});
+
+	self.addEventListener('fetch', async event => {
+	  console.log('fetch event')
+	});

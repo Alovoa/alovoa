@@ -15,4 +15,8 @@ $(function() {
 	} else if(url.includes("?confirm-account-deleted")) {
 		alert("Your account has been successfully deleted!")
 	}
+	
+	if('serviceWorker' in navigator) {
+	    navigator.serviceWorker.register('/sw.js');
+	};
 });

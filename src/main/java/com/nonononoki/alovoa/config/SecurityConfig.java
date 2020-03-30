@@ -22,6 +22,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Value("${app.text.key}")
 	private String key;
 	
+	@Value("${spring.profiles.active}")
+	private String profile;
+	
 	@Autowired
     private AuthProvider authProvider;
 	
@@ -55,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	        
 	        .antMatchers("/favicon.ico").permitAll()
 	        .antMatchers("/sw.js").permitAll()
+	        .antMatchers("/manifest.json").permitAll()
         .anyRequest().authenticated()
         .and()
         .formLogin()
@@ -71,6 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
         .rememberMe().key(key);
         //.and().csrf().disable();
+	    if (!profile.equals("dev")) http.requiresChannel().anyRequest().requiresSecure();
 	}
 	
     @Override
