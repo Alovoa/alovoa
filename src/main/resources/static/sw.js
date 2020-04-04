@@ -3,8 +3,11 @@
  * Created by thihara on 8/29/16.
  * 
  * The service worker for displaying push notifications.
+ * 
+ * https://github.com/thihara/web_push_notifications/blob/master/static/sw.js
+ * Apache 2.0
  */
-// Apache 2.0
+
 
 const cacheName = 'v1';
 const staticAssets = [
