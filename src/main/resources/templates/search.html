@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/search.css" />
-<title>Search</title>
+<title th:text="#{search.title}"></title>
 </head>
 <body>
 	<div id="main-logged-in">
@@ -20,30 +20,31 @@
 		<div class="section">
 			<div class="container is-small" style="display: flex">
 				<div style="flex-grow: 1">
-					<label class="label">Maximum Distance</label>
+					<label class="label" th:text="#{search.max-distance}"></label>
 					<div class="slider-container"
 						style="padding-top: 8px; padding-bottom: 8px;">
 						<input class="slider is-info" step="1000" min="1000" max="50000"
 							value="20000" type="range" id="max-distance-slider">
 						<p id="max-distance-display">20000</p>
 						<div style="padding-left: 4px"></div>
-						<span>meters</span>
+						<span> </span>
+						<span th:text="#{search.meters}"></span>
 					</div>
 				</div>
 				<div style="padding-left: 24px;"></div>
 				<div>
-					<label class="label">Sort</label>
+					<label class="label" th:text="#{sort}"></label>
 					<div class="select">
 						<select id="sort">
-							<option value="1">Lowest distance</option>
-							<option value="2">Active date</option>
+							<option value="1" th:text="#{search.sort.filter.distance}"></option>
+							<option value="2" th:text="#{search.sort.filter.active}"></option>
 						</select>
 					</div>
 				</div>
 				<div style="padding-left: 24px;"></div>
 				<div>
 
-					<label class="label">Search</label>
+					<label class="label" th:text="#{search}"></label>
 					<button class="button colored is-info" onclick="search()">
 						<i class="fa fa-search"></i>
 					</button>

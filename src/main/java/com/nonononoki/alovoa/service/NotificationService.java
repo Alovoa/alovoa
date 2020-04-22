@@ -2,11 +2,14 @@ package com.nonononoki.alovoa.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +45,9 @@ public class NotificationService {
 
 	@Autowired
 	private HttpServletRequest request;
+	
+	@Autowired
+	private MessageSource messageSource;
 
 	private static PushService pushService;
 
@@ -69,11 +75,14 @@ public class NotificationService {
 		user.getDates().setNotificationDate(new Date());
 		user = userRepo.saveAndFlush(user);
 
-		// TODO
+		Locale locale = LocaleContextHolder.getLocale();
+		String title = messageSource.getMessage("backend.webpush.like.message", null, locale);
+		String msg = messageSource.getMessage("backend.mail.userdata.subject", null, locale);
+
 		WebPushMessage message = new WebPushMessage();
 		message.setClickTarget(appDomain + "/alerts");
-		message.setMessage("Click here to find out more");
-		message.setTitle("New like!");
+		message.setTitle(title);
+		message.setMessage(msg);
 		send(user, message);
 	}
 
@@ -81,11 +90,14 @@ public class NotificationService {
 		user.getDates().setMessageDate(new Date());
 		user = userRepo.saveAndFlush(user);
 
-		// TODO
+		Locale locale = LocaleContextHolder.getLocale();
+		String title = messageSource.getMessage("backend.webpush.match.message", null, locale);
+		String msg = messageSource.getMessage("backend.mail.match.subject", null, locale);
+
 		WebPushMessage message = new WebPushMessage();
-		message.setClickTarget(appDomain + "/chats");
-		message.setMessage("Click here to find out more");
-		message.setTitle("New match!");
+		message.setClickTarget(appDomain + "/alerts");
+		message.setTitle(title);
+		message.setMessage(msg);
 		send(user, message);
 	}
 
@@ -93,11 +105,14 @@ public class NotificationService {
 		user.getDates().setMessageDate(new Date());
 		user = userRepo.saveAndFlush(user);
 
-		// TODO
+		Locale locale = LocaleContextHolder.getLocale();
+		String title = messageSource.getMessage("backend.webpush.message.message", null, locale);
+		String msg = messageSource.getMessage("backend.mail.message.subject", null, locale);
+
 		WebPushMessage message = new WebPushMessage();
-		message.setClickTarget(appDomain + "/chats");
-		message.setMessage("Click here to find out more");
-		message.setTitle("New message!");
+		message.setClickTarget(appDomain + "/alerts");
+		message.setTitle(title);
+		message.setMessage(msg);
 		send(user, message);
 	}
 

@@ -6,17 +6,19 @@
 			<div class="navbar-brand">
 				<a class="navbar-item" href="/"> <img src="/img/icon.png"
 					width="40" height="40">
-				</a> <a class="navbar-item" href="/" id="navbar-text">Alovoa </a>
+				</a> <a class="navbar-item" href="/" id="navbar-text"
+					th:text="#{app.name}"></a>
 			</div>
 
 			<div style="width: 100%; display: flex;">
 				<div class="navbar-end">
 					<span class="navbar-item" id="navbar-item-register"> <a
-						class="button is-white is-outlined" href="/register"> <span>Sign
-								up</span>
+						class="button is-white is-outlined" href="/register"> <span
+							th:text="#{sign-up}"></span>
 					</a>
 					</span> <span class="navbar-item"> <a
-						class="button is-white is-outlined" href="/login"> <span>Login</span>
+						class="button is-white is-outlined" href="/login"> <span
+							th:text="#{login}"></span>
 					</a>
 					</span>
 				</div>
@@ -29,7 +31,7 @@
 			<div class="navbar-brand">
 				<a class="navbar-item"> <img src="/img/icon.png" width="40"
 					height="40">
-				</a> <a class="navbar-item">Alovoa </a>
+				</a> <a class="navbar-item" th:text="#{app.name}"></a>
 			</div>
 
 			<div style="width: 100%; display: flex;">
@@ -37,7 +39,7 @@
 					<form th:action="@{/logout}" method="post">
 						<span class="navbar-item">
 							<button class="button is-white is-outlined" href="/logout">
-								<span>Logout</span>
+								<span th:text="#{logout}"></span>
 							</button>
 						</span>
 					</form>
@@ -51,19 +53,17 @@
 			<div class="columns">
 				<div class="column">
 					<ul>
-						<li class="has-text-centered"><a href="/privacy">Privacy
-								Policy</a></li>
+						<li class="has-text-centered"><a href="/privacy" th:text="#{privacy-policy}"></a></li>
 					</ul>
 				</div>
 				<div class="column">
 					<ul>
-						<li class="has-text-centered"><a href="/terms-conditions">Terms
-								and conditions</a></li>
+						<li class="has-text-centered"><a href="/terms-conditions" th:text="#{tos}"></a></li>
 					</ul>
 				</div>
 				<div class="column">
 					<ul>
-						<li class="has-text-centered"><a href="/impressum">Impressum</a></li>
+						<li class="has-text-centered"><a href="/imprint" th:text="#{imprint}"></a></li>
 					</ul>
 				</div>
 			</div>
@@ -76,23 +76,25 @@
 			<div class="navbar-brand">
 				<a class="navbar-item is-expanded navigation-item" href="/search">
 					<div>
-						<i class="fa fa-search"></i><span>Search</span>
+						<i class="fa fa-search"></i><span th:text="#{search}"></span>
 					</div>
 				</a> <a class="navbar-item is-expanded navigation-item" href="/donate">
 					<div>
-						<i class="fa fa-coins"></i><span>Donate</span>
+						<i class="fa fa-coins"></i><span th:text="#{donate}"></span>
 					</div>
-				</a> <a class="navbar-item is-expanded navigation-item" id="nav-alerts" href="/alerts">
+				</a> <a class="navbar-item is-expanded navigation-item" id="nav-alerts"
+					href="/alerts">
 					<div>
-						<i class="fa fa-bell"></i> <span>Alerts</span>
+						<i class="fa fa-bell"></i> <span th:text="#{alerts}"></span>
 					</div>
-				</a> <a class="navbar-item is-expanded navigation-item" id="nav-chats" href="/chats">
+				</a> <a class="navbar-item is-expanded navigation-item" id="nav-chats"
+					href="/chats">
 					<div>
-						<i class="fa fa-comments"></i> <span>Chats</span>
+						<i class="fa fa-comments"></i> <span th:text="#{chats}"></span>
 					</div>
 				</a> <a class="navbar-item is-expanded navigation-item" href="/profile">
 					<div>
-						<i class="fa fa-user"></i> <span>Profile</span>
+						<i class="fa fa-user"></i> <span th:text="#{profile}"></span>
 					</div>
 				</a>
 			</div>
@@ -103,7 +105,7 @@
 
 		<div th:if="${#lists.isEmpty(users)}"
 			style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-			<span>No users found, please try again later.</span>
+			<span th:text="#{no-users-found}"></span>
 		</div>
 
 		<div class="card is-horizontal" th:each="user : ${users}">
@@ -119,19 +121,18 @@
 							<div class="left" style="font-size: 2em"
 								th:text="${user.firstName}"></div>
 							<div class="right" style="font-size: 1.5em">
-								<span>Age: </span><span th:text="${user.age}"></span>
+								<span th:text="#{age}"></span><span>: </span><span th:text="${user.age}"></span>
 							</div>
 						</div>
 					</div>
 					<div class="media">
 						<div class="full-width">
 							<div class="left" style="font-size: 1.2em">
-								<span>Last active: </span><span
+								<span th:text="#{last-active}"></span><span>: </span><span
 									th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
 							</div>
 							<div class="right" style="font-size: 1.2em">
-								<span th:text="${user.distanceToUser}"></span><span>
-									meters from you</span>
+								<span th:text="${user.distanceToUser}"></span><span> </span><span th:text="#{meters-from-you}"></span>
 							</div>
 						</div>
 					</div>
@@ -141,8 +142,7 @@
 				<div class="profile-bottom full-width"
 					style="display: inline-block;">
 					<button class="button left is-info is-inverted"
-						th:onclick="viewProfile([[${user.idEncoded}]])">View
-						profile</button>
+						th:onclick="viewProfile([[${user.idEncoded}]])" th:text="#{view-profile}"></button>
 					<div class="right">
 						<button class="button colored is-rounded is-danger"
 							th:onclick="hideUser(this, [[${user.idEncoded}]])">
@@ -163,9 +163,9 @@
 		<div th:each="message : ${messages}"
 			style="display: inline-block; width: 100%;">
 			<div th:if="${message.from}" class="message left"
-				th:text="${message.content}"></div>
+				th:text="#{message.content}"></div>
 			<div th:unless="${message.from}" class="message right"
-				th:text="${message.content}"></div>
+				th:text="#{message.content}"></div>
 		</div>
 	</div>
 
@@ -181,32 +181,30 @@
 					<div class="media">
 						<div class="full-width">
 							<div class="left" style="font-size: 2em"
-								th:text="${donation.user.firstName}"></div>
+								th:text="#{donation.user.firstName}"></div>
 							<div class="right" style="font-size: 1.5em">
-								<span>Age: </span><span th:text="${donation.user.age}"></span>
+								<span th:text="#{age}"></span><span>: </span><span th:text="#{donation.user.age}"></span>
 							</div>
 						</div>
 					</div>
 					<div class="media">
 						<div class="full-width">
 							<div class="left" style="font-size: 1.2em">
-								<span>Last active: </span><span
+								<span th:text="#{last-active}"></span><span></span><span
 									th:text="${#dates.format(donation.user.activeDate, 'yyyy-MM-dd')}"></span>
 							</div>
 							<div class="right" style="font-size: 1.2em">
-								<span th:text="${donation.distanceToUser}"></span><span>
-									meters from you</span>
+								<span th:text="#{donation.distanceToUser}"></span><span> </span><span th:text="#{meters-from-you}"></span>
 							</div>
 						</div>
 					</div>
 
-					<div style="font-size: 1.1em" th:text="${donation.amount}"></div>
+					<div style="font-size: 1.1em" th:text="#{donation.amount}"></div>
 				</div>
 				<div class="profile-bottom full-width"
 					style="display: inline-block;">
 					<button class="button left is-info is-inverted"
-						th:onclick="viewProfile([[${user.idEncoded}]])">View
-						profile</button>
+						th:onclick="viewProfile([[${user.idEncoded}]])" th:text="#{view-profile}"></button>
 					<div class="right">
 						<button class="button colored is-rounded is-danger"
 							th:onclick="hideUser(this, [[${user.idEncoded}]])">
@@ -225,19 +223,12 @@
 
 	<div th:fragment="profile-warning">
 		<div th:if="${hasWarning}">
-			<div class="notification is-danger">User profile is incomplete,
-				you won't be seen by other users.</div>
-			<div class="notification is-warning" th:if="${noProfilePicture}">No
-				profile picture found!</div>
-			<div class="notification is-warning" th:if="${noDescription}">No
-				description found!</div>
-			<div class="notification is-warning" th:if="${noIntention}">No
-				dating preference found!</div>
-			<div class="notification is-warning" th:if="${noGender}">No
-				gender preference found!</div>
-			<div class="notification is-warning" th:if="${noLocation}">No
-				location found! It will be set automatically when you search for
-				other users!</div>
+			<div class="notification is-danger" th:text="#{profile.warning.incomplete}"></div>
+			<div class="notification is-warning" th:if="${noProfilePicture}"  th:text="#{profile.warning.incomplete}"></div>
+			<div class="notification is-warning" th:if="${noDescription}" th:text="#{profile.warning.no-profile-picture}"></div>
+			<div class="notification is-warning" th:if="${noIntention}" th:text="#{profile.warning.no-dating-preference}"></div>
+			<div class="notification is-warning" th:if="${noGender}" th:text="#{profile.warning.no-gender-preference}"></div>
+			<div class="notification is-warning" th:if="${noLocation}" th:text="#{profile.warning.no-location}"></div>
 		</div>
 	</div>
 </body>

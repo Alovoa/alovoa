@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/profile.css" />
-<title>Profile</title>
+<title th:text="#{profile.title}"></title>
 </head>
 <body>
 	<div id="main-logged-in">
@@ -26,7 +26,7 @@
 
 				<div class="field">
 					<button class="button is-info" id="btnPushNotifications"
-						name="btnPushNotifications" style="width: 100%;">Receive Notifications</button>
+						name="btnPushNotifications" style="width: 100%;" th:text="#{profile.webpush}"></button>
 				</div>
 
 				<div class="field">
@@ -46,26 +46,26 @@
 				
 				<div class="box">
 					<div class="field">
-						<label class="label">Description</label>
+						<label class="label" th:text="#{description}"></label>
 						<textarea class="textarea" id="description"
 							th:text="${user.description}"></textarea>
 					</div>
 	
 					<div class="field">
-						<label class="label">I want...</label>
+						<label class="label" th:text="#{profile.intention}"></label>
 						<div class="select">
 							<select id="intention">
 								<option value=""></option>
 								<th:block th:each="intention : ${intentions}">
 									<option th:value="${intention.id}"
 										th:selected="${user.intention != null && user.intention.id == intention.id}"
-										th:if="${intention.text == 'meet'}">to meet new people</option>
+										th:if="${intention.text == 'meet'}" th:text="#{profile.intention.meet}"></option>
 									<option th:value="${intention.id}"
 										th:selected="${user.intention != null && user.intention.id == intention.id}"
-										th:if="${intention.text == 'date'}">a relationship</option>
+										th:if="${intention.text == 'date'}" th:text="#{profile.intention.date}"></option>
 									<option th:value="${intention.id}"
 										th:selected="${user.intention != null && user.intention.id == intention.id}"
-										th:if="${intention.text == 'sex'}">sexual intimacy</option>
+										th:if="${intention.text == 'sex'}" th:text="#{profile.intention.sex}"></option>
 								</th:block>
 							</select>
 						</div>
@@ -74,7 +74,7 @@
 					<div class="field">
 						<div class="columns">
 							<div class="column">
-								<label class="label">Minimum Age</label>
+								<label class="label" th:text="#{profile.min-age}"></label>
 								<div class="slider-container">
 									<input class="slider is-info" step="1" min="16" max="100"
 										th:value="${user.preferedMinAge}" type="range"
@@ -83,7 +83,7 @@
 								</div>
 							</div>
 							<div class="column">
-								<label class="label">Maximum Age</label>
+								<label class="label" th:text="#{profile.max-age}"></label>
 								<div class="slider-container">
 									<input class="slider is-info" step="1" min="16" max="100"
 										th:value="${user.preferedMaxAge}" type="range"
@@ -96,7 +96,7 @@
 	
 	
 					<div class="field">
-						<label class="label">Looking for</label>
+						<label class="label" th:text="#{profile.gender}"></label>
 						<th:block th:each="gender : ${genders}">
 							<div class="field">
 								<input th:id="${'gender-' + gender.id}" type="checkbox"
@@ -104,11 +104,11 @@
 									style="position: absolute"
 									th:checked="${user.preferedGenders != null && not user.preferedGenders.?[id == __${gender.id}__].isEmpty()}">
 								<label th:for="${'gender-' + gender.id}"
-									th:if="${gender.text == 'male'}">Male</label> <label
+									th:if="${gender.text == 'male'}" th:text="#{profile.gender.male}"></label> <label
 									th:for="${'gender-' + gender.id}"
-									th:if="${gender.text == 'female'}">Female</label> <label
+									th:if="${gender.text == 'female'}" th:text="#{profile.gender.female}"></label> <label
 									th:for="${'gender-' + gender.id}"
-									th:if="${gender.text == 'other'}">Other</label>
+									th:if="${gender.text == 'other'}" th:text="#{profile.gender.other}"></label>
 							</div>
 						</th:block>
 					</div>
@@ -118,22 +118,22 @@
 				
 				<div class="box">					
 					<div class="field">
-						<label class="label">Request user data</label>
+						<label class="label" th:text="#{profile.userdata.request}"></label>
 						<div class="field">
 							<input class="input" type="password" placeholder="Password" id="userdata-password">
 							<div style="padding-top: 4px;"></div>
-							<button class="button" id="userdata-submit">Submit</button>
+							<button class="button" id="userdata-submit" th:text="#{submit}"></button>
 						</div>
 					</div>
 				</div>
 				
 				<div class="box">					
 					<div class="field">
-						<label class="label">Delete account</label>
+						<label class="label" th:text="#{profile.userdata.request}"></label>
 						<div class="field">
 							<input class="input" type="password" placeholder="Password" id="delete-acc-password">
 							<div style="padding-top: 4px;"></div>
-							<button class="button" id="delete-acc-submit">Submit</button>
+							<button class="button" id="delete-acc-submit" th:text="#{submit}"></button>
 						</div>
 					</div>
 				</div>

@@ -10,7 +10,7 @@
 
 <link rel="stylesheet" href="/css/lib/bulma.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
-<title>Login</title>
+<title th:text="#{login.title}"></title>
 </head>
 <body>
 	<div id="main">
@@ -18,8 +18,8 @@
 		<div class="section">
 			<div class="container">
 				<div class="column">
-					<h3 class="title">Login</h3>
-					<p class="subtitle">Please login to proceed.</p>
+					<h3 class="title" th:text="#{login.title}"></h3>
+					<p class="subtitle" th:text="#{login.subtitle}"></p>
 					<div class="box">
 						<form th:action="@{/login}" method="POST">
 							<div class="field">
@@ -57,12 +57,12 @@
 								</label>
 							</div>
 							-->
-							<button class="button">Login</button>
+							<button class="button" th:text="#{submit}"></button>
 						</form>
 					</div>
 
 					<p>
-						<a href="/password/reset">Forgot Password</a>
+						<a href="/password/reset" th:text="#{login.forgot-password}"></a>
 					</p>
 				</div>
 			</div>

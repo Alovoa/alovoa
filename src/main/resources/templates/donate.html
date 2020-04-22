@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/css/lib/bulma.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/search.css" />
-<title>Donate</title>
+<title th:text="#{donate.title}"></title>
 </head>
 <body>
 	<div id="main-logged-in">
@@ -19,11 +19,11 @@
 		<div class="section">
 			<div class="container is-small" style="display: flex">
 				<div>
-					<label class="label">Filter</label>
+					<label class="label" th:text="#{filter}"></label>
 					<div class="select">
 						<select id="sort" onchange="getDonationList">
-							<option value="1">Latest donations</option>
-							<option value="2">Largest donations</option>
+							<option value="1" th:text="#{donate.latest-donations}"></option>
+							<option value="2" th:text="#{donate.largest-donations}"></option>
 						</select>
 					</div>
 				</div>
@@ -32,11 +32,12 @@
 			<div style="padding-top: 24px;"></div>
 			<div class="container">
 				<section class="container" id="main-container"></section>
-				<a class="button colored is-primary" style="width: 100%;" href="/donate-list" target="_blank"><i class="fa fa-hand-holding-usd" style="padding-right: 4px;"></i>Donate Now</a>
+				<a class="button colored is-primary" style="width: 100%;"
+					href="/donate-list" target="_blank"><i
+					class="fa fa-hand-holding-usd" style="padding-right: 4px;"></i><span
+					th:text="#{donate.donate-now}"></span></a>
 			</div>
 		</div>
-
-
 	</div>
 
 	<footer th:replace="fragments.html::navigation"></footer>

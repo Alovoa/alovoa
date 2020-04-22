@@ -11,18 +11,17 @@
 <link rel="stylesheet" href="/css/lib/bulma.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/donate-list.css" />
-<title>Donate</title>
+<title th:text="#{donate.title}"></title>
 </head>
 <body>
 	<div id="main-logged-in">
 		<header th:insert="fragments.html::header"></header>
 		<div class="section">
 			<div class="container">
-				<a class="button is-primary" style="width: 100%;"><i
-					class="fa fa-coins"></i>Ko-fi</a>
-				<div class="notification is-success">Be sure to fill in your
-					account's email address in the message or name area.</div>
-				<div class="notification is-success">Use Stripe instead of PayPal because its fees are much lower.</div>
+				<a class="button is-primary" style="width: 100%; margin-bottom: 32px;"><i
+					class="fa fa-coins"></i><span th:text="#{kofi}" style="padding-left: 4px;"></span></a>
+				<div class="notification is-success" th:text="#{donate.notice-1}" style="margin-bottom: 4px;"></div>
+				<div class="notification is-success" th:text="#{donate.notice-2}"></div>
 				<!--<a href="https://stripe.com/en-de/pricing"><span>Very low fees</span></a>-->
 
 			</div>

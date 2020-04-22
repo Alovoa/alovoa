@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/notification.css" />
-<title>Messages</title>
+<title th:text="#{message.title}"></title>
 </head>
 <body>
 	<div id="main-logged-in">
@@ -40,10 +40,8 @@
 								<div style="font-size: 1.1em; word-break: break-all;"
 									th:text="${convo.lastMessage}"
 									th:if="${convo.lastMessage != null}"></div>
-								<!-- TODO -->
 								<div style="font-size: 1.1em; word-break: break-all;"
-									th:unless="${convo.lastMessage != null}">You got a match!
-									Tap here to send a message.</div>
+									th:unless="${convo.lastMessage != null}" th:text="#{message.match}"></div>
 							</div>
 						</div>
 					</div>

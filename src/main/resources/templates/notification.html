@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/notification.css" />
-<title>Notification</title>
+<title th:text="#{notification.title}"></title>
 </head>
 <body>
 	<div id="main-logged-in">
@@ -31,7 +31,7 @@
 						<div class="card-content">
 							<div class="profile-bottom full-width"
 								style="display: inline-block;">
-								<span>You have been liked by </span><span
+								<span th:text="#{notification.liked-by}"></span><span
 									th:text="${notification.userFromDto.firstName}"></span>
 							</div>
 						</div>
