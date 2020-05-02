@@ -11,8 +11,8 @@ function likeUser(idEnc) {
 			location.reload();
 		},
 		error : function(e) {
-			// TODO
 			console.log(e);
+			alert(getGenericErrorText());
 		}
 	});
 
@@ -29,16 +29,15 @@ function hideUser(idEnc) {
 			location.reload();
 		},
 		error : function(e) {
-			// TODO
 			console.log(e);
+			alert(getGenericErrorText());
 		}
 	});
 }
 
 function blockUser(idEnc) {
 
-	// TODO
-	var r = confirm("Block user?");
+	var r = confirm(getText("userprofile.js.block-user"));
 	if (r == true) {
 
 		$.ajax({
@@ -51,8 +50,8 @@ function blockUser(idEnc) {
 				location.reload();
 			},
 			error : function(e) {
-				// TODO
 				console.log(e);
+				alert(getGenericErrorText());
 			}
 		});
 	}
@@ -60,8 +59,7 @@ function blockUser(idEnc) {
 
 function unblockUser(idEnc) {
 
-	// TODO
-	var r = confirm("Unblock user?");
+	var r = confirm(getText("userprofile.js.block-user"));
 	if (r == true) {
 		$.ajax({
 			type : "POST",
@@ -73,8 +71,8 @@ function unblockUser(idEnc) {
 				location.reload();
 			},
 			error : function(e) {
-				// TODO
 				console.log(e);
+				alert(getGenericErrorText());
 			}
 		});
 	}
@@ -92,12 +90,12 @@ function reportUserSubmit() {
 			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 		},
 		success : function() {
-			//TODO
-			alert("User has been successfully reported!")
+			alert(getText("userprofile.js.success.report-user"));
 			location.reload();
 		},
 		error : function(e) {
 			refreshCaptcha();
+			alert(getGenericErrorText());
 		}
 	});
 }
