@@ -47,10 +47,10 @@
 						</div>
 						<div class="card-content">
 							<div class="content">
-								<h4 th:text="#{index.free.title}"></h4>
-								<p th:text="#{index.free.description}"></p>
+								<h4 th:utext="#{index.free.title}"></h4>
+								<p th:utext="#{index.free.description}"></p>
 								<p>
-									<a href="/donate-list" th:text="#{donate}"></a>
+									<a href="/donate-list" th:utext="#{donate}"></a>
 								</p>
 							</div>
 						</div>
@@ -63,11 +63,11 @@
 						</div>
 						<div class="card-content">
 							<div class="content">
-								<h4 th:text="#{index.free.title}"></h4>
-								<p th:text="#{index.free.description}"></p>
+								<h4 th:utext="#{index.private.title}"></h4>
+								<p th:utext="#{index.private.description}"></p>
 								<p>
 									<a href="https://github.com/Alovoa/alovoa"
-										th:text="#{source-code}"></a>
+										th:utext="#{source-code}"></a>
 								</p>
 							</div>
 						</div>
@@ -80,11 +80,9 @@
 						</div>
 						<div class="card-content">
 							<div class="content">
-								<h4></h4>
-								<p th:text="#{index.private.title}"></p>
-								<p th:text="#{index.private.description}">
-									<a href="/privacy" th:text="#{privacy-policy}"></a>
-								</p>
+								<h4 th:utext="#{index.private.title}"></h4>
+								<p th:utext="#{index.private.description}"></p>
+								<a href="/privacy" th:utext="#{privacy-policy}"></a>
 							</div>
 						</div>
 					</div>
@@ -100,8 +98,8 @@
 						</div>
 						<div class="card-content">
 							<div class="content">
-								<h4 th:text="#{index.ad-free.title}"></h4>
-								<p th:text="#{index.ad-free.description}"></p>
+								<h4 th:utext="#{index.ad-free.title}"></h4>
+								<p th:utext="#{index.ad-free.description}"></p>
 							</div>
 						</div>
 					</div>
@@ -113,8 +111,8 @@
 						</div>
 						<div class="card-content">
 							<div class="content">
-								<h4 th:text="#{index.technology.title}"></h4>
-								<p th:text="#{index.technology.description}">
+								<h4 th:utext="#{index.technology.title}"></h4>
+								<p th:utext="#{index.technology.description}">
 								</p>
 							</div>
 						</div>
@@ -127,8 +125,8 @@
 						</div>
 						<div class="card-content">
 							<div class="content">
-								<h4 th:text="#{index.for-you.title}"></h4>
-								<p ></p>
+								<h4 th:utext="#{index.for-you.title}"></h4>
+								<p th:text="#{index.for-you.description}"></p>
 							</div>
 						</div>
 					</div>
@@ -141,7 +139,7 @@
 				<div class="hero-body">
 
 					<div class="container has-text-centered">
-						<h1 class="title" th:text="#{index.sign-up-now}"></h1>
+						<h1 class="title" th:utext="#{index.sign-up-now}"></h1>
 					</div>
 
 				</div>

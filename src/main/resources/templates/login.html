@@ -24,7 +24,7 @@
 						<form th:action="@{/login}" method="POST">
 							<div class="field">
 								<div class="control">
-									<input class="input" type="email" placeholder="Your Email"
+									<input class="input" type="email" th:placeholder="#{email}"
 										autofocus="" name="username">
 								</div>
 							</div>
@@ -32,7 +32,7 @@
 							<div class="field">
 								<div class="control">
 									<input class="input" type="password"
-										placeholder="Your Password" name="password">
+										th:placeholder="#{password}" name="password">
 								</div>
 							</div>
 							<div class="field">
@@ -47,7 +47,7 @@
 								</div>
 								<div class="field">
 									<input class="input" id="captcha" name="captchaText"
-										placeholder="Captcha" autocomplete="off" required>
+										th:placeholder="#{captcha}" autocomplete="off" required>
 								</div>
 							</div>
 							<!-- TODO: Causes exception 

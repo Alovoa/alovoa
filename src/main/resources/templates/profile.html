@@ -120,7 +120,7 @@
 					<div class="field">
 						<label class="label" th:text="#{profile.userdata.request}"></label>
 						<div class="field">
-							<input class="input" type="password" placeholder="Password" id="userdata-password">
+							<input class="input" type="password" th:placeholder="#{password}" id="userdata-password">
 							<div style="padding-top: 4px;"></div>
 							<button class="button" id="userdata-submit" th:text="#{submit}"></button>
 						</div>
@@ -131,7 +131,7 @@
 					<div class="field">
 						<label class="label" th:text="#{profile.userdata.request}"></label>
 						<div class="field">
-							<input class="input" type="password" placeholder="Password" id="delete-acc-password">
+							<input class="input" type="password" th:placeholder="#{password}" id="delete-acc-password">
 							<div style="padding-top: 4px;"></div>
 							<button class="button" id="delete-acc-submit" th:text="#{submit}"></button>
 						</div>

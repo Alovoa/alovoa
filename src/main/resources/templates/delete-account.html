@@ -25,7 +25,7 @@
 					<input type="hidden" name="tokenString" th:value="${tokenString}"
 						required>
 					<div class="field">
-						<input name="email" placeholder="Email" class="input">
+						<input name="email" th:placeholder="#{email}" class="input">
 					</div>
 					<div style="padding-top: 32px;"></div>
 					<div class="field">
@@ -40,7 +40,7 @@
 						</div>
 						<div class="field">
 							<input class="input" id="captcha" name="captchaText"
-								placeholder="Captcha" autocomplete="off" required>
+								th:placeholder="#{captcha}" autocomplete="off" required>
 						</div>
 					</div>
 					<div class="field">
