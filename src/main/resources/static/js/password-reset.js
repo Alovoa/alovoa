@@ -3,9 +3,8 @@ $(function() {
 	refreshCaptcha();
 	let url = window.location.href;
 
-	// TODO
 	if (url.includes("?error")) {
-		alert("An error occured while trying to reset your password. Please try again.")
+		alert(getGenericErrorText());
 	}
 
 	$("#form").submit(function(e) {

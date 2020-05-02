@@ -8,8 +8,7 @@ function checkPassword() {
 	var passwordRepeat = $("#password-repeat").val();
 
 	if (password != passwordRepeat) {
-		// TODO
-		$("#password-info").html("Passwords do not match!");
+		$("#password-info").html(getText("error.password-no-match"));
 		$("#password-info").show();
 		return false;
 	} else {
@@ -17,10 +16,8 @@ function checkPassword() {
 			$("#password-info").hide();
 			return true;
 		} else {
-			// TODO
 			$("#password-info")
-					.html(
-							"Your password needs to be at least 7 characters long and must contain characters and numbers.");
+					.html(getText("error.password-weak"));
 			$("#password-info").show();
 			return false;
 		}

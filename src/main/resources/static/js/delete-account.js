@@ -27,9 +27,9 @@ $(function() {
 						window.location = "/?confirm-account-deleted";
 					},
 					error : function(e) {
-						//TODO proper error message
 						console.log(e)
 						refreshCaptcha();
+						alert(getGenericErrorText());
 					}
 				});
 

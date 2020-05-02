@@ -1,9 +1,8 @@
 $(function() {
 	let url = window.location.href;
 
-	// TODO
 	if (url.includes("?error")) {
-		alert("An error occured while trying to change your password. Please try again.")
+		alert(getGenericErrorText());
 	}
 
 	$("#form").submit(function(e) {

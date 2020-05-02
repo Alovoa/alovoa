@@ -26,8 +26,8 @@ $(function() {
 						location.reload();
 					},
 					error : function(e) {
-						// TODO
 						console.log(e);
+						alert(getGenericErrorText());
 					}
 				});
 			}
@@ -40,13 +40,11 @@ $(function() {
 	$('#description').on('keyup paste', function() {
 
 		let data = $('#description').val();
-		// TODO
 		var maxlength = descriptionMaxLength;
 		var currentLength = $(this).val().length;
 
 		if (currentLength >= maxlength) {
-			// TODO
-			alert("You have reached the maximum number of characters.");
+			alert(getGenericMaxCharsErrorText());
 			$('#description').val(data.substring(0, maxlength));
 		} else {
 			
@@ -69,8 +67,8 @@ $(function() {
 							updateProfileWarning();
 						},
 						error : function(e) {
-							// TODO
 							console.log(e);
+							alert(getGenericErrorText());
 						}
 					});
 				}, timeoutDescription);
@@ -92,8 +90,8 @@ $(function() {
 					updateProfileWarning();
 				},
 				error : function(e) {
-					// TODO
 					console.log(e);
+					alert(getGenericErrorText());
 				}
 			});
 		}
@@ -113,8 +111,8 @@ $(function() {
 					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 				},
 				error : function(e) {
-					// TODO
 					console.log(e);
+					alert(getGenericErrorText());
 				}
 			});
 		}
@@ -133,8 +131,8 @@ $(function() {
 					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 				},
 				error : function(e) {
-					// TODO
 					console.log(e);
+					alert(getGenericErrorText());
 				}
 			});
 		}
@@ -165,8 +163,8 @@ $(function() {
 					updateProfileWarning();
 				},
 				error : function(e) {
-					// TODO
 					console.log(e);
+					alert(getGenericErrorText());
 				}
 			});
 		}
@@ -187,13 +185,11 @@ $(function() {
 					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 				},
 				success : function(e) {
-					//TODO
-					alert("Success!");
+					alert(getGenericSubmitSuccessText());
 				},
 				error : function(e) {
-					// TODO
 					console.log(e);
-					alert("Unknown error. Please try again later");
+					alert(getGenericErrorText());
 				}
 			});
 		}
@@ -213,13 +209,11 @@ $(function() {
 					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 				},
 				success : function(e) {
-					//TODO
-					alert("Success!");
+					alert(getGenericSubmitSuccessText());
 				},
 				error : function(e) {
-					// TODO
 					console.log(e);
-					alert("Unknown error. Please try again later");
+					alert(getGenericErrorText());
 				}
 			});
 		}

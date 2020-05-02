@@ -1,19 +1,27 @@
 $(function() {
 	let url = window.location.href;
+	let param;
 	
-	//TODO
 	if(url.includes("?confirm-registration")) {
-		alert("A confirmation email has been sent to your email address.")
+		param = "index.js.confirm-registration";
 	} else if(url.includes("?registration-confirm-success")) {
-		alert("Confirmation succeeded, you can now login and meet new people in your area!")
+		param = "index.js.registration-confirm-success";
 	} else if(url.includes("?registration-confirm-failed")) {
-		alert("Confirmation failed, please try again!")
+		param = "index.js.registration-confirm-failed";
 	} else if(url.includes("?password-reset-requested")) {
-		alert("An email for resetting your password has been sent, please check your emails and follow the instructions.")
+		param = "index.js.password-reset-requested";
 	} else if(url.includes("?password-change-success")) {
-		alert("Your password has been successfully changed!")
+		param = "index.js.password-change-success";
 	} else if(url.includes("?confirm-account-deleted")) {
-		alert("Your account has been successfully deleted!")
+		param = "index.js.confirm-account-deleted";
+	}
+	
+	if(param) {
+		console.log(param)
+		let text = getText(param);
+		if(text) {
+			alert(text);
+		}
 	}
 	
 	if('serviceWorker' in navigator) {

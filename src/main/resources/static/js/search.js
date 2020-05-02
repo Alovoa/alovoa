@@ -22,8 +22,7 @@ function search() {
 
 		});
 	} else {
-		// TODO
-		alert("Your browser does not support HTML5 geolocation. Please try with another browser.");
+		alert(getText("search.js.error.no-geolocation"));
 	}
 }
 
@@ -42,8 +41,8 @@ function likeUser(btn, idEnc) {
 			hideProfileTile(btn);
 		},
 		error : function(e) {
-			// TODO
 			console.log(e);
+			alert(getGenericErrorText());
 		}
 	});
 
@@ -60,8 +59,8 @@ function hideUser(btn, idEnc) {
 			hideProfileTile(btn);
 		},
 		error : function(e) {
-			// TODO
 			console.log(e);
+			alert(getGenericErrorText());
 		}
 	});
 }

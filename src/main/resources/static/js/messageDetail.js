@@ -15,13 +15,12 @@ $(document).ready(function() {
 
 	$('#message-send-input').on('keyup paste', function() {
 		let data = $('#message-send-input').val();
-		// TODO
 		var maxlength = messageMaxLength;
 		var currentLength = $(this).val().length;
 
 		if (currentLength >= maxlength) {
-			// TODO
-			alert("You have reached the maximum number of characters.");
+			
+			alert(getText("message.js.error.max-length"));
 			$('#message-send-input').val(data.substring(0, maxlength));
 		}
 	});
@@ -41,8 +40,8 @@ function sendMessage() {
 			reloadMessages(true);
 		},
 		error : function(e) {
-			// TODO
 			console.log(e);
+			reloadMessages(true);
 		}
 	});
 }

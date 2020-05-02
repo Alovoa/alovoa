@@ -21,7 +21,6 @@ function getNewAlert() {
 			}
 		},
 		error : function(e) {
-			// TODO
 			console.log(e);
 			clearTimeout(alertTimeout);
 		}
@@ -42,7 +41,6 @@ function getNewMessage() {
 			}
 		},
 		error : function(e) {
-			// TODO
 			console.log(e);
 			clearTimeout(messageTimeout);
 		}
