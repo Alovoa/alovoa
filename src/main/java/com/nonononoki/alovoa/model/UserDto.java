@@ -86,7 +86,7 @@ public class UserDto {
 		double dist = Tools.getDistanceToUser(user, currentUser);
 		int distRounded = (int) Math.round(dist);
 		distRounded  = distRounded - distRounded % LOCATION_ROUNDING;
-		dto.setDistanceToUser(distRounded);
+		dto.setDistanceToUser(distRounded / Tools.THOUSAND); //convert meters to km
 		return dto;
 	}
 }

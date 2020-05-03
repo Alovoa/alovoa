@@ -10,8 +10,16 @@
 	text-transform: uppercase;
 }
 
+.profile-pic {
+	border-radius: 12px;
+}
+
 svg {
 	color: #209cee;
+}
+
+.card {
+	border-radius: 12px;
 }
 
 .navbar-item img {

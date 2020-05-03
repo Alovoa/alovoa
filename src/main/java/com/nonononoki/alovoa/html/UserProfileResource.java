@@ -30,6 +30,9 @@ public class UserProfileResource {
 		User user = userRepo.findById(id).orElse(null);
 		User currUser = authService.getCurrentUser();
 		
+		if(currUser.getId().equals(id)) {
+			throw new Exception();
+		}
 		
 		if(user != null) {		
 			if(user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {

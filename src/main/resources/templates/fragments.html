@@ -111,7 +111,7 @@
 		<div class="card is-horizontal" th:each="user : ${users}">
 			<div class="card-image">
 				<figure class="image">
-					<img th:src="${user.profilePicture}">
+					<img th:src="${user.profilePicture}" class="profile-pic">
 				</figure>
 			</div>
 			<div class="card-content">
@@ -132,7 +132,7 @@
 									th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
 							</div>
 							<div class="right" style="font-size: 1.2em">
-								<span th:text="${user.distanceToUser}"></span><span> </span><span th:text="#{meters-from-you}"></span>
+								<span th:text="${user.distanceToUser}"></span><span> </span><span th:text="#{km-from-you}"></span>
 							</div>
 						</div>
 					</div>
@@ -163,9 +163,9 @@
 		<div th:each="message : ${messages}"
 			style="display: inline-block; width: 100%;">
 			<div th:if="${message.from}" class="message left"
-				th:text="#{message.content}"></div>
+				th:text="${message.content}"></div>
 			<div th:unless="${message.from}" class="message right"
-				th:text="#{message.content}"></div>
+				th:text="${message.content}"></div>
 		</div>
 	</div>
 
@@ -173,7 +173,7 @@
 		<div class="card is-horizontal" th:each="donation : ${donations}">
 			<div class="card-image">
 				<figure class="image">
-					<img th:src="${donation.user.profilePicture}">
+					<img th:src="${donation.user.profilePicture}" class="profile-pic">
 				</figure>
 			</div>
 			<div class="card-content">
@@ -194,7 +194,7 @@
 									th:text="${#dates.format(donation.user.activeDate, 'yyyy-MM-dd')}"></span>
 							</div>
 							<div class="right" style="font-size: 1.2em">
-								<span th:text="#{donation.distanceToUser}"></span><span> </span><span th:text="#{meters-from-you}"></span>
+								<span th:text="#{donation.distanceToUser}"></span><span> </span><span th:text="#{km-from-you}"></span>
 							</div>
 						</div>
 					</div>

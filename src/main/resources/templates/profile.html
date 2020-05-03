@@ -33,11 +33,11 @@
 					<div class="columns is-mobile is-centered">
 						<div class="column is-half center-children">
 
-							<img id="profilePicture" src="/img/profile.jpg"
+							<img id="profilePicture" class="profile-pic" src="/img/profile.jpg"
 								style="cursor: pointer;" height=400 width="400"
 								th:unless="${user.profilePicture}" /> <img id="profilePicture"
 								style="cursor: pointer;" height=400 width="400"
-								th:if="${user.profilePicture}" th:src="${user.profilePicture}" />
+								th:if="${user.profilePicture}" class="profile-pic" th:src="${user.profilePicture}" />
 							<input id="profilePictureUpload" type="file" accept="image/*"
 								style="display: none">
 						</div>
@@ -129,7 +129,7 @@
 				
 				<div class="box">					
 					<div class="field">
-						<label class="label" th:text="#{profile.userdata.request}"></label>
+						<label class="label" th:text="#{profile.account.delete}"></label>
 						<div class="field">
 							<input class="input" type="password" th:placeholder="#{password}" id="delete-acc-password">
 							<div style="padding-top: 4px;"></div>

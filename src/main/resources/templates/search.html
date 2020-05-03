@@ -23,12 +23,11 @@
 					<label class="label" th:text="#{search.max-distance}"></label>
 					<div class="slider-container"
 						style="padding-top: 8px; padding-bottom: 8px;">
-						<input class="slider is-info" step="1000" min="1000" max="50000"
-							value="20000" type="range" id="max-distance-slider">
-						<p id="max-distance-display">20000</p>
+						<input class="slider is-info" step="1" min="1" max="50"
+							value="20" type="range" id="max-distance-slider">
+						<p id="max-distance-display">20</p>
 						<div style="padding-left: 4px"></div>
-						<span> </span>
-						<span th:text="#{search.meters}"></span>
+						<span th:text="#{km}"></span>
 					</div>
 				</div>
 				<div style="padding-left: 24px;"></div>

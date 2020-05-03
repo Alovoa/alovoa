@@ -25,7 +25,7 @@
 
 							<img id="profilePicture" style="cursor: pointer;" height=400
 								width="400" th:if="${user.profilePicture}"
-								th:src="${user.profilePicture}" />
+								th:src="${user.profilePicture}" class="profile-pic"/>
 						</div>
 					</div>
 				</div>
@@ -48,7 +48,16 @@
 							</div>
 						</div>
 					</div>
+					<div class="media" style="border-top:none; padding-top: 0px;">
+						<div class="full-width">
+							<div class="left" style="font-size: 1.2em">
+								<span th:text="#{distance}"></span><span>: </span><span
+									th:text="${user.distanceToUser}"></span ><span th:text="#{km}" style="padding-left: 4px;"></span>
+							</div>
+						</div>
 				</div>
+				
+				<div style="padding-top: 24px;"></div>
 
 
 				<div class="field">
@@ -182,6 +191,7 @@
 	<script src="/js/tools/refreshCaptcha.js"></script>
 	<script src="/js/tools/modal.js"></script>
 	<script src="/js/tools/getNotification.js"></script>
+	<script src="/js/tools/getText.js"></script>
 	<script src="/js/userProfile.js"></script>
 </body>
 </html>

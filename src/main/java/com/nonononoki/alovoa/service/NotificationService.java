@@ -77,7 +77,7 @@ public class NotificationService {
 
 		Locale locale = LocaleContextHolder.getLocale();
 		String title = messageSource.getMessage("backend.webpush.like.message", null, locale);
-		String msg = messageSource.getMessage("backend.mail.userdata.subject", null, locale);
+		String msg = messageSource.getMessage("backend.webpush.like.subject", null, locale);
 
 		WebPushMessage message = new WebPushMessage();
 		message.setClickTarget(appDomain + "/alerts");
@@ -92,7 +92,7 @@ public class NotificationService {
 
 		Locale locale = LocaleContextHolder.getLocale();
 		String title = messageSource.getMessage("backend.webpush.match.message", null, locale);
-		String msg = messageSource.getMessage("backend.mail.match.subject", null, locale);
+		String msg = messageSource.getMessage("backend.webpush.match.subject", null, locale);
 
 		WebPushMessage message = new WebPushMessage();
 		message.setClickTarget(appDomain + "/alerts");
@@ -107,7 +107,7 @@ public class NotificationService {
 
 		Locale locale = LocaleContextHolder.getLocale();
 		String title = messageSource.getMessage("backend.webpush.message.message", null, locale);
-		String msg = messageSource.getMessage("backend.mail.message.subject", null, locale);
+		String msg = messageSource.getMessage("backend.webpush.message.subject", null, locale);
 
 		WebPushMessage message = new WebPushMessage();
 		message.setClickTarget(appDomain + "/alerts");
