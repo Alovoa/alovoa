@@ -12,6 +12,7 @@ $(function() {
 
 function search() {
 	console.log("search");
+
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function(position) {
 			console.log(position);
@@ -20,7 +21,7 @@ function search() {
 			let url = "/search/users/" + position.coords.latitude + "/"
 					+ position.coords.longitude + "/" + distance + "/" + sort;
 			$("#main-container").load(url);
-
+			$("#filter-div").addClass("searched");
 		});
 	} else {
 		alert(getText("search.js.error.no-geolocation"));

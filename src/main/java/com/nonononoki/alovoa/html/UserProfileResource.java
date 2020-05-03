@@ -40,6 +40,7 @@ public class UserProfileResource {
 			}	
 			ModelAndView mav = new ModelAndView("userProfile");
 			mav.addObject("user", UserDto.userToUserDto(user, currUser, textEncryptor));
+			mav.addObject("currUser", currUser);
 			return mav;
 		} else {
 			throw new Exception("");

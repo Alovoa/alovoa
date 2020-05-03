@@ -71,6 +71,11 @@ public class UserController {
 	public void updateInterest(@PathVariable int interest, @PathVariable String activated) {
 		userService.updateInterest(interest, Tools.binaryStringToBoolean(activated));
 	}
+	
+	@PostMapping("/update/theme/{themeId}")
+	public void updateTheme(@PathVariable int themeId) {
+		userService.updateTheme(themeId);
+	}
 
 	@PostMapping(value = "/like/{idEnc}")
 	public void likeUser(@PathVariable String idEnc) throws Exception {

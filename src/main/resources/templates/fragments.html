@@ -38,7 +38,7 @@
 				<div class="navbar-end">
 					<form th:action="@{/logout}" method="post">
 						<span class="navbar-item">
-							<button class="button is-white is-outlined" href="/logout">
+							<button class="button is-white is-outlined" href="/logout" id="logout">
 								<span th:text="#{logout}"></span>
 							</button>
 						</span>
@@ -104,7 +104,7 @@
 	<div th:fragment="search-users">
 
 		<div th:if="${#lists.isEmpty(users)}"
-			style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+			style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding-top: 12px;">
 			<span th:text="#{no-users-found}"></span>
 		</div>
 

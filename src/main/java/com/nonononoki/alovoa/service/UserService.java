@@ -255,6 +255,12 @@ public class UserService {
 		user.setPreferedGenders(list);
 		userRepo.save(user);
 	}
+	
+	public void updateTheme(int themeId) {
+		User user = authService.getCurrentUser();
+		user.setTheme(themeId);
+		userRepo.save(user);
+	}
 
 	private String adjustPicture(String imgB64) throws IOException {
 		// convert b64 to bufferedimage

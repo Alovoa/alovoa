@@ -29,5 +29,5 @@ function getGenericSubmitSuccessText() {
 }
 
 function getGenericMaxCharsErrorText() {
-	return getText("success.submit.generic");
+	return getText("error.max-chars.generic");
 }

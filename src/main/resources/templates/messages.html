@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/notification.css" />
+<link th:if="${user.theme == 1}" rel="stylesheet" href="/css/alovoa-dark.css" />
 <title th:text="#{message.title}"></title>
 </head>
 <body>
@@ -25,8 +26,8 @@
 						<div class="card-image">
 							<figure class="image"
 								style="max-width: 200px; max-height: 200px;">
-								<img th:src="${convo.userProfilePicture}"
-									th:onclick="viewProfile([[${convo.userIdEncoded}]])">
+								<img th:src="${convo.userProfilePicture}" class="profile-pic"
+									th:value="${convo.userIdEncoded}">
 							</figure>
 						</div>
 						<div class="card-content">

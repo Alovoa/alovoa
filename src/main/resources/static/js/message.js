@@ -8,3 +8,13 @@ function viewMessageDetail(e, id) {
 	
 	window.open("/chats/" + id ,"_self");
 }
+
+$('.profile-pic').click(function(event){
+    event.stopPropagation();
+	let val = $(event.target).attr("value");
+	viewProfile(val);
+});
+
+function viewProfile(idEnc) {
+	window.open('/profile/view/' + idEnc, '_blank');
+}

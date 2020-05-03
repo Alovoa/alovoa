@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/profile.css" />
+<link th:if="${user.theme == 1}" rel="stylesheet" href="/css/alovoa-dark.css" />
 <title th:text="#{profile.title}"></title>
 </head>
 <body>
@@ -55,7 +56,6 @@
 						<label class="label" th:text="#{profile.intention}"></label>
 						<div class="select">
 							<select id="intention">
-								<option value=""></option>
 								<th:block th:each="intention : ${intentions}">
 									<option th:value="${intention.id}"
 										th:selected="${user.intention != null && user.intention.id == intention.id}"
@@ -111,6 +111,22 @@
 									th:if="${gender.text == 'other'}" th:text="#{profile.gender.other}"></label>
 							</div>
 						</th:block>
+					</div>
+				</div>
+				
+				<div style="padding-top: 32px;"></div>
+				
+				<div class="box">
+					<div class="field">
+						<label class="label" th:text="#{theme}"></label>
+						<div class="select">
+							<select id="theme">
+									<option value="0"
+										th:selected="${user.theme == 0}" th:text="#{light}"></option>
+									<option value="1"
+										th:selected="${user.theme == 1}" th:text="#{dark}"></option>
+							</select>
+						</div>
 					</div>
 				</div>
 				

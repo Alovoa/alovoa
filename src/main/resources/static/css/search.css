@@ -28,6 +28,7 @@
 	.card {
 		border: initial;
 		border-top: 1px solid #d3d3d3;
+		border-radius: 0px !important;
 	}
 	.card-content .content {
 		height: initial;
@@ -37,7 +38,43 @@
 		max-width: initial;
 		padding-bottom: 24px;
 	}
+	
+	.section {
+    	padding: 1rem 1.5rem;
+	}
 }
+/*very small screens*/
+@media screen and (max-width: 500px) {
+
+	.section {
+    	padding: 0.5rem 0.5rem;
+	}
+	#distance-spacing {
+		padding-left: 4px !important;
+	}
+	#sort-search-spacing {
+		padding-left: 4px !important;
+	}
+	
+	.image img {
+		width: 150px;
+		padding-bottom: 4px;
+	}
+	
+	.media {
+		margin-top: 0.2em !important;
+		margin-bottom: 0.2em !important;
+	}
+	
+	.searched {
+		display: none;
+	}
+	
+	.card {
+		padding: 1em 0em;
+	}
+}
+
 /*https://github.com/jgthms/bulma/pull/1596#issuecomment-556416927*/
 .card.is-horizontal {
 	flex-direction: row;

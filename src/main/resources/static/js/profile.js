@@ -51,7 +51,7 @@ $(function() {
 			if(timerDescription) {
 				clearTimeout(timerDescription);
 			}
-			if ($('#desctiprion').val) {
+			if ($('#description').val) {
 				timerDescription = setTimeout(function(){
 					
 					console.log("uploading description")
@@ -169,6 +169,27 @@ $(function() {
 			});
 		}
 		
+	});
+	
+	$("#theme").change(function(e) {
+
+		let data = $("#theme").val();
+		if (data) {
+			$.ajax({
+				type : "POST",
+				url : "/user/update/theme/" + data,
+				headers : {
+					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+				},
+				success : function(e) {
+					location.reload();
+				},
+				error : function(e) {
+					console.log(e);
+					alert(getGenericErrorText());
+				}
+			});
+		}
 	});
 	
 	$("#userdata-submit").click(function(e) {

@@ -51,6 +51,8 @@ public class User {
 	private String profilePicture;
 	
 	private double totalDonations;
+	
+	private int theme;
 
 	@ManyToMany
 	@JoinTable(name = "user2interest")
