@@ -64,7 +64,8 @@ public class PasswordService {
 			throw new Exception("");
 		}
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
+		user.setPasswordToken(null);
 		userRepo.save(user);
-		userPasswordTokenRepo.delete(token);
+		//userPasswordTokenRepo.delete(token);
 	}
 }

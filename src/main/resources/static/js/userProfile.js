@@ -8,7 +8,7 @@ function likeUser(idEnc) {
 			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 		},
 		success : function() {
-			location.reload();
+			location.reload(true);
 		},
 		error : function(e) {
 			console.log(e);
@@ -26,7 +26,7 @@ function hideUser(idEnc) {
 			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 		},
 		success : function() {
-			location.reload();
+			location.reload(true);
 		},
 		error : function(e) {
 			console.log(e);
@@ -47,7 +47,7 @@ function blockUser(idEnc) {
 				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 			},
 			success : function() {
-				location.reload();
+				location.reload(true);
 			},
 			error : function(e) {
 				console.log(e);
@@ -68,7 +68,7 @@ function unblockUser(idEnc) {
 				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 			},
 			success : function() {
-				location.reload();
+				location.reload(true);
 			},
 			error : function(e) {
 				console.log(e);
@@ -91,7 +91,7 @@ function reportUserSubmit() {
 		},
 		success : function() {
 			alert(getText("userprofile.js.success.report-user"));
-			location.reload();
+			location.reload(true);
 		},
 		error : function(e) {
 			refreshCaptcha();

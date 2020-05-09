@@ -6,6 +6,5 @@ import com.nonononoki.alovoa.entity.UserInterest;
 
 public interface UserInterestRepository extends JpaRepository<UserInterest, Long> {
 	
-	public UserInterest findByText(String text);
 }
 

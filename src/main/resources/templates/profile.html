@@ -13,7 +13,8 @@
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/profile.css" />
-<link th:if="${user.theme == 1}" rel="stylesheet" href="/css/alovoa-dark.css" />
+<link th:if="${user.theme == 1}" rel="stylesheet"
+	href="/css/alovoa-dark.css" />
 <title th:text="#{profile.title}"></title>
 </head>
 <body>
@@ -27,31 +28,33 @@
 
 				<div class="field">
 					<button class="button is-info" id="btnPushNotifications"
-						name="btnPushNotifications" style="width: 100%;" th:text="#{profile.webpush}"></button>
+						name="btnPushNotifications" style="width: 100%;"
+						th:text="#{profile.webpush}"></button>
 				</div>
 
 				<div class="field">
 					<div class="columns is-mobile is-centered">
 						<div class="column is-half center-children">
 
-							<img id="profilePicture" class="profile-pic" src="/img/profile.jpg"
-								style="cursor: pointer;" height=400 width="400"
-								th:unless="${user.profilePicture}" /> <img id="profilePicture"
-								style="cursor: pointer;" height=400 width="400"
-								th:if="${user.profilePicture}" class="profile-pic" th:src="${user.profilePicture}" />
-							<input id="profilePictureUpload" type="file" accept="image/*"
+							<img id="profilePicture" class="profile-pic"
+								src="/img/profile.jpg" style="cursor: pointer;" height=400
+								width="400" th:unless="${user.profilePicture}" /> <img
+								id="profilePicture" style="cursor: pointer;" height=400
+								width="400" th:if="${user.profilePicture}" class="profile-pic"
+								th:src="${user.profilePicture}" /> <input
+								id="profilePictureUpload" type="file" accept="image/*"
 								style="display: none">
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="box">
 					<div class="field">
 						<label class="label" th:text="#{description}"></label>
 						<textarea class="textarea" id="description"
 							th:text="${user.description}"></textarea>
 					</div>
-	
+
 					<div class="field">
 						<label class="label" th:text="#{profile.intention}"></label>
 						<div class="select">
@@ -59,18 +62,21 @@
 								<th:block th:each="intention : ${intentions}">
 									<option th:value="${intention.id}"
 										th:selected="${user.intention != null && user.intention.id == intention.id}"
-										th:if="${intention.text == 'meet'}" th:text="#{profile.intention.meet}"></option>
+										th:if="${intention.text == 'meet'}"
+										th:text="#{profile.intention.meet}"></option>
 									<option th:value="${intention.id}"
 										th:selected="${user.intention != null && user.intention.id == intention.id}"
-										th:if="${intention.text == 'date'}" th:text="#{profile.intention.date}"></option>
+										th:if="${intention.text == 'date'}"
+										th:text="#{profile.intention.date}"></option>
 									<option th:value="${intention.id}"
 										th:selected="${user.intention != null && user.intention.id == intention.id}"
-										th:if="${intention.text == 'sex'}" th:text="#{profile.intention.sex}"></option>
+										th:if="${intention.text == 'sex'}"
+										th:text="#{profile.intention.sex}"></option>
 								</th:block>
 							</select>
 						</div>
 					</div>
-	
+
 					<div class="field">
 						<div class="columns">
 							<div class="column">
@@ -93,8 +99,8 @@
 							</div>
 						</div>
 					</div>
-	
-	
+
+
 					<div class="field">
 						<label class="label" th:text="#{profile.gender}"></label>
 						<th:block th:each="gender : ${genders}">
@@ -104,56 +110,87 @@
 									style="position: absolute"
 									th:checked="${user.preferedGenders != null && not user.preferedGenders.?[id == __${gender.id}__].isEmpty()}">
 								<label th:for="${'gender-' + gender.id}"
-									th:if="${gender.text == 'male'}" th:text="#{profile.gender.male}"></label> <label
+									th:if="${gender.text == 'male'}"
+									th:text="#{profile.gender.male}"></label> <label
 									th:for="${'gender-' + gender.id}"
-									th:if="${gender.text == 'female'}" th:text="#{profile.gender.female}"></label> <label
+									th:if="${gender.text == 'female'}"
+									th:text="#{profile.gender.female}"></label> <label
 									th:for="${'gender-' + gender.id}"
-									th:if="${gender.text == 'other'}" th:text="#{profile.gender.other}"></label>
+									th:if="${gender.text == 'other'}"
+									th:text="#{profile.gender.other}"></label>
 							</div>
 						</th:block>
 					</div>
 				</div>
-				
+
 				<div style="padding-top: 32px;"></div>
-				
+
+				<div class="box">
+					<div class="field" th:fragment="interests">
+						<label class="label" th:text="#{interests}"></label>
+						<th:block th:each="interest : ${user.interests}">
+							<div style="padding: 4px; display: inline-block;">
+								<div class="field" th:text="${interest.text}"
+									style="float: left; font-size: 1.1em;"></div>
+								<i class="fa fa-times"
+									style="float: left; margin-top: 4px; margin-left: 4px; font-size: 1.2em; cursor: pointer;"
+									th:onclick="deleteInterest([[${interest.id}]])"></i>
+							</div>
+						</th:block>
+					</div>
+
+					<div class="field">
+						<form id="interest-form" th:action="@{/}" method="POST">
+							<input class="input" pattern="[a-zA-Z0-9-]{3,30}" name="value"
+								required>
+							<div style="padding-top: 4px;"></div>
+							<button class="button" th:text="#{submit}"></button>
+						</form>
+					</div>
+					<div class="notification is-info"
+						th:text="#{profile.interest.info}"></div>
+				</div>
+
 				<div class="box">
 					<div class="field">
 						<label class="label" th:text="#{theme}"></label>
 						<div class="select">
 							<select id="theme">
-									<option value="0"
-										th:selected="${user.theme == 0}" th:text="#{light}"></option>
-									<option value="1"
-										th:selected="${user.theme == 1}" th:text="#{dark}"></option>
+								<option value="0" th:selected="${user.theme == 0}"
+									th:text="#{light}"></option>
+								<option value="1" th:selected="${user.theme == 1}"
+									th:text="#{dark}"></option>
 							</select>
 						</div>
 					</div>
 				</div>
-				
+
 				<div style="padding-top: 32px;"></div>
-				
-				<div class="box">					
+
+				<div class="box">
 					<div class="field">
 						<label class="label" th:text="#{profile.userdata.request}"></label>
 						<div class="field">
-							<input class="input" type="password" th:placeholder="#{password}" id="userdata-password">
+							<input class="input" type="password" th:placeholder="#{password}"
+								id="userdata-password">
 							<div style="padding-top: 4px;"></div>
 							<button class="button" id="userdata-submit" th:text="#{submit}"></button>
 						</div>
 					</div>
 				</div>
-				
-				<div class="box">					
+
+				<div class="box">
 					<div class="field">
 						<label class="label" th:text="#{profile.account.delete}"></label>
 						<div class="field">
-							<input class="input" type="password" th:placeholder="#{password}" id="delete-acc-password">
+							<input class="input" type="password" th:placeholder="#{password}"
+								id="delete-acc-password">
 							<div style="padding-top: 4px;"></div>
 							<button class="button" id="delete-acc-submit" th:text="#{submit}"></button>
 						</div>
 					</div>
 				</div>
-				
+
 			</div>
 		</div>
 	</div>
@@ -162,8 +199,8 @@
 	<footer th:replace="fragments.html::footer"></footer>
 
 	<script>
-		/*<![CDATA[*/		
-		    var applicationServerPublicKey = /*[[${vapidPublicKey}]]*/ 'default';
+		/*<![CDATA[*/
+		var applicationServerPublicKey = /*[[${vapidPublicKey}]]*/'default';
 		/*]]>*/
 	</script>
 

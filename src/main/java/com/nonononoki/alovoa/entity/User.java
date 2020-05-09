@@ -54,23 +54,19 @@ public class User {
 	
 	private int theme;
 
-	@ManyToMany
-	@JoinTable(name = "user2interest")
-	private List<UserInterest> interests;
-
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private Location lastLocation;
 	
-	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private UserRegisterToken registerToken;
 
-	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private UserPasswordToken passwordToken;
 	 
-	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private UserDeleteToken deleteToken;
 	
-	@OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private UserDates dates;
 
 	@ManyToOne
@@ -82,6 +78,9 @@ public class User {
 
 	@ManyToOne
 	private UserIntention intention;
+	
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+	private List<UserInterest> interests;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	private List<UserImage> images;

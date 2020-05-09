@@ -67,9 +67,14 @@ public class UserController {
 		userService.updatePreferedGender(genderId, Tools.binaryStringToBoolean(activated));
 	}
 
-	@PostMapping("/update/interest/{interest}/{activated}")
-	public void updateInterest(@PathVariable int interest, @PathVariable String activated) {
-		userService.updateInterest(interest, Tools.binaryStringToBoolean(activated));
+	@PostMapping("/interest/add/{value}")
+	public void addInterest(@PathVariable String value) throws Exception {
+		userService.addInterest(value);
+	}
+	
+	@PostMapping("/interest/delete/{interestId}")
+	public void deleteInterest(@PathVariable long interestId) throws Exception {
+		userService.deleteInterest(interestId);
 	}
 	
 	@PostMapping("/update/theme/{themeId}")

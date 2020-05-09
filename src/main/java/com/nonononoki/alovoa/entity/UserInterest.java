@@ -1,12 +1,10 @@
 package com.nonononoki.alovoa.entity;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -24,8 +22,8 @@ public class UserInterest {
 	private String text;
 	
 	@JsonIgnore
-	@ManyToMany
-	private List<User> users;
+	@ManyToOne
+	private User user;
 	
 	@Override
     public boolean equals(Object o) { 
@@ -39,7 +37,7 @@ public class UserInterest {
         } 
         
         UserInterest i = (UserInterest)o;
-        if(i.getId() == id) {
+        if(i.getText().equals(text)) {
         	return true;
         } else {
         	return false;
@@ -48,6 +46,6 @@ public class UserInterest {
 	
     @Override
     public int hashCode() {
-        return this.id.hashCode();
+        return this.text.hashCode();
     }
 }

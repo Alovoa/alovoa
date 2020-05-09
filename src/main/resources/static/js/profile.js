@@ -4,7 +4,7 @@ const descriptionMaxLength = 255;
 $(function() {
 
 	updateProfileWarning();
-	
+
 	$("#profilePicture").click(function(e) {
 		$("#profilePictureUpload").click();
 	});
@@ -23,7 +23,7 @@ $(function() {
 					contentType : "text/plain",
 					data : b64,
 					success : function() {
-						location.reload();
+						location.reload(true);
 					},
 					error : function(e) {
 						console.log(e);
@@ -36,7 +36,7 @@ $(function() {
 
 	var timerDescription;
 	var timeoutDescription = 500;
-	
+
 	$('#description').on('keyup paste', function() {
 
 		let data = $('#description').val();
@@ -47,13 +47,13 @@ $(function() {
 			alert(getGenericMaxCharsErrorText());
 			$('#description').val(data.substring(0, maxlength));
 		} else {
-			
-			if(timerDescription) {
+
+			if (timerDescription) {
 				clearTimeout(timerDescription);
 			}
 			if ($('#description').val) {
-				timerDescription = setTimeout(function(){
-					
+				timerDescription = setTimeout(function() {
+
 					console.log("uploading description")
 					$.ajax({
 						type : "POST",
@@ -139,19 +139,18 @@ $(function() {
 	});
 
 	$(".gender-switch").change(function(e) {
-		
+
 		let obj = e.target;
 		console.log(obj);
 		let checked = obj.checked;
 		console.log(checked);
-		if(checked) {
+		if (checked) {
 			checked = 1;
 		} else {
 			checked = 0;
 		}
 		let data = $(obj).val();
 
-		
 		if (data) {
 			$.ajax({
 				type : "POST",
@@ -168,9 +167,9 @@ $(function() {
 				}
 			});
 		}
-		
+
 	});
-	
+
 	$("#theme").change(function(e) {
 
 		let data = $("#theme").val();
@@ -182,7 +181,7 @@ $(function() {
 					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 				},
 				success : function(e) {
-					location.reload();
+					location.reload(true);
 				},
 				error : function(e) {
 					console.log(e);
@@ -191,16 +190,36 @@ $(function() {
 			});
 		}
 	});
-	
+
+	$("#interest-form").submit(function(e) {
+		e.preventDefault();
+		let val = e.target.elements['value'].value;
+		
+		$.ajax({
+			url : "/user/interest/add/" + val,
+			headers : {
+				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+			},
+			type : 'POST',
+			success : function(data) {
+				location.reload(true);
+			},
+			error : function() {
+				console.log(e);
+				alert(getGenericErrorText());
+			}
+		});
+	});
+
 	$("#userdata-submit").click(function(e) {
 
 		let password = $("#userdata-password").val();
-		
+
 		if (password) {
 			$.ajax({
 				type : "POST",
 				contentType : "text/plain",
-				data: password,
+				data : password,
 				url : "/user/userdata/",
 				headers : {
 					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
@@ -215,16 +234,16 @@ $(function() {
 			});
 		}
 	});
-	
+
 	$("#delete-acc-submit").click(function(e) {
 
 		let password = $("#delete-acc-password").val();
-		
+
 		if (password) {
 			$.ajax({
 				type : "POST",
 				contentType : "text/plain",
-				data: password,
+				data : password,
 				url : "/user/delete-account/",
 				headers : {
 					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
@@ -241,6 +260,23 @@ $(function() {
 	});
 
 });
+
+function deleteInterest(id) {
+	$.ajax({
+		type : "POST",
+		url : "/user/interest/delete/" + id,
+		headers : {
+			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+		},
+		success : function(e) {
+			location.reload(true);
+		},
+		error : function(e) {
+			console.log(e);
+			alert(getGenericErrorText());
+		}
+	});
+}
 
 function updateProfileWarning() {
 	let url = "/profile/warning";

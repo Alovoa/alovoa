@@ -8,8 +8,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.mail.MessagingException;
@@ -82,19 +83,19 @@ public class UserService {
 
 	@Autowired
 	private ConversationRepository conversationRepo;
-	
+
 	@Autowired
 	private UserDeleteTokenRepository userDeleteTokenRepo;
 
 	@Autowired
 	private CaptchaService captchaService;
-	
+
 	@Autowired
 	private MailService mailService;
 
 	@Autowired
 	private NotificationService notificationService;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -112,67 +113,73 @@ public class UserService {
 
 	@Value("${app.profile.description.size}")
 	private int descriptionSize;
-	
+
 	@Value("${app.token.length}")
 	private int tokenLength;
 
+	@Value("${app.interest.max}")
+	private int interestSize;
+
+	@Value("${app.interest.min-chars}")
+	private int interestMinCharSize;
+
+	@Value("${app.interest.max-chars}")
+	private int interestMaxCharSize;
+
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
-	
 
 	public void deleteAccountRequest(String password) throws MessagingException {
 		User user = authService.getCurrentUser();
 		if (!passwordEncoder.matches(password, user.getPassword())) {
 			throw new BadCredentialsException("");
 		}
-		
-		
+
 		UserDeleteToken token = null;
-		
-		if(user.getDeleteToken() != null) {
+
+		if (user.getDeleteToken() != null) {
 //			userDeleteTokenRepo.delete(user.getDeleteToken());
 			token = user.getDeleteToken();
 		} else {
 			token = new UserDeleteToken();
 		}
-		
+
 		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
 		token.setCreationDate(new Date());
 		token.setUser(user);
 		userDeleteTokenRepo.save(token);
-		
+
 		user.setDeleteToken(token);
 		userRepo.save(user);
-		
+
 		mailService.sendAccountDeleteRequest(user, token);
 	}
-	
+
 	public void deleteAccountConfirm(UserDeleteAccountDto dto) throws Exception {
 		User user = authService.getCurrentUser();
 		String userTokenString = user.getDeleteToken().getContent();
-		
-		if(!dto.isConfirm()) {
+
+		if (!dto.isConfirm()) {
 			throw new Exception("");
 		}
-		
-		if( !dto.getTokenString().equals(userTokenString)) {
+
+		if (!dto.getTokenString().equals(userTokenString)) {
 			throw new Exception("");
 		}
-		
-		if( !dto.getEmail().equals(user.getEmail())) {
+
+		if (!dto.getEmail().equals(user.getEmail())) {
 			throw new Exception("");
 		}
-		
-		if( !captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
+
+		if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
 			throw new Exception("");
 		}
-		
+
 		conversationRepo.deleteAll(conversationRepo.findAllByUserFrom(user));
 		conversationRepo.deleteAll(conversationRepo.findAllByUserTo(user));
 		userRepo.delete(user);
 		mailService.sendAccountDeleteConfirm(user);
 	}
-
 
 	public void updateProfilePicture(String imgB64) throws Exception {
 		int maxSize = (int) (Tools.BASE64FACTOR * Tools.THOUSAND * imageSize);
@@ -222,23 +229,6 @@ public class UserService {
 		userRepo.save(user);
 	}
 
-	public void updateInterest(long interest, boolean activated) {
-		User user = authService.getCurrentUser();
-		List<UserInterest> list = user.getInterests();
-		UserInterest i = userInterestRepo.findById(interest).orElse(null);
-		if (activated) {
-			if (list.contains(i)) {
-				list.remove(i);
-			}
-		} else {
-			if (!list.contains(i)) {
-				list.add(i);
-			}
-		}
-		user.setInterests(list);
-		userRepo.save(user);
-	}
-
 	public void updatePreferedGender(long genderId, boolean activated) {
 		User user = authService.getCurrentUser();
 		Set<Gender> list = user.getPreferedGenders();
@@ -255,7 +245,49 @@ public class UserService {
 		user.setPreferedGenders(list);
 		userRepo.save(user);
 	}
-	
+
+	public void addInterest(String value) throws Exception {
+		User user = authService.getCurrentUser();
+
+		if (value.length() < interestMinCharSize || value.length() > interestMaxCharSize
+				|| user.getInterests().size() >= interestSize) {
+			throw new Exception("");
+		}
+		
+		Pattern pattern = Pattern.compile("[a-zA-Z0-9-]+");
+		Matcher matcher = pattern.matcher(value);
+		if(!matcher.matches()) {
+			throw new Exception("");
+		}		
+
+		UserInterest interest = new UserInterest();
+		interest.setText(value.toLowerCase());
+		interest.setUser(user);
+		
+		if(user.getInterests().contains(interest)) {
+			throw new Exception("");
+		}
+		
+		userInterestRepo.save(interest);
+	}
+
+	public void deleteInterest(long interestId) throws Exception {
+		User user = authService.getCurrentUser();
+		UserInterest interest = userInterestRepo.findById(interestId).orElse(null);
+
+		if (interest == null) {
+			throw new Exception("");
+		}
+
+		if (!user.getInterests().contains(interest)) {
+			throw new Exception("");
+		}
+
+		//userInterestRepo.delete(interest);
+		user.getInterests().remove(interest);
+		userRepo.save(user);
+	}
+
 	public void updateTheme(int themeId) {
 		User user = authService.getCurrentUser();
 		user.setTheme(themeId);
@@ -397,7 +429,9 @@ public class UserService {
 
 		UserBlock block = userBlockRepo.findByUserFromAndUserTo(currUser, user);
 		if (block != null) {
-			userBlockRepo.delete(block);
+			//userBlockRepo.delete(block);
+			currUser.getBlockedUsers().remove(block);
+			userRepo.save(currUser);
 		}
 	}
 
