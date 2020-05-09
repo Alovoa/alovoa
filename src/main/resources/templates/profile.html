@@ -141,10 +141,14 @@
 
 					<div class="field">
 						<form id="interest-form" th:action="@{/}" method="POST">
-							<input class="input" pattern="[a-zA-Z0-9-]{3,30}" name="value"
-								required>
-							<div style="padding-top: 4px;"></div>
-							<button class="button" th:text="#{submit}"></button>
+							<div style="display:flex">
+								<input class="input" pattern="[a-zA-Z0-9-]{3,30}" name="value" style="flex:1"
+									th:placeholder="#{interest}" required>
+								<div style="padding-top: 4px;"></div>
+								<button class="button is-info colored" style="margin-left: 4px;">
+									<i class="fa fa-plus"></i>
+								</button>
+							</div>
 						</form>
 					</div>
 					<div class="notification is-info"

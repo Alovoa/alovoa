@@ -23,7 +23,9 @@ public class SearchService {
 
 	private final int SORT_DISTANCE = 1;
 	private final int SORT_ACTIVE_DATE = 2;
-
+	private final int SORT_INTEREST = 3;
+	private final int SORT_DONATION = 4;
+	
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
@@ -115,6 +117,24 @@ public class SearchService {
 				}
 			});
 			Collections.reverse(filteredUserDtos);
+		} else if (sort == SORT_INTEREST) {
+			filteredUserDtos.removeIf(f->f.getSameInterests() == 0);
+			Collections.sort(filteredUserDtos, new Comparator<UserDto>() {
+				@Override
+				public int compare(UserDto a, UserDto b) {
+					return a.getSameInterests() < b.getSameInterests() ? -1
+							: a.getSameInterests() > b.getSameInterests() ? 1 : 0;
+				}
+			});
+		} else if (sort == SORT_DONATION) {
+			filteredUserDtos.removeIf(f->f.getTotalDonations() == 0);
+			Collections.sort(filteredUserDtos, new Comparator<UserDto>() {
+				@Override
+				public int compare(UserDto a, UserDto b) {
+					return a.getTotalDonations() < b.getTotalDonations() ? -1
+							: a.getTotalDonations() > b.getTotalDonations() ? 1 : 0;
+				}
+			});
 		}
 
 		filteredUserDtos = filteredUserDtos.stream().limit(maxResults).collect(Collectors.toList());

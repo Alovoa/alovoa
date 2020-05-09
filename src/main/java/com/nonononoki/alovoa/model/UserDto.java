@@ -14,6 +14,7 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserBlock;
 import com.nonononoki.alovoa.entity.UserImage;
 import com.nonononoki.alovoa.entity.UserIntention;
+import com.nonononoki.alovoa.entity.UserInterest;
 import com.nonononoki.alovoa.entity.UserReport;
 
 import lombok.Data;
@@ -39,6 +40,7 @@ public class UserDto {
 	private String description;
 
 	private int distanceToUser;
+	private int sameInterests;
 	private double totalDonations;
 
 	private Date activeDate;
@@ -83,6 +85,16 @@ public class UserDto {
 		dto.reportedByCurrentUser = currentUser.getReported().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
 		dto.likedByCurrentUser = currentUser.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
 		dto.hiddenByCurrentUser = currentUser.getHiddenUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
+		
+		int sameInterests = 0;
+		for(int i = 0; i < currentUser.getInterests().size(); i++) {
+			UserInterest interest = currentUser.getInterests().get(i);
+			if(user.getInterests().contains(interest)) {
+				sameInterests++;
+			}
+		}
+		dto.setSameInterests(sameInterests);
+		
 		double dist = Tools.getDistanceToUser(user, currentUser);
 		int distRounded = (int) Math.round(dist);
 		distRounded  = distRounded - distRounded % LOCATION_ROUNDING;

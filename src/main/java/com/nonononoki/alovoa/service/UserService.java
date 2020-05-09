@@ -145,7 +145,7 @@ public class UserService {
 		}
 
 		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
-		token.setCreationDate(new Date());
+		token.setDate(new Date());
 		token.setUser(user);
 		userDeleteTokenRepo.save(token);
 

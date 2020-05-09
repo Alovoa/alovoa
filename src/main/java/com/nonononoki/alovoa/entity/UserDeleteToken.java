@@ -24,6 +24,6 @@ public class UserDeleteToken {
 
 	private String content;
 
-	private Date creationDate;
+	private Date date;
 
 }
