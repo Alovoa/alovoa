@@ -67,6 +67,23 @@ function hideUser(btn, idEnc) {
 	});
 }
 
+var cardContentVisible = false;
+function toggleCardContent() {
+	
+	let width = document.documentElement.clientWidth;
+	
+	if(cardContentVisible) {
+		$(".content-background").removeClass("hidden");
+		$(".profile-bottom").addClass("dimmed");
+	} else {
+		if(width < 1024) {
+			$(".content-background").addClass("hidden");
+			$(".profile-bottom").removeClass("dimmed");
+		}
+	}
+	cardContentVisible = !cardContentVisible;
+}
+
 function hideProfileTile(btn) {
 	let parent = getUserDivFromButton(btn);
 	$(parent).fadeOut(500, function() {

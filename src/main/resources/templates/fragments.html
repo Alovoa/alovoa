@@ -38,7 +38,8 @@
 				<div class="navbar-end">
 					<form th:action="@{/logout}" method="post">
 						<span class="navbar-item">
-							<button class="button is-white is-outlined" href="/logout" id="logout">
+							<button class="button is-white is-outlined" href="/logout"
+								id="logout">
 								<span th:text="#{logout}"></span>
 							</button>
 						</span>
@@ -53,17 +54,20 @@
 			<div class="columns">
 				<div class="column">
 					<ul>
-						<li class="has-text-centered"><a href="/privacy" th:text="#{privacy-policy}"></a></li>
+						<li class="has-text-centered"><a href="/privacy"
+							th:text="#{privacy-policy}"></a></li>
 					</ul>
 				</div>
 				<div class="column">
 					<ul>
-						<li class="has-text-centered"><a href="/terms-conditions" th:text="#{tos}"></a></li>
+						<li class="has-text-centered"><a href="/terms-conditions"
+							th:text="#{tos}"></a></li>
 					</ul>
 				</div>
 				<div class="column">
 					<ul>
-						<li class="has-text-centered"><a href="/imprint" th:text="#{imprint}"></a></li>
+						<li class="has-text-centered"><a href="/imprint"
+							th:text="#{imprint}"></a></li>
 					</ul>
 				</div>
 			</div>
@@ -109,40 +113,46 @@
 		</div>
 
 		<div class="card is-horizontal" th:each="user : ${users}">
-			<div class="card-image">
+			<div class="card-image" onclick="toggleCardContent()">
 				<figure class="image">
 					<img th:src="${user.profilePicture}" class="profile-pic">
 				</figure>
 			</div>
-			<div class="card-content">
-				<div class="content">
-					<div class="media">
-						<div class="full-width">
-							<div class="left" style="font-size: 2em"
-								th:text="${user.firstName}"></div>
-							<div class="right" style="font-size: 1.5em">
-								<span th:text="#{age}"></span><span>: </span><span th:text="${user.age}"></span>
+			<div class="card-content" onclick="toggleCardContent()">
+				<div class="content-background">
+					<div class="content">
+						<div class="media">
+							<div class="full-width">
+								<div class="left" style="font-size: 2em"
+									th:text="${user.firstName}"></div>
+								<div class="right" style="font-size: 1.5em">
+									<span th:text="#{age}"></span><span>: </span><span
+										th:text="${user.age}"></span>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="media">
-						<div class="full-width">
-							<div class="left" style="font-size: 1.2em">
-								<span th:text="#{last-active}"></span><span>: </span><span
-									th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
-							</div>
-							<div class="right" style="font-size: 1.2em">
-								<span th:text="${user.distanceToUser}"></span><span> </span><span th:text="#{km-from-you}"></span>
+						<div class="media">
+							<div class="full-width">
+								<div class="left" style="font-size: 1.2em">
+									<span th:text="#{last-active}"></span><span>: </span><span
+										th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
+								</div>
+								<div class="right" style="font-size: 1.2em">
+									<span th:text="${user.distanceToUser}"></span><span> </span><span
+										th:text="#{km-from-you}"></span>
+								</div>
 							</div>
 						</div>
-					</div>
 
-					<div style="font-size: 1.1em" th:text="${user.description}"></div>
+						<div style="font-size: 1.1em; word-break: break-all;"
+							class="description" th:text="${user.description}"></div>
+					</div>
 				</div>
-				<div class="profile-bottom full-width"
+				<div class="profile-bottom full-width dimmed"
 					style="display: inline-block;">
 					<button class="button left is-info is-inverted"
-						th:onclick="viewProfile([[${user.idEncoded}]])" th:text="#{view-profile}"></button>
+						th:onclick="viewProfile([[${user.idEncoded}]])"
+						th:text="#{view-profile}"></button>
 					<div class="right">
 						<button class="button colored is-rounded is-danger"
 							th:onclick="hideUser(this, [[${user.idEncoded}]])">
@@ -163,9 +173,9 @@
 		<div th:each="message : ${messages}"
 			style="display: inline-block; width: 100%;">
 			<div th:if="${message.from}" class="message left"
-				th:text="${message.content}"></div>
+				th:text="${message.content}" style="word-break: break-all;"></div>
 			<div th:unless="${message.from}" class="message right"
-				th:text="${message.content}"></div>
+				th:text="${message.content}" style="word-break: break-all;"></div>
 		</div>
 	</div>
 
@@ -183,7 +193,8 @@
 							<div class="left" style="font-size: 2em"
 								th:text="#{donation.user.firstName}"></div>
 							<div class="right" style="font-size: 1.5em">
-								<span th:text="#{age}"></span><span>: </span><span th:text="#{donation.user.age}"></span>
+								<span th:text="#{age}"></span><span>: </span><span
+									th:text="#{donation.user.age}"></span>
 							</div>
 						</div>
 					</div>
@@ -194,7 +205,8 @@
 									th:text="${#dates.format(donation.user.activeDate, 'yyyy-MM-dd')}"></span>
 							</div>
 							<div class="right" style="font-size: 1.2em">
-								<span th:text="#{donation.distanceToUser}"></span><span> </span><span th:text="#{km-from-you}"></span>
+								<span th:text="#{donation.distanceToUser}"></span><span>
+								</span><span th:text="#{km-from-you}"></span>
 							</div>
 						</div>
 					</div>
@@ -204,7 +216,8 @@
 				<div class="profile-bottom full-width"
 					style="display: inline-block;">
 					<button class="button left is-info is-inverted"
-						th:onclick="viewProfile([[${user.idEncoded}]])" th:text="#{view-profile}"></button>
+						th:onclick="viewProfile([[${user.idEncoded}]])"
+						th:text="#{view-profile}"></button>
 					<div class="right">
 						<button class="button colored is-rounded is-danger"
 							th:onclick="hideUser(this, [[${user.idEncoded}]])">
@@ -223,12 +236,18 @@
 
 	<div th:fragment="profile-warning">
 		<div th:if="${hasWarning}">
-			<div class="notification is-danger" th:text="#{profile.warning.incomplete}"></div>
-			<div class="notification is-warning" th:if="${noProfilePicture}"  th:text="#{profile.warning.incomplete}"></div>
-			<div class="notification is-warning" th:if="${noDescription}" th:text="#{profile.warning.no-profile-picture}"></div>
-			<div class="notification is-warning" th:if="${noIntention}" th:text="#{profile.warning.no-dating-preference}"></div>
-			<div class="notification is-warning" th:if="${noGender}" th:text="#{profile.warning.no-gender-preference}"></div>
-			<div class="notification is-warning" th:if="${noLocation}" th:text="#{profile.warning.no-location}"></div>
+			<div class="notification is-danger"
+				th:text="#{profile.warning.incomplete}"></div>
+			<div class="notification is-warning" th:if="${noProfilePicture}"
+				th:text="#{profile.warning.incomplete}"></div>
+			<div class="notification is-warning" th:if="${noDescription}"
+				th:text="#{profile.warning.no-profile-picture}"></div>
+			<div class="notification is-warning" th:if="${noIntention}"
+				th:text="#{profile.warning.no-dating-preference}"></div>
+			<div class="notification is-warning" th:if="${noGender}"
+				th:text="#{profile.warning.no-gender-preference}"></div>
+			<div class="notification is-warning" th:if="${noLocation}"
+				th:text="#{profile.warning.no-location}"></div>
 		</div>
 	</div>
 </body>

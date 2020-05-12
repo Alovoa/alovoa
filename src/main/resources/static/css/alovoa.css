@@ -101,6 +101,10 @@ svg {
 	margin-right: 4px;
 }
 
+.hidden {
+	visibility: hidden;
+}
+
 input[type=range].slider {
 	margin: initial;
 }
