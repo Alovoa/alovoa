@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.html;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,9 @@ public class ProfileResource {
 
 	@Autowired
 	private UserIntentionRepository userIntentionRepo;
+	
+	@Value("${app.profile.image.max}")
+	private int imageMax;
 
 	@GetMapping("/profile")
 	public ModelAndView profile() {
@@ -29,6 +33,7 @@ public class ProfileResource {
 		mav.addObject("user", authService.getCurrentUser());
 		mav.addObject("genders", genderRepo.findAll());
 		mav.addObject("intentions", userIntentionRepo.findAll());
+		mav.addObject("imageMax", imageMax);
 		return mav;
 	}
 

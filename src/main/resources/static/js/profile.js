@@ -3,10 +3,21 @@ const descriptionMaxLength = 255;
 
 $(function() {
 
+	var swiper = new Swiper('.swiper-container', {
+		navigation : {
+			nextEl : '.swiper-button-next',
+			prevEl : '.swiper-button-prev',
+		},
+	});
+
 	updateProfileWarning();
 
 	$("#profilePicture").click(function(e) {
 		$("#profilePictureUpload").click();
+	});
+
+	$("#addImageDiv").click(function(e) {
+		$("#addImageInput").click();
 	});
 
 	$("#profilePictureUpload").change(function() {
@@ -17,6 +28,31 @@ $(function() {
 				$.ajax({
 					type : "POST",
 					url : "/user/update/profile-picture",
+					headers : {
+						"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+					},
+					contentType : "text/plain",
+					data : b64,
+					success : function() {
+						location.reload(true);
+					},
+					error : function(e) {
+						console.log(e);
+						alert(getGenericErrorText());
+					}
+				});
+			}
+		});
+	});
+
+	$("#addImageInput").change(function() {
+		let file = document.querySelector('#addImageInput').files[0];
+		console.log($("input[name='_csrf']").val());
+		getBase64(file, function(b64) {
+			if (b64) {
+				$.ajax({
+					type : "POST",
+					url : "/user/image/add",
 					headers : {
 						"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 					},
@@ -194,7 +230,7 @@ $(function() {
 	$("#interest-form").submit(function(e) {
 		e.preventDefault();
 		let val = e.target.elements['value'].value;
-		
+
 		$.ajax({
 			url : "/user/interest/add/" + val,
 			headers : {
@@ -276,6 +312,25 @@ function deleteInterest(id) {
 			alert(getGenericErrorText());
 		}
 	});
+}
+
+function deleteImage(id) {
+	if (confirm(getText("profile.js.delete-image.confirm"))) {
+		$.ajax({
+			type : "POST",
+			url : "/user/image/delete/" + id,
+			headers : {
+				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+			},
+			success : function(e) {
+				location.reload(true);
+			},
+			error : function(e) {
+				console.log(e);
+				alert(getGenericErrorText());
+			}
+		});
+	}
 }
 
 function updateProfileWarning() {

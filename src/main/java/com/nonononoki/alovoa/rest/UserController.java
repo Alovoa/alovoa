@@ -77,6 +77,16 @@ public class UserController {
 		userService.deleteInterest(interestId);
 	}
 	
+	@PostMapping(value = "/image/add", consumes = "text/plain")
+	public void addImage(@RequestBody String imageB64) throws Exception {
+		userService.addImage(imageB64);
+	}
+	
+	@PostMapping("/image/delete/{imageId}")
+	public void deleteImage(@PathVariable long imageId) throws Exception {
+		userService.deleteImage(imageId);
+	}
+	
 	@PostMapping("/update/theme/{themeId}")
 	public void updateTheme(@PathVariable int themeId) {
 		userService.updateTheme(themeId);

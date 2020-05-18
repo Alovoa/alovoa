@@ -10,9 +10,11 @@
 
 <link rel="stylesheet" href="/css/lib/bulma.min.css" />
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
+<link rel="stylesheet" href="/css/lib/swiper.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/search.css" />
-<link th:if="${currUser.theme == 1}" rel="stylesheet" href="/css/alovoa-dark.css" />
+<link th:if="${currUser.theme == 1}" rel="stylesheet"
+	href="/css/alovoa-dark.css" />
 <title th:value="${user.firstName}"></title>
 </head>
 <body>
@@ -21,50 +23,73 @@
 		<div class="section">
 			<div class="container">
 				<div class="field">
-					<div class="columns is-mobile is-centered">
-						<div class="column is-half center-children">
+					<div class="swiper-container">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide">
+								<div class="center-parent">
+									<img id="profilePicture" style="cursor: pointer;" height=400
+										width="400" th:if="${user.profilePicture}"
+										th:src="${user.profilePicture}" class="profile-pic" />
+								</div>
+							</div>
+							<div th:each="img : ${user.images}" class="swiper-slide">
+								<div class="center-parent">
+									<img style="cursor: pointer;" height=400 width="400"
+										class="profile-pic" th:src="${img.content}"
+										th:onclick="deleteImage([[${img.id}]])" />
+								</div>
+							</div>
+						</div>
 
-							<img id="profilePicture" style="cursor: pointer;" height=400
-								width="400" th:if="${user.profilePicture}"
-								th:src="${user.profilePicture}" class="profile-pic"/>
+						<!-- Add Arrows -->
+						<div class="swiper-button-next"></div>
+						<div class="swiper-button-prev"></div>
+					</div>
+				</div>
+			</div>
+			<div class="content">
+				<div class="media">
+					<div class="full-width">
+						<div class="left" style="font-size: 2em"
+							th:text="${user.firstName}"></div>
+						<div class="right" style="font-size: 1.5em">
+							<span th:text="#{age}"></span><span>: </span><span
+								th:text="${user.age}"></span>
 						</div>
 					</div>
 				</div>
-				<div class="content">
-					<div class="media">
-						<div class="full-width">
-							<div class="left" style="font-size: 2em"
-								th:text="${user.firstName}"></div>
-							<div class="right" style="font-size: 1.5em">
-								<span th:text="#{age}"></span><span>: </span><span
-									th:text="${user.age}"></span>
-							</div>
+				<div class="media">
+					<div class="full-width">
+						<div class="left" style="font-size: 1.2em">
+							<span th:text="#{last-active}"></span><span>: </span><span
+								th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
 						</div>
 					</div>
-					<div class="media">
-						<div class="full-width">
-							<div class="left" style="font-size: 1.2em">
-								<span th:text="#{last-active}"></span><span>: </span><span
-									th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
-							</div>
-						</div>
-					</div>
-					<div class="media" style="border-top:none; padding-top: 0px;">
-						<div class="full-width">
-							<div class="left" style="font-size: 1.2em">
-								<span th:text="#{distance}"></span><span>: </span><span
-									th:text="${user.distanceToUser}"></span ><span th:text="#{km}" style="padding-left: 4px;"></span>
-							</div>
-						</div>
 				</div>
-				
+				<div class="media" style="border-top: none; padding-top: 0px;">
+					<div class="full-width">
+						<div class="left" style="font-size: 1.2em">
+							<span th:text="#{distance}"></span><span>: </span><span
+								th:text="${user.distanceToUser}"></span><span th:text="#{km}"
+								style="padding-left: 4px;"></span>
+						</div>
+					</div>
+				</div>
+
 				<div style="padding-top: 24px;"></div>
+				<div class="field">
+					<label class="label" th:text="#{interests}"></label>
+					<div th:each="interest : ${user.interests}">
+						<div th:text="${interest.text}"></div>
+					</div>
+				</div>
 
-
+				<div style="padding-top: 24px;"></div>
 				<div class="field">
 					<label class="label" th:text="#{description}"></label>
 					<textarea class="textarea" id="description"
-						th:text="${user.description}" style="word-break: break-all;" readOnly></textarea>
+						th:text="${user.description}" style="word-break: break-all;"
+						readOnly></textarea>
 				</div>
 
 				<table class="table" style="width: 100%">
@@ -189,6 +214,7 @@
 
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
+	<script src="/js/lib/swiper.min.js"></script>
 	<script src="/js/tools/refreshCaptcha.js"></script>
 	<script src="/js/tools/modal.js"></script>
 	<script src="/js/tools/getNotification.js"></script>

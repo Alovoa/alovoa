@@ -1,5 +1,15 @@
 var locationFound = false;
 
+$(function() {
+
+	var swiper = new Swiper('.swiper-container', {
+		navigation : {
+			nextEl : '.swiper-button-next',
+			prevEl : '.swiper-button-prev',
+		},
+	});
+});
+
 function likeUser(idEnc) {
 	$.ajax({
 		type : "POST",
@@ -85,7 +95,8 @@ function reportUser() {
 function reportUserSubmit() {
 	$.ajax({
 		type : "POST",
-		url : "/user/report/" +  $("#id-enc").val() + "/" + $("#captcha-id").val() + "/" + $("#captcha").val() ,
+		url : "/user/report/" + $("#id-enc").val() + "/"
+				+ $("#captcha-id").val() + "/" + $("#captcha").val(),
 		headers : {
 			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 		},

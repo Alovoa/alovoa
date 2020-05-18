@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="/css/lib/bulma.min.css" />
 <link rel="stylesheet" href="/css/lib/bulma-switch.min.css" />
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
+<link rel="stylesheet" href="/css/lib/swiper.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/profile.css" />
 <link th:if="${user.theme == 1}" rel="stylesheet"
@@ -33,20 +34,48 @@
 				</div>
 
 				<div class="field">
-					<div class="columns is-mobile is-centered">
-						<div class="column is-half center-children">
 
-							<img id="profilePicture" class="profile-pic"
-								src="/img/profile.jpg" style="cursor: pointer;" height=400
-								width="400" th:unless="${user.profilePicture}" /> <img
-								id="profilePicture" style="cursor: pointer;" height=400
-								width="400" th:if="${user.profilePicture}" class="profile-pic"
-								th:src="${user.profilePicture}" /> <input
-								id="profilePictureUpload" type="file" accept="image/*"
+					<div class="swiper-container">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide">
+								<div class="center-parent">
+									<img id="profilePicture" class="profile-pic"
+										src="/img/profile.jpg" style="cursor: pointer;" height=400
+										width="400" th:unless="${user.profilePicture}" /> <img
+										id="profilePicture" style="cursor: pointer;" height=400
+										width="400" th:if="${user.profilePicture}"
+										class="profile-pic " th:src="${user.profilePicture}" /> <input
+										id="profilePictureUpload" type="file" accept="image/*"
+										style="display: none">
+								</div>
+							</div>
+							<div th:each="img : ${user.images}" class="swiper-slide">
+								<div class="center-parent">
+									<img style="cursor: pointer;" height=400 width="400"
+										class="profile-pic" th:src="${img.content}"
+										th:onclick="deleteImage([[${img.id}]])" />
+								</div>
+							</div>
+							<div class="swiper-slide center-parent" style="height: 100%;">
+								<button th:if="${#lists.size(user.images) != imageMax}"
+									id="addImageDiv" class="center-parent"
+									style="height: 400px; max-height: 100%; max-width: 100%; width: 400px;">
+									<i width=400 height=400 class="fa fa-plus fa-4x"></i>
+								</button>
+							</div>
+							<input id="addImageInput" type="file" accept="image/*"
 								style="display: none">
+
 						</div>
+						<!-- Add Arrows -->
+						<div class="swiper-button-next"></div>
+						<div class="swiper-button-prev"></div>
 					</div>
+
+
+
 				</div>
+
 
 				<div class="box">
 					<div class="field">
@@ -141,9 +170,9 @@
 
 					<div class="field">
 						<form id="interest-form" th:action="@{/}" method="POST">
-							<div style="display:flex">
-								<input class="input" pattern="[a-zA-Z0-9-]{3,30}" name="value" style="flex:1"
-									th:placeholder="#{interest}" required>
+							<div style="display: flex">
+								<input class="input" pattern="[a-zA-Z0-9-]{3,30}" name="value"
+									style="flex: 1" th:placeholder="#{interest}" required>
 								<div style="padding-top: 4px;"></div>
 								<button class="button is-info colored" style="margin-left: 4px;">
 									<i class="fa fa-plus"></i>
@@ -211,6 +240,7 @@
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/notification.js"></script>
+	<script src="/js/lib/swiper.min.js"></script>
 	<script src="/js/tools/getNotification.js"></script>
 	<script src="/js/tools/getText.js"></script>
 	<script src="/js/profile.js"></script>

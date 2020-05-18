@@ -33,6 +33,8 @@ public class UserDto {
 	private Gender gender;
 	private Set<Gender> preferedGenders;
 	private UserIntention intention;
+	
+	private List<UserInterest> interests;
 
 	private String profilePicture;
 	private List<UserImage> images;
@@ -64,7 +66,6 @@ public class UserDto {
 		String en = textEncryptor.encode(Long.toString(user.getId()));
 		dto.setIdEncoded(en);
 		dto.setActiveDate(user.getDates().getActiveDate());
-		//dto.setAge(user.getAge());
 		LocalDate now = LocalDate.now();
 		Period period = Period.between(user.getDates().getDateOfBirth(), now);
 		dto.setAge(period.getYears());
@@ -80,6 +81,7 @@ public class UserDto {
 		dto.setTotalDonations(user.getTotalDonations());
 		dto.setBlockedByUsers(user.getBlockedByUsers());
 		dto.setReportedByUsers(user.getReportedByUsers());
+		dto.setInterests(user.getInterests());
 		
 		dto.blockedByCurrentUser = currentUser.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
 		dto.reportedByCurrentUser = currentUser.getReported().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()));

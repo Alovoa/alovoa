@@ -30,6 +30,7 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserBlock;
 import com.nonononoki.alovoa.entity.UserDeleteToken;
 import com.nonononoki.alovoa.entity.UserHide;
+import com.nonononoki.alovoa.entity.UserImage;
 import com.nonononoki.alovoa.entity.UserIntention;
 import com.nonononoki.alovoa.entity.UserInterest;
 import com.nonononoki.alovoa.entity.UserLike;
@@ -41,6 +42,7 @@ import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
 import com.nonononoki.alovoa.repo.UserDeleteTokenRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
+import com.nonononoki.alovoa.repo.UserImageRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserInterestRepository;
 import com.nonononoki.alovoa.repo.UserLikeRepository;
@@ -65,6 +67,9 @@ public class UserService {
 
 	@Autowired
 	private UserInterestRepository userInterestRepo;
+	
+	@Autowired
+	private UserImageRepository userImageRepo;
 
 	@Autowired
 	private UserLikeRepository userLikeRepo;
@@ -110,6 +115,9 @@ public class UserService {
 
 	@Value("${app.profile.image.length}")
 	private int imageLength;
+	
+	@Value("${app.profile.image.max}")
+	private int imageMax;
 
 	@Value("${app.profile.description.size}")
 	private int descriptionSize;
@@ -292,6 +300,31 @@ public class UserService {
 		User user = authService.getCurrentUser();
 		user.setTheme(themeId);
 		userRepo.save(user);
+	}
+	
+	public void addImage(String imgB64) throws Exception {
+		User user = authService.getCurrentUser();
+		if(user.getImages() != null && user.getImages().size() < imageMax) {
+			
+			UserImage img = new UserImage();
+			img.setContent(adjustPicture(imgB64));
+			img.setDate(new Date());
+			img.setUser(user);
+			user.getImages().add(img);
+			userRepo.save(user);
+		} else {
+			throw new Exception("");
+		}
+	}
+	
+	public void deleteImage(long id) {
+		User user = authService.getCurrentUser();
+		UserImage img = userImageRepo.getOne(id);
+		
+		if(user.getImages().contains(img)) {
+			user.getImages().remove(img);
+			userRepo.save(user);
+		}
 	}
 
 	private String adjustPicture(String imgB64) throws IOException {
