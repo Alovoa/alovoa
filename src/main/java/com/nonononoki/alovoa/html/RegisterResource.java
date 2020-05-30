@@ -13,37 +13,36 @@ import com.nonononoki.alovoa.service.RegisterService;
 @Controller
 public class RegisterResource {
 
-	//@Autowired
-	//private CaptchaService captchaService;
-	
+	// @Autowired
+	// private CaptchaService captchaService;
+
 	@Autowired
 	private RegisterService registerService;
-	
+
 	@Autowired
 	private GenderRepository genderRepo;
-	
+
 	@Autowired
 	private UserIntentionRepository userIntentionRepo;
-	
-	
+
 	@GetMapping("/register")
 	public ModelAndView register() {
 		ModelAndView mav = new ModelAndView("register");
-		//mav.addObject("captcha", captchaService.generate());
+		// mav.addObject("captcha", captchaService.generate());
 		mav.addObject("genders", genderRepo.findAll());
 		mav.addObject("intentions", userIntentionRepo.findAll());
 		return mav;
 	}
-	
+
 	@GetMapping("/register/confirm/{tokenString}")
 	public String registerConfirm(@PathVariable String tokenString) {
 
-		boolean success = registerService.registerConfirm(tokenString);
-		if(success) {
+		try {
+			registerService.registerConfirm(tokenString);
 			return "redirect:/?registration-confirm-success";
-		} else {
+		} catch (Exception e) {
 			return "redirect:/?registration-confirm-failed";
 		}
-		
+
 	}
 }

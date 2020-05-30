@@ -3,7 +3,6 @@ package com.nonononoki.alovoa.entity;
 import java.time.LocalDate;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,9 +13,11 @@ import javax.persistence.OneToOne;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
+@EqualsAndHashCode(exclude="user")
 public class UserDates {
 	
 	@JsonIgnore
@@ -32,7 +33,7 @@ public class UserDates {
 	//private Date dateOfBirth;
 	private LocalDate dateOfBirth;
 
-	private Date activeDate  = new Date();
+	private Date activeDate = new Date();
 	private Date creationDate = new Date();
 	private Date intentionChangeDate = new Date();
 	private Date notificationDate = new Date();

@@ -2,9 +2,9 @@ package com.nonononoki.alovoa.model;
 
 import java.util.Date;
 
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class RegisterDto {
 	
 	private String email;

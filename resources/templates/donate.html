@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Alovoa">
+<link rel="manifest" href="/json/manifest.json">
+
+<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+<link rel="stylesheet" href="/css/alovoa.css" />
+<link rel="stylesheet" href="/css/search.css" />
+<link th:if="${user.theme == 1}" rel="stylesheet" href="/css/alovoa-dark.css" />
+<title th:text="#{donate.title}"></title>
+</head>
+<body>
+	<div id="main-logged-in">
+		<header th:insert="fragments.html::header-logged-in"></header>
+		<div class="section">
+			<div class="container is-small" style="display: flex">
+				<div>
+					<label class="label" th:text="#{filter}"></label>
+					<div class="select">
+						<select id="sort" onchange="getDonationList">
+							<option value="1" th:text="#{donate.latest-donations}"></option>
+							<option value="2" th:text="#{donate.largest-donations}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div style="padding-top: 24px;"></div>
+			<div class="container">
+				<section class="container" id="main-container"></section>
+				<a class="button colored is-primary" style="width: 100%;"
+					href="/donate-list" target="_blank"><i
+					class="fa fa-hand-holding-usd" style="padding-right: 4px;"></i><span
+					th:text="#{donate.donate-now}"></span></a>
+			</div>
+		</div>
+	</div>
+
+	<footer th:replace="fragments.html::navigation"></footer>
+	<footer th:replace="fragments.html::footer"></footer>
+
+	<script src="/js/lib/fontawesome.all.js"></script>
+	<script src="/js/lib/jquery.min.js"></script>
+	<script src="/js/tools/getNotification.js"></script>
+	<script src="/js/tools/getText.js"></script>
+	<script src="/js/donate.js"></script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+button {
+	cursor: pointer;
+}
+
+.center-parent {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#main {
+	min-height: 100vh;
+}
+
+#main-logged-in {
+	min-height: calc(100vh - 44px);;
+}
+
+.navbar-brand {
+	text-transform: uppercase;
+}
+
+.profile-pic {
+	border-radius: 12px;
+}
+
+svg {
+	color: #209cee;
+}
+
+.card {
+	border-radius: 12px;
+}
+
+.navbar-item img {
+    max-height: initial;
+}
+
+.select, .select select {
+	width: 100%;
+}
+
+.asterisk {
+	padding-left: 4px;
+	color: red;
+}
+
+.register-warning {
+	color: red;
+	padding-bottom: 8px;
+}
+
+.navbar {
+	display: flex;
+}
+
+.navbar-end {
+	justify-content: flex-end;
+	margin-left: auto;
+	display: flex;
+}
+
+.navbar-item svg {
+	color: white;
+	padding-right: 4px;
+	font-size: 1.5em;
+}
+
+.navigation-item.new svg {
+	color: #FFA000;
+}
+
+.navigation-item div {
+	margin: auto;
+}
+
+.navigation-item div svg {
+	padding-right: 4px;
+}
+
+.center-children {
+	display: flex;
+	justify-content: center;
+}
+
+.slider-container {
+	display: flex;
+}
+
+.slider {
+	flex: 1;
+}
+
+.slider-container p {
+	padding-left: 8px;
+}
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.full-width {
+	width: 100%;
+}
+
+.button.icon-and-text svg {
+	margin-right: 4px;
+}
+
+.hidden {
+	visibility: hidden;
+}
+
+input[type=range].slider {
+	margin: initial;
+}
+
+@media screen and (max-width: 400px) {
+	#navbar-text {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 700px) {
+	.navigation-item span {
+		display: none;
+	}
+}

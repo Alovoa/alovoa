@@ -43,7 +43,7 @@ public class CaptchaService {
 
 	public boolean isValid(long id, String text) {
 		
-		Captcha captcha = captchaRepo.getOne(id);
+		Captcha captcha = captchaRepo.findById(id).orElse(null);
 		if (captcha == null) {
 			return false;
 		}		

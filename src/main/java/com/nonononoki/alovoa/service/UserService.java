@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -110,9 +111,6 @@ public class UserService {
 	@Value("${app.age.max}")
 	private int maxAge;
 
-	@Value("${app.profile.image.size}")
-	private int imageSize;
-
 	@Value("${app.profile.image.length}")
 	private int imageLength;
 	
@@ -190,11 +188,6 @@ public class UserService {
 	}
 
 	public void updateProfilePicture(String imgB64) throws Exception {
-		int maxSize = (int) (Tools.BASE64FACTOR * Tools.THOUSAND * imageSize);
-		if (imgB64.length() > maxSize) {
-			throw new Exception("");
-		}
-
 		User user = authService.getCurrentUser();
 		String newImgB64 = adjustPicture(imgB64);
 		user.setProfilePicture(newImgB64);
@@ -240,6 +233,10 @@ public class UserService {
 	public void updatePreferedGender(long genderId, boolean activated) {
 		User user = authService.getCurrentUser();
 		Set<Gender> list = user.getPreferedGenders();
+		if(list == null) {
+			list = new HashSet<Gender>();
+		}
+		
 		Gender g = genderRepo.findById(genderId).orElse(null);
 		if (activated) {
 			if (!list.contains(g)) {
@@ -304,7 +301,8 @@ public class UserService {
 	
 	public void addImage(String imgB64) throws Exception {
 		User user = authService.getCurrentUser();
-		if(user.getImages() != null && user.getImages().size() < imageMax) {
+		if(user.getImages() != null && 
+				user.getImages().size() < imageMax) {
 			
 			UserImage img = new UserImage();
 			img.setContent(adjustPicture(imgB64));
@@ -357,7 +355,7 @@ public class UserService {
 			image = image.getSubimage(x, y, idealLength, idealLength);
 		}
 
-		if (image.getWidth() > imageSize) {
+		if (image.getWidth() > imageLength) {
 			// scale image if it's too big
 			BufferedImage scaledImage = new BufferedImage(imageLength, imageLength, image.getType());
 			Graphics2D graphics2D = scaledImage.createGraphics();

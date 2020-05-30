@@ -35,8 +35,8 @@ build/
 target/
 attach_**
 .metadata/
+*.log
 
 ### Keys Properties ###
 application-dev.properties
 application-prod.properties
-application-test.properties

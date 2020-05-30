@@ -61,6 +61,7 @@ public class SearchService {
 		List<User> users = userRepo
 				.findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqual(
 						minDate, maxDate);
+		int count = users.size();
 		List<UserDto> userDtos = new ArrayList<>();
 		for (int i = 0; i < users.size(); i++) {
 			UserDto dto = UserDto.userToUserDto(users.get(i), user, textEncryptor);

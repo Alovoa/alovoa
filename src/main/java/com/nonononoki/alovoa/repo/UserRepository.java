@@ -8,13 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.nonononoki.alovoa.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-	
-	public User findByEmail(String email);
-	
-	//public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullAndAgeBetween(int minAge, int maxAge);
-	
-	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqual(LocalDate min, LocalDate max);
-	
-	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullOrderByTotalDonationsDesc();
-}
 
+	public User findByEmail(String email);
+
+	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqual(
+			LocalDate min, LocalDate max);
+
+	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullOrderByTotalDonationsDesc();
+
+}

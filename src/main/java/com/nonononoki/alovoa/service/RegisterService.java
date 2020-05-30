@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.mail.MessagingException;
@@ -43,6 +44,9 @@ public class RegisterService {
 	@Value("${app.age.range}")
 	private int ageRange;
 
+	@Value("${spring.profiles.active}")
+	private String profile;
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -65,12 +69,12 @@ public class RegisterService {
 	private UserRegisterTokenRepository registerTokenRepo;
 
 	@Autowired
-	private CaptchaService captchaService;
+	protected CaptchaService captchaService;
 
 	@Autowired
 	private HttpServletRequest request;
 
-	public void register(RegisterDto dto) throws Exception {
+	public String register(RegisterDto dto) throws Exception {
 
 		// check minimum age
 		LocalDate now = LocalDate.now();
@@ -112,15 +116,18 @@ public class RegisterService {
 		user.setIntention(userIntentionRepo.findById(dto.getIntention()).orElse(null));
 
 		// check if email is in spam mail list
-		try {
-			if (Tools.isTextContainingLineFromFile(Tools.getFileFromResources(TEMP_EMAIL_FILE_NAME), user.getEmail())) {
-				throw new Exception("");
+		if (profile.equals("prod")) {
+			try {
+				if (Tools.isTextContainingLineFromFile(Tools.getFileFromResources(TEMP_EMAIL_FILE_NAME),
+						user.getEmail())) {
+					throw new Exception("");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 
-		user = userRepo.save(user);
+//		user = userRepo.saveAndFlush(user);
 		UserDates dates = new UserDates();
 		Date today = new Date();
 		dates.setActiveDate(today);
@@ -132,18 +139,42 @@ public class RegisterService {
 		dates.setNotificationCheckedDate(today);
 		dates.setNotificationDate(today);
 		dates.setUser(user);
-		dates = userDatesRepo.saveAndFlush(dates);
+//		dates = userDatesRepo.saveAndFlush(dates);
 		user.setDates(dates);
-		user = userRepo.save(user);
 
-		createUserToken(user);
+		// resolves hibernate issue with null Collections with orphanremoval
+		// https://hibernate.atlassian.net/browse/HHH-9940
+		user.setInterests(new ArrayList());
+		user.setImages(new ArrayList());
+		user.setDonations(new ArrayList());
+		user.setLikes(new ArrayList());
+		user.setLikedBy(new ArrayList());
+		user.setConversations(new ArrayList());
+		user.setConversationsBy(new ArrayList());
+		user.setMessageReceived(new ArrayList());
+		user.setMessageSent(new ArrayList());
+		user.setNotifications(new ArrayList());
+		user.setNotificationsFrom(new ArrayList());
+		user.setHiddenByUsers(new ArrayList());
+		user.setHiddenUsers(new ArrayList());
+		user.setBlockedByUsers(new ArrayList());
+		user.setBlockedUsers(new ArrayList());
+		user.setReported(new ArrayList());
+		user.setReportedByUsers(new ArrayList());
+		user.setWebPush(new ArrayList());
+
+		user = userRepo.saveAndFlush(user);
+
+		UserRegisterToken token = createUserToken(user);
+		return token.getContent();
 	}
 
-	public void createUserToken(User user) throws MessagingException {
+	public UserRegisterToken createUserToken(User user) throws MessagingException {
 		UserRegisterToken token = generateToken(user);
 		user.setRegisterToken(token);
-		user = userRepo.save(user);
+		user = userRepo.saveAndFlush(user);
 		mailService.sendRegistrationMail(user, token);
+		return token;
 	}
 
 	public UserRegisterToken generateToken(User user) {
@@ -154,26 +185,25 @@ public class RegisterService {
 		return registerTokenRepo.saveAndFlush(token);
 	}
 
-	public boolean registerConfirm(String tokenString) {
+	public User registerConfirm(String tokenString) throws Exception {
 		UserRegisterToken token = registerTokenRepo.findByContent(tokenString);
 
 		if (token == null) {
-			return false;
+			throw new Exception();
 		}
 
 		User user = token.getUser();
 
 		if (user == null) {
-			return false;
+			throw new Exception();
 		}
 
 		if (user.isConfirmed()) {
-			return false;
+			throw new Exception();
 		}
 
 		user.setConfirmed(true);
 		user.setRegisterToken(null);
-		userRepo.saveAndFlush(user);
-		return true;
+		return userRepo.saveAndFlush(user);
 	}
 }
