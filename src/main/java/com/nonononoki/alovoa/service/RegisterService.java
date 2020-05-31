@@ -52,6 +52,9 @@ public class RegisterService {
 
 	@Autowired
 	private MailService mailService;
+	
+	@Autowired
+	private PublicService publicService;
 
 	@Autowired
 	private UserRepository userRepo;
@@ -82,17 +85,17 @@ public class RegisterService {
 				now);
 		int userAge = period.getYears();
 		if (userAge < minAge) {
-			throw new Exception("");
+			throw new Exception(publicService.text("backend.error.register.min-age"));
 		}
 
 		boolean isValid = captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText());
 		if (!isValid) {
-			throw new Exception("");
+			throw new Exception(publicService.text("backend.error.captcha.invalid"));
 		}
 
 		User user = userRepo.findByEmail(dto.getEmail().toLowerCase());
 		if (user != null) {
-			throw new Exception("");
+			throw new Exception(publicService.text("backend.error.register.email-exists"));
 		}
 		user = new User();
 		user.setEmail(dto.getEmail().toLowerCase());
@@ -120,7 +123,7 @@ public class RegisterService {
 			try {
 				if (Tools.isTextContainingLineFromFile(Tools.getFileFromResources(TEMP_EMAIL_FILE_NAME),
 						user.getEmail())) {
-					throw new Exception("");
+					throw new Exception(publicService.text("backend.error.register.email-spam"));
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

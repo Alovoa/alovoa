@@ -14,7 +14,7 @@ public class RestExceptionHandler
  
     @ExceptionHandler
     protected ResponseEntity<Object> handleConflict(
-      RuntimeException ex, WebRequest request) {
+      Exception ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), 
           new HttpHeaders(), HttpStatus.CONFLICT, request);
     }

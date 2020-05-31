@@ -41,6 +41,7 @@ svg {
 }
 
 .asterisk {
+	float: left;
 	padding-left: 4px;
 	color: red;
 }
@@ -113,6 +114,10 @@ svg {
 
 .hidden {
 	visibility: hidden;
+}
+
+.datetimepicker-clear-button {
+	display: none;
 }
 
 input[type=range].slider {

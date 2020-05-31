@@ -47,8 +47,10 @@ $(function() {
 					success : function(data) {
 						window.location = "/?confirm-registration";
 					},
-					error : function() {
+					error : function(e) {
 						refreshCaptcha();
+						console.log(e);
+						alert(e.responseText);
 					}
 				});
 

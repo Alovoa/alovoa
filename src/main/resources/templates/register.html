@@ -21,22 +21,22 @@
 				<div class="column">
 					<form th:action="@{/register}" method="POST" id="register-form">
 						<div class="field">
-							<label class="label" th:text="#{first-name}"><span
-								class="asterisk">*</span></label>
+							<label class="label" th:text="#{first-name}" style="float:left;"></label><span
+								class="asterisk">*</span>
 							<div class="control">
 								<input class="input" type="text" name="firstName" required>
 							</div>
 						</div>
 						<div class="field">
-							<label class="label" th:text="#{email}"><span
-								class="asterisk">*</span></label>
+							<label class="label" th:text="#{email}" style="float:left;"></label><span
+								class="asterisk">*</span>
 							<div class="control">
 								<input class="input" type="email" name="email" required>
 							</div>
 						</div>
 						<div class="field">
-							<label class="label" th:text="#{dob}"><span
-								class="asterisk">*</span></label>
+							<label class="label" th:text="#{dob}" style="float:left;"></label><span
+								class="asterisk">*</span>
 							<div class="control">
 								<input type="date" name="dateOfBirth" required>
 							</div>
@@ -62,8 +62,8 @@
 							th:text="#{password-change.warning}"></div>
 
 						<div class="field">
-							<label class="label" th:text="#{gender}"><span
-								class="asterisk">*</span></label>
+							<label class="label" th:text="#{gender}" style="float:left;"></label><span
+								class="asterisk">*</span>
 							<div class="select">
 								<select name="gender" required>
 									<option value=""></option>
