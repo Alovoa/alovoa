@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	        .antMatchers("/terms-conditions").permitAll()
 	        .antMatchers("/impressum").permitAll()
 	        .antMatchers("/privacy").permitAll()
+	        .antMatchers("/faq").permitAll()
 	        .antMatchers("/register").permitAll()
 	        .antMatchers("/register/**").permitAll()
 	        .antMatchers("/captcha/**").permitAll()
