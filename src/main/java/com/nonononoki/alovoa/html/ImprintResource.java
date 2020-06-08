@@ -8,7 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class ImprintResource {
 
 	@GetMapping("/imprint")
-	public ModelAndView register() {
+	public ModelAndView imprint() {
 
 		ModelAndView mav = new ModelAndView("imprint");
 		return mav;
