@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html th:lang="${lang}">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Alovoa">
+<link rel="manifest" href="/json/manifest.json">
+
+<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+<link rel="stylesheet" href="/css/alovoa.css" />
+<link rel="stylesheet" href="/css/privacy.css" />
+<title th:text="#{tos.title}"></title>
+</head>
+<body>
+	<div id="main">
+
+		<header th:insert="fragments.html::header"></header>
+		<div class="section">
+			<div class="box" th:utext="${content}">
+			</div>
+		</div>
+	</div>
+	<footer th:replace="fragments.html::footer"></footer>
+
+	<script src="/js/lib/jquery.min.js"></script>
+	<script src="/js/lib/fontawesome.all.js"></script>
+	<script src="/js/tools/getText.js"></script>
+	<script src="/js/imprint.js"></script>
+</body>
+</html>

@@ -43,8 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/json/**").permitAll()
 
 				.antMatchers("/").permitAll().antMatchers("/login").permitAll()
-				.antMatchers("/terms-conditions").permitAll().antMatchers("/imprint").permitAll().antMatchers("/imprint/*").permitAll()
-				.antMatchers("/privacy").permitAll().antMatchers("/faq").permitAll()
+				.antMatchers("/terms-conditions").permitAll().antMatchers("/imprint").permitAll()
+				.antMatchers("/imprint/*").permitAll().antMatchers("/privacy").permitAll()
+				.antMatchers("/faq").permitAll().antMatchers("/tos").permitAll()
 				.antMatchers("/register").permitAll().antMatchers("/register/**").permitAll()
 				.antMatchers("/captcha/**").permitAll().antMatchers("/donate-list").permitAll()
 				.antMatchers("/password/**").permitAll()
