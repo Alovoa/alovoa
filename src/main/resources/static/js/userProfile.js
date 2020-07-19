@@ -92,14 +92,16 @@ function reportUser() {
 	openModal("report-user-modal");
 }
 
-function reportUserSubmit() {
+function reportUserSubmit(idEncoded) {
 	$.ajax({
 		type : "POST",
-		url : "/user/report/" + $("#id-enc").val() + "/"
+		url : "/user/report/" + idEncoded + "/"
 				+ $("#captcha-id").val() + "/" + $("#captcha").val(),
 		headers : {
 			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 		},
+		contentType : "text/plain",
+		data: $("#report-comment").val(),
 		success : function() {
 			alert(getText("userprofile.js.success.report-user"));
 			location.reload(true);

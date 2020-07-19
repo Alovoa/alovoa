@@ -15,18 +15,4 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 
-	@GetMapping("/test/notification/like")
-	public void testNotificationLike() throws Exception {
-		adminService.testNotificationLike();
-	}
-
-	@GetMapping("/test/notification/match")
-	public void testNotificationMatch() throws Exception {
-		adminService.testNotificationMatch();
-	}
-
-	@GetMapping("/test/notification/message")
-	public void testNotificationMessage() throws Exception {
-		adminService.testNotificationMessage();
-	}
 }

@@ -29,21 +29,7 @@
 						<input name="email" th:placeholder="#{email}" class="input">
 					</div>
 					<div style="padding-top: 32px;"></div>
-					<div class="field">
-						<input id="captcha-id" name="captchaId" type="hidden">
-
-						<div class="field">
-							<img id="captcha-image">
-							<button type="button" class="button" onclick="refreshCaptcha()"
-								style="height: 70px; width: 70px; font-size: 1.7rem; margin-left: 12px;">
-								<i class="fa fa-sync"></i>
-							</button>
-						</div>
-						<div class="field">
-							<input class="input" id="captcha" name="captchaText"
-								th:placeholder="#{captcha}" autocomplete="off" required>
-						</div>
-					</div>
+					<div th:replace="fragments.html::captcha"></div>
 					<div class="field">
 						<input id="confirm" type="checkbox" name="confirm" class="switch"
 							style="position: absolute" required> <label for="confirm"><span th:text="#{delete-account.confirm}"></span> </label>

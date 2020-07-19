@@ -46,6 +46,10 @@ svg {
 	color: red;
 }
 
+.button.colored svg {
+	color: white;
+}
+
 .register-warning {
 	color: red;
 	padding-bottom: 8px;

@@ -30,11 +30,16 @@ body *, container *, .label, .textarea, .select select {
 
 .content-background {
 	background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%,
-		rgba(46,52,54, 0.9) 10%, rgba(46,52,54, 0.9) 100%);
+		rgba(46, 52, 54, 0.9) 10%, rgba(46, 52, 54, 0.9) 100%);
+}
+
+textarea::placeholder {
+	color: white !important;
+	opacity: 0.5;
 }
 
 @media screen and (max-width: 1024px) {
 	.profile-bottom.dimmed {
-		background: rgba(46,52,54, 0.9);
+		background: rgba(46, 52, 54, 0.9);
 	}
 }

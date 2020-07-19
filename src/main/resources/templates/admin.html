@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html th:lang="${lang}">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Alovoa">
+<link rel="manifest" href="/json/manifest.json">
+
+<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+<link rel="stylesheet" href="/css/alovoa.css" />
+<link rel="stylesheet" href="/css/privacy.css" />
+<title th:text="#{admin.title}"></title>
+</head>
+<body>
+	<div id="main">
+		<header th:insert="fragments.html::header-logged-in"></header>
+		<div style="padding-top: 4px;"></div>
+		<div id="contact" class="box"
+			style="max-height: 330px; overflow: auto;">
+			<h3 th:text="#{contact}"></h3>
+			<div th:each="contact : ${contacts}" style="padding-bottom: 16px;">
+				<input class="input" th:value="${contact.email}" readonly></input>
+				<div style="padding-top: 4px;"></div>
+				<textarea class="textarea" th:text="${contact.message}" readonly></textarea>
+				<div style="padding-top: 4px;"></div>
+				<button class="button" th:text="#{admin-delete-contact}"
+					th:onclick="hideContact([[${contact.id}]])"></button>
+			</div>
+		</div>
+
+		<div id="report" class="box"
+			style="max-height: 693px; overflow: auto;">
+			<h3 th:text="#{reports}"></h3>
+			<div th:each="report : ${reports}" style="padding-bottom: 16px;">
+				<h4 th:text="${report.userTo.firstName}"></h4>
+				<div>
+					<img th:src="${report.userTo.profilePicture}" width=250> <img
+						th:each="img : ${report.userTo.images}" th:src="${img.content}"
+						width=250>
+				</div>
+				<textarea class="textarea" th:text="${report.userTo.description}"
+					readonly></textarea>
+				<div style="padding-top: 4px;"></div>
+				<textarea class="textarea" th:text="${report.comment}" readonly></textarea>
+				<div style="padding-top: 4px;"></div>
+				<button class="button" th:text="#{view-profile}"
+					th:onclick="viewProfile([[${report.userTo.id}]])"></button>
+				<button class="button" th:text="#{admin.delete-report}"
+					th:onclick="deleteReport([[${report.id}]])"></button>
+				<button class="button" th:text="#{admin.ban-user}"
+					th:onclick="banUser([[${report.userTo.id}]])"></button>
+			</div>
+		</div>
+
+		<div id="mail-single" class="box">
+			<h3 th:text="#{admin.mail.send-single}"></h3>
+			<form id="mail-single-form">
+				<input class="input" name="email" th:placeholder="#{email}" required>
+				<div style="padding-top: 4px;"></div>
+				<input class="input" name="subject" th:placeholder="#{subject}"
+					required>
+				<div style="padding-top: 4px;"></div>
+				<textarea class="textarea" name="body" th:placeholder="#{message}"
+					required></textarea>
+				<div style="padding-top: 4px;"></div>
+				<button class="button" th:text="#{submit}"
+					onclick="sendMailSingle()"></button>
+			</form>
+		</div>
+
+		<div id="mail-all" class="box">
+			<h3 th:text="#{admin.mail.send-all}"></h3>
+			<form id="mail-all-form">
+				<input class="input" name="subject" th:placeholder="#{subject}"
+					required>
+				<div style="padding-top: 4px;"></div>
+				<textarea class="textarea" name="body" th:placeholder="#{message}"
+					required></textarea>
+				<div style="padding-top: 4px;"></div>
+				<button class="button" th:text="#{submit}"
+					onclick="sendMailAll()"></button>
+			</form>
+		</div>
+
+	</div>
+	<footer th:replace="fragments.html::footer"></footer>
+
+	<script src="/js/lib/jquery.min.js"></script>
+	<script src="/js/lib/fontawesome.all.js"></script>
+	<script src="/js/tools/getText.js"></script>
+	<script src="/js/admin.js"></script>
+</body>
+</html>

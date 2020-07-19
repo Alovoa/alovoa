@@ -184,20 +184,12 @@
 						th:utext="#{userprofile.report.confirm}"></div>
 
 					<div class="field">
-						<input id="captcha-id" name="captchaId" type="hidden"> <input
-							id="id-enc" type="hidden" name="id" th:value="${user.idEncoded}">
+						<textarea class="textarea" id="report-comment"
+							th:placeholder="#{comment}" maxlength=255></textarea>
+					</div>
 
-						<div class="field">
-							<img id="captcha-image">
-							<button type="button" class="button" onclick="refreshCaptcha()"
-								style="height: 70px; width: 70px; font-size: 1.7rem; margin-left: 12px;">
-								<i class="fa fa-sync"></i>
-							</button>
-						</div>
-						<div class="field">
-							<input class="input" id="captcha" name="captchaText"
-								th:placeholder="#{captcha}" autocomplete="off" required>
-						</div>
+					<div class="field">
+						<div th:replace="fragments.html::captcha"></div>
 						<div class="field" style="height: 42px">
 							<button class="button is-info" style="float: right"
 								th:onclick="reportUserSubmit([[${user.idEncoded}]])"

@@ -112,11 +112,11 @@ public class UserController {
 		userService.unblockUser(idEnc);
 	}
 
-	@PostMapping(value = "/report/{idEnc}/{captchaId}/{captchaText}")
-	public void reportUser(@PathVariable String idEnc, @PathVariable long captchaId, @PathVariable String captchaText) throws Exception {
-		userService.reportUser(idEnc, captchaId, captchaText);
+	@PostMapping(value = "/report/{idEnc}/{captchaId}/{captchaText}", consumes = "text/plain")
+	public void reportUser(@PathVariable String idEnc, @PathVariable long captchaId, @PathVariable String captchaText, @RequestBody String comment) throws Exception {
+		userService.reportUser(idEnc, captchaId, captchaText, comment);
 	}
-	
+				
 	@GetMapping(value = "/status/new-alert")
 	public boolean newAlert() throws Exception {
 		return userService.hasNewAlert();

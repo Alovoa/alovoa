@@ -466,7 +466,7 @@ public class UserService {
 		}
 	}
 
-	public void reportUser(String idEnc, long captchaId, String captchaText) throws NumberFormatException, Exception {
+	public void reportUser(String idEnc, long captchaId, String captchaText, String comment) throws NumberFormatException, Exception {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
 		if (userReportRepo.findByUserFromAndUserTo(currUser, user) == null) {
@@ -479,6 +479,7 @@ public class UserService {
 			report.setDate(new Date());
 			report.setUserFrom(currUser);
 			report.setUserTo(user);
+			report.setComment(comment);
 			userReportRepo.save(report);
 		}
 	}

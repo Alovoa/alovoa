@@ -28,4 +28,6 @@ public class Contact {
 	private String message;
 	
 	private Date date;
+	
+	private boolean hidden;
 }

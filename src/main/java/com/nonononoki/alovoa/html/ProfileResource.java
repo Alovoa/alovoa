@@ -24,17 +24,26 @@ public class ProfileResource {
 	@Autowired
 	private UserIntentionRepository userIntentionRepo;
 	
+	@Autowired
+	private AdminResource adminResource;
+	
 	@Value("${app.profile.image.max}")
 	private int imageMax;
 
 	@GetMapping("/profile")
-	public ModelAndView profile() {
-		ModelAndView mav = new ModelAndView("profile");
-		mav.addObject("user", authService.getCurrentUser());
-		mav.addObject("genders", genderRepo.findAll());
-		mav.addObject("intentions", userIntentionRepo.findAll());
-		mav.addObject("imageMax", imageMax);
-		return mav;
+	public ModelAndView profile() throws Exception {
+		
+		User currUser = authService.getCurrentUser();
+		if(currUser.isAdmin()) {
+			return adminResource.admin();
+		} else {
+			ModelAndView mav = new ModelAndView("profile");
+			mav.addObject("user", currUser);
+			mav.addObject("genders", genderRepo.findAll());
+			mav.addObject("intentions", userIntentionRepo.findAll());
+			mav.addObject("imageMax", imageMax);
+			return mav;
+		}
 	}
 
 	@GetMapping("/profile/warning")

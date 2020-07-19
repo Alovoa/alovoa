@@ -33,22 +33,11 @@
 							name="email" required>
 					</div>
 					<div class="field">
-						<textarea class="textarea" name="description"
+						<textarea class="textarea" name="message"
 							th:placeholder="#{message}" required></textarea>
 					</div>
 					<div style="padding-top: 12px;"></div>
-					<div class="field">
-						<input id="captcha-id" name="captchaId" type="hidden"> <img
-							id="captcha-image">
-						<button type="button" class="button" onclick="refreshCaptcha()"
-							style="height: 70px; width: 70px; font-size: 1.7rem; margin-left: 12px;">
-							<i class="fa fa-sync"></i>
-						</button>
-					</div>
-					<div class="field">
-						<input class="input" id="captcha" name="captchaText"
-							th:placeholder="#{captcha}" autocomplete="off" required>
-					</div>
+					<div th:replace="fragments.html::captcha"></div>
 					<button class="button" th:text="#{submit}"></button>
 				</form>
 			</div>

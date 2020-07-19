@@ -15,5 +15,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			LocalDate min, LocalDate max);
 
 	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullOrderByTotalDonationsDesc();
-
 }

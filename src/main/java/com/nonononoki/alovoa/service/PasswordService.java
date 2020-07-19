@@ -5,6 +5,7 @@ import java.util.Date;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,11 @@ public class PasswordService {
 			throw new Exception("");
 		}
 		User u = userRepo.findByEmail(dto.getEmail().toLowerCase());
+		
+		if(u.isDisabled()) {
+			throw new DisabledException("");
+		}
+		
 		UserPasswordToken token = new UserPasswordToken();
 		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
 		token.setDate(new Date());

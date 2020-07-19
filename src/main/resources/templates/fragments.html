@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html>
 <body>
+
+	<div th:fragment="captcha">
+		<input id="captcha-id" name="captchaId" type="hidden">
+
+		<div class="field">
+			<img id="captcha-image">
+			<button type="button" class="button is-success colored" onclick="refreshCaptcha()"
+				style="height: 70px; width: 70px; font-size: 1.7rem; margin-left: 12px;">
+				<i class="fa fa-sync"></i>
+			</button>
+		</div>
+		<div class="field">
+			<input class="input" id="captcha" name="captchaText"
+				th:placeholder="#{captcha}" autocomplete="off" required>
+		</div>
+		<div style="padding-top: 4px;"></div>
+
+	</div>
+	
 	<div th:fragment="header">
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
