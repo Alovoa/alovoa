@@ -71,8 +71,8 @@ svg {
 	font-size: 1.5em;
 }
 
-.navigation-item.new svg {
-	color: #FFA000;
+.navigation-item.new * {
+	color: #FFA000 !important;
 }
 
 .navigation-item div {
