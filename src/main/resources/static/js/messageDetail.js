@@ -61,3 +61,22 @@ function reloadMessages(scrollToBottom) {
 function getConvoId() {
 	return $("#convo-id").val();
 }
+
+
+function startVideoChat() {
+	var answer = window.confirm(getText("message.js.video.confirm"))
+	if (answer) {
+	    let rand = randomString();
+	    let url = "https://meet.jit.si/" + rand;
+	    window.open(url);
+	}
+}
+
+//https://stackoverflow.com/a/10727155
+function randomString() {
+	const length = 32;
+	const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+    return result;
+}

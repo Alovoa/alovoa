@@ -48,6 +48,10 @@ public class MessageResource {
 			Conversation c = user.getConversations().get(i);
 			convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
 		}
+		for (int i = 0; i < user.getConversationsBy().size(); i++) {
+			Conversation c = user.getConversationsBy().get(i);
+			convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
+		}
 
 		Collections.sort(convos, new Comparator<ConversationDto>() {
 			@Override
