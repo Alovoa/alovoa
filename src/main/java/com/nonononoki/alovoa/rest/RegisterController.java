@@ -20,4 +20,10 @@ public class RegisterController {
 	public void register(@RequestBody RegisterDto dto) throws Exception {	
 		registerService.register(dto);
 	}
+	
+	@PostMapping(value="/register-oauth", consumes = "application/json")
+	public String registerOauth(@RequestBody RegisterDto dto) throws Exception {	
+		registerService.registerOauth(dto);
+		return "profile";
+	}
 }

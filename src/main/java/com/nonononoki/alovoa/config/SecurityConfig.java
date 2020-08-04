@@ -40,11 +40,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 				.antMatchers("/css/**").permitAll().antMatchers("/js/**").permitAll()
 				.antMatchers("/img/**").permitAll().antMatchers("/font/**").permitAll()
-				.antMatchers("/json/**").permitAll()
+				.antMatchers("/json/**").permitAll().antMatchers("/oauth2/**").permitAll()
 
-				.antMatchers("/").permitAll().antMatchers("/login").permitAll()
-				.antMatchers("/terms-conditions").permitAll().antMatchers("/imprint").permitAll()
-				.antMatchers("/imprint/*").permitAll().antMatchers("/privacy").permitAll()
+				.antMatchers("/").permitAll().antMatchers("/login").permitAll().antMatchers("/login/**")
+				.permitAll().antMatchers("/terms-conditions").permitAll().antMatchers("/imprint")
+				.permitAll().antMatchers("/imprint/*").permitAll().antMatchers("/privacy").permitAll()
 				.antMatchers("/faq").permitAll().antMatchers("/tos").permitAll()
 				.antMatchers("/register").permitAll().antMatchers("/register/**").permitAll()
 				.antMatchers("/captcha/**").permitAll().antMatchers("/donate-list").permitAll()
@@ -55,13 +55,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 				.antMatchers("/text/*").permitAll().anyRequest().authenticated().and().formLogin()
 				.loginPage("/login").and().logout().deleteCookies("JSESSIONID").logoutUrl("/logout")
-				.logoutSuccessUrl("/?logout").and()
+				.logoutSuccessUrl("/?logout").and().oauth2Login().loginPage("/login").defaultSuccessUrl("/login/oauth2/success").and()
 				.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.rememberMe().key(key);
 		// .and().csrf().disable();
-		if (!profile.equals("dev")) {
-			http.requiresChannel().anyRequest().requiresSecure();
-		}
+		http.requiresChannel().anyRequest().requiresSecure();
 	}
 
 	@Override

@@ -36,6 +36,8 @@ public class User {
 	@Convert(converter = TextEncryptorConverter.class)
 	private String email;
 	private String password;
+	
+	//private String oauthProvider;
 
 	@Convert(converter = TextEncryptorConverter.class)
 	private String firstName;

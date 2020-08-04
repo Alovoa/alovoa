@@ -23,18 +23,18 @@ public class ProfileResource {
 
 	@Autowired
 	private UserIntentionRepository userIntentionRepo;
-	
+
 	@Autowired
 	private AdminResource adminResource;
-	
+
 	@Value("${app.profile.image.max}")
 	private int imageMax;
 
 	@GetMapping("/profile")
 	public ModelAndView profile() throws Exception {
-		
+
 		User currUser = authService.getCurrentUser();
-		if(currUser.isAdmin()) {
+		if (currUser.isAdmin()) {
 			return adminResource.admin();
 		} else {
 			ModelAndView mav = new ModelAndView("profile");
@@ -81,7 +81,7 @@ public class ProfileResource {
 			noGender = true;
 			hasWarning = true;
 		}
-		if(user.getLastLocation() == null) {
+		if (user.getLastLocation() == null) {
 			noLocation = true;
 			hasWarning = true;
 		}

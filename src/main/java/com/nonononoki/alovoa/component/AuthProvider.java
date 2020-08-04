@@ -63,6 +63,11 @@ public class AuthProvider implements AuthenticationProvider {
 		if (user.isDisabled()) {
 			throw new DisabledException("");
 		}
+
+		if (password.isEmpty()) {
+			throw new BadCredentialsException("");
+		}
+
 		if (!passwordEncoder.matches(password, user.getPassword())) {
 			throw new BadCredentialsException("");
 		}
@@ -82,7 +87,7 @@ public class AuthProvider implements AuthenticationProvider {
 
 	@Override
 	public boolean supports(Class<?> authentication) {
-		return authentication.equals(UsernamePasswordAuthenticationToken.class) ||
-				authentication.equals(AuthToken.class);
+		return authentication.equals(UsernamePasswordAuthenticationToken.class)
+				|| authentication.equals(AuthToken.class);
 	}
 }

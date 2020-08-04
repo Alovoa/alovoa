@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
+import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.service.RegisterService;
@@ -24,11 +26,24 @@ public class RegisterResource {
 
 	@Autowired
 	private UserIntentionRepository userIntentionRepo;
+	
+	@Autowired
+	private TextEncryptorConverter textEncryptor;
+	
 
 	@GetMapping("/register")
 	public ModelAndView register() {
 		ModelAndView mav = new ModelAndView("register");
 		// mav.addObject("captcha", captchaService.generate());
+		mav.addObject("genders", genderRepo.findAll());
+		mav.addObject("intentions", userIntentionRepo.findAll());
+		return mav;
+	}
+	
+	public ModelAndView registerOauth(User user) throws Exception {
+		ModelAndView mav = new ModelAndView("register-oauth");
+		// mav.addObject("captcha", captchaService.generate());
+		mav.addObject("email", textEncryptor.encode(user.getEmail()));
 		mav.addObject("genders", genderRepo.findAll());
 		mav.addObject("intentions", userIntentionRepo.findAll());
 		return mav;

@@ -17,9 +17,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserDates;
 import com.nonononoki.alovoa.entity.UserRegisterToken;
+import com.nonononoki.alovoa.model.BaseRegisterDto;
 import com.nonononoki.alovoa.model.RegisterDto;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserDatesRepository;
@@ -52,15 +54,15 @@ public class RegisterService {
 
 	@Autowired
 	private MailService mailService;
-	
+
 	@Autowired
 	private PublicService publicService;
 
 	@Autowired
 	private UserRepository userRepo;
 
-	@Autowired
-	private UserDatesRepository userDatesRepo;
+	//@Autowired
+	//private UserDatesRepository userDatesRepo;
 
 	@Autowired
 	private GenderRepository genderRepo;
@@ -75,19 +77,13 @@ public class RegisterService {
 	protected CaptchaService captchaService;
 
 	@Autowired
-	private HttpServletRequest request;
+	private TextEncryptorConverter textEncryptor;
+
+	//@Autowired
+	//private HttpServletRequest request;
 
 	public String register(RegisterDto dto) throws Exception {
-
-		// check minimum age
-		LocalDate now = LocalDate.now();
-		Period period = Period.between(dto.getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-				now);
-		int userAge = period.getYears();
-		if (userAge < minAge) {
-			throw new Exception(publicService.text("backend.error.register.min-age"));
-		}
-
+		
 		boolean isValid = captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText());
 		if (!isValid) {
 			throw new Exception(publicService.text("backend.error.captcha.invalid"));
@@ -97,26 +93,9 @@ public class RegisterService {
 		if (user != null) {
 			throw new Exception(publicService.text("backend.error.register.email-exists"));
 		}
-		user = new User();
-		user.setEmail(dto.getEmail().toLowerCase());
-		user.setPassword(passwordEncoder.encode(dto.getPassword()));
-		user.setFirstName(dto.getFirstName());
-		int userMinAge = userAge - ageRange;
-		int userMaxAge = userAge + ageRange;
-		if (userMinAge < minAge) {
-			userMinAge = minAge;
-		}
-		if (userMaxAge > maxAge) {
-			userMaxAge = maxAge;
-		}
-		// user.setAge(userAge);
-		user.setPreferedMinAge(userMinAge);
-		user.setPreferedMaxAge(userMaxAge);
-		user.setGender(genderRepo.findById(dto.getGender()).orElse(null));
-		if (user.getGender() == null) {
-			throw new Exception("");
-		}
-		user.setIntention(userIntentionRepo.findById(dto.getIntention()).orElse(null));
+
+		BaseRegisterDto baseRegisterDto = registerBase(dto);
+		user = baseRegisterDto.getUser();
 
 		// check if email is in spam mail list
 		if (profile.equals("prod")) {
@@ -130,46 +109,21 @@ public class RegisterService {
 			}
 		}
 
-//		user = userRepo.saveAndFlush(user);
-		UserDates dates = new UserDates();
-		Date today = new Date();
-		dates.setActiveDate(today);
-		dates.setCreationDate(today);
-		dates.setDateOfBirth(dto.getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-		dates.setIntentionChangeDate(today);
-		dates.setMessageCheckedDate(today);
-		dates.setMessageDate(today);
-		dates.setNotificationCheckedDate(today);
-		dates.setNotificationDate(today);
-		dates.setUser(user);
-//		dates = userDatesRepo.saveAndFlush(dates);
-		user.setDates(dates);
-
-		// resolves hibernate issue with null Collections with orphanremoval
-		// https://hibernate.atlassian.net/browse/HHH-9940
-		user.setInterests(new ArrayList());
-		user.setImages(new ArrayList());
-		user.setDonations(new ArrayList());
-		user.setLikes(new ArrayList());
-		user.setLikedBy(new ArrayList());
-		user.setConversations(new ArrayList());
-		user.setConversationsBy(new ArrayList());
-		user.setMessageReceived(new ArrayList());
-		user.setMessageSent(new ArrayList());
-		user.setNotifications(new ArrayList());
-		user.setNotificationsFrom(new ArrayList());
-		user.setHiddenByUsers(new ArrayList());
-		user.setHiddenUsers(new ArrayList());
-		user.setBlockedByUsers(new ArrayList());
-		user.setBlockedUsers(new ArrayList());
-		user.setReported(new ArrayList());
-		user.setReportedByUsers(new ArrayList());
-		user.setWebPush(new ArrayList());
-
+		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 		user = userRepo.saveAndFlush(user);
 
 		UserRegisterToken token = createUserToken(user);
 		return token.getContent();
+	}
+
+	public void registerOauth(RegisterDto dto) throws Exception {
+
+		String email = textEncryptor.decode(dto.getEmail());
+		dto.setEmail(email);
+		BaseRegisterDto baseRegisterDto = registerBase(dto);
+		User user = baseRegisterDto.getUser();
+		user.setConfirmed(true);
+		userRepo.saveAndFlush(user);
 	}
 
 	public UserRegisterToken createUserToken(User user) throws MessagingException {
@@ -208,5 +162,79 @@ public class RegisterService {
 		user.setConfirmed(true);
 		user.setRegisterToken(null);
 		return userRepo.saveAndFlush(user);
+	}
+
+	private BaseRegisterDto registerBase(RegisterDto dto) throws Exception {
+		// check minimum age
+		LocalDate now = LocalDate.now();
+		Period period = Period.between(
+				dto.getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), now);
+		int userAge = period.getYears();
+		if (userAge < minAge) {
+			throw new Exception(publicService.text("backend.error.register.min-age"));
+		}
+
+		User user = new User();
+		user.setEmail(dto.getEmail().toLowerCase());
+		user.setFirstName(dto.getFirstName());
+		int userMinAge = userAge - ageRange;
+		int userMaxAge = userAge + ageRange;
+		if (userMinAge < minAge) {
+			userMinAge = minAge;
+		}
+		if (userMaxAge > maxAge) {
+			userMaxAge = maxAge;
+		}
+		// user.setAge(userAge);
+		user.setPreferedMinAge(userMinAge);
+		user.setPreferedMaxAge(userMaxAge);
+		user.setGender(genderRepo.findById(dto.getGender()).orElse(null));
+		if (user.getGender() == null) {
+			throw new Exception("");
+		}
+		user.setIntention(userIntentionRepo.findById(dto.getIntention()).orElse(null));
+
+//				user = userRepo.saveAndFlush(user);
+		UserDates dates = new UserDates();
+		Date today = new Date();
+		dates.setActiveDate(today);
+		dates.setCreationDate(today);
+		dates.setDateOfBirth(dto.getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+		dates.setIntentionChangeDate(today);
+		dates.setMessageCheckedDate(today);
+		dates.setMessageDate(today);
+		dates.setNotificationCheckedDate(today);
+		dates.setNotificationDate(today);
+		dates.setUser(user);
+//				dates = userDatesRepo.saveAndFlush(dates);
+		user.setDates(dates);
+
+		// resolves hibernate issue with null Collections with orphanremoval
+		// https://hibernate.atlassian.net/browse/HHH-9940
+		user.setInterests(new ArrayList());
+		user.setImages(new ArrayList());
+		user.setDonations(new ArrayList());
+		user.setLikes(new ArrayList());
+		user.setLikedBy(new ArrayList());
+		user.setConversations(new ArrayList());
+		user.setConversationsBy(new ArrayList());
+		user.setMessageReceived(new ArrayList());
+		user.setMessageSent(new ArrayList());
+		user.setNotifications(new ArrayList());
+		user.setNotificationsFrom(new ArrayList());
+		user.setHiddenByUsers(new ArrayList());
+		user.setHiddenUsers(new ArrayList());
+		user.setBlockedByUsers(new ArrayList());
+		user.setBlockedUsers(new ArrayList());
+		user.setReported(new ArrayList());
+		user.setReportedByUsers(new ArrayList());
+		user.setWebPush(new ArrayList());
+		
+		user = userRepo.saveAndFlush(user);
+
+		BaseRegisterDto baseRegisterDto = new BaseRegisterDto();
+		baseRegisterDto.setRegisterDto(dto);
+		baseRegisterDto.setUser(user);
+		return baseRegisterDto;
 	}
 }
