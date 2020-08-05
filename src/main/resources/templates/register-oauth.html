@@ -18,20 +18,23 @@
 		<header th:replace="fragments.html::header"></header>
 		<div class="section">
 			<div class="container">
-				<div class="column">
-					<form th:action="@{/register-oauth}" method="POST" id="register-form">
+				<h3 class="title" th:text="#{register.title}"></h3>
+				<div class="box">
+					<form th:action="@{/register-oauth}" method="POST"
+						id="register-form">
 						<div class="field">
-							<label class="label" th:text="#{first-name}" style="float:left;"></label><span
+							<label class="label" th:text="#{first-name}" style="float: left;"></label><span
 								class="asterisk">*</span>
 							<div class="control">
 								<input class="input" type="text" name="firstName" required>
 							</div>
 						</div>
 						<div class="field">
-								<input class="input" type="hidden" name="email" th:value="${email}" required>
+							<input class="input" type="hidden" name="email"
+								th:value="${email}" required>
 						</div>
 						<div class="field">
-							<label class="label" th:text="#{dob}" style="float:left;"></label><span
+							<label class="label" th:text="#{dob}" style="float: left;"></label><span
 								class="asterisk">*</span>
 							<div class="control">
 								<input type="date" name="dateOfBirth" required>
@@ -41,7 +44,7 @@
 						<div style="height: 2px"></div>
 
 						<div class="field">
-							<label class="label" th:text="#{gender}" style="float:left;"></label><span
+							<label class="label" th:text="#{gender}" style="float: left;"></label><span
 								class="asterisk">*</span>
 							<div class="select">
 								<select name="gender" required>
@@ -99,7 +102,7 @@
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/bulma-calendar.min.js"></script>
 	<script src="/js/register-oauth.js"></script>
-	
+
 	<script></script>
 
 </body>

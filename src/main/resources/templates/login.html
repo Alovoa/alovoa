@@ -16,10 +16,12 @@
 	<div id="main">
 		<header th:insert="fragments.html::header"></header>
 		<div class="section">
+
 			<div class="container">
-				<div class="column">
+				<div>
 					<h3 class="title" th:text="#{login.title}"></h3>
 					<p class="subtitle" th:text="#{login.subtitle}"></p>
+
 					<div class="box">
 						<form th:action="@{/login}" method="POST">
 							<div class="field">
@@ -50,18 +52,34 @@
 					<p>
 						<a href="/password/reset" th:text="#{login.forgot-password}"></a>
 					</p>
+
+					<div class="container" style="margin-top: 48px;" id="oauth-div">
+						<div class="box">
+							<div class="columns">
+								<button class="button is-large colored"
+									style="background-color: #4285F4; width: 100%;"
+									onclick="window.location='/oauth2/authorization/google'">
+									<img src="/img/google-icon.svg" style="height: 48px;"><span
+										style="padding-left: 12px; color: white;"
+										th:text="#{login.oauth.google}"></span>
+								</button>
+								<button class="button is-large colored"
+									style="background-color: #4267b2; width: 100%;"
+									onclick="window.location='/oauth2/authorization/facebook'">
+									<img src="/img/facebook-icon.svg" style="height: 42px;"><span
+										style="padding-left: 12px; color: white;"
+										th:text="#{login.oauth.facebook}"></span>
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
+
+
 			</div>
 		</div>
 
-		<div class="container unauthenticated">
-			<div>
-				With Google: <a href="/oauth2/authorization/google">click here</a>
-			</div>
-			<div>
-				With FB: <a href="/oauth2/authorization/facebook">click here</a>
-			</div>
-		</div>
+
 	</div>
 	<footer th:replace="fragments.html::footer"></footer>
 
