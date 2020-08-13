@@ -51,6 +51,10 @@ public class MailService {
 		helper.setText(body, true);
 		mailSender.send(mimeMessage);
 	}
+	
+	public void sendAdminMail(String to, String subject, String body) throws MessagingException {
+		sendMail(defaultFrom, to, subject, body);
+	}
 
 	public void sendMailWithAttachment(String to, String from, String subject, String body, String attachmentName,
 			ByteArrayResource attachmentRes) throws MessagingException {

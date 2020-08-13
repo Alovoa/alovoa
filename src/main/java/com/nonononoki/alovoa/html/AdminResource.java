@@ -38,8 +38,8 @@ public class AdminResource {
 
 		ModelAndView mav = new ModelAndView("admin");
 
-		List<UserReport> reports = userReportRepo.findAll();
-		List<Contact> contacts = contactRepository.findAllByHiddenFalse();
+		List<UserReport> reports = userReportRepo.findTop20ByOrderByDateAsc();
+		List<Contact> contacts = contactRepository.findTop20ByHiddenFalse();
 
 		mav.addObject("reports", reports);
 		mav.addObject("contacts", contacts);

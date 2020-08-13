@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,6 @@ import com.nonononoki.alovoa.entity.UserRegisterToken;
 import com.nonononoki.alovoa.model.BaseRegisterDto;
 import com.nonononoki.alovoa.model.RegisterDto;
 import com.nonononoki.alovoa.repo.GenderRepository;
-import com.nonononoki.alovoa.repo.UserDatesRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserRegisterTokenRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -72,6 +70,9 @@ public class RegisterService {
 
 	@Autowired
 	private UserRegisterTokenRepository registerTokenRepo;
+	
+	@Autowired
+	private AuthService authService;
 
 	@Autowired
 	protected CaptchaService captchaService;
@@ -119,9 +120,19 @@ public class RegisterService {
 	public void registerOauth(RegisterDto dto) throws Exception {
 
 		String email = textEncryptor.decode(dto.getEmail());
+		
+		if(!email.equals(authService.getCurrentUser().getEmail())) {
+			throw new Exception("");
+		}
+		
+		User user = userRepo.findByEmail(email);
+		if (user != null) {
+			throw new Exception(publicService.text("backend.error.register.email-exists"));
+		}
+		
 		dto.setEmail(email);
 		BaseRegisterDto baseRegisterDto = registerBase(dto);
-		User user = baseRegisterDto.getUser();
+		user = baseRegisterDto.getUser();
 		user.setConfirmed(true);
 		userRepo.saveAndFlush(user);
 	}

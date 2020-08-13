@@ -1,8 +1,14 @@
 package com.nonononoki.alovoa.service;
 
+import java.util.List;
+
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.MailDto;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -12,18 +18,24 @@ public class AdminService {
 
 	@Autowired
 	private AuthService authService;
-	
+
 	@Autowired
-	private NotificationService notificationService;
+	private MailService mailService;
 
 	@Autowired
 	private UserRepository userRepo;
-
-	@Autowired
-	private GenderRepository genderRepo;
-
-	@Autowired
-	private UserIntentionRepository intentRepo;
+	
+	
+	public void sendMailSingle(MailDto dto) throws MessagingException {
+		mailService.sendAdminMail(dto.getRecipient(), dto.getSubject(), dto.getBody());
+	}
+	
+	public void sendMailAll(MailDto dto) throws MessagingException {		
+		List<User> users = userRepo.findAll();	
+		for(User u : users) {
+			mailService.sendAdminMail(u.getEmail(), dto.getSubject(), dto.getBody());
+		}		
+	}
 
 
 }
