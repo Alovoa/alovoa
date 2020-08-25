@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import lombok.Data;
 
@@ -26,4 +27,7 @@ public class UserReport {
 	private Date date;
 	
 	private String comment;
+	
+	@Transient
+	private String userToIdEnc;
 }

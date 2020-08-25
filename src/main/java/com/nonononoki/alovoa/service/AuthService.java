@@ -21,7 +21,7 @@ public class AuthService {
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
-	public User getCurrentUser() {
+	public User getCurrentUser() throws Exception {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String email;
 		if (auth instanceof OAuth2AuthenticationToken) {
@@ -32,6 +32,11 @@ public class AuthService {
 			email = (String) auth.getPrincipal();
 		}
 		
-		return userRepo.findByEmail(email);
+		User user = userRepo.findByEmail(email);
+		if(user.isDisabled()) {
+			throw new Exception("");
+		}
+		
+		return user;
 	}
 }

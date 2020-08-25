@@ -47,7 +47,7 @@ public class ProfileResource {
 	}
 
 	@GetMapping("/profile/warning")
-	public String warning(Model model) {
+	public String warning(Model model) throws Exception {
 
 		boolean hasWarning = false;
 		boolean noProfilePicture = false;

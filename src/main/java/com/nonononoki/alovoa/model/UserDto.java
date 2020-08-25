@@ -97,7 +97,10 @@ public class UserDto {
 		}
 		dto.setSameInterests(sameInterests);
 		
-		double dist = Tools.getDistanceToUser(user, currentUser);
+		double dist = 0;
+		if(!currentUser.isAdmin()) {
+			dist = Tools.getDistanceToUser(user, currentUser);
+		}
 		int distRounded = (int) Math.round(dist);
 		distRounded  = distRounded - distRounded % LOCATION_ROUNDING;
 		dto.setDistanceToUser(distRounded / Tools.THOUSAND); //convert meters to km

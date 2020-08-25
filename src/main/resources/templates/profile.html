@@ -88,6 +88,7 @@
 						<label class="label" th:text="#{profile.intention}"></label>
 						<div class="select">
 							<select id="intention">
+							<option th:unless="${user.intention}"></option>
 								<th:block th:each="intention : ${intentions}">
 									<option th:value="${intention.id}"
 										th:selected="${user.intention != null && user.intention.id == intention.id}"

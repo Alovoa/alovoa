@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserReport;
@@ -28,6 +29,9 @@ public class AdminResource {
 	
 	@Autowired
 	private ContactRepository contactRepository;
+	
+	@Autowired
+	private TextEncryptorConverter textEncryptor;
 
 	@GetMapping("/admin")
 	public ModelAndView admin() throws Exception {
@@ -39,6 +43,11 @@ public class AdminResource {
 		ModelAndView mav = new ModelAndView("admin");
 
 		List<UserReport> reports = userReportRepo.findTop20ByOrderByDateAsc();
+		
+		for(UserReport r : reports) {
+			r.setUserToIdEnc(textEncryptor.encode(Long.toString(r.getUserTo().getId())));
+		}
+
 		List<Contact> contacts = contactRepository.findTop20ByHiddenFalse();
 
 		mav.addObject("reports", reports);

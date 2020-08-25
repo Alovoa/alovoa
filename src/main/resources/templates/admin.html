@@ -20,7 +20,7 @@
 		<div id="contact" class="box"
 			style="max-height: 330px; overflow: auto;">
 			<h3 th:text="#{contact}"></h3>
-			<div th:each="contact : ${contacts}" style="padding-bottom: 16px;">
+			<div th:each="contact : ${contacts}" style="padding-bottom: 16px;" th:id="'contact' + ${contact.id}">
 				<input class="input" th:value="${contact.email}" readonly></input>
 				<div style="padding-top: 4px;"></div>
 				<textarea class="textarea" th:text="${contact.message}" readonly></textarea>
@@ -33,7 +33,7 @@
 		<div id="report" class="box"
 			style="max-height: 693px; overflow: auto;">
 			<h3 th:text="#{reports}"></h3>
-			<div th:each="report : ${reports}" style="padding-bottom: 16px;">
+			<div th:each="report : ${reports}" style="padding-bottom: 16px;"  th:id="'report' + ${report.id}" th:class="'user' + ${report.userTo.id}">
 				<h4 th:text="${report.userTo.firstName}"></h4>
 				<div>
 					<img th:src="${report.userTo.profilePicture}" width=250> <img
@@ -46,17 +46,17 @@
 				<textarea class="textarea" th:text="${report.comment}" readonly></textarea>
 				<div style="padding-top: 4px;"></div>
 				<button class="button" th:text="#{view-profile}"
-					th:onclick="viewProfile([[${report.userTo.id}]])"></button>
+					th:onclick="viewProfile([[${report.userToIdEnc}]])"></button>
 				<button class="button" th:text="#{admin.delete-report}"
 					th:onclick="deleteReport([[${report.id}]])"></button>
 				<button class="button" th:text="#{admin.ban-user}"
-					th:onclick="banUser([[${report.userTo.id}]])"></button>
+					th:onclick="banUser([[${report.userToIdEnc}]], [[${report.userTo.id}]])"></button>
 			</div>
 		</div>
 
 		<div id="mail-single" class="box">
 			<h3 th:text="#{admin.mail.send-single}"></h3>
-			<form id="mail-single-form">
+			<form id="mail-single-form" th:action="@{/admin/mail/single}" method="POST">
 				<input class="input" name="email" th:placeholder="#{email}" required>
 				<div style="padding-top: 4px;"></div>
 				<input class="input" name="subject" th:placeholder="#{subject}"
@@ -65,22 +65,20 @@
 				<textarea class="textarea" name="body" th:placeholder="#{message}"
 					required></textarea>
 				<div style="padding-top: 4px;"></div>
-				<button class="button" th:text="#{submit}"
-					onclick="sendMailSingle()"></button>
+				<button class="button" th:text="#{submit}"></button>
 			</form>
 		</div>
 
 		<div id="mail-all" class="box">
 			<h3 th:text="#{admin.mail.send-all}"></h3>
-			<form id="mail-all-form">
+			<form id="mail-all-form" th:action="@{/admin/mail/all}" method="POST">
 				<input class="input" name="subject" th:placeholder="#{subject}"
 					required>
 				<div style="padding-top: 4px;"></div>
 				<textarea class="textarea" name="body" th:placeholder="#{message}"
 					required></textarea>
 				<div style="padding-top: 4px;"></div>
-				<button class="button" th:text="#{submit}"
-					onclick="sendMailAll()"></button>
+				<button class="button" th:text="#{submit}"></button>
 			</form>
 		</div>
 

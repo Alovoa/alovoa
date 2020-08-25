@@ -15,7 +15,7 @@ public class SearchResource {
 	private AuthService authService;
 	
 	@GetMapping("/search")
-	public ModelAndView search() {
+	public ModelAndView search() throws Exception {
 		User currUser = authService.getCurrentUser();
 		ModelAndView mav = new ModelAndView("search");
 		mav.addObject("user", currUser);

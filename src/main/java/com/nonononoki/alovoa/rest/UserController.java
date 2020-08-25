@@ -23,7 +23,7 @@ public class UserController {
 
 	// GDPR
 	@PostMapping(value = "/delete-account", consumes = "text/plain") 
-	public void deleteAccount(@RequestBody String password) throws MessagingException {
+	public void deleteAccount(@RequestBody String password) throws Exception {
 		userService.deleteAccountRequest(password);
 	}
 	
@@ -48,7 +48,7 @@ public class UserController {
 	}
 
 	@PostMapping("/update/intention/{intention}")
-	public void updateIntention(@PathVariable long intention) {
+	public void updateIntention(@PathVariable long intention) throws Exception {
 		userService.updateIntention(intention);
 	}
 
@@ -63,7 +63,7 @@ public class UserController {
 	}
 
 	@PostMapping("/update/preferedGender/{genderId}/{activated}")
-	public void updatePreferedGenders(@PathVariable int genderId, @PathVariable String activated) {
+	public void updatePreferedGenders(@PathVariable int genderId, @PathVariable String activated) throws Exception {
 		userService.updatePreferedGender(genderId, Tools.binaryStringToBoolean(activated));
 	}
 
@@ -88,7 +88,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/update/theme/{themeId}")
-	public void updateTheme(@PathVariable int themeId) {
+	public void updateTheme(@PathVariable int themeId) throws Exception {
 		userService.updateTheme(themeId);
 	}
 

@@ -7,7 +7,7 @@ public class MailDto {
 	
 	private String subject;
 	
-	private String recipient;
+	private String email;
 	
 	private String body;
 	

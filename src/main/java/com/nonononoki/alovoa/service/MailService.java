@@ -53,7 +53,7 @@ public class MailService {
 	}
 	
 	public void sendAdminMail(String to, String subject, String body) throws MessagingException {
-		sendMail(defaultFrom, to, subject, body);
+		sendMail(to, defaultFrom, subject, body);
 	}
 
 	public void sendMailWithAttachment(String to, String from, String subject, String body, String attachmentName,

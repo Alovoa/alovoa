@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.model.MailDto;
-import com.nonononoki.alovoa.repo.ContactRepository;
 import com.nonononoki.alovoa.service.AdminService;
 import com.nonononoki.alovoa.service.AuthService;
 
@@ -23,22 +21,32 @@ public class AdminController {
 	@Autowired
 	private AuthService authService;
 	
-	@Autowired
-	private ContactRepository contactRepository;
+
+	@PostMapping("/report/delete/{id}")
+	public void deleteReport(@PathVariable long id) throws Exception {	
+		if(!authService.getCurrentUser().isAdmin()) {
+			throw new Exception("");
+		}
+		adminService.deleteReport(id);
+	}
 	
+	@PostMapping("/ban-user/{id}")
+	public void banUser(@PathVariable String id) throws Exception {	
+		if(!authService.getCurrentUser().isAdmin()) {
+			throw new Exception("");
+		}
+		adminService.banUser(id);
+	}
 	
 	@PostMapping("/contact/hide/{id}")
 	public void hideContact(@PathVariable long id) throws Exception {	
 		if(!authService.getCurrentUser().isAdmin()) {
 			throw new Exception("");
 		}
-		Contact contact = contactRepository.findById(id).orElse(null);
-		contact.setHidden(true);
-		contactRepository.saveAndFlush(contact);
-		
+		adminService.hideContact(id);
 	}
 	
-	@PostMapping("/mail/single")
+	@PostMapping(value="/mail/single", consumes = "application/json")
 	public void sendMailSingle(@RequestBody MailDto dto) throws Exception {	
 		if(!authService.getCurrentUser().isAdmin()) {
 			throw new Exception("");
@@ -46,7 +54,7 @@ public class AdminController {
 		adminService.sendMailSingle(dto);
 	}
 	
-	@PostMapping("/mail/all")
+	@PostMapping(value="/mail/all", consumes = "application/json")
 	public void sendMailAll(@RequestBody MailDto dto) throws Exception {	
 		if(!authService.getCurrentUser().isAdmin()) {
 			throw new Exception("");

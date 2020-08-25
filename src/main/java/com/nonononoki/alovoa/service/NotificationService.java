@@ -63,7 +63,7 @@ public class NotificationService {
 	@Autowired
 	private UserRepository userRepo;
 
-	public void subscribe(UserWebPush webPush) {
+	public void subscribe(UserWebPush webPush) throws Exception {
 		webPush.setUser(authService.getCurrentUser());
 		String ip = request.getRemoteAddr();
 		webPush.setIp(ip);	

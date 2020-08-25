@@ -135,7 +135,7 @@ public class UserService {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
-	public void deleteAccountRequest(String password) throws MessagingException {
+	public void deleteAccountRequest(String password) throws Exception {
 		User user = authService.getCurrentUser();
 		if (!passwordEncoder.matches(password, user.getPassword())) {
 			throw new BadCredentialsException("");
@@ -203,7 +203,7 @@ public class UserService {
 		userRepo.save(user);
 	}
 
-	public void updateIntention(long intention) {
+	public void updateIntention(long intention) throws Exception {
 		// TODO Limit intention changing time
 		User user = authService.getCurrentUser();
 		UserIntention i = userIntentionRepo.findById(intention).orElse(null);
@@ -230,7 +230,7 @@ public class UserService {
 		userRepo.save(user);
 	}
 
-	public void updatePreferedGender(long genderId, boolean activated) {
+	public void updatePreferedGender(long genderId, boolean activated) throws Exception {
 		User user = authService.getCurrentUser();
 		Set<Gender> list = user.getPreferedGenders();
 		if(list == null) {
@@ -293,7 +293,7 @@ public class UserService {
 		userRepo.save(user);
 	}
 
-	public void updateTheme(int themeId) {
+	public void updateTheme(int themeId) throws Exception {
 		User user = authService.getCurrentUser();
 		user.setTheme(themeId);
 		userRepo.save(user);
@@ -315,7 +315,7 @@ public class UserService {
 		}
 	}
 	
-	public void deleteImage(long id) {
+	public void deleteImage(long id) throws Exception {
 		User user = authService.getCurrentUser();
 		UserImage img = userImageRepo.getOne(id);
 		
@@ -490,7 +490,7 @@ public class UserService {
 		return user;
 	}
 
-	public boolean hasNewAlert() {
+	public boolean hasNewAlert() throws Exception {
 		User currUser = authService.getCurrentUser();
 		// user always check their alerts periodically in the background, so just update
 		// it here
@@ -498,7 +498,7 @@ public class UserService {
 		return currUser.getDates().getNotificationDate().after(currUser.getDates().getNotificationCheckedDate());
 	}
 
-	public boolean hasNewMessage() {
+	public boolean hasNewMessage() throws Exception {
 		User currUser = authService.getCurrentUser();
 		return currUser.getDates().getMessageDate().after(currUser.getDates().getMessageCheckedDate());
 	}
