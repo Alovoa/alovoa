@@ -88,7 +88,7 @@
 						<label class="label" th:text="#{profile.intention}"></label>
 						<div class="select">
 							<select id="intention">
-							<option th:unless="${user.intention}"></option>
+								<option th:unless="${user.intention}"></option>
 								<th:block th:each="intention : ${intentions}">
 									<option th:value="${intention.id}"
 										th:selected="${user.intention != null && user.intention.id == intention.id}"
@@ -176,7 +176,7 @@
 									style="flex: 1" th:placeholder="#{interest}" required>
 								<div style="padding-top: 4px;"></div>
 								<button class="button is-info colored" style="margin-left: 4px;">
-									<i class="fa fa-plus" style="color:white;"></i>
+									<i class="fa fa-plus" style="color: white;"></i>
 								</button>
 							</div>
 						</form>
@@ -206,7 +206,8 @@
 						<label class="label" th:text="#{profile.userdata.request}"></label>
 						<div class="field">
 							<input class="input" type="password" th:placeholder="#{password}"
-								id="userdata-password">
+								id="userdata-password" th:if="${user.password}"> <input
+								name="password" th:unless="${user.password}" value="" hidden>
 							<div style="padding-top: 4px;"></div>
 							<button class="button" id="userdata-submit" th:text="#{submit}"></button>
 						</div>
@@ -218,7 +219,8 @@
 						<label class="label" th:text="#{profile.account.delete}"></label>
 						<div class="field">
 							<input class="input" type="password" th:placeholder="#{password}"
-								id="delete-acc-password">
+								id="delete-acc-password" th:if="${user.password}"> <input
+								name="password" th:unless="${user.password}" value="" hidden>
 							<div style="padding-top: 4px;"></div>
 							<button class="button" id="delete-acc-submit" th:text="#{submit}"></button>
 						</div>

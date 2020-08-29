@@ -137,7 +137,7 @@ public class UserService {
 
 	public void deleteAccountRequest(String password) throws Exception {
 		User user = authService.getCurrentUser();
-		if (!passwordEncoder.matches(password, user.getPassword())) {
+		if (user.getPassword() != null && !passwordEncoder.matches(password, user.getPassword())) {
 			throw new BadCredentialsException("");
 		}
 
@@ -510,7 +510,7 @@ public class UserService {
 
 	public void getUserdata(String password) throws Exception {
 		User user = authService.getCurrentUser();
-		if (!passwordEncoder.matches(password, user.getPassword())) {
+		if (user.getPassword() != null && !passwordEncoder.matches(password, user.getPassword())) {
 			throw new BadCredentialsException("");
 		}
 		mailService.sendUserDataMail(user);

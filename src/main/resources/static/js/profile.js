@@ -251,7 +251,7 @@ $(function() {
 
 		let password = $("#userdata-password").val();
 
-		if (password) {
+		//if (password) {
 			$.ajax({
 				type : "POST",
 				contentType : "text/plain",
@@ -268,14 +268,14 @@ $(function() {
 					alert(getGenericErrorText());
 				}
 			});
-		}
+		//}
 	});
 
 	$("#delete-acc-submit").click(function(e) {
 
 		let password = $("#delete-acc-password").val();
 
-		if (password) {
+		//if (password) {
 			$.ajax({
 				type : "POST",
 				contentType : "text/plain",
@@ -292,7 +292,7 @@ $(function() {
 					alert(getGenericErrorText());
 				}
 			});
-		}
+		//}
 	});
 
 });

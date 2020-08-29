@@ -23,7 +23,7 @@ public class UserController {
 
 	// GDPR
 	@PostMapping(value = "/delete-account", consumes = "text/plain") 
-	public void deleteAccount(@RequestBody String password) throws Exception {
+	public void deleteAccount(@RequestBody (required=false) String password) throws Exception {
 		userService.deleteAccountRequest(password);
 	}
 	
@@ -33,7 +33,7 @@ public class UserController {
 	}
 
 	@PostMapping(value = "/userdata", consumes = "text/plain")
-	public void getUserdata(@RequestBody String password) throws Exception {
+	public void getUserdata(@RequestBody (required=false) String password) throws Exception {
 		userService.getUserdata(password);
 	}
 
