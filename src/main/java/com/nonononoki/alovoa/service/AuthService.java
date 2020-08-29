@@ -33,10 +33,21 @@ public class AuthService {
 		}
 		
 		User user = userRepo.findByEmail(email);
-		if(user.isDisabled()) {
+		if(user != null && user.isDisabled()) {
 			throw new Exception("");
 		}
 		
 		return user;
+	}
+	
+	public String getOauth2Email() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String email = null;
+		if (auth instanceof OAuth2AuthenticationToken) {
+			auth = (OAuth2AuthenticationToken) auth;
+			DefaultOAuth2User principal = (DefaultOAuth2User) auth.getPrincipal();
+			email = principal.getAttribute("email");
+		} 
+		return email;
 	}
 }

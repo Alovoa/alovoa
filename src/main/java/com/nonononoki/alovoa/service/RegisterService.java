@@ -121,7 +121,7 @@ public class RegisterService {
 
 		String email = textEncryptor.decode(dto.getEmail());
 		
-		if(!email.equals(authService.getCurrentUser().getEmail())) {
+		if(!email.equals(authService.getOauth2Email())) {
 			throw new Exception("");
 		}
 		
