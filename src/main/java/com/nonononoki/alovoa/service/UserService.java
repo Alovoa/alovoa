@@ -515,4 +515,11 @@ public class UserService {
 		}
 		mailService.sendUserDataMail(user);
 	}
+
+	public void deleteProfilePicture() throws Exception {
+		User user = authService.getCurrentUser();
+		user.setProfilePicture(null);
+		userRepo.saveAndFlush(user);	
+		
+	}
 }

@@ -13,7 +13,28 @@ $(function() {
 	updateProfileWarning();
 
 	$("#profilePicture").click(function(e) {
-		$("#profilePictureUpload").click();
+		let val = $("#profilePicture").attr("value");
+		console.log(val)
+		if(val == 0) {
+			$("#profilePictureUpload").click();
+		} else {
+			if (confirm(getText("profile.js.delete-image.confirm"))) {
+				$.ajax({
+					type : "POST",
+					url : "/user/delete/profile-picture",
+					headers : {
+						"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+					},
+					success : function(e) {
+						location.reload(true);
+					},
+					error : function(e) {
+						console.log(e);
+						alert(getGenericErrorText());
+					}
+				});
+			}
+		}
 	});
 
 	$("#addImageDiv").click(function(e) {

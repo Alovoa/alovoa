@@ -41,10 +41,10 @@
 								<div class="center-parent">
 									<img id="profilePicture" class="profile-pic"
 										src="/img/profile.jpg" style="cursor: pointer;" height=400
-										width="400" th:unless="${user.profilePicture}" /> <img
+										width="400" th:unless="${user.profilePicture}"  th:value=0 /> <img
 										id="profilePicture" style="cursor: pointer;" height=400
 										width="400" th:if="${user.profilePicture}"
-										class="profile-pic " th:src="${user.profilePicture}" /> <input
+										class="profile-pic " th:src="${user.profilePicture}" th:value=1 /> <input
 										id="profilePictureUpload" type="file" accept="image/*"
 										style="display: none">
 								</div>

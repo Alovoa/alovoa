@@ -36,6 +36,11 @@ public class UserController {
 	public void getUserdata(@RequestBody (required=false) String password) throws Exception {
 		userService.getUserdata(password);
 	}
+	
+	@PostMapping(value = "/delete/profile-picture")
+	public void deleteProfilePicture() throws Exception {
+		userService.deleteProfilePicture();
+	}
 
 	@PostMapping(value = "/update/profile-picture", consumes = "text/plain")
 	public void updateProfilePicture(@RequestBody String imageB64) throws Exception {
