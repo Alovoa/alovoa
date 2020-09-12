@@ -1,6 +1,7 @@
 .cards {
 	padding: 1.5rem;
 }
+
 .card-image {
 	font-size: 8rem;
 	padding-top: 2rem;
@@ -9,7 +10,7 @@
 }
 
 #banner {
-	background-image: url('/img/banner.jpg');
+	background-image: url('/img/banner.svg');
 	height: 460px;
 	position: relative;
 	width: 100%;
