@@ -2,6 +2,7 @@ package com.nonononoki.alovoa.model;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -58,13 +59,12 @@ public class UserDto {
 	private boolean hiddenByCurrentUser;
 	
 	private static final int LOCATION_ROUNDING = 100;
-
+	
 	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor)
 			throws Exception {
 		UserDto dto = new UserDto();
 		dto.setId(user.getId());
-		String en = textEncryptor.encode(Long.toString(user.getId()));
-		dto.setIdEncoded(en);
+		dto.setIdEncoded(encodeId(user.getId(), textEncryptor));
 		dto.setActiveDate(user.getDates().getActiveDate());
 		LocalDate now = LocalDate.now();
 		Period period = Period.between(user.getDates().getDateOfBirth(), now);
@@ -105,5 +105,17 @@ public class UserDto {
 		distRounded  = distRounded - distRounded % LOCATION_ROUNDING;
 		dto.setDistanceToUser(distRounded / Tools.THOUSAND); //convert meters to km
 		return dto;
+	}
+	
+	public static String encodeId(long id, TextEncryptorConverter textEncryptor) throws Exception {
+		String en = textEncryptor.encode(Long.toString(id));
+		en = Base64.getEncoder().encodeToString(en.getBytes());
+		return en;
+	}
+	
+	public static long decodeId(String id, TextEncryptorConverter textEncryptor) throws NumberFormatException, Exception {
+		String en = new String(Base64.getDecoder().decode(id));
+		long l = Long.parseLong(textEncryptor.decode(en));
+		return l;
 	}
 }

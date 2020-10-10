@@ -20,6 +20,30 @@ function getText(param) {
 	return res;
 }
 
+function getTextAsync(param, callback) {
+	var res;
+	let url = "/text/" + param;
+	console.log(url);
+	$.ajax({
+		type : "GET",
+		url : url,
+		async : true,
+		headers : {
+			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+		},
+		success : function(e) {
+			res = e;
+			callback(res);
+		},
+		error : function(e) {
+			console.log(e);
+			callback(res);
+		}
+	});
+	
+	return res;
+}
+
 function getGenericErrorText() {
 	return getText("error.generic");
 }

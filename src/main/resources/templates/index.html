@@ -20,7 +20,7 @@
 	<div id="main">
 		<header th:replace="fragments.html::header"></header>
 
-		<div class="box" id="cookie-banner">
+		<div class="box" id="cookie-banner" onclick="cookieClick()">
 			<div class="has-text-centered" th:text="#{index.cookie.notice}">
 				<a href="/privacy#cookies" th:text="#{index.cookie.more}"></a>
 			</div>
@@ -35,7 +35,7 @@
 		</section>
 
 		<div>
-			<img id="banner">
+			<div id="banner"></div>
 		</div>
 
 		<section class="container cards">

@@ -1,4 +1,11 @@
 $(function() {
+	
+	let cookie = localStorage.getItem('cookie');
+	console.log(cookie)
+	if(!cookie) {
+		$('#cookie-banner').show();
+	}
+	
 	let url = window.location.href;
 	let param;
 	
@@ -28,3 +35,8 @@ $(function() {
 	    navigator.serviceWorker.register('/sw.js');
 	};
 });
+
+function cookieClick() {
+	localStorage.setItem('cookie', true);
+	$('#cookie-banner').hide();
+}

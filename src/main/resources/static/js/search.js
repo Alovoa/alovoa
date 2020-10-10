@@ -20,8 +20,35 @@ function search() {
 			let sort = $("#sort").val();
 			let url = "/search/users/" + position.coords.latitude + "/"
 					+ position.coords.longitude + "/" + distance + "/" + sort;
-			$("#main-container").load(url);
+			$("#main-container").load(url, function() {
+				
+				var sliders = [];
+
+				$('.swiper-container').each(function(index, element){
+				    $(this).addClass('s'+index);
+				    let slider = new Swiper('.s'+index, { initialSlide : 1,
+						shortSwipes : false});
+			    	
+
+					slider.on('transitionEnd', function () { 
+						console.log(slider.activeIndex);
+						console.log($(slider.el).attr('id'));
+						
+						let id = $(slider.el).attr("id");
+						
+						if(slider.activeIndex == 0) {
+							likeUser(id);
+						} else if(slider.activeIndex == 2) {
+							hideUser(id);
+						}
+					 });
+					 
+					 sliders.push(slider);
+				});
+			});
 			$("#filter-div").addClass("searched");
+
+			console.log("TEST");
 		});
 	} else {
 		alert(getText("search.js.error.no-geolocation"));
@@ -32,7 +59,7 @@ function viewProfile(idEnc) {
 	window.open('/profile/view/' + idEnc, '_blank');
 }
 
-function likeUser(btn, idEnc) {
+function likeUser(idEnc) {
 	$.ajax({
 		type : "POST",
 		url : "/user/like/" + idEnc,
@@ -40,7 +67,7 @@ function likeUser(btn, idEnc) {
 			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 		},
 		success : function() {
-			hideProfileTile(btn);
+			hideProfileTile(idEnc);
 		},
 		error : function(e) {
 			console.log(e);
@@ -50,7 +77,7 @@ function likeUser(btn, idEnc) {
 
 }
 
-function hideUser(btn, idEnc) {
+function hideUser(idEnc) {
 	$.ajax({
 		type : "POST",
 		url : "/user/hide/" + idEnc,
@@ -58,7 +85,7 @@ function hideUser(btn, idEnc) {
 			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 		},
 		success : function() {
-			hideProfileTile(btn);
+			hideProfileTile(idEnc);
 		},
 		error : function(e) {
 			console.log(e);
@@ -84,10 +111,10 @@ function toggleCardContent() {
 	cardContentVisible = !cardContentVisible;
 }
 
-function hideProfileTile(btn) {
-	let parent = getUserDivFromButton(btn);
-	$(parent).fadeOut(500, function() {
-		parent.hide();
+function hideProfileTile(id) {
+	let tile = $("#" + id);
+	$(tile).fadeOut(500, function() {
+		tile.hide();
 	});
 }
 

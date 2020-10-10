@@ -38,6 +38,7 @@ import com.nonononoki.alovoa.entity.UserLike;
 import com.nonononoki.alovoa.entity.UserNotification;
 import com.nonononoki.alovoa.entity.UserReport;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
+import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
@@ -485,7 +486,7 @@ public class UserService {
 	}
 
 	public User encodedIdToUser(String idEnc) throws NumberFormatException, Exception {
-		long id = Long.parseLong(textEncryptor.decode(idEnc));
+		long id = UserDto.decodeId(idEnc, textEncryptor);
 		User user = userRepo.findById(id).orElse(null);
 		return user;
 	}

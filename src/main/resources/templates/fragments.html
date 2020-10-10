@@ -163,60 +163,73 @@
 			<span th:text="#{no-users-found}"></span>
 		</div>
 
-		<div class="card is-horizontal" th:each="user : ${users}">
-			<div class="card-image" onclick="toggleCardContent()">
-				<figure class="image">
-					<img th:src="${user.profilePicture}" class="profile-pic">
-				</figure>
-			</div>
-			<div class="card-content" onclick="toggleCardContent()">
-				<div class="content-background">
-					<div class="content">
-						<div class="media">
-							<div class="full-width">
-								<div class="left" style="font-size: 2em"
-									th:text="${user.firstName}"></div>
-								<div class="right" style="font-size: 1.5em">
-									<span th:text="#{age}"></span><span>: </span><span
-										th:text="${user.age}"></span>
+
+
+		<div th:each="user : ${users}">
+			<div class="swiper-container"  th:id="${user.idEncoded}">
+				<div class="swiper-wrapper">
+
+					<div class="swiper-slide" style="background-color: #48c774;"></div>
+					<div class="swiper-slide">
+						<div class="card is-horizontal" style="width: 100%;">
+							<div class="card-image" onclick="toggleCardContent()">
+								<figure class="image">
+									<img th:src="${user.profilePicture}" class="profile-pic">
+								</figure>
+							</div>
+							<div class="card-content" onclick="toggleCardContent()">
+								<div class="content-background">
+									<div class="content">
+										<div class="media">
+											<div class="full-width">
+												<div class="left" style="font-size: 2em"
+													th:text="${user.firstName}"></div>
+												<div class="right" style="font-size: 1.5em">
+													<span th:text="#{age}"></span><span>: </span><span
+														th:text="${user.age}"></span>
+												</div>
+											</div>
+										</div>
+										<div class="media">
+											<div class="full-width">
+												<div class="left" style="font-size: 1.2em">
+													<span th:text="#{last-active}"></span><span>: </span><span
+														th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
+												</div>
+												<div class="right" style="font-size: 1.2em">
+													<span th:text="${user.distanceToUser}"></span><span>
+													</span><span th:text="#{km-from-you}"></span>
+												</div>
+											</div>
+										</div>
+
+										<div style="font-size: 1.1em; word-break: break-all;"
+											class="description" th:text="${user.description}"></div>
+									</div>
+								</div>
+								<div class="profile-bottom full-width dimmed"
+									style="display: inline-block;">
+									<button class="button left is-info is-inverted"
+										th:onclick="viewProfile([[${user.idEncoded}]])"
+										th:text="#{view-profile}"></button>
+									<div class="right">
+										<button class="button colored is-rounded is-danger"
+											th:onclick="hideUser([[${user.idEncoded}]])">
+											<i class="fa fa-thumbs-down"></i>
+										</button>
+										<button class="button colored is-rounded is-success"
+											th:onclick="likeUser([[${user.idEncoded}]])">
+											<i class="fa fa-thumbs-up"></i>
+										</button>
+									</div>
 								</div>
 							</div>
 						</div>
-						<div class="media">
-							<div class="full-width">
-								<div class="left" style="font-size: 1.2em">
-									<span th:text="#{last-active}"></span><span>: </span><span
-										th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
-								</div>
-								<div class="right" style="font-size: 1.2em">
-									<span th:text="${user.distanceToUser}"></span><span> </span><span
-										th:text="#{km-from-you}"></span>
-								</div>
-							</div>
-						</div>
-
-						<div style="font-size: 1.1em; word-break: break-all;"
-							class="description" th:text="${user.description}"></div>
 					</div>
-				</div>
-				<div class="profile-bottom full-width dimmed"
-					style="display: inline-block;">
-					<button class="button left is-info is-inverted"
-						th:onclick="viewProfile([[${user.idEncoded}]])"
-						th:text="#{view-profile}"></button>
-					<div class="right">
-						<button class="button colored is-rounded is-danger"
-							th:onclick="hideUser(this, [[${user.idEncoded}]])">
-							<i class="fa fa-thumbs-down"></i>
-						</button>
-						<button class="button colored is-rounded is-success"
-							th:onclick="likeUser(this, [[${user.idEncoded}]])">
-							<i class="fa fa-thumbs-up"></i>
-						</button>
-					</div>
+					<div class="swiper-slide" style="background-color: #f14668;"></div>
 				</div>
 			</div>
-
+			<div style="margin-bottom: 24px;"></div>
 		</div>
 	</div>
 
@@ -290,9 +303,9 @@
 			<div class="notification is-danger"
 				th:text="#{profile.warning.incomplete}"></div>
 			<div class="notification is-warning" th:if="${noProfilePicture}"
-				th:text="#{profile.warning.incomplete}"></div>
-			<div class="notification is-warning" th:if="${noDescription}"
 				th:text="#{profile.warning.no-profile-picture}"></div>
+			<div class="notification is-warning" th:if="${noDescription}"
+				th:text="#{profile.warning.no-description}"></div>
 			<div class="notification is-warning" th:if="${noIntention}"
 				th:text="#{profile.warning.no-dating-preference}"></div>
 			<div class="notification is-warning" th:if="${noGender}"

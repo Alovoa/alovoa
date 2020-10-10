@@ -20,5 +20,8 @@
 }
 
 #cookie-banner {
-	font-size: 0.9em;
+	font-size: 0.8em;
+	cursor: pointer;
+	display: none;
+	margin: none;
 }

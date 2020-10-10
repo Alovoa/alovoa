@@ -239,9 +239,9 @@
 			<div class="notification is-danger"
 				th:text="#{profile.warning.incomplete}"></div>
 			<div class="notification is-warning" th:if="${noProfilePicture}"
-				th:text="#{profile.warning.incomplete}"></div>
-			<div class="notification is-warning" th:if="${noDescription}"
 				th:text="#{profile.warning.no-profile-picture}"></div>
+			<div class="notification is-warning" th:if="${noDescription}"
+				th:text="#{profile.warning.profile.warning.no-description}"></div>
 			<div class="notification is-warning" th:if="${noIntention}"
 				th:text="#{profile.warning.no-dating-preference}"></div>
 			<div class="notification is-warning" th:if="${noGender}"

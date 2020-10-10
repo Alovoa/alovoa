@@ -26,7 +26,7 @@ public class UserProfileResource {
 	
 	@GetMapping("/profile/view/{idEncoded}")
 	public ModelAndView profileView(@PathVariable String idEncoded) throws NumberFormatException, Exception {
-		long id = Long.parseLong(textEncryptor.decode(idEncoded));
+		long id =  UserDto.decodeId(idEncoded, textEncryptor);
 		User user = userRepo.findById(id).orElse(null);
 		User currUser = authService.getCurrentUser();
 		
