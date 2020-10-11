@@ -33,9 +33,11 @@ build/
 
 ### Custom ###
 target/
-attach_**
+attach_pid**
+.attach_pid**
 .metadata/
 *.log
+logs/*
 
 ### Keys Properties ###
 application-dev.properties
