@@ -37,9 +37,9 @@ function search() {
 						let id = $(slider.el).attr("id");
 						
 						if(slider.activeIndex == 0) {
-							likeUser(id);
+							//likeUser(id);
 						} else if(slider.activeIndex == 2) {
-							hideUser(id);
+							//hideUser(id);
 						}
 					 });
 					 
@@ -113,7 +113,7 @@ function toggleCardContent() {
 
 function hideProfileTile(id) {
 	let tile = $("#" + id);
-	$(tile).fadeOut(500, function() {
+	$(tile).fadeOut(200, function() {
 		tile.hide();
 	});
 }
