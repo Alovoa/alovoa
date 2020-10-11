@@ -37,9 +37,9 @@ function search() {
 						let id = $(slider.el).attr("id");
 						
 						if(slider.activeIndex == 0) {
-							//likeUser(id);
+							likeUser(id);
 						} else if(slider.activeIndex == 2) {
-							//hideUser(id);
+							hideUser(id);
 						}
 					 });
 					 
