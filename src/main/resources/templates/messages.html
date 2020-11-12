@@ -12,7 +12,8 @@
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/notification.css" />
-<link th:if="${user.theme == 1}" rel="stylesheet" href="/css/alovoa-dark.css" />
+<link th:if="${user.theme == 1}" rel="stylesheet"
+	href="/css/alovoa-dark.css" />
 <title th:text="#{message.title}"></title>
 </head>
 <body>
@@ -25,24 +26,21 @@
 						th:onclick="viewMessageDetail(this, [[${convo.id}]])">
 						<div class="card-image">
 							<figure class="image"
-								style="max-width: 200px; max-height: 200px;">
+								style="max-width: 200px; max-height: 200px; margin: 0">
 								<img th:src="${convo.userProfilePicture}" class="profile-pic"
 									th:value="${convo.userIdEncoded}">
 							</figure>
 						</div>
-						<div class="card-content">
-							<div class="content">
-								<div class="media">
-									<div class="full-width">
-										<div class="left" style="font-size: 2em"
-											th:text="${convo.userName}"></div>
-									</div>
-								</div>
-								<div style="font-size: 1.1em; word-break: break-all;"
+						<div class="card-content" style="display:flex; justify-items: center; align-items: center;">
+							<div class="full-width profile-bottom"
+								>
+								<div style="font-size: 1.5em" th:text="${convo.userName}"></div>
+								<span style="font-size: 0.8em; overflow-wrap: normal;"
 									th:text="${convo.lastMessage}"
-									th:if="${convo.lastMessage != null}"></div>
-								<div style="font-size: 1.1em; word-break: break-all;"
-									th:unless="${convo.lastMessage != null}" th:text="#{message.match}"></div>
+									th:if="${convo.lastMessage != null}"></span>
+								<span style="font-size: 0.8em; overflow-wrap: normal;"
+									th:unless="${convo.lastMessage != null}"
+									th:text="#{message.match}"></span>
 							</div>
 						</div>
 					</div>

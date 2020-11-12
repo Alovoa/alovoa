@@ -14,33 +14,24 @@
 <title th:text="#{donate.title}"></title>
 </head>
 <body>
-	<div id="main-logged-in">
+	<div>
 		<header th:insert="fragments.html::header"></header>
 		<div class="section">
 			<div class="container">
-				<a class="button is-primary" style="width: 100%; margin-bottom: 32px;"><i
-					class="fa fa-coins"></i><span th:text="#{kofi}" style="padding-left: 4px;"></span></a>
-				<div class="notification is-success" th:text="#{donate.notice-1}" style="margin-bottom: 4px;"></div>
+				<a class="button is-primary"
+					style="width: 100%; margin-bottom: 32px;"><i
+					class="fa fa-coins"></i><span th:text="#{kofi}"
+					style="padding-left: 4px;"></span></a>
+				<div class="notification is-success" th:text="#{donate.notice-1}"
+					style="margin-bottom: 4px;"></div>
 				<div class="notification is-success" th:text="#{donate.notice-2}"></div>
-				<!--<a href="https://stripe.com/en-de/pricing"><span>Very low fees</span></a>-->
-
 			</div>
-			<!-- 
-			<div class="container">
-				<a class="button is-primary" style="width: 100%;"><i class="fa fa-hand-holding-usd"></i>Donorbox</a>
-				<a href="https://donorbox.org/pricing"><span>Low fees</span></a>
-			</div>
-			<div class="container">
-				<a class="button is-primary" style="width: 100%;"><i class="fa fa-hand-holding-usd"></i>PayPal</a>
-				<a href="https://www.paypal.com/en/webapps/mpp/paypal-fees"><span>High fees</span></a>
-			</div>
-			 -->
 		</div>
 
 
 	</div>
 	<footer th:replace="fragments.html::footer"></footer>
-	
+
 	<script src="/js/tools/getText.js"></script>
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>

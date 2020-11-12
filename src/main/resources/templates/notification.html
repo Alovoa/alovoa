@@ -12,7 +12,8 @@
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/notification.css" />
-<link th:if="${user.theme == 1}" rel="stylesheet" href="/css/alovoa-dark.css" />
+<link th:if="${user.theme == 1}" rel="stylesheet"
+	href="/css/alovoa-dark.css" />
 <title th:text="#{notification.title}"></title>
 </head>
 <body>
@@ -25,15 +26,19 @@
 						th:each="notification : ${notifications}" style="width: 100%;"
 						th:onclick="viewProfile([[${notification.userFromDto.idEncoded}]])">
 						<div class="card-image">
-							<figure class="image">
-								<img th:src="${notification.userFromDto.profilePicture}" class="profile-pic" style="max-height: 200px; max-width: 200px;">
+							<figure class="image" >
+								<img th:src="${notification.userFromDto.profilePicture}"
+									class="profile-pic"
+									style="max-height: 200px; max-width: 200px; margin: 0;">
 							</figure>
 						</div>
 						<div class="card-content">
 							<div class="profile-bottom full-width"
-								style="display: inline-block;">
-								<span th:text="#{notification.liked-by}"></span><span
-									th:text="${notification.userFromDto.firstName}"></span>
+								style="height: 100%; display:flex; line-height: initial; align-items: center;  justify-content: center;">
+								<div>
+									<span th:text="#{notification.liked-by}"></span><span
+										th:text="${notification.userFromDto.firstName}"></span>
+								</div>
 							</div>
 						</div>
 

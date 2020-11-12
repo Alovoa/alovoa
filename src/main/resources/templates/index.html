@@ -50,7 +50,7 @@
 								<h4 th:utext="#{index.free.title}"></h4>
 								<p th:utext="#{index.free.description}"></p>
 								<p>
-									<a href="/donate-list" th:utext="#{donate}"></a>
+									<a href="/donate-list" th:utext="#{donate}" target="_blank"></a>
 								</p>
 							</div>
 						</div>
@@ -112,8 +112,7 @@
 						<div class="card-content">
 							<div class="content">
 								<h4 th:utext="#{index.technology.title}"></h4>
-								<p th:utext="#{index.technology.description}">
-								</p>
+								<p th:utext="#{index.technology.description}"></p>
 							</div>
 						</div>
 					</div>
@@ -133,17 +132,10 @@
 				</div>
 			</div>
 		</section>
-		<section class="hero is-info is-small is-bold"
-			style="margin-top: 1.5em">
-			<a href="/register">
-				<div class="hero-body">
-
-					<div class="container has-text-centered">
-						<h1 class="title" th:utext="#{index.sign-up-now}"></h1>
-					</div>
-
-				</div>
-			</a>
+		<section class="container cards" style="margin-top: 1.5em">
+			<div class="card">
+			<div class="button" th:utext="#{index.sign-up-now}" style="width: 100%;"></div>
+			</div>
 		</section>
 
 		<footer th:replace="fragments.html::footer"></footer>

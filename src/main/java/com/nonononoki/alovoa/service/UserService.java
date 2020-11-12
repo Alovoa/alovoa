@@ -14,7 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
-import javax.mail.MessagingException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,6 +197,9 @@ public class UserService {
 	public void updateDescription(String description) throws Exception {
 		if (description.length() > descriptionSize) {
 			throw new Exception("");
+		}
+		if (description.trim().length() == 0) {
+			description = null;
 		}
 		User user = authService.getCurrentUser();
 		user.setDescription(description);

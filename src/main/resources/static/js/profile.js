@@ -97,6 +97,10 @@ $(function() {
 	$('#description').on('keyup paste', function() {
 
 		let data = $('#description').val();
+		if(!data) {
+			data = " ";
+		}
+		console.log(data);
 		var maxlength = descriptionMaxLength;
 		var currentLength = $(this).val().length;
 

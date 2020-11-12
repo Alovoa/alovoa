@@ -1,11 +1,15 @@
+body {
+	min-width: 320px;
+}
+
 button {
 	cursor: pointer;
 }
 
 .center-parent {
 	display: flex;
-    align-items: center;
-    justify-content: center;
+	align-items: center;
+	justify-content: center;
 }
 
 #main {
@@ -33,7 +37,7 @@ svg {
 }
 
 .navbar-item img {
-    max-height: initial;
+	max-height: initial;
 }
 
 .select, .select select {
@@ -57,6 +61,7 @@ svg {
 
 .navbar {
 	display: flex;
+	background-image: linear-gradient(141deg, #159dc6 0, #3298dc 71%, #4389e5 100%);
 }
 
 .navbar-end {
@@ -81,6 +86,10 @@ svg {
 
 .navigation-item div svg {
 	padding-right: 4px;
+}
+
+.notification {
+	padding: 0.5rem 1rem 0.5rem 1rem;
 }
 
 .center-children {
@@ -132,7 +141,6 @@ input[type=range].slider {
 	#navbar-text {
 		display: none;
 	}
-	
 	#oauth-div button span {
 		font-size: 16px;
 	}

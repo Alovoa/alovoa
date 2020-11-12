@@ -35,6 +35,20 @@ body *, container *, .label, .textarea, .select select {
 	background: rgba(46, 52, 54, 0.9);
 }
 
+.button:not(.colored) {
+	background-color: #2e3436;
+	color: white;
+}
+
+.input {
+	background-color: #2e3436;
+	color: white;
+}
+
+.input::placeholder {
+	color: #E0E0E0;;
+}
+
 textarea::placeholder {
 	color: white !important;
 	opacity: 0.5;

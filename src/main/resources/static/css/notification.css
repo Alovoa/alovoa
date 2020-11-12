@@ -1,6 +1,6 @@
 .image img {
-	max-height: 150px;
-	max-width: 150px;
+	max-height: 200px;
+	max-width: 200px;
 }
 
 .card {
@@ -20,38 +20,33 @@
 
 .card-content .content {
 	/*height: 313px;*/
+	
 }
 
 .profile-bottom {
 	font-size: 2em;
-	line-height: 150px;
+	/*line-height: 150px;*/
 }
 
 .profile-bottom {
 	text-align: center;
+	min-width: 240px;
 }
 
-@media screen and (max-width: 1024px) {
-	.card.is-horizontal {
-		flex-direction: column !important;
-	}
-	.card {
-		/*
-		border: initial;
-		border-top: 1px solid #d3d3d3;
-		*/
-		
-	}
-	.card-content .content {
-		height: initial;
+@media screen and (max-width: 500px) {
+	.section {
+		padding: 0;
 	}
 	.image img {
 		max-height: initial;
 		max-width: initial;
-		margin-bottom: 24px;
 	}
 	.profile-bottom {
-		line-height: initial;
+		font-size: 1.2em !important; 
+	}
+	.card {
+		border-radius: 0px;
+		padding: 8px;
 	}
 }
 /*https://github.com/jgthms/bulma/pull/1596#issuecomment-556416927*/

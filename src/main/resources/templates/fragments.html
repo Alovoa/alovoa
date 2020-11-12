@@ -73,8 +73,8 @@
 		<div class="container">
 			<div class="columns">
 				<div class="column">
-					<div class="control has-icons-left">
-						<div class="select">
+					<div class="control has-icons-left" style="margin-top: -8px;">
+						<div class="select" >
 							<select id="locale" onchange="onChangeLocal(this)">
 								<option th:text="#{language}" hidden></option>
 								<option value="?lang=en">English</option>
@@ -209,7 +209,7 @@
 								</div>
 								<div class="profile-bottom full-width dimmed"
 									style="display: inline-block;">
-									<button class="button left is-info is-inverted"
+									<button class="button left"
 										th:onclick="viewProfile([[${user.idEncoded}]])"
 										th:text="#{view-profile}"></button>
 									<div class="right">

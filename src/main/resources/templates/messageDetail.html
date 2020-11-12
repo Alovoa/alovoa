@@ -21,11 +21,10 @@
 		<input type="hidden" id="convo-id" th:value="${convoId}">
 		<section class="container" id="main-container">
 			<div class="section">
-				<div class="container" id="top">
-					<img class="profile-pic left" th:src="${partner.profilePicture}">
-					<div class="left" style="padding: 12px;"></div>
-					<div class="left" th:text="${partner.firstName}" id="first-name"></div>
-					<button class="right button colored is-info" style="height: 52px;" onclick="startVideoChat()"><i class="fa fa-video"></i></button>
+				<div class="container" id="top" style="display:flex;">			
+					<div class="left" style="padding-right: 12px;"><img class="profile-pic left" th:src="${partner.profilePicture}"></div>
+					<div class="left" th:text="${partner.firstName}" id="first-name" style="word-break:break-all;  overflow: hidden; max-height: 45px; flex-grow: 1;"></div>
+					<div class="right button colored is-info" style="height: 40px; width: 40px;;" onclick="startVideoChat()"><i class="fa fa-video"></i></div>
 				</div>
 			</div>
 			<div class="section">
@@ -36,7 +35,7 @@
 					<input class="input is-medium is-rounded" type="text"
 						id="message-send-input" placeholder="...">
 					<div id="message-send-padding"></div>
-					<button class="button is-info is-medium is-rounded"
+					<button class="button colored is-info is-medium is-rounded"
 						id="message-send-button" onclick="sendMessage()">
 						<i class="fa fa-paper-plane"></i>
 					</button>

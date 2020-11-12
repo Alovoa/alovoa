@@ -47,86 +47,88 @@
 					</div>
 				</div>
 			</div>
-			<div class="content">
-				<div class="media">
-					<div class="full-width">
-						<div class="left" style="font-size: 2em"
-							th:text="${user.firstName}"></div>
-						<div class="right" style="font-size: 1.5em">
-							<span th:text="#{age}"></span><span>: </span><span
-								th:text="${user.age}"></span>
+			<div class="container">
+				<div class="content">
+					<div class="media">
+						<div class="full-width">
+							<div class="left" style="font-size: 2em"
+								th:text="${user.firstName}"></div>
+							<div class="right" style="font-size: 1.5em">
+								<span th:text="#{age}"></span><span>: </span><span
+									th:text="${user.age}"></span>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="media">
-					<div class="full-width">
-						<div class="left" style="font-size: 1.2em">
-							<span th:text="#{last-active}"></span><span>: </span><span
-								th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
+					<div class="media">
+						<div class="full-width">
+							<div class="left" style="font-size: 1.2em">
+								<span th:text="#{last-active}"></span><span>: </span><span
+									th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="media" style="border-top: none; padding-top: 0px;">
-					<div class="full-width">
-						<div class="left" style="font-size: 1.2em">
-							<span th:text="#{distance}"></span><span>: </span><span
-								th:text="${user.distanceToUser}"></span><span th:text="#{km}"
-								style="padding-left: 4px;"></span>
+					<div class="media" style="border-top: none; padding-top: 0px;">
+						<div class="full-width">
+							<div class="left" style="font-size: 1.2em">
+								<span th:text="#{distance}"></span><span>: </span><span
+									th:text="${user.distanceToUser}"></span><span th:text="#{km}"
+									style="padding-left: 4px;"></span>
+							</div>
 						</div>
 					</div>
-				</div>
 
-				<div style="padding-top: 24px;"></div>
-				<div class="field">
-					<label class="label" th:text="#{interests}"></label>
-					<div th:each="interest : ${user.interests}">
-						<div th:text="${interest.text}"></div>
+					<div style="padding-top: 24px;"></div>
+					<div class="field">
+						<label class="label" th:text="#{interests}"></label>
+						<div th:each="interest : ${user.interests}">
+							<div th:text="${interest.text}"></div>
+						</div>
 					</div>
-				</div>
 
-				<div style="padding-top: 24px;"></div>
-				<div class="field">
-					<label class="label" th:text="#{description}"></label>
-					<textarea class="textarea" id="description"
-						th:text="${user.description}" style="word-break: break-all;"
-						readOnly></textarea>
-				</div>
+					<div style="padding-top: 24px;"></div>
+					<div class="field">
+						<label class="label" th:text="#{description}"></label>
+						<textarea class="textarea" id="description"
+							th:text="${user.description}" style="word-break: break-all;"
+							readOnly></textarea>
+					</div>
 
-				<table class="table" style="width: 100%">
-					<tbody>
-						<tr>
-							<th th:text="#{gender}"></th>
-							<td th:if="${user.gender.text == 'male'}"
-								th:text="#{profile.gender.male}"></td>
-							<td th:if="${user.gender.text == 'female'}"
-								th:text="#{profile.gender.female}"></td>
-							<td th:if="${user.gender.text == 'other'}"
-								th:text="#{profile.gender.other}"></td>
-						</tr>
-						<tr>
-							<th th:text="#{profile.intention}"></th>
-							<td th:if="${user.intention.text == 'meet'}"
-								th:text="#{profile.intention.meet}"></td>
-							<td th:if="${user.intention.text == 'date'}"
-								th:text="#{profile.intention.date}"></td>
-							<td th:if="${user.intention.text == 'sex'}"
-								th:text="#{profile.intention.sex}"></td>
-						</tr>
-						<tr>
-							<th th:text="#{donated}"></th>
-							<td th:text="${user.totalDonations} + ' €'"></td>
-						</tr>
-						<tr>
-							<th th:text="#{userprofile.num-blocks}"></th>
-							<td th:text="${#lists.size(user.blockedByUsers)}"></td>
-						</tr>
-						<tr>
-							<th th:text="#{userprofile.num-reports}"></th>
-							<td th:text="${#lists.size(user.reportedByUsers)}"></td>
-						</tr>
-					</tbody>
-				</table>
-				<div style="padding-top: 8px;"></div>
+					<table class="table" style="width: 100%">
+						<tbody>
+							<tr>
+								<th th:text="#{gender}"></th>
+								<td th:if="${user.gender.text == 'male'}"
+									th:text="#{profile.gender.male}"></td>
+								<td th:if="${user.gender.text == 'female'}"
+									th:text="#{profile.gender.female}"></td>
+								<td th:if="${user.gender.text == 'other'}"
+									th:text="#{profile.gender.other}"></td>
+							</tr>
+							<tr>
+								<th th:text="#{profile.intention}"></th>
+								<td th:if="${user.intention.text == 'meet'}"
+									th:text="#{profile.intention.meet}"></td>
+								<td th:if="${user.intention.text == 'date'}"
+									th:text="#{profile.intention.date}"></td>
+								<td th:if="${user.intention.text == 'sex'}"
+									th:text="#{profile.intention.sex}"></td>
+							</tr>
+							<tr>
+								<th th:text="#{donated}"></th>
+								<td th:text="${user.totalDonations} + ' €'"></td>
+							</tr>
+							<tr>
+								<th th:text="#{userprofile.num-blocks}"></th>
+								<td th:text="${#lists.size(user.blockedByUsers)}"></td>
+							</tr>
+							<tr>
+								<th th:text="#{userprofile.num-reports}"></th>
+								<td th:text="${#lists.size(user.reportedByUsers)}"></td>
+							</tr>
+						</tbody>
+					</table>
+					<div style="padding-top: 8px;"></div>
+				</div>
 			</div>
 			<div class="container">
 				<div class="profile-bottom full-width"

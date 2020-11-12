@@ -28,7 +28,7 @@
 				</div>
 
 				<div class="field">
-					<button class="button is-info" id="btnPushNotifications"
+					<button class="button is-info colored" id="btnPushNotifications"
 						name="btnPushNotifications" style="width: 100%;"
 						th:text="#{profile.webpush}"></button>
 				</div>
@@ -57,11 +57,11 @@
 								</div>
 							</div>
 							<div class="swiper-slide center-parent" style="height: 100%;">
-								<button th:if="${#lists.size(user.images) != imageMax}"
-									id="addImageDiv" class="center-parent"
+								<div th:if="${#lists.size(user.images) != imageMax}"
+									id="addImageDiv" class="center-parent button"
 									style="height: 400px; max-height: 100%; max-width: 100%; width: 400px;">
 									<i width=400 height=400 class="fa fa-plus fa-4x"></i>
-								</button>
+								</div>
 							</div>
 							<input id="addImageInput" type="file" accept="image/*"
 								style="display: none">
