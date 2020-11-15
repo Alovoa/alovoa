@@ -34,7 +34,6 @@ public class RegisterResource {
 	@GetMapping("/register")
 	public ModelAndView register() {
 		ModelAndView mav = new ModelAndView("register");
-		// mav.addObject("captcha", captchaService.generate());
 		mav.addObject("genders", genderRepo.findAll());
 		mav.addObject("intentions", userIntentionRepo.findAll());
 		return mav;
@@ -42,8 +41,6 @@ public class RegisterResource {
 	
 	public ModelAndView registerOauth(User user) throws Exception {
 		ModelAndView mav = new ModelAndView("register-oauth");
-		// mav.addObject("captcha", captchaService.generate());
-		mav.addObject("email", textEncryptor.encode(user.getEmail()));
 		mav.addObject("genders", genderRepo.findAll());
 		mav.addObject("intentions", userIntentionRepo.findAll());
 		return mav;

@@ -20,20 +20,20 @@ public class ConversationDto {
 	private String lastMessage;
 	private String userIdEncoded;
 	private boolean read;
-	
-	public static ConversationDto conversationToDto(Conversation c, User currentUser, TextEncryptorConverter textEncryptor)
-			throws Exception {
+
+	public static ConversationDto conversationToDto(Conversation c, User currentUser,
+			TextEncryptorConverter textEncryptor) throws Exception {
 		ConversationDto dto = new ConversationDto();
 		dto.setId(c.getId());
 		dto.setLastUpdated(c.getLastUpdated());
 		dto.setLastMessage(c.getLastMessage());
 		User u = c.getUserFrom();
-		if(u.equals(currentUser)) {
+		if (u.equals(currentUser)) {
 			u = c.getUserTo();
 		}
 		dto.setUserName(u.getFirstName());
 		dto.setUserProfilePicture(u.getProfilePicture());
-		dto.setUserIdEncoded(textEncryptor.encode(Long.toString(u.getId())));
+		dto.setUserIdEncoded(UserDto.encodeId(u.getId(), textEncryptor));
 		return dto;
 	}
 }

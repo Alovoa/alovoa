@@ -11,6 +11,7 @@ import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserReport;
+import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.ContactRepository;
 import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.service.AuthService;
@@ -45,7 +46,7 @@ public class AdminResource {
 		List<UserReport> reports = userReportRepo.findTop20ByOrderByDateAsc();
 		
 		for(UserReport r : reports) {
-			r.setUserToIdEnc(textEncryptor.encode(Long.toString(r.getUserTo().getId())));
+			r.setUserToIdEnc(UserDto.encodeId(r.getUserTo().getId(), textEncryptor));
 		}
 
 		List<Contact> contacts = contactRepository.findTop20ByHiddenFalse();
