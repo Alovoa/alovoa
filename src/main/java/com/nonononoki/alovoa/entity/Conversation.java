@@ -38,6 +38,10 @@ public class Conversation {
 	
 	private String lastMessage;
 	
+	private Date lastCheckedFrom;
+	
+	private Date lastCheckedTo;
+	
 	public boolean containsUser(User user) {
 		if(!getUserFrom().getId().equals(user.getId()) && !getUserTo().getId().equals(user.getId())) {
 			return false;
