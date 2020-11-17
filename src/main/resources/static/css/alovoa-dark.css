@@ -1,3 +1,4 @@
+
 body, .card, .box, .textarea, .footer, .table, .select select, select option
 	{
 	background-color: #2e3436;
@@ -52,6 +53,10 @@ body *, container *, .label, .textarea, .select select {
 textarea::placeholder {
 	color: white !important;
 	opacity: 0.5;
+}
+
+.title {
+	color: white;
 }
 
 @media screen and (max-width: 1024px) {

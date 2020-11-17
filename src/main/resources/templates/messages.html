@@ -31,14 +31,14 @@
 									th:value="${convo.userIdEncoded}">
 							</figure>
 						</div>
-						<div class="card-content" style="display:flex; justify-items: center; align-items: center;">
-							<div class="full-width profile-bottom"
-								>
+						<div class="card-content"
+							style="display: flex; justify-items: center; align-items: center;">
+							<div class="full-width profile-bottom">
 								<div style="font-size: 1.5em" th:text="${convo.userName}"></div>
-								<span style="font-size: 0.8em; overflow-wrap: normal;"
-									th:text="${convo.lastMessage}"
-									th:if="${convo.lastMessage != null}"></span>
-								<span style="font-size: 0.8em; overflow-wrap: normal;"
+								<span style="font-size: 0.8em; overflow-wrap: normal; background-color: initial;" class="message"
+									th:utext="${convo.lastMessage}"
+									th:if="${convo.lastMessage != null}"></span> <span
+									style="font-size: 0.8em; overflow-wrap: normal;"
 									th:unless="${convo.lastMessage != null}"
 									th:text="#{message.match}"></span>
 							</div>

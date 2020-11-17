@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ import com.nonononoki.alovoa.service.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ContextConfiguration
 @ActiveProfiles("test")
 public class UserTests {
 
@@ -59,7 +61,7 @@ public class UserTests {
 	@Test
 	public void test() throws Exception {
 
-		//one default admin user
+		// one default admin user
 		Assert.assertEquals(userRepo.count(), 1);
 
 		// register and confirm test users
@@ -77,25 +79,25 @@ public class UserTests {
 		RegisterDto user3Dto = createTestUserDto(2, c3);
 		String tokenContent3 = registerService.register(user3Dto);
 		User user3 = registerService.registerConfirm(tokenContent3);
-		
-		//set location manually since no extra service is needed
+
+		// set location manually since no extra service is needed
 		Location loc1 = new Location();
 		loc1.setLatitude("0");
 		loc1.setLongitude("0");
 		user1.setLastLocation(loc1);
-		
+
 		Location loc2 = new Location();
 		loc2.setLatitude("0");
 		loc2.setLongitude("0");
 		loc2.setUser(user2);
 		user2.setLastLocation(loc2);
-		
+
 		Location loc3 = new Location();
 		loc3.setLatitude("0");
 		loc3.setLongitude("0");
 		loc3.setUser(user3);
 		user3.setLastLocation(loc3);
-		
+
 		userRepo.saveAndFlush(user1);
 		userRepo.saveAndFlush(user2);
 		userRepo.saveAndFlush(user3);
@@ -113,7 +115,7 @@ public class UserTests {
 		userService.updateMaxAge(100);
 		userService.updateMinAge(16);
 		userService.updatePreferedGender(2, true);
-		userService.updateTheme(1);		
+		userService.updateTheme(1);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		String img2 = Tools.imageToB64(Tools.getFileFromResources("img/profile2.png"));
@@ -142,11 +144,11 @@ public class UserTests {
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		List<UserDto> searchDtos1 = searchService.search("0", "0", 50, 1);
 		Assert.assertEquals(searchDtos1.size(), 2);
-		
+
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		List<UserDto> searchDtos2 = searchService.search("0", "0", 50, 1);
 		Assert.assertEquals(searchDtos2.size(), 1);
-		
+
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		List<UserDto> searchDtos3 = searchService.search("0", "0", 50, 1);
 		Assert.assertEquals(searchDtos3.size(), 1);

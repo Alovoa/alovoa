@@ -1,6 +1,6 @@
 #top {
-	height: 100px;
 	border-bottom: 1px solid #dbdbdb;
+	padding-bottom: 16px;
 }
 
 #first-name {
@@ -46,8 +46,8 @@
 }
 
 .profile-pic {
-	height: 80px;
-	width: 80px;
+	height: 40px;
+	width: 40px;
 }
 
 .section {
@@ -65,9 +65,5 @@
 	}
 	#first-name {
 		font-size: 1.7em
-	}
-	.profile-pic {
-		height: 40px;
-		width: 40px;
 	}
 }

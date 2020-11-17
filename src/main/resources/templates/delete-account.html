@@ -26,7 +26,7 @@
 					<input type="hidden" name="tokenString" th:value="${tokenString}"
 						required>
 					<div class="field">
-						<input name="email" th:placeholder="#{email}" class="input">
+						<input name="email" type="email" th:placeholder="#{email}" class="input" required>
 					</div>
 					<div style="padding-top: 32px;"></div>
 					<div th:replace="fragments.html::captcha"></div>
@@ -41,6 +41,7 @@
 
 
 	</div>
+	<footer th:replace="fragments.html::navigation"></footer>
 	<footer th:replace="fragments.html::footer"></footer>
 
 	<script src="/js/lib/fontawesome.all.js"></script>

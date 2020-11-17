@@ -239,9 +239,9 @@
 		<div th:each="message : ${messages}"
 			style="display: inline-block; width: 100%;">
 			<div th:if="${message.from}" class="message left"
-				th:text="${message.content}" style="word-break: break-all;"></div>
+				th:utext="${message.content}" style="word-break: break-all;"></div>
 			<div th:unless="${message.from}" class="message right"
-				th:text="${message.content}" style="word-break: break-all;"></div>
+				th:utext="${message.content}" style="word-break: break-all;"></div>
 		</div>
 	</div>
 
