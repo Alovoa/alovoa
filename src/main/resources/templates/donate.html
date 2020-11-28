@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="/css/lib/bulma.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/search.css" />
+<link rel="stylesheet" href="/css/donate.css" />
 <link th:if="${user.theme == 1}" rel="stylesheet" href="/css/alovoa-dark.css" />
 <title th:text="#{donate.title}"></title>
 </head>
@@ -22,7 +23,7 @@
 				<div>
 					<label class="label" th:text="#{filter}"></label>
 					<div class="select">
-						<select id="sort" onchange="getDonationList">
+						<select id="sort" onchange="search()">
 							<option value="1" th:text="#{donate.latest-donations}"></option>
 							<option value="2" th:text="#{donate.largest-donations}"></option>
 						</select>

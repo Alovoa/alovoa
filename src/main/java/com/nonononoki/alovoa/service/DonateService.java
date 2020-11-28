@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserDonation;
 import com.nonononoki.alovoa.model.DonationDto;
@@ -34,16 +35,24 @@ public class DonateService {
 	@Autowired
 	private HttpServletRequest request;
 	
+	@Autowired
+	private AuthService authService;
+	
+	@Autowired
+	private TextEncryptorConverter textEncryptor;
+	
 	@Value("${app.donate.users.max}")
 	private int maxEntries;
 
 	public List<DonationDto> filter(int filter) throws Exception {
 		List<DonationDto> donationsToDtos = null;
 		
+		User currentUser = authService.getCurrentUser();
+		
 		if(filter == FILTER_RECENT) {
-			donationsToDtos = DonationDto.donationsToDtos(userDonationRepo.findAllByOrderByDateDesc());
+			donationsToDtos = DonationDto.donationsToDtos(userDonationRepo.findAllByOrderByDateDesc(), currentUser, textEncryptor);
 		} else if(filter == FILTER_AMOUNT) {
-			donationsToDtos = DonationDto.usersToDtos(userRepo.findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullOrderByTotalDonationsDesc());
+			donationsToDtos = DonationDto.usersToDtos(userRepo.findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullOrderByTotalDonationsDesc(), currentUser, textEncryptor);
 		} else {
 			throw new Exception("");
 		}

@@ -183,7 +183,7 @@
 		<div class="card is-horizontal" th:each="donation : ${donations}">
 			<div class="card-image">
 				<figure class="image">
-					<img th:src="${donation.user.profilePicture}" class="profile-pic">
+					<img th:src="${donation.user.profilePicture}" class="profile-pic" th:onclick="viewProfile([[${donation.user.idEncoded}]])">
 				</figure>
 			</div>
 			<div class="card-content">
@@ -201,7 +201,7 @@
 					<div class="media">
 						<div class="full-width">
 							<div class="left" style="font-size: 1.2em">
-								<span th:text="#{last-active}"></span><span></span><span
+								<span th:text="#{last-active}"></span><span>: </span><span
 									th:text="${#dates.format(donation.user.activeDate, 'yyyy-MM-dd')}"></span>
 							</div>
 							<div class="right" style="font-size: 1.2em">

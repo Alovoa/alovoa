@@ -76,7 +76,7 @@
 			<div class="columns">
 				<div class="column">
 					<div class="control has-icons-left" style="margin-top: -8px;">
-						<div class="select" >
+						<div class="select">
 							<select id="locale" onchange="onChangeLocal(this)">
 								<option th:text="#{language}" hidden></option>
 								<option value="?lang=en">English</option>
@@ -168,10 +168,13 @@
 
 
 		<div th:each="user : ${users}">
-			<div class="swiper-container"  th:id="${user.idEncoded}">
+			<div class="swiper-container" th:id="${user.idEncoded}">
 				<div class="swiper-wrapper">
 
-					<div class="swiper-slide colored" style="background-color: #48c774 ; display: flex; align-items:center; justify-content:center"><i class="fa fa-thumbs-up fa-10x"></i></div>
+					<div class="swiper-slide colored"
+						style="background-color: #48c774; display: flex; align-items: center; justify-content: center">
+						<i class="fa fa-thumbs-up fa-10x"></i>
+					</div>
 					<div class="swiper-slide">
 						<div class="card is-horizontal" style="width: 100%;">
 							<div class="card-image" onclick="toggleCardContent()">
@@ -228,7 +231,10 @@
 							</div>
 						</div>
 					</div>
-					<div class="swiper-slide colored" style="background-color: #f14668;  display: flex; align-items:center; justify-content:center;"><i class="fa fa-thumbs-down fa-10x"></i></div>
+					<div class="swiper-slide colored"
+						style="background-color: #f14668; display: flex; align-items: center; justify-content: center;">
+						<i class="fa fa-thumbs-down fa-10x"></i>
+					</div>
 				</div>
 			</div>
 			<div style="margin-bottom: 24px;"></div>
@@ -249,7 +255,8 @@
 		<div class="card is-horizontal" th:each="donation : ${donations}">
 			<div class="card-image">
 				<figure class="image">
-					<img th:src="${donation.user.profilePicture}" class="profile-pic">
+					<img th:src="${donation.user.profilePicture}" class="profile-pic"
+						th:onclick="viewProfile([[${donation.user.idEncoded}]])">
 				</figure>
 			</div>
 			<div class="card-content">
@@ -257,42 +264,24 @@
 					<div class="media">
 						<div class="full-width">
 							<div class="left" style="font-size: 2em"
-								th:text="#{donation.user.firstName}"></div>
+								th:text="${donation.user.firstName}"></div>
 							<div class="right" style="font-size: 1.5em">
 								<span th:text="#{age}"></span><span>: </span><span
-									th:text="#{donation.user.age}"></span>
+									th:text="${donation.user.age}"></span>
 							</div>
 						</div>
 					</div>
 					<div class="media">
 						<div class="full-width">
 							<div class="left" style="font-size: 1.2em">
-								<span th:text="#{last-active}"></span><span></span><span
+								<span th:text="#{last-active}"></span><span> </span><span
 									th:text="${#dates.format(donation.user.activeDate, 'yyyy-MM-dd')}"></span>
 							</div>
 							<div class="right" style="font-size: 1.2em">
-								<span th:text="#{donation.distanceToUser}"></span><span>
+								<span th:text="${donation.user.distanceToUser}"></span><span>
 								</span><span th:text="#{km-from-you}"></span>
 							</div>
 						</div>
-					</div>
-
-					<div style="font-size: 1.1em" th:text="#{donation.amount}"></div>
-				</div>
-				<div class="profile-bottom full-width"
-					style="display: inline-block;">
-					<button class="button left is-info is-inverted"
-						th:onclick="viewProfile([[${user.idEncoded}]])"
-						th:text="#{view-profile}"></button>
-					<div class="right">
-						<button class="button colored is-rounded is-danger"
-							th:onclick="hideUser(this, [[${user.idEncoded}]])">
-							<i class="fa fa-thumbs-down"></i>
-						</button>
-						<button class="button colored is-rounded is-success"
-							th:onclick="likeUser(this, [[${user.idEncoded}]])">
-							<i class="fa fa-thumbs-up"></i>
-						</button>
 					</div>
 				</div>
 			</div>
