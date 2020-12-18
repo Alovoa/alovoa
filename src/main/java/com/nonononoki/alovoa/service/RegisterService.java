@@ -175,6 +175,7 @@ public class RegisterService {
 		return userRepo.saveAndFlush(user);
 	}
 
+	@SuppressWarnings("rawtypes")
 	private BaseRegisterDto registerBase(RegisterDto dto) throws Exception {
 		// check minimum age
 		LocalDate now = LocalDate.now();
@@ -196,7 +197,7 @@ public class RegisterService {
 		if (userMaxAge > maxAge) {
 			userMaxAge = maxAge;
 		}
-		// user.setAge(userAge);
+		
 		user.setPreferedMinAge(userMinAge);
 		user.setPreferedMaxAge(userMaxAge);
 		user.setGender(genderRepo.findById(dto.getGender()).orElse(null));
@@ -205,7 +206,6 @@ public class RegisterService {
 		}
 		user.setIntention(userIntentionRepo.findById(dto.getIntention()).orElse(null));
 
-//				user = userRepo.saveAndFlush(user);
 		UserDates dates = new UserDates();
 		Date today = new Date();
 		dates.setActiveDate(today);
@@ -217,7 +217,6 @@ public class RegisterService {
 		dates.setNotificationCheckedDate(today);
 		dates.setNotificationDate(today);
 		dates.setUser(user);
-//				dates = userDatesRepo.saveAndFlush(dates);
 		user.setDates(dates);
 
 		// resolves hibernate issue with null Collections with orphanremoval

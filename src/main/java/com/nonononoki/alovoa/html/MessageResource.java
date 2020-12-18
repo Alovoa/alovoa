@@ -18,6 +18,7 @@ import com.nonononoki.alovoa.entity.Message;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.ConversationDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
+import com.nonononoki.alovoa.repo.UserBlockRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.AuthService;
 
@@ -32,6 +33,9 @@ public class MessageResource {
 
 	@Autowired
 	private ConversationRepository conversationRepo;
+	
+	@Autowired
+	private UserBlockRepository userBlockRepo;
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
@@ -46,11 +50,15 @@ public class MessageResource {
 		List<ConversationDto> convos = new ArrayList<>();
 		for (int i = 0; i < user.getConversations().size(); i++) {
 			Conversation c = user.getConversations().get(i);
-			convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
+			if(!c.isBlocked(userBlockRepo)) {
+				convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
+			}
 		}
 		for (int i = 0; i < user.getConversationsBy().size(); i++) {
 			Conversation c = user.getConversationsBy().get(i);
-			convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
+			if(!c.isBlocked(userBlockRepo)) {
+				convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
+			}
 		}
 
 		Collections.sort(convos, new Comparator<ConversationDto>() {

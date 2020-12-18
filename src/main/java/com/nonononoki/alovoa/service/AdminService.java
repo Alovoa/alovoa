@@ -1,6 +1,5 @@
 package com.nonononoki.alovoa.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.mail.MessagingException;

@@ -2,8 +2,6 @@ package com.nonononoki.alovoa.rest;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.html.ProfileResource;
 import com.nonononoki.alovoa.html.RegisterResource;
@@ -30,8 +27,8 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @RequestMapping("/")
 public class Oauth2Controller {
 
-	@Autowired
-	private HttpServletRequest request;
+	//@Autowired
+	//private HttpServletRequest request;
 
 	@Autowired
 	private UserRepository userRepo;
@@ -45,10 +42,7 @@ public class Oauth2Controller {
 	@Autowired
 	private ProfileResource profileResource;
 
-	/*
-	 * @GetMapping("/login/oauth2/code/{serviceName}") public void google() { }
-	 */
-
+	@SuppressWarnings("rawtypes")
 	@GetMapping("/login/oauth2/success")
 	public ModelAndView oauth2Success() throws Exception {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -62,8 +56,6 @@ public class Oauth2Controller {
 		String endpoint = client.getClientRegistration().getProviderDetails().getUserInfoEndpoint()
 				.getUri();
 		
-		String provider = client.getClientRegistration().getRegistrationId();
-
 		if (!endpoint.isEmpty()) {
 			RestTemplate template = new RestTemplate();
 			HttpHeaders headers = new HttpHeaders();
@@ -74,7 +66,6 @@ public class Oauth2Controller {
 			ResponseEntity<Map> response = template.exchange(endpoint, HttpMethod.GET, entity,
 					Map.class);
 			Map attributes = response.getBody();
-			// String name = (String) attributes.get("name");
 			String email = (String) attributes.get("email");
 			email = email.toLowerCase();
 
@@ -82,13 +73,7 @@ public class Oauth2Controller {
 			if (user == null) {
 				user = new User();
 				user.setEmail(email);
-				//user.setOauthProvider(provider);
-				//user = userRepo.saveAndFlush(user);
 			}
-
-//			if (user.getOauthProvider() != provider) {
-//				throw new Exception("");
-//			}
 			
 			//administrator cannot use oauth for security reason e.g. password breach on oath provider
 			if (user.isAdmin()) {

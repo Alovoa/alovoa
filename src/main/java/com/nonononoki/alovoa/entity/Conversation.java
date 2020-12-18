@@ -11,6 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.nonononoki.alovoa.repo.UserBlockRepository;
+
 import lombok.Data;
 
 @Data
@@ -55,6 +59,18 @@ public class Conversation {
 			u = getUserTo();
 		}		
 		return u;
+	}
+	
+	public boolean isBlocked(UserBlockRepository userBlockRepo) {
+		
+		UserBlock blockFrom = userBlockRepo.findByUserFromAndUserTo(userFrom, userTo);
+		UserBlock blockTo = userBlockRepo.findByUserFromAndUserTo(userTo, userFrom);
+		
+		if(blockFrom == null && blockTo == null) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 }
