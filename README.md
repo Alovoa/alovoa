@@ -45,3 +45,9 @@ Example (Fedora):
 
 ### Note:
 - Pull requests are not currently accepted, as it's still in early development. Suggestions are always welcome!
+
+### Screenshots:
+
+<img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/screenshots/profile.jpg">
+<img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/screenshots/search.jpg">
+<img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/screenshots/sizes_dark.png">
