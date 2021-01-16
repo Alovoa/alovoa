@@ -35,7 +35,7 @@ public class Tools {
 	public static String imageToB64(File file, String mime) throws IOException {
 		byte[] fileContent = Files.readAllBytes(file.toPath());
 		String b64 = Base64.getEncoder().encodeToString(fileContent);
-		return B64IMAGEPREFIX + mime + b64;
+		return B64IMAGEPREFIX + mime + B64PREFIX + b64;
 	}
 
 	public static boolean isTextContainingLineFromFile(File file, String text) throws IOException {
