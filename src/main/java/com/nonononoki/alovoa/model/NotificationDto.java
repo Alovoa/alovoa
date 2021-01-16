@@ -22,7 +22,7 @@ public class NotificationDto {
 		NotificationDto dto = new NotificationDto();
 		dto.setDate(n.getCreationDate());
 		dto.setId(n.getId());
-		dto.setUserFromDto(UserDto.userToUserDto(n.getUserFrom(), currentUser, textEncryptor));
+		dto.setUserFromDto(UserDto.userToUserDto(n.getUserFrom(), currentUser, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
 		return dto;
 	}
 }

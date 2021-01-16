@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.service.AuthService;
 
 @Controller
@@ -17,12 +19,15 @@ public class DeleteAccountResource {
 	@Autowired
 	private AuthService authService;
 	
+	@Autowired
+	private TextEncryptorConverter textEncryptor;
+	
 	@GetMapping("/delete-account/{tokenString}")
 	public ModelAndView deleteAccount(@PathVariable String tokenString) throws Exception {
 		User user = authService.getCurrentUser();
 		ModelAndView mav = new ModelAndView("delete-account");
 		mav.addObject("tokenString", tokenString);
-		mav.addObject("user", user);
+		mav.addObject("user",  UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;
 	}
 }

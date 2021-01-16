@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.service.AuthService;
 
 @Controller
@@ -17,6 +19,9 @@ public class PasswordResource {
 	@Autowired
 	private AuthService authService;
 	
+	@Autowired
+	private TextEncryptorConverter textEncryptor;
+	
 	@GetMapping("/reset")
 	public ModelAndView passwordReset() throws Exception {
 		ModelAndView mav = new ModelAndView("password-reset");
@@ -25,10 +30,10 @@ public class PasswordResource {
 
 	@GetMapping("/change/{tokenString}")
 	public ModelAndView passwordChange(@PathVariable String tokenString) throws Exception {
-		User currUser = authService.getCurrentUser();
+		User user = authService.getCurrentUser();
 		ModelAndView mav = new ModelAndView("password-change");
 		mav.addObject("tokenString", tokenString);
-		mav.addObject("user", currUser);
+		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;
 	}
 }

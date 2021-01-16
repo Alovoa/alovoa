@@ -1,6 +1,8 @@
 package com.nonononoki.alovoa.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,8 +23,8 @@ public class UserController {
 
 	// GDPR
 	@PostMapping(value = "/delete-account", consumes = "text/plain") 
-	public void deleteAccount(@RequestBody (required=false) String password) throws Exception {
-		userService.deleteAccountRequest(password);
+	public void deleteAccount() throws Exception {
+		userService.deleteAccountRequest();
 	}
 	
 	@PostMapping(value = "/delete-account-confirm", consumes = "application/json")
@@ -30,9 +32,9 @@ public class UserController {
 		userService.deleteAccountConfirm(dto);
 	}
 
-	@PostMapping(value = "/userdata", consumes = "text/plain")
-	public void getUserdata(@RequestBody (required=false) String password) throws Exception {
-		userService.getUserdata(password);
+	@GetMapping(value = "/userdata")
+	public ResponseEntity<Resource> getUserdata() throws Exception {
+		return userService.getUserdata();
 	}
 	
 	@PostMapping(value = "/delete/profile-picture")
@@ -43,6 +45,21 @@ public class UserController {
 	@PostMapping(value = "/update/profile-picture", consumes = "text/plain")
 	public void updateProfilePicture(@RequestBody String imageB64) throws Exception {
 		userService.updateProfilePicture(imageB64);
+	}
+	
+	@GetMapping(value = "/get/audio/{userIdEnc}")
+	public String getAudio(@PathVariable String userIdEnc)  throws Exception {
+		return userService.getAudio(userIdEnc);
+	}
+	
+	@PostMapping(value = "/delete/audio")
+	public void deleteAudio() throws Exception {
+		userService.deleteAudio();
+	}
+
+	@PostMapping(value = "/update/audio/{mimeType}", consumes = "text/plain")
+	public void updateAudio(@RequestBody String audioB64, @PathVariable String mimeType) throws Exception {
+		userService.updateAudio(audioB64, mimeType);
 	}
 
 	@PostMapping(value = "/update/description", consumes = "text/plain")

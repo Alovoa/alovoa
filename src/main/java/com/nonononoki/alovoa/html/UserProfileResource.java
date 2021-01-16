@@ -27,20 +27,20 @@ public class UserProfileResource {
 	@GetMapping("/profile/view/{idEncoded}")
 	public ModelAndView profileView(@PathVariable String idEncoded) throws NumberFormatException, Exception {
 		long id =  UserDto.decodeId(idEncoded, textEncryptor);
-		User user = userRepo.findById(id).orElse(null);
-		User currUser = authService.getCurrentUser();
+		User userView = userRepo.findById(id).orElse(null);
+		User user = authService.getCurrentUser();
 		
-		if(currUser.getId().equals(id)) {
+		if(user.getId().equals(id)) {
 			throw new Exception();
 		}
 		
-		if(user != null) {		
-			if(user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
+		if(userView != null) {		
+			if(userView.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
 				throw new Exception("");
 			}	
 			ModelAndView mav = new ModelAndView("userProfile");
-			mav.addObject("user", UserDto.userToUserDto(user, currUser, textEncryptor));
-			mav.addObject("currUser", currUser);
+			mav.addObject("user", UserDto.userToUserDto(userView, user, textEncryptor, UserDto.NO_AUDIO));
+			mav.addObject("currUser", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 			return mav;
 		} else {
 			throw new Exception("");

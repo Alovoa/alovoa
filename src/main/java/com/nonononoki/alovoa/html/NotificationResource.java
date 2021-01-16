@@ -15,6 +15,7 @@ import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserNotification;
 import com.nonononoki.alovoa.model.NotificationDto;
+import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.AuthService;
 
@@ -49,7 +50,7 @@ public class NotificationResource {
 			}
 		});
 		mav.addObject("notifications", notifications);
-		mav.addObject("user", user);
+		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;
 	}
 }

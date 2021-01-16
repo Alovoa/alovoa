@@ -22,6 +22,7 @@ public class UserDonation {
 	private Long id;
 	
 	@ManyToOne
+	@JsonIgnore
 	private User user;
 	
 	private Date date;

@@ -104,9 +104,10 @@ public class UserTests {
 
 		Assert.assertEquals(userRepo.count(), 4);
 
+		String imgMime = "png";
 		// setup settings
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		String img1 = Tools.imageToB64(Tools.getFileFromResources("img/profile1.png"));
+		String img1 = Tools.imageToB64(Tools.getFileFromResources("img/profile1.png"), imgMime) ;
 		userService.updateProfilePicture(img1);
 		userService.addInterest("interest1");
 		userService.addImage(img1);
@@ -118,7 +119,7 @@ public class UserTests {
 		userService.updateTheme(1);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
-		String img2 = Tools.imageToB64(Tools.getFileFromResources("img/profile2.png"));
+		String img2 = Tools.imageToB64(Tools.getFileFromResources("img/profile2.png"), imgMime);
 		userService.updateProfilePicture(img2);
 		userService.addInterest("interest2");
 		userService.addImage(img2);
@@ -130,7 +131,7 @@ public class UserTests {
 		userService.updateTheme(1);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
-		String img3 = Tools.imageToB64(Tools.getFileFromResources("img/profile3.png"));
+		String img3 = Tools.imageToB64(Tools.getFileFromResources("img/profile3.png"), imgMime);
 		userService.updateProfilePicture(img3);
 		userService.addInterest("interest3");
 		userService.addImage(img3);

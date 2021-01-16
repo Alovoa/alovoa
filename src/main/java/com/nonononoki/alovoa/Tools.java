@@ -15,7 +15,9 @@ public class Tools {
 	public static final float BASE64FACTOR = 0.75f;
 	public static final int MILLION = 1000000;
 	public static final int THOUSAND = 1000;
-	public static final String B64IMAGEPREFIX = "data:image/png;base64,";
+	public static final String B64IMAGEPREFIX = "data:image/";
+	public static final String B64AUDIOPREFIX = "data:audio/";
+	public static final String B64PREFIX = ";base64,";
 
 	public static File getFileFromResources(String fileName) {
 
@@ -30,10 +32,10 @@ public class Tools {
 
 	}
 
-	public static String imageToB64(File file) throws IOException {
+	public static String imageToB64(File file, String mime) throws IOException {
 		byte[] fileContent = Files.readAllBytes(file.toPath());
 		String b64 = Base64.getEncoder().encodeToString(fileContent);
-		return B64IMAGEPREFIX + b64;
+		return B64IMAGEPREFIX + mime + b64;
 	}
 
 	public static boolean isTextContainingLineFromFile(File file, String text) throws IOException {
@@ -66,6 +68,22 @@ public class Tools {
 				Double.parseDouble(user.getLastLocation().getLongitude()),
 				Double.parseDouble(currUser.getLastLocation().getLatitude()),
 				Double.parseDouble(currUser.getLastLocation().getLongitude()));
+	}
+	
+	//https://stackoverflow.com/a/45732035
+	public static Double getBase64Size(String base64String) {
+	    Double result = -1.0;
+	    if(!base64String.isEmpty()) {
+	        Integer padding = 0;
+	        if(base64String.endsWith("==")) {
+	            padding = 2;
+	        }
+	        else {
+	            if (base64String.endsWith("=")) padding = 1;
+	        }
+	        result = (Math.ceil(base64String.length() / 4) * 3 ) - padding;
+	    }
+	    return result / (double) MILLION; //MB
 	}
 
 	// https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude/20410612#20410612

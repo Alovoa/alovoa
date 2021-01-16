@@ -10,6 +10,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -33,8 +39,8 @@ public class MailService {
 	@Autowired
 	private JavaMailSender mailSender;
 
-	@Autowired
-	private ObjectMapper objectMapper;
+	//@Autowired
+	//private ObjectMapper objectMapper;
 
 	@Value("${app.name}")
 	private String appName;
@@ -86,21 +92,28 @@ public class MailService {
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 
-	public void sendUserDataMail(User user) throws Exception {
-		Locale locale = LocaleContextHolder.getLocale();
-		String subject = messageSource.getMessage("backend.mail.userdata.subject", new String[] { appName }, locale);
-		String body = messageSource.getMessage("backend.mail.userdata.body",
-				new String[] { user.getFirstName(), appName }, locale);
+	/*
+	public ResponseEntity<Resource> sendUserDataMail(User user) throws Exception {
+		//Locale locale = LocaleContextHolder.getLocale();
+		//String subject = messageSource.getMessage("backend.mail.userdata.subject", new String[] { appName }, locale);
+		//String body = messageSource.getMessage("backend.mail.userdata.body", new String[] { user.getFirstName(), appName }, locale);
 
-		// TODO: You won't be able to send large attachments to email - single image is
-		// probably the maximum.
-		// If app allows for multiple images it's better to generate a link that allows
-		// to download file in browser and send it via email
 		UserGdpr ug = UserGdpr.userToUserGdpr(user);
 		String json = objectMapper.writeValueAsString(ug);
 		ByteArrayResource resource = new ByteArrayResource(json.getBytes());
-		sendMailWithAttachment(user.getEmail(), defaultFrom, subject, body, "userdata.json", resource);
+		//sendMailWithAttachment(user.getEmail(), defaultFrom, subject, body, "userdata.json", resource);
+		
+		MediaType mediaType = MediaTypeFactory
+                .getMediaType(resource)
+                .orElse(MediaType.APPLICATION_OCTET_STREAM);
+		HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(mediaType);
+        
+        return new ResponseEntity<Resource>(
+        		resource, headers, HttpStatus.OK
+            );
 	}
+	*/
 
 	public void sendAccountDeleteRequest(User user, UserDeleteToken token) throws MessagingException {
 		Locale locale = LocaleContextHolder.getLocale();

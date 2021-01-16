@@ -43,6 +43,10 @@ public class User {
 	private String firstName;
 
 	private String description;
+	
+	@Column(columnDefinition = "mediumtext")
+	@Convert(converter = TextEncryptorConverter.class)
+	private String audio;
 
 	private int preferedMinAge;
 

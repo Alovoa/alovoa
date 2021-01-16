@@ -77,8 +77,8 @@
 						</div>
 					</div>
 
-					<div style="padding-top: 24px;"></div>
-					<div class="field">
+					<div style="padding-top: 24px;" th:if="${user.interests}"></div>
+					<div class="field" th:if="${user.interests}">
 						<label class="label" th:text="#{interests}"></label>
 						<div th:each="interest : ${user.interests}">
 							<div th:text="${interest.text}"></div>
@@ -91,6 +91,15 @@
 						<textarea class="textarea" id="description"
 							th:text="${user.description}" style="word-break: break-all;"
 							readOnly></textarea>
+					</div>
+					
+					<div style="padding-top: 24px;" th:if="${user.audio}"></div>
+					<div class="field" th:if="${user.audio}">
+						<label class="label" th:text="#{profile.audio}"></label>
+						<audio id="audio" th:if="${user.audio}" controls hidden></audio>
+					</div>
+					<div class="colored button is-info" id="audio-play-button"  th:if="${user.audio}" onclick="downloadAndPlayAudio()">
+						<i class="fa fa-play"></i>
 					</div>
 
 					<table class="table" style="width: 100%">
@@ -202,6 +211,8 @@
 			</div>
 		</div>
 	</div>
+	
+	<input id="user-id-enc" th:value="${user.idEncoded}" hidden>
 
 	<footer th:replace="fragments.html::navigation"></footer>
 	<footer th:replace="fragments.html::footer"></footer>

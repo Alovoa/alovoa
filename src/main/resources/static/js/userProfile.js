@@ -10,6 +10,30 @@ $(function() {
 	});
 });
 
+function downloadAndPlayAudio() {
+	let userIdEnc = $("#user-id-enc").val();
+	$.ajax({
+		type : "GET",
+		url : "/user/get/audio/" + userIdEnc ,
+		headers : {
+			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+		},
+		success : function(res) {ch
+		 	let audio = document.getElementById('audio');
+		 	$("#audio").show();
+		 	$("#audio-play-button").hide();
+			audio.src = res;
+			audio.load();
+			audio.play();
+		},
+		error : function(e) {
+			console.log(e);
+			alert(getGenericErrorText());
+		}
+	});
+
+}
+
 function likeUser(idEnc) {
 	$.ajax({
 		type : "POST",

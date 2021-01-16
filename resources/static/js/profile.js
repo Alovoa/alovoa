@@ -250,13 +250,18 @@ $(function() {
 	$("#userdata-submit").click(function(e) {
 
 		let password = $("#userdata-password").val();
+		let url = "/user/userdata";
+		console.log("TEST")
+		console.log(password);
+		if(password) {
+			url = url + "/" + btoa(password);
+		}
+		
 
 		if (password) {
 			$.ajax({
-				type : "POST",
-				contentType : "text/plain",
-				data : password,
-				url : "/user/userdata/",
+				type : "GET",
+				url : url,
 				headers : {
 					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 				},

@@ -13,28 +13,7 @@ $(function() {
 	updateProfileWarning();
 
 	$("#profilePicture").click(function(e) {
-		let val = $("#profilePicture").attr("value");
-		console.log(val)
-		if(val == 0) {
-			$("#profilePictureUpload").click();
-		} else {
-			if (confirm(getText("profile.js.delete-image.confirm"))) {
-				$.ajax({
-					type : "POST",
-					url : "/user/delete/profile-picture",
-					headers : {
-						"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
-					},
-					success : function(e) {
-						location.reload(true);
-					},
-					error : function(e) {
-						console.log(e);
-						alert(getGenericErrorText());
-					}
-				});
-			}
-		}
+		$("#profilePictureUpload").click();
 	});
 
 	$("#addImageDiv").click(function(e) {
@@ -97,10 +76,6 @@ $(function() {
 	$('#description').on('keyup paste', function() {
 
 		let data = $('#description').val();
-		if(!data) {
-			data = " ";
-		}
-		console.log(data);
 		var maxlength = descriptionMaxLength;
 		var currentLength = $(this).val().length;
 
@@ -273,54 +248,99 @@ $(function() {
 	});
 
 	$("#userdata-submit").click(function(e) {
-
-		let password = $("#userdata-password").val();
-
-		//if (password) {
-			$.ajax({
-				type : "POST",
-				contentType : "text/plain",
-				data : password,
-				url : "/user/userdata/",
-				headers : {
-					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
-				},
-				success : function(e) {
-					alert(getGenericSubmitSuccessText());
-				},
-				error : function(e) {
-					console.log(e);
-					alert(getGenericErrorText());
-				}
-			});
-		//}
+		let url = "/user/userdata";
+		window.open(url);
+		/*
+		$.ajax({
+			type : "GET",
+			url : url,
+			headers : {
+				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+			},
+			success : function(e) {
+				alert(getGenericSubmitSuccessText());
+			},
+			error : function(e) {
+				console.log(e);
+				alert(getGenericErrorText());
+			}
+		});
+		*/
 	});
 
 	$("#delete-acc-submit").click(function(e) {
-
-		let password = $("#delete-acc-password").val();
-
-		//if (password) {
-			$.ajax({
-				type : "POST",
-				contentType : "text/plain",
-				data : password,
-				url : "/user/delete-account/",
-				headers : {
-					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
-				},
-				success : function(e) {
-					alert(getGenericSubmitSuccessText());
-				},
-				error : function(e) {
-					console.log(e);
-					alert(getGenericErrorText());
-				}
-			});
-		//}
+	
+		$.ajax({
+			type : "POST",
+			url : "/user/delete-account/",
+			contentType : "text/plain",
+			headers : {
+				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+			},
+			success : function(e) {
+				alert(getGenericSubmitSuccessText());
+			},
+			error : function(e) {
+				console.log(e);
+				alert(getGenericErrorText());
+			}
+		});
+	});
+	
+	//AUDIO
+	$("#audio-upload-button").click(function(e) {
+		$("#audio-file").click();
 	});
 
+	$("#audio-file").change(function() {
+		let file = document.querySelector('#audio-file').files[0];
+		getBase64(file, function(b64) {
+			if (b64) {
+			
+			var type = file.type.split('/')[1];
+			console.log(type);
+			
+				$.ajax({
+					type : "POST",
+					url : "/user/update/audio/" + type,
+					headers : {
+						"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+					},
+					contentType : "text/plain",
+					data : b64,
+					success : function() {
+						location.reload(true);
+					},
+					error : function(e) {
+						console.log(e);
+						alert(getGenericErrorText());
+					}
+				});
+			}
+		});
+	});
+	
+
 });
+ 
+ function deleteAudio() {
+ 	if(confirm("Press a button!")) {
+ 		$.ajax({
+		type : "POST",
+		url : "/user/delete/audio",
+		headers : {
+			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+		},
+		success : function(e) {
+			location.reload(true);
+		},
+		error : function(e) {
+			console.log(e);
+			alert(getGenericErrorText());
+		}
+	});
+ 	}
+ }
 
 function deleteInterest(id) {
 	$.ajax({

@@ -26,12 +26,29 @@ public class DonationDto {
 		dto.setUser(UserDto.userToUserDto(d.getUser(), currentUser, textEncryptor));
 		return dto;
 	}
+	
+	public static DonationDto donationToDto(UserDonation d, User currentUser,  TextEncryptorConverter textEncryptor, int mode) throws Exception {
+		DonationDto dto = new DonationDto();
+		dto.setId(d.getId());
+		dto.setDate(d.getDate());
+		dto.setAmount(d.getAmount());
+		dto.setUser(UserDto.userToUserDto(d.getUser(), currentUser, textEncryptor, mode));
+		return dto;
+	}
 
 	public static DonationDto userToDto(User user, User currentUser,  TextEncryptorConverter textEncryptor) throws Exception {
 		DonationDto dto = new DonationDto();
 		dto.setId(user.getId());
 		dto.setAmount(user.getTotalDonations());
 		dto.setUser(UserDto.userToUserDto(user, currentUser, textEncryptor));
+		return dto;
+	}
+	
+	public static DonationDto userToDto(User user, User currentUser,  TextEncryptorConverter textEncryptor, int mode) throws Exception {
+		DonationDto dto = new DonationDto();
+		dto.setId(user.getId());
+		dto.setAmount(user.getTotalDonations());
+		dto.setUser(UserDto.userToUserDto(user, currentUser, textEncryptor, mode));
 		return dto;
 	}
 

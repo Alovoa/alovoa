@@ -63,7 +63,7 @@ public class SearchService {
 						minDate, maxDate);
 		List<UserDto> userDtos = new ArrayList<>();
 		for (int i = 0; i < users.size(); i++) {
-			UserDto dto = UserDto.userToUserDto(users.get(i), user, textEncryptor);
+			UserDto dto = UserDto.userToUserDto(users.get(i), user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY);
 			userDtos.add(dto);
 		}
 

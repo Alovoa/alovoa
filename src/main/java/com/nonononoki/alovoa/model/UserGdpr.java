@@ -32,6 +32,8 @@ public class UserGdpr {
 	
 	private double totalDonations;
 	
+	private int theme;
+	
 	@Convert(converter = TextEncryptorConverter.class)
 	private String email;
 
@@ -40,6 +42,8 @@ public class UserGdpr {
 	private String description;
 
 	private String profilePicture;
+	
+	private String audio;
 	
 	/*
 	 * Custom classes
@@ -83,9 +87,13 @@ public class UserGdpr {
 		u.setPreferedMaxAge(user.getPreferedMaxAge());
 		u.setTotalDonations(user.getTotalDonations());
 		
+		u.setTheme(user.getTheme());
+		
 		u.setEmail(user.getEmail());
 		u.setFirstName(user.getFirstName());
 		u.setDescription(user.getDescription());
+		u.setAudio(user.getAudio());
+		
 		u.setProfilePicture(user.getProfilePicture());
 		
 		u.setLastLocation(user.getLastLocation());
@@ -98,7 +106,7 @@ public class UserGdpr {
 		u.setMessageSent(user.getMessageSent());
 		u.setWebPush(user.getWebPush());
 		u.setDates(user.getDates());
-		
+
 		return u;
 	}
 }

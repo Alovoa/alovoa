@@ -30,12 +30,18 @@ public class MessageService {
 	@Autowired
 	private NotificationService notificationService;
 	
+	String JS_SCRIPT_TAG = "<script";
 	
 	public void send(Conversation c, String message) throws Exception {
 		
 		if(message.length() > maxMessageSize) {
 			throw new Exception("");	
 		}	
+		
+		//prevent js injection
+		if(message.contains(JS_SCRIPT_TAG)) {
+			throw new Exception("");	
+		}
 		
 		User currUser = authService.getCurrentUser();
 		User user = c.getPartner(currUser);

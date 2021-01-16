@@ -7,7 +7,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.service.AuthService;
@@ -26,6 +28,9 @@ public class ProfileResource {
 
 	@Autowired
 	private AdminResource adminResource;
+	
+	@Autowired
+	private TextEncryptorConverter textEncryptor;
 
 	@Value("${app.profile.image.max}")
 	private int imageMax;
@@ -33,12 +38,12 @@ public class ProfileResource {
 	@GetMapping("/profile")
 	public ModelAndView profile() throws Exception {
 
-		User currUser = authService.getCurrentUser();
-		if (currUser.isAdmin()) {
+		User user = authService.getCurrentUser();
+		if (user.isAdmin()) {
 			return adminResource.admin();
 		} else {
 			ModelAndView mav = new ModelAndView("profile");
-			mav.addObject("user", currUser);
+			mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.ALL));
 			mav.addObject("genders", genderRepo.findAll());
 			mav.addObject("intentions", userIntentionRepo.findAll());
 			mav.addObject("imageMax", imageMax);

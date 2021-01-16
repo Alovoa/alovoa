@@ -18,10 +18,17 @@ import javax.imageio.ImageIO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Conversation;
@@ -38,6 +45,7 @@ import com.nonononoki.alovoa.entity.UserNotification;
 import com.nonononoki.alovoa.entity.UserReport;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.model.UserDto;
+import com.nonononoki.alovoa.model.UserGdpr;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
@@ -68,7 +76,7 @@ public class UserService {
 
 	@Autowired
 	private UserInterestRepository userInterestRepo;
-	
+
 	@Autowired
 	private UserImageRepository userImageRepo;
 
@@ -113,7 +121,7 @@ public class UserService {
 
 	@Value("${app.profile.image.length}")
 	private int imageLength;
-	
+
 	@Value("${app.profile.image.max}")
 	private int imageMax;
 
@@ -132,15 +140,20 @@ public class UserService {
 	@Value("${app.interest.max-chars}")
 	private int interestMaxCharSize;
 
+	@Value("${app.audio.max-time}")
+	private int audioMaxTime; // in seconds
+
+	@Value("${app.audio.max-size}")
+	private int audioMaxSize; // in MB
+
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 
-	public void deleteAccountRequest(String password) throws Exception {
+	public void deleteAccountRequest() throws Exception {
 		User user = authService.getCurrentUser();
-		if (user.getPassword() != null && !passwordEncoder.matches(password, user.getPassword())) {
-			throw new BadCredentialsException("");
-		}
-
 		UserDeleteToken token = null;
 
 		if (user.getDeleteToken() != null) {
@@ -207,7 +220,6 @@ public class UserService {
 	}
 
 	public void updateIntention(long intention) throws Exception {
-		// TODO Limit intention changing time
 		User user = authService.getCurrentUser();
 		UserIntention i = userIntentionRepo.findById(intention).orElse(null);
 		user.setIntention(i);
@@ -236,10 +248,10 @@ public class UserService {
 	public void updatePreferedGender(long genderId, boolean activated) throws Exception {
 		User user = authService.getCurrentUser();
 		Set<Gender> list = user.getPreferedGenders();
-		if(list == null) {
+		if (list == null) {
 			list = new HashSet<Gender>();
 		}
-		
+
 		Gender g = genderRepo.findById(genderId).orElse(null);
 		if (activated) {
 			if (!list.contains(g)) {
@@ -261,21 +273,21 @@ public class UserService {
 				|| user.getInterests().size() >= interestSize) {
 			throw new Exception("");
 		}
-		
+
 		Pattern pattern = Pattern.compile("[a-zA-Z0-9-]+");
 		Matcher matcher = pattern.matcher(value);
-		if(!matcher.matches()) {
+		if (!matcher.matches()) {
 			throw new Exception("");
-		}		
+		}
 
 		UserInterest interest = new UserInterest();
 		interest.setText(value.toLowerCase());
 		interest.setUser(user);
-		
-		if(user.getInterests().contains(interest)) {
+
+		if (user.getInterests().contains(interest)) {
 			throw new Exception("");
 		}
-		
+
 		userInterestRepo.save(interest);
 	}
 
@@ -291,7 +303,7 @@ public class UserService {
 			throw new Exception("");
 		}
 
-		//userInterestRepo.delete(interest);
+		// userInterestRepo.delete(interest);
 		user.getInterests().remove(interest);
 		userRepo.save(user);
 	}
@@ -301,12 +313,11 @@ public class UserService {
 		user.setTheme(themeId);
 		userRepo.save(user);
 	}
-	
+
 	public void addImage(String imgB64) throws Exception {
 		User user = authService.getCurrentUser();
-		if(user.getImages() != null && 
-				user.getImages().size() < imageMax) {
-			
+		if (user.getImages() != null && user.getImages().size() < imageMax) {
+
 			UserImage img = new UserImage();
 			img.setContent(adjustPicture(imgB64));
 			img.setDate(new Date());
@@ -317,75 +328,95 @@ public class UserService {
 			throw new Exception("");
 		}
 	}
-	
+
 	public void deleteImage(long id) throws Exception {
 		User user = authService.getCurrentUser();
 		UserImage img = userImageRepo.getOne(id);
-		
-		if(user.getImages().contains(img)) {
+
+		if (user.getImages().contains(img)) {
 			user.getImages().remove(img);
 			userRepo.save(user);
 		}
 	}
 
 	private String adjustPicture(String imgB64) throws IOException {
-		// convert b64 to bufferedimage
-		BufferedImage image = null;
-		byte[] decodedBytes = Base64.getDecoder().decode(stripImageType(imgB64));
-		ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
-		image = ImageIO.read(bis);
+		ByteArrayOutputStream bos = null;
+		ByteArrayInputStream bis = null;
 
-		if (image.getWidth() != image.getHeight()) {
+		try {
+			// convert b64 to bufferedimage
+			BufferedImage image = null;
+			byte[] decodedBytes = Base64.getDecoder().decode(stripB64Type(imgB64));
+			bis = new ByteArrayInputStream(decodedBytes);
+			image = ImageIO.read(bis);
 
-			int idealLength = image.getHeight();
-			boolean heightShorter = true;
-			if (image.getWidth() < image.getHeight()) {
-				heightShorter = false;
-				idealLength = image.getWidth();
+			if (image.getWidth() != image.getHeight()) {
+
+				int idealLength = image.getHeight();
+				boolean heightShorter = true;
+				if (image.getWidth() < image.getHeight()) {
+					heightShorter = false;
+					idealLength = image.getWidth();
+				}
+
+				// cut to a square
+				int x = 0;
+				int y = 0;
+
+				if (heightShorter) {
+					y = 0;
+					x = image.getWidth() / 2 - image.getHeight() / 2;
+				} else {
+					x = 0;
+					y = image.getHeight() / 2 - image.getWidth() / 2;
+				}
+				image = image.getSubimage(x, y, idealLength, idealLength);
 			}
 
-			// cut to a square
-			int x = 0;
-			int y = 0;
+			if (image.getWidth() > imageLength) {
+				// scale image if it's too big
+				BufferedImage scaledImage = new BufferedImage(imageLength, imageLength, image.getType());
+				Graphics2D graphics2D = scaledImage.createGraphics();
 
-			if (heightShorter) {
-				y = 0;
-				x = image.getWidth() / 2 - image.getHeight() / 2;
-			} else {
-				x = 0;
-				y = image.getHeight() / 2 - image.getWidth() / 2;
+				// chose one
+				graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+						RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+				// graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING,
+				// RenderingHints.VALUE_RENDER_QUALITY);
+				// graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				// RenderingHints.VALUE_ANTIALIAS_ON);
+
+				graphics2D.drawImage(image, 0, 0, imageLength, imageLength, null);
+				graphics2D.dispose();
+				image = scaledImage;
 			}
-			image = image.getSubimage(x, y, idealLength, idealLength);
+
+			// image to b64
+			bos = new ByteArrayOutputStream();
+			String fileType = "png";
+			ImageIO.write(image, fileType, bos);
+			byte[] bytes = bos.toByteArray();
+			String base64bytes = Base64.getEncoder().encodeToString(bytes);
+			String src = Tools.B64IMAGEPREFIX + fileType + Tools.B64PREFIX + base64bytes;
+
+			bis.close();
+			bos.close();
+
+			return src;
+
+		} catch (Exception e) {
+			if (bis != null) {
+				bis.close();
+			}
+			if (bos != null) {
+				bos.close();
+			}
+			throw e;
 		}
-
-		if (image.getWidth() > imageLength) {
-			// scale image if it's too big
-			BufferedImage scaledImage = new BufferedImage(imageLength, imageLength, image.getType());
-			Graphics2D graphics2D = scaledImage.createGraphics();
-
-			// chose one
-			graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			// graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING,
-			// RenderingHints.VALUE_RENDER_QUALITY);
-			// graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-			// RenderingHints.VALUE_ANTIALIAS_ON);
-
-			graphics2D.drawImage(image, 0, 0, imageLength, imageLength, null);
-			graphics2D.dispose();
-			image = scaledImage;
-		}
-
-		// image to b64
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		ImageIO.write(image, "png", out);
-		byte[] bytes = out.toByteArray();
-		String base64bytes = Base64.getEncoder().encodeToString(bytes);
-		String src = Tools.B64IMAGEPREFIX + base64bytes;
-		return src;
 
 	}
 
-	private String stripImageType(String s) {
+	public static String stripB64Type(String s) {
 		if (s.contains(",")) {
 			return s.split(",")[1];
 		}
@@ -463,13 +494,14 @@ public class UserService {
 
 		UserBlock block = userBlockRepo.findByUserFromAndUserTo(currUser, user);
 		if (block != null) {
-			//userBlockRepo.delete(block);
+			// userBlockRepo.delete(block);
 			currUser.getBlockedUsers().remove(block);
 			userRepo.save(currUser);
 		}
 	}
 
-	public void reportUser(String idEnc, long captchaId, String captchaText, String comment) throws NumberFormatException, Exception {
+	public void reportUser(String idEnc, long captchaId, String captchaText, String comment)
+			throws NumberFormatException, Exception {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
 		if (userReportRepo.findByUserFromAndUserTo(currUser, user) == null) {
@@ -511,18 +543,119 @@ public class UserService {
 		userRepo.save(user);
 	}
 
-	public void getUserdata(String password) throws Exception {
+	public ResponseEntity<Resource> getUserdata() throws Exception {
+		
 		User user = authService.getCurrentUser();
-		if (user.getPassword() != null && !passwordEncoder.matches(password, user.getPassword())) {
-			throw new BadCredentialsException("");
-		}
-		mailService.sendUserDataMail(user);
+		UserGdpr ug = UserGdpr.userToUserGdpr(user);
+		String json = objectMapper.writeValueAsString(ug);
+		ByteArrayResource resource = new ByteArrayResource(json.getBytes());
+
+		MediaType mediaType = MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(mediaType);
+
+		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
 	}
 
 	public void deleteProfilePicture() throws Exception {
 		User user = authService.getCurrentUser();
 		user.setProfilePicture(null);
-		userRepo.saveAndFlush(user);	
+		userRepo.saveAndFlush(user);
+	}
+
+	public String getAudio(String userIdEnc) throws Exception {
+		User user = encodedIdToUser(userIdEnc);
+		return user.getAudio();
+	}
+
+	public void deleteAudio() throws Exception {
+		User user = authService.getCurrentUser();
+		user.setAudio(null);
+		userRepo.saveAndFlush(user);
+	}
+
+	public void updateAudio(String audioB64, String mimeType) throws Exception {
+		User user = authService.getCurrentUser();
+		String newAudioB64 = adjustAudio(audioB64, mimeType);
+		user.setAudio(newAudioB64);
+		userRepo.saveAndFlush(user);
+	}
+
+	//TODO Trim audio to a specific length
+	private String adjustAudio(String audioB64, String mimeType) throws Exception {
+
+		/*
+		ByteArrayInputStream bis = null;
+		AudioInputStream ais = null;
+		AudioInputStream aisShort = null;
+		DataInputStream dis = null;
+		*/
+
+		if (Tools.getBase64Size(audioB64) > audioMaxSize) {
+			throw new Exception("");
+		}
 		
+		return audioB64;
+
+		/*
+		try {
+			int maxSeconds = audioMaxTime;
+			byte[] decodedBytes = Base64.getDecoder().decode(stripB64Type(audioB64));
+			bis = new ByteArrayInputStream(decodedBytes);
+			ais = AudioSystem.getAudioInputStream(bis);
+			AudioFormat format = ais.getFormat();
+			long frameLength = ais.getFrameLength();
+			// float bytesPerSecond = format.getFrameSize() * format.getFrameRate();
+
+			// check if audio is shorter or equal max length
+			double durationInSeconds = frameLength * format.getFrameRate();
+			if(durationInSeconds < 0.0) {
+				durationInSeconds = durationInSeconds * (-1);
+			}
+			if (durationInSeconds <= maxSeconds) {
+				ais.close();
+				bis.close();
+				audioB64 = Tools.B64AUDIOPREFIX + mimeType + Tools.B64PREFIX + stripB64Type(audioB64);
+				return audioB64;
+			} else {
+				long frames = (long) (format.getFrameRate() * maxSeconds);
+
+				aisShort = new AudioInputStream(ais, format, frames);
+				dis = new DataInputStream(aisShort);
+				
+				int byteLength = (int)(aisShort.getFrameLength() * format.getFrameSize());
+				if(byteLength < 0) {
+					byteLength = byteLength * (-1);
+				}
+				
+				byte[] bytes = new byte[byteLength];
+				dis.readFully(bytes);
+				
+				String base64bytes = Base64.getEncoder().encodeToString(bytes);
+
+				base64bytes = Tools.B64AUDIOPREFIX + mimeType + Tools.B64PREFIX + base64bytes;
+
+				aisShort.close();
+				dis.close();
+				ais.close();
+				bis.close();
+				return base64bytes;
+			}
+		} catch (Exception e) {
+			if (ais != null) {
+				ais.close();
+			}
+			if (bis != null) {
+				bis.close();
+			}
+			if (aisShort != null) {
+				aisShort.close();
+			}
+			if (dis != null) {
+				dis.close();
+			}
+			throw e;
+		}
+		*/
 	}
 }

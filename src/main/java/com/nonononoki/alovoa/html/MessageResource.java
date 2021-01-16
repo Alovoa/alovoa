@@ -17,6 +17,7 @@ import com.nonononoki.alovoa.entity.Conversation;
 import com.nonononoki.alovoa.entity.Message;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.ConversationDto;
+import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -68,7 +69,7 @@ public class MessageResource {
 			}
 		});
 		mav.addObject("conversations", convos);
-		mav.addObject("user", user);
+		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;
 	}
 
@@ -91,10 +92,10 @@ public class MessageResource {
 				return b.getCreationDate().compareTo(a.getCreationDate());
 			}
 		});
-		mav.addObject("user", user);
+		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		mav.addObject("messages", messages);
 		mav.addObject("convoId", id);
-		mav.addObject("partner", u);
+		mav.addObject("partner", UserDto.userToUserDto(u, user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
 		
 		c.setLastOpened(new Date());
 		conversationRepo.saveAndFlush(c);

@@ -151,7 +151,30 @@
 					</div>
 				</div>
 
-				<div style="padding-top: 32px;"></div>
+				<!-- User audio -->
+
+				<div class="box">
+					<div class="field">
+						<label class="label" th:text="#{profile.audio}"></label>
+						<div style="display: flex">
+							<audio id="audio" th:src="${user.audio}" th:if="${user.audio}" controls></audio>
+							<div style="padding-left: 4px;" th:if="${user.audio}"></div>
+							<div class="colored button is-info" id="audio-upload-button">
+								<i class="fa fa-microphone"></i>
+							</div>
+							<input type="file" accept="audio/*" id="audio-file"
+								style="display: none">
+							<div style="padding-left: 4px;" th:if="${user.audio}"></div>
+							
+							<div class="colored button is-danger" onclick="deleteAudio()"
+								th:if="${user.audio}">
+								<i class="fa fa-trash"></i>
+							</div>
+						</div>
+						<div style="margin-bottom: 0.75rem;"></div>
+						<div class="notification is-info" th:text="#{profile.audio.info}"></div>
+					</div>
+				</div>
 
 				<div class="box">
 					<div class="field" th:fragment="interests">
@@ -202,12 +225,9 @@
 				<div class="box">
 					<div class="field">
 						<label class="label" th:text="#{profile.userdata.request}"></label>
-						<div class="field" style="display:flex">
-							<input class="input" type="password" th:placeholder="#{password}"
-								id="userdata-password" th:if="${user.password}"> <input
-								name="password" th:unless="${user.password}" value="" hidden>
-							<div style="padding-top: 4px;"></div>
-							<button class="button" id="userdata-submit" th:text="#{submit}" style="margin-left: 4px;"></button>
+						<div class="field" style="display: flex">
+							<button class="button" id="userdata-submit" th:text="#{submit}"
+								style="margin-left: 4px;"></button>
 						</div>
 					</div>
 				</div>
@@ -215,12 +235,9 @@
 				<div class="box">
 					<div class="field">
 						<label class="label" th:text="#{profile.account.delete}"></label>
-						<div class="field" style="display:flex">
-							<input class="input" type="password" th:placeholder="#{password}"
-								id="delete-acc-password" th:if="${user.password}"> <input
-								name="password" th:unless="${user.password}" value="" hidden>
-							<div style="padding-top: 4px;"></div>
-							<button class="button" id="delete-acc-submit" th:text="#{submit}" style="margin-left: 4px;"></button>
+						<div class="field" style="display: flex">
+							<button class="button" id="delete-acc-submit" th:text="#{submit}"
+								style="margin-left: 4px;"></button>
 						</div>
 					</div>
 				</div>
