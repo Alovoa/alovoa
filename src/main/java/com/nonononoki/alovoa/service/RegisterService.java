@@ -119,12 +119,8 @@ public class RegisterService {
 
 	public void registerOauth(RegisterDto dto) throws Exception {
 
-		String email = textEncryptor.decode(dto.getEmail());
-		
-		if(!email.equals(authService.getOauth2Email())) {
-			throw new Exception("");
-		}
-		
+		String email = authService.getOauth2Email();
+
 		User user = userRepo.findByEmail(email);
 		if (user != null) {
 			throw new Exception(publicService.text("backend.error.register.email-exists"));
