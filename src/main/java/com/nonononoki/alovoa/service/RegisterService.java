@@ -16,10 +16,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.Tools;
-import com.nonononoki.alovoa.component.TextEncryptorConverter;
+import com.nonononoki.alovoa.entity.Conversation;
+import com.nonononoki.alovoa.entity.Message;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.UserBlock;
 import com.nonononoki.alovoa.entity.UserDates;
+import com.nonononoki.alovoa.entity.UserDonation;
+import com.nonononoki.alovoa.entity.UserHide;
+import com.nonononoki.alovoa.entity.UserImage;
+import com.nonononoki.alovoa.entity.UserInterest;
+import com.nonononoki.alovoa.entity.UserLike;
+import com.nonononoki.alovoa.entity.UserNotification;
 import com.nonononoki.alovoa.entity.UserRegisterToken;
+import com.nonononoki.alovoa.entity.UserReport;
+import com.nonononoki.alovoa.entity.UserWebPush;
 import com.nonononoki.alovoa.model.BaseRegisterDto;
 import com.nonononoki.alovoa.model.RegisterDto;
 import com.nonononoki.alovoa.repo.GenderRepository;
@@ -77,8 +87,8 @@ public class RegisterService {
 	@Autowired
 	protected CaptchaService captchaService;
 
-	@Autowired
-	private TextEncryptorConverter textEncryptor;
+	//@Autowired
+	//private TextEncryptorConverter textEncryptor;
 
 	//@Autowired
 	//private HttpServletRequest request;
@@ -171,7 +181,6 @@ public class RegisterService {
 		return userRepo.saveAndFlush(user);
 	}
 
-	@SuppressWarnings("rawtypes")
 	private BaseRegisterDto registerBase(RegisterDto dto) throws Exception {
 		// check minimum age
 		LocalDate now = LocalDate.now();
@@ -217,24 +226,24 @@ public class RegisterService {
 
 		// resolves hibernate issue with null Collections with orphanremoval
 		// https://hibernate.atlassian.net/browse/HHH-9940
-		user.setInterests(new ArrayList());
-		user.setImages(new ArrayList());
-		user.setDonations(new ArrayList());
-		user.setLikes(new ArrayList());
-		user.setLikedBy(new ArrayList());
-		user.setConversations(new ArrayList());
-		user.setConversationsBy(new ArrayList());
-		user.setMessageReceived(new ArrayList());
-		user.setMessageSent(new ArrayList());
-		user.setNotifications(new ArrayList());
-		user.setNotificationsFrom(new ArrayList());
-		user.setHiddenByUsers(new ArrayList());
-		user.setHiddenUsers(new ArrayList());
-		user.setBlockedByUsers(new ArrayList());
-		user.setBlockedUsers(new ArrayList());
-		user.setReported(new ArrayList());
-		user.setReportedByUsers(new ArrayList());
-		user.setWebPush(new ArrayList());
+		user.setInterests(new ArrayList<UserInterest>());
+		user.setImages(new ArrayList<UserImage>());
+		user.setDonations(new ArrayList<UserDonation>());
+		user.setLikes(new ArrayList<UserLike>());
+		user.setLikedBy(new ArrayList<UserLike>());
+		user.setConversations(new ArrayList<Conversation>());
+		user.setConversationsBy(new ArrayList<Conversation>());
+		user.setMessageReceived(new ArrayList<Message>());
+		user.setMessageSent(new ArrayList<Message>());
+		user.setNotifications(new ArrayList<UserNotification>());
+		user.setNotificationsFrom(new ArrayList<UserNotification>());
+		user.setHiddenByUsers(new ArrayList<UserHide>());
+		user.setHiddenUsers(new ArrayList<UserHide>());
+		user.setBlockedByUsers(new ArrayList<UserBlock>());
+		user.setBlockedUsers(new ArrayList<UserBlock>());
+		user.setReported(new ArrayList<UserReport>());
+		user.setReportedByUsers(new ArrayList<UserReport>());
+		user.setWebPush(new ArrayList<UserWebPush>());
 		
 		user = userRepo.saveAndFlush(user);
 

@@ -10,22 +10,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.MediaTypeFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserDeleteToken;
 import com.nonononoki.alovoa.entity.UserPasswordToken;
 import com.nonononoki.alovoa.entity.UserRegisterToken;
-import com.nonononoki.alovoa.model.UserGdpr;
 
 @Service
 public class MailService {

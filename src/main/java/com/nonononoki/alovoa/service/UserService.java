@@ -25,7 +25,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -110,8 +109,8 @@ public class UserService {
 	@Autowired
 	private NotificationService notificationService;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	//@Autowired
+	//private PasswordEncoder passwordEncoder;
 
 	@Value("${app.age.min}")
 	private int minAge;
