@@ -33,6 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private FailureHandler failureHandler;
+	
+	public static String ROLE_USER = "ROLE_USER";
+	public static String ROLE_ADMIN = "ROLE_USER";
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
@@ -42,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/img/**").permitAll().antMatchers("/font/**").permitAll()
 				.antMatchers("/json/**").permitAll().antMatchers("/oauth2/**").permitAll()
 
-				.antMatchers("/").permitAll().antMatchers("/login").permitAll().antMatchers("/login/**")
+				.antMatchers("/").permitAll().antMatchers("/login/**")
 				.permitAll().antMatchers("/terms-conditions").permitAll().antMatchers("/imprint")
 				.permitAll().antMatchers("/imprint/*").permitAll().antMatchers("/privacy").permitAll()
 				.antMatchers("/faq").permitAll().antMatchers("/tos").permitAll()
@@ -52,13 +55,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 				.antMatchers("/favicon.ico").permitAll().antMatchers("/sw.js").permitAll()
 				.antMatchers("/manifest.json").permitAll()
+				
+				.antMatchers("/admin/**").hasAnyAuthority(ROLE_ADMIN)
 
-				.antMatchers("/text/*").permitAll().anyRequest().authenticated().and().formLogin()
+				.antMatchers("/text/*").permitAll()
+				
+				.anyRequest().authenticated().and().formLogin()
+				
 				.loginPage("/login").and().logout().deleteCookies("JSESSIONID").logoutUrl("/logout")
 				.logoutSuccessUrl("/?logout").and().oauth2Login().loginPage("/login").defaultSuccessUrl("/login/oauth2/success").and()
 				.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.rememberMe().key(key);
-		// .and().csrf().disable();
+		
 		http.requiresChannel().anyRequest().requiresSecure();
 	}
 
