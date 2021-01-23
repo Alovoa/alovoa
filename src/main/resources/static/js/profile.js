@@ -4,6 +4,7 @@ const descriptionMaxLength = 255;
 $(function() {
 
 	var swiper = new Swiper('.swiper-container', {
+		centeredSlides: true,
 		navigation : {
 			nextEl : '.swiper-button-next',
 			prevEl : '.swiper-button-prev',
@@ -324,7 +325,7 @@ $(function() {
 });
  
  function deleteAudio() {
- 	if(confirm("Press a button!")) {
+ 	if(confirm(getText("profile.audio.delete"))) {
  		$.ajax({
 		type : "POST",
 		url : "/user/delete/audio",

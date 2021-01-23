@@ -1,3 +1,16 @@
 .notification:not(:last-child) {
 	margin-bottom: 0.5rem;
 }
+
+.swiper-wrapper {
+	align-items: center;
+}
+
+@media screen and (max-width: 460px) {
+	.box {
+		padding: 0px;
+	}
+	.section {
+		padding: 3rem 1rem;
+	}
+}

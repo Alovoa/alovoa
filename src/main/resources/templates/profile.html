@@ -40,27 +40,27 @@
 							<div class="swiper-slide">
 								<div class="center-parent">
 									<img id="profilePicture" class="profile-pic"
-										src="/img/profile.jpg" style="cursor: pointer;" height=400
-										width="400" th:unless="${user.profilePicture}" th:value=0 />
-									<img id="profilePicture" style="cursor: pointer;" height=400
-										width="400" th:if="${user.profilePicture}"
-										class="profile-pic " th:src="${user.profilePicture}"
-										th:value=1 /> <input id="profilePictureUpload" type="file"
-										accept="image/*" style="display: none">
+										src="/img/profile.jpg" style="cursor: pointer;"
+										th:unless="${user.profilePicture}" th:value=0 /> <img
+										id="profilePicture" style="cursor: pointer;"
+										th:if="${user.profilePicture}" class="profile-pic "
+										th:src="${user.profilePicture}" th:value=1 /> <input
+										id="profilePictureUpload" type="file" accept="image/*"
+										style="display: none">
 								</div>
 							</div>
 							<div th:each="img : ${user.images}" class="swiper-slide">
 								<div class="center-parent">
-									<img style="cursor: pointer;" height=400 width="400"
-										class="profile-pic" th:src="${img.content}"
+									<img style="cursor: pointer;" class="profile-pic"
+										th:src="${img.content}"
 										th:onclick="deleteImage([[${img.id}]])" />
 								</div>
 							</div>
 							<div class="swiper-slide center-parent" style="height: 100%;">
 								<div th:if="${#lists.size(user.images) != imageMax}"
 									id="addImageDiv" class="center-parent button"
-									style="height: 400px; max-height: 100%; max-width: 100%; width: 400px;">
-									<i width=400 height=400 class="fa fa-plus fa-4x"></i>
+									style="min-width: 238px; min-height: 258px;">
+									<i class="fa fa-plus fa-4x"></i>
 								</div>
 							</div>
 							<input id="addImageInput" type="file" accept="image/*"
@@ -154,26 +154,31 @@
 				<!-- User audio -->
 
 				<div class="box">
-					<div class="field">
-						<label class="label" th:text="#{profile.audio}"></label>
-						<div style="display: flex">
-							<audio id="audio" th:src="${user.audio}" th:if="${user.audio}" controls></audio>
+
+					<label class="label" th:text="#{profile.audio}"></label>
+					<div class="field" style="display: inline-block;">
+
+						<div style="display:flex; float:left; margin-bottom: 4px;">
+							<audio id="audio" th:src="${user.audio}" th:if="${user.audio}"
+								controls></audio>
 							<div style="padding-left: 4px;" th:if="${user.audio}"></div>
+						</div>
+						<div style="display: flex; float:left;">
+
 							<div class="colored button is-info" id="audio-upload-button">
 								<i class="fa fa-microphone"></i>
 							</div>
 							<input type="file" accept="audio/*" id="audio-file"
 								style="display: none">
 							<div style="padding-left: 4px;" th:if="${user.audio}"></div>
-							
 							<div class="colored button is-danger" onclick="deleteAudio()"
 								th:if="${user.audio}">
 								<i class="fa fa-trash"></i>
 							</div>
 						</div>
-						<div style="margin-bottom: 0.75rem;"></div>
-						<div class="notification is-info" th:text="#{profile.audio.info}"></div>
 					</div>
+					<div class="notification is-info" th:text="#{profile.audio.info}" style="margin-top: -6px;"
+						th:unless="${user.audio}"></div>
 				</div>
 
 				<div class="box">
