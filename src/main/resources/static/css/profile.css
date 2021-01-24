@@ -3,6 +3,7 @@
 }
 
 .swiper-wrapper {
+	max-height: 300px;
 	align-items: center;
 }
 

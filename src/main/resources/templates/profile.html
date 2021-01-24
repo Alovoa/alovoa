@@ -39,11 +39,11 @@
 						<div class="swiper-wrapper">
 							<div class="swiper-slide">
 								<div class="center-parent">
-									<img id="profilePicture" class="profile-pic"
+									<img id="profilePicture" class="profile-pic" height=300 width=300
 										src="/img/profile.jpg" style="cursor: pointer;"
 										th:unless="${user.profilePicture}" th:value=0 /> <img
 										id="profilePicture" style="cursor: pointer;"
-										th:if="${user.profilePicture}" class="profile-pic "
+										th:if="${user.profilePicture}" class="profile-pic " height=300 width=300
 										th:src="${user.profilePicture}" th:value=1 /> <input
 										id="profilePictureUpload" type="file" accept="image/*"
 										style="display: none">
@@ -51,7 +51,7 @@
 							</div>
 							<div th:each="img : ${user.images}" class="swiper-slide">
 								<div class="center-parent">
-									<img style="cursor: pointer;" class="profile-pic"
+									<img style="cursor: pointer;" class="profile-pic" height=300 width=300
 										th:src="${img.content}"
 										th:onclick="deleteImage([[${img.id}]])" />
 								</div>
