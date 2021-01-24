@@ -1,9 +1,12 @@
 package com.nonononoki.alovoa.service;
 
 import java.util.Date;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.entity.Conversation;
@@ -30,16 +33,16 @@ public class MessageService {
 	@Autowired
 	private NotificationService notificationService;
 	
-	String JS_SCRIPT_TAG = "<script";
+	@Autowired
+	private MessageSource messageSource;
+	
+	private final String URL_PREFIX = "<a href=\"";
+	
+	private final String URL_JITSI = "https://meet.jit.si";
 	
 	public void send(Conversation c, String message) throws Exception {
 		
 		if(message.length() > maxMessageSize) {
-			throw new Exception("");	
-		}	
-		
-		//prevent js injection
-		if(message.contains(JS_SCRIPT_TAG)) {
 			throw new Exception("");	
 		}
 		
@@ -50,15 +53,24 @@ public class MessageService {
 			throw new Exception();
 		}
 		
+		String lastMessage = message;
+		boolean allowedFormatting = false;
+		if(message.startsWith(URL_PREFIX + URL_JITSI)) {
+			allowedFormatting = true;
+			Locale locale = LocaleContextHolder.getLocale();
+			lastMessage = messageSource.getMessage("message.video-chat", null, locale);
+		}
+		
 		Message m = new Message();
 		m.setContent(message);
 		m.setConversation(c);
 		m.setCreationDate(new Date());
 		m.setUserFrom(user);
 		m.setUserTo(c.getPartner(user));
+		m.setAllowedFormatting(allowedFormatting);
 		messageRepo.save(m);
 		
-		c.setLastMessage(message);
+		c.setLastMessage(lastMessage);
 		c.setLastUpdated(new Date());
 		conversationRepo.saveAndFlush(c);
 		

@@ -67,3 +67,16 @@
 		font-size: 1.7em
 	}
 }
+
+@media only screen and (max-width: 400px) {
+	.section {
+		padding-top: 12px;
+		padding-bottom: 12px;
+		padding-left: 8px;
+		padding-right: 8px;
+	}
+	#messages-div {
+		min-height: calc(100vh - 300px);
+		max-height: calc(100vh - 300px);
+	}
+}

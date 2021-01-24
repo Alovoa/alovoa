@@ -42,4 +42,6 @@ public class Message{
 	
 	private Date creationDate;
 	
+	private boolean allowedFormatting = false;
+	
 }

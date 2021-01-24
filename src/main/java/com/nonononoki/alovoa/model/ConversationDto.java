@@ -5,6 +5,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Conversation;
+import com.nonononoki.alovoa.entity.Message;
 import com.nonononoki.alovoa.entity.User;
 
 import lombok.Data;

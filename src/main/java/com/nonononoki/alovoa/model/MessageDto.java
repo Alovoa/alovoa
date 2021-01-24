@@ -15,6 +15,7 @@ public class MessageDto {
 	private Date date;
 	private String content;
 	private boolean from;
+	private boolean allowedFormatting;
 	
 	public static MessageDto messageToDto(Message message, User user) {
 		MessageDto dto = new MessageDto();
@@ -22,6 +23,7 @@ public class MessageDto {
 		dto.setContent(message.getContent());
 		dto.setDate(message.getCreationDate());
 		dto.setFrom(message.getUserFrom().equals(user));
+		dto.setAllowedFormatting(message.isAllowedFormatting());
 		return dto;
 	}
 	
