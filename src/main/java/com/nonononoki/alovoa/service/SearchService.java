@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -99,6 +98,10 @@ public class SearchService {
 				continue;
 			}
 			filteredUserDtos.add(dto);
+			
+			if(filteredUserDtos.size() >= maxResults) {
+				break;
+			}
 		}
 
 		if (sort == SORT_DISTANCE) {
@@ -136,9 +139,7 @@ public class SearchService {
 				}
 			});
 		}
-
-		filteredUserDtos = filteredUserDtos.stream().limit(maxResults).collect(Collectors.toList());
-
+		
 		return filteredUserDtos;
 	}
 

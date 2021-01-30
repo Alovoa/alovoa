@@ -9,10 +9,9 @@
 
 		<div class="field">
 			<img id="captcha-image">
-			<button type="button" class="button is-success colored"
-				onclick="refreshCaptcha()"
-				style="height: 70px; width: 70px; font-size: 1.7rem; margin-left: 12px;">
-				<i class="fa fa-sync"></i>
+			<button type="button" id="captcha-refresh-button" class="button is-info colored"
+				onclick="refreshCaptcha()">
+				<i class="fa fa-sync"  id="captcha-refresh-icon" ></i>
 			</button>
 		</div>
 		<div class="field">
@@ -263,7 +262,7 @@
 	</div>
 
 	<div th:fragment="donate-filter">
-		<div class="card is-horizontal" th:each="donation : ${donations}">
+		<div class="card is-horizontal" th:each="donation : ${donations}" style="margin-top: 12px;">
 			<div class="card-image">
 				<figure class="image">
 					<img th:src="${donation.user.profilePicture}" class="profile-pic"
@@ -285,8 +284,9 @@
 					<div class="media">
 						<div class="full-width">
 							<div class="left" style="font-size: 1.2em">
-								<span th:text="#{last-active}"></span><span> </span><span
-									th:text="${#dates.format(donation.user.activeDate, 'yyyy-MM-dd')}"></span>
+								<span th:text="#{donated}"></span><span> </span>
+								<span th:text="${#numbers.formatDecimal(donation.amount, 2, 2, 'POINT') + ' €'}" th:if="${filter == 1}"></span>
+								<span th:text="${#numbers.formatDecimal(donation.user.totalDonations, 2, 2, 'POINT') + ' €'}" th:if="${filter == 2}"></span>
 							</div>
 							<div class="right" style="font-size: 1.2em">
 								<span th:text="${donation.user.distanceToUser}"></span><span>

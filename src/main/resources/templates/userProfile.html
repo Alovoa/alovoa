@@ -86,20 +86,21 @@
 					</div>
 
 					<div style="padding-top: 24px;"></div>
+					
 					<div class="field">
 						<label class="label" th:text="#{description}"></label>
 						<textarea class="textarea" id="description"
 							th:text="${user.description}" style="word-break: break-all;"
 							readOnly></textarea>
 					</div>
-					
-					<div style="padding-top: 24px;" th:if="${user.audio}"></div>
-					<div class="field" th:if="${user.audio}">
+
+					<div class="field" th:if="${user.audio}" style="padding-top: 24px; padding-bottom: 24px;">
 						<label class="label" th:text="#{profile.audio}"></label>
 						<audio id="audio" th:if="${user.audio}" controls hidden></audio>
-					</div>
-					<div class="colored button is-info" id="audio-play-button"  th:if="${user.audio}" onclick="downloadAndPlayAudio()">
-						<i class="fa fa-play"></i>
+						<div class="colored button is-info" id="audio-play-button"
+							th:if="${user.audio}" onclick="downloadAndPlayAudio()">
+							<i class="fa fa-play"></i>
+						</div>
 					</div>
 
 					<table class="table" style="width: 100%">
@@ -124,7 +125,7 @@
 							</tr>
 							<tr>
 								<th th:text="#{donated}"></th>
-								<td th:text="${user.totalDonations} + ' €'"></td>
+								<td th:text=" ${#numbers.formatDecimal(user.totalDonations, 2, 2, 'POINT') + ' €'}"></td>
 							</tr>
 							<tr>
 								<th th:text="#{userprofile.num-blocks}"></th>
@@ -211,7 +212,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<input id="user-id-enc" th:value="${user.idEncoded}" hidden>
 
 	<footer th:replace="fragments.html::navigation"></footer>

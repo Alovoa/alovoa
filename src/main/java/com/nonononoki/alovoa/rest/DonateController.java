@@ -28,6 +28,7 @@ public class DonateController {
     public String filterRecent(Model model, @PathVariable int filter) throws Exception{
 		List<DonationDto> donations = donateService.filter(filter);
 		model.addAttribute("donations", donations);
+		model.addAttribute("filter", filter);
 		return "fragments :: donate-filter";
     }
 	

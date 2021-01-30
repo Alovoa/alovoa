@@ -19,3 +19,7 @@
 .profile-pic:hover {
 	cursor: pointer;
 }
+
+.card-image {
+    width: initial;
+}

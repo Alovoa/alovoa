@@ -24,6 +24,10 @@ public class UserProfileResource {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 	
+	@Autowired
+	private ProfileResource profileResource;
+	
+	
 	@GetMapping("/profile/view/{idEncoded}")
 	public ModelAndView profileView(@PathVariable String idEncoded) throws NumberFormatException, Exception {
 		long id =  UserDto.decodeId(idEncoded, textEncryptor);
@@ -31,7 +35,7 @@ public class UserProfileResource {
 		User user = authService.getCurrentUser();
 		
 		if(user.getId().equals(id)) {
-			throw new Exception();
+			return profileResource.profile();
 		}
 		
 		if(userView != null) {		

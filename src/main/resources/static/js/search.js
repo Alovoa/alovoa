@@ -49,6 +49,8 @@ function search() {
 			$("#filter-div").addClass("searched");
 
 			console.log("TEST");
+		}, function(error) {
+			console.log(error);
 		});
 	} else {
 		alert(getText("search.js.error.no-geolocation"));

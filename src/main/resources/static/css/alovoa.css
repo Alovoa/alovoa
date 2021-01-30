@@ -12,6 +12,13 @@ button {
 	justify-content: center;
 }
 
+#captcha-refresh-button {
+	height: 70px;
+	width: 70px;
+	font-size: 1.7rem;
+	margin-left: 12px;
+}
+
 #main {
 	min-height: 100vh;
 }
@@ -143,6 +150,14 @@ input[type=range].slider {
 	}
 	#oauth-div button span {
 		font-size: 16px;
+	}
+	
+	#captcha-image {
+		width: 156px;
+	}
+	
+	#captcha-refresh-button {
+		width: 60px;
 	}
 }
 

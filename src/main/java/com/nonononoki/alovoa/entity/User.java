@@ -29,6 +29,7 @@ import com.nonononoki.alovoa.config.SecurityConfig;
 
 import lombok.Data;
 
+@SuppressWarnings("serial")
 @Component
 @Data
 @Entity

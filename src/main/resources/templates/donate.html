@@ -12,7 +12,8 @@
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/search.css" />
 <link rel="stylesheet" href="/css/donate.css" />
-<link th:if="${user.theme == 1}" rel="stylesheet" href="/css/alovoa-dark.css" />
+<link th:if="${user.theme == 1}" rel="stylesheet"
+	href="/css/alovoa-dark.css" />
 <title th:text="#{donate.title}"></title>
 </head>
 <body>
@@ -33,11 +34,11 @@
 
 			<div style="padding-top: 24px;"></div>
 			<div class="container">
-				<section class="container" id="main-container"></section>
 				<a class="button colored is-primary" style="width: 100%;"
 					href="/donate-list" target="_blank"><i
 					class="fa fa-hand-holding-usd" style="padding-right: 4px;"></i><span
 					th:text="#{donate.donate-now}"></span></a>
+				<section class="container" id="main-container"></section>
 			</div>
 		</div>
 	</div>
