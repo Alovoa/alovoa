@@ -2,7 +2,6 @@ package com.nonononoki.alovoa.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -270,13 +270,13 @@ public class UserService {
 
 		if (value.length() < interestMinCharSize || value.length() > interestMaxCharSize
 				|| user.getInterests().size() >= interestSize) {
-			throw new Exception("");
+			throw new Exception("interest_invalid_size");
 		}
 
 		Pattern pattern = Pattern.compile("[a-zA-Z0-9-]+");
 		Matcher matcher = pattern.matcher(value);
 		if (!matcher.matches()) {
-			throw new Exception("");
+			throw new Exception("interest_unsupported_characters");
 		}
 
 		UserInterest interest = new UserInterest();
@@ -284,7 +284,7 @@ public class UserService {
 		interest.setUser(user);
 
 		if (user.getInterests().contains(interest)) {
-			throw new Exception("");
+			throw new Exception("interest_already_exists");
 		}
 
 		userInterestRepo.save(interest);
@@ -295,11 +295,11 @@ public class UserService {
 		UserInterest interest = userInterestRepo.findById(interestId).orElse(null);
 
 		if (interest == null) {
-			throw new Exception("");
+			throw new Exception("interest_is_null");
 		}
 
 		if (!user.getInterests().contains(interest)) {
-			throw new Exception("");
+			throw new Exception("interest_does_not_exists");
 		}
 
 		// userInterestRepo.delete(interest);
