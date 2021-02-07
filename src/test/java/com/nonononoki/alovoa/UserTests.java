@@ -1,10 +1,10 @@
 package com.nonononoki.alovoa;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -34,6 +35,7 @@ import com.nonononoki.alovoa.service.UserService;
 @SpringBootTest
 @ContextConfiguration
 @ActiveProfiles("test")
+@Service
 public class UserTests {
 
 	@Autowired
@@ -57,6 +59,50 @@ public class UserTests {
 	@MockBean
 	private AuthService authService;
 
+	private final int INTENTION_TEST = 1;
+
+	private List<User> testUsers = null;
+
+	@Transactional
+	public void registerTestUsers() throws Exception {
+		// register and confirm test users
+		Captcha c1 = captchaService.generate();
+		RegisterDto user1Dto = createTestUserDto(1, c1, "test1");
+		String tokenContent1 = registerService.register(user1Dto);
+		User user1 = registerService.registerConfirm(tokenContent1);
+
+		Captcha c2 = captchaService.generate();
+		RegisterDto user2Dto = createTestUserDto(2, c2, "test2");
+		String tokenContent2 = registerService.register(user2Dto);
+		User user2 = registerService.registerConfirm(tokenContent2);
+
+		Captcha c3 = captchaService.generate();
+		RegisterDto user3Dto = createTestUserDto(2, c3, "test3");
+		String tokenContent3 = registerService.register(user3Dto);
+		User user3 = registerService.registerConfirm(tokenContent3);
+
+		testUsers = new ArrayList<>();
+		testUsers.add(user1);
+		testUsers.add(user2);
+		testUsers.add(user3);
+	}
+
+	private RegisterDto createTestUserDto(long gender, Captcha c, String email) throws IOException {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, minAge * (-1));
+		RegisterDto dto = new RegisterDto();
+		dto.setEmail(email + "@mailinator.com");
+		dto.setDateOfBirth(calendar.getTime());
+		dto.setPassword("test123");
+		dto.setFirstName("test");
+		dto.setGender(gender);
+		dto.setCaptchaId(c.getId());
+		dto.setCaptchaText(c.getText());
+		dto.setTermsConditions(true);
+		dto.setPrivacy(true);
+		return dto;
+	}
+
 	@Transactional
 	@Test
 	public void test() throws Exception {
@@ -64,21 +110,10 @@ public class UserTests {
 		// one default admin user
 		Assert.assertEquals(userRepo.count(), 1);
 
-		// register and confirm test users
-		Captcha c1 = captchaService.generate();
-		RegisterDto user1Dto = createTestUserDto(1, c1);
-		String tokenContent1 = registerService.register(user1Dto);
-		User user1 = registerService.registerConfirm(tokenContent1);
-
-		Captcha c2 = captchaService.generate();
-		RegisterDto user2Dto = createTestUserDto(2, c2);
-		String tokenContent2 = registerService.register(user2Dto);
-		User user2 = registerService.registerConfirm(tokenContent2);
-
-		Captcha c3 = captchaService.generate();
-		RegisterDto user3Dto = createTestUserDto(2, c3);
-		String tokenContent3 = registerService.register(user3Dto);
-		User user3 = registerService.registerConfirm(tokenContent3);
+		registerTestUsers();
+		User user1 = testUsers.get(0);
+		User user2 = testUsers.get(1);
+		User user3 = testUsers.get(2);
 
 		// set location manually since no extra service is needed
 		Location loc1 = new Location();
@@ -107,41 +142,67 @@ public class UserTests {
 		String imgMime = "png";
 		// setup settings
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		String img1 = Tools.imageToB64(Tools.getFileFromResources("img/profile1.png"), imgMime) ;
+		String img1 = Tools.imageToB64(Tools.getFileFromResources("img/profile1.png"), imgMime);
 		userService.updateProfilePicture(img1);
 		userService.addInterest("interest1");
-		userService.addImage(img1);
 		userService.updateDescription("description1");
-		userService.updateIntention(1);
+		userService.updateIntention(INTENTION_TEST);
 		userService.updateMaxAge(100);
 		userService.updateMinAge(16);
 		userService.updatePreferedGender(2, true);
-		userService.updateTheme(1);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		String img2 = Tools.imageToB64(Tools.getFileFromResources("img/profile2.png"), imgMime);
 		userService.updateProfilePicture(img2);
-		userService.addInterest("interest2");
-		userService.addImage(img2);
+		userService.addInterest("interest1");
 		userService.updateDescription("description2");
-		userService.updateIntention(1);
+		userService.updateIntention(INTENTION_TEST);
 		userService.updateMaxAge(100);
 		userService.updateMinAge(16);
 		userService.updatePreferedGender(1, true);
-		userService.updateTheme(1);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		String img3 = Tools.imageToB64(Tools.getFileFromResources("img/profile3.png"), imgMime);
 		userService.updateProfilePicture(img3);
-		userService.addInterest("interest3");
-		userService.addImage(img3);
-		userService.updateDescription("description3");
-		userService.updateIntention(1);
-		userService.updateMaxAge(100);
-		userService.updateMinAge(16);
+		Assert.assertTrue("profile_picture", user3.getProfilePicture() != null);
+		userService.addInterest("interest1");
+		Assert.assertTrue("interest", user3.getInterests().size() == 1);
+		String description = "description3";
+		userService.updateDescription(description);
+		Assert.assertTrue("description", user3.getDescription().equals(description));
+		userService.updateIntention(INTENTION_TEST);
+		Assert.assertTrue("intention", user3.getIntention().getId() == INTENTION_TEST);
+		int maxAge = 100;
+		userService.updateMaxAge(maxAge);
+		Assert.assertTrue("max_age", user3.getPreferedMaxAge() == maxAge);
+		int minAge = 16;
+		userService.updateMinAge(minAge);
+		Assert.assertTrue("min_age", user3.getPreferedMinAge() == minAge);
 		userService.updatePreferedGender(1, true);
-		userService.updateTheme(1);
-
+		//TODO Assert PREF_GENDER
+		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getId());
+		Assert.assertTrue("interest", user3.getInterests().size() == 0);
+		userService.addInterest("interest1");
+		int theme = 1;
+		userService.updateTheme(theme);
+		Assert.assertTrue("theme", user3.getTheme() == theme);
+		userService.addImage(img3);
+		Assert.assertTrue("image", user3.getImages().size() == 1);
+		userService.deleteImage(authService.getCurrentUser().getImages().get(0).getId());
+		Assert.assertTrue("image", user3.getImages().size() == 0);
+		userService.deleteProfilePicture();
+		Assert.assertTrue("profile_picture", user3.getProfilePicture() == null);
+		userService.updateProfilePicture(img3);
+		Assert.assertTrue("profile_picture", user3.getProfilePicture() != null);
+		userService.updateAudio(Tools.resourceToB64("audio/file_example_MP3_700KB.mp3"));
+		Assert.assertTrue("audio", user3.getAudio() != null);
+		userService.deleteAudio();
+		Assert.assertTrue("audio", user3.getAudio() == null);
+		
+		searchTest(user1, user2, user3);
+	}
+	
+	private void searchTest(User user1, User user2, User user3) throws Exception {
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		List<UserDto> searchDtos1 = searchService.search("0", "0", 50, 1);
 		Assert.assertEquals(searchDtos1.size(), 2);
@@ -153,24 +214,12 @@ public class UserTests {
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		List<UserDto> searchDtos3 = searchService.search("0", "0", 50, 1);
 		Assert.assertEquals(searchDtos3.size(), 1);
+		
+		//TODO Check distance
 
-	}
-
-	private RegisterDto createTestUserDto(long gender, Captcha c) throws IOException {
-
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.YEAR, minAge * (-1));
-		RegisterDto dto = new RegisterDto();
-		dto.setEmail(RandomStringUtils.randomAlphanumeric(10) + "@mailinator.com");
-		dto.setDateOfBirth(calendar.getTime());
-		dto.setPassword("test123");
-		dto.setFirstName("test");
-		dto.setGender(gender);
-		dto.setIntention(0);
-		dto.setCaptchaId(c.getId());
-		dto.setCaptchaText(c.getText());
-		dto.setTermsConditions(true);
-		dto.setPrivacy(true);
-		return dto;
+		// TODO likeUser
+		// TODO hideUser
+		// TODO blockUser
+		
 	}
 }

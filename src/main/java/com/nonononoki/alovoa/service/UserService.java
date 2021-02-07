@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashSet;
@@ -286,8 +287,14 @@ public class UserService {
 		if (user.getInterests().contains(interest)) {
 			throw new Exception("interest_already_exists");
 		}
+		
+		if(user.getInterests() == null) {
+			user.setInterests(new ArrayList<UserInterest>());
+		}
+		
+		user.getInterests().add(interest);
 
-		userInterestRepo.save(interest);
+		userRepo.save(user);
 	}
 
 	public void deleteInterest(long interestId) throws Exception {
@@ -573,6 +580,10 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
+	public void updateAudio(String audioB64) throws Exception {
+		updateAudio(audioB64, null);
+	}
+	
 	public void updateAudio(String audioB64, String mimeType) throws Exception {
 		User user = authService.getCurrentUser();
 		String newAudioB64 = adjustAudio(audioB64, mimeType);

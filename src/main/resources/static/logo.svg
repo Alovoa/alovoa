@@ -14,9 +14,9 @@
    id="svg1000"
    sodipodi:docname="logo.svg"
    inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
-   inkscape:export-filename="/home/nonononoki/_DEV/alovoa/src/main/resources/static/img/icon_512.png"
-   inkscape:export-xdpi="97.165688"
-   inkscape:export-ydpi="97.165688">
+   inkscape:export-filename="/home/nonononoki/_DEV/alovoa/src/main/resources/static/img/apple-touch-icon.png"
+   inkscape:export-xdpi="34.159813"
+   inkscape:export-ydpi="34.159813">
   <defs
      id="defs994" />
   <sodipodi:namedview
@@ -50,7 +50,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

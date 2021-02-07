@@ -31,6 +31,12 @@ public class Tools {
 		}
 
 	}
+	
+	public static String resourceToB64(String path) throws IOException {
+		File file = getFileFromResources(path);
+		byte[] fileContent = Files.readAllBytes(file.toPath());
+		return Base64.getEncoder().encodeToString(fileContent);
+	}
 
 	public static String imageToB64(File file, String mime) throws IOException {
 		byte[] fileContent = Files.readAllBytes(file.toPath());
