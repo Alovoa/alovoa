@@ -55,7 +55,6 @@ import com.nonononoki.alovoa.repo.UserImageRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserInterestRepository;
 import com.nonononoki.alovoa.repo.UserLikeRepository;
-import com.nonononoki.alovoa.repo.UserNotificationRepository;
 import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 
@@ -91,9 +90,6 @@ public class UserService {
 
 	@Autowired
 	private UserReportRepository userReportRepo;
-
-	@Autowired
-	private UserNotificationRepository userNotificationRepo;
 
 	@Autowired
 	private ConversationRepository conversationRepo;
@@ -432,23 +428,33 @@ public class UserService {
 	public void likeUser(String idEnc) throws NumberFormatException, Exception {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
+		
+		if(user.equals(currUser)) {
+			throw new Exception();
+		}
 
 		if (user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
 			throw new Exception();
 		}
+		
+		if (currUser.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
+			throw new Exception();
+		}
+		
 		if (userLikeRepo.findByUserFromAndUserTo(currUser, user) == null) {
 			UserLike like = new UserLike();
 			like.setDate(new Date());
 			like.setUserFrom(currUser);
 			like.setUserTo(user);
-			userLikeRepo.save(like);
+			//userLikeRepo.save(like);
+			currUser.getLikes().add(like);
 
 			UserNotification not = new UserNotification();
 			not.setContent(not.getUSER_LIKE());
 			not.setCreationDate(new Date());
 			not.setUserFrom(currUser);
 			not.setUserTo(user);
-			userNotificationRepo.save(not);
+			currUser.getNotifications().add(not);
 			notificationService.newLike(user);
 
 			if (user.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
@@ -458,6 +464,8 @@ public class UserService {
 				convo.setUserTo(user);
 				convo.setLastUpdated(new Date());
 				conversationRepo.save(convo);
+				currUser.getConversations().add(convo);
+				user.getConversationsBy().add(convo);
 //				user.getDates().setMessageDate(new Date());
 //				userRepo.saveAndFlush(user);
 
@@ -467,6 +475,7 @@ public class UserService {
 
 			user.getDates().setNotificationDate(new Date());
 			userRepo.saveAndFlush(user);
+			userRepo.saveAndFlush(currUser);
 		}
 	}
 
@@ -478,7 +487,7 @@ public class UserService {
 			hide.setDate(new Date());
 			hide.setUserFrom(currUser);
 			hide.setUserTo(user);
-			userHideRepo.save(hide);
+			currUser.getHiddenUsers().add(hide);
 		}
 	}
 
@@ -490,7 +499,8 @@ public class UserService {
 			block.setDate(new Date());
 			block.setUserFrom(currUser);
 			block.setUserTo(user);
-			userBlockRepo.save(block);
+			//userBlockRepo.save(block);
+			currUser.getBlockedUsers().add(block);
 		}
 	}
 

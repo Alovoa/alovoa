@@ -73,6 +73,8 @@ public class SearchService {
 			if (user.getId() == dto.getId()) {
 				continue;
 			}
+			
+			//TODO Use less streams for better performance
 			if (user.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(dto.getId()))) {
 				continue;
 			}

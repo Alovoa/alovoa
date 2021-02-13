@@ -66,8 +66,6 @@ public class UserDto {
 	private boolean likedByCurrentUser;
 	private boolean hiddenByCurrentUser;
 
-	private static final int LOCATION_ROUNDING = 100;
-
 	public static int ALL = 0;
 	public static int PROFILE_PICTURE_ONLY = 1;
 	public static int NO_AUDIO = 2;
@@ -128,13 +126,11 @@ public class UserDto {
 			}
 			dto.setSameInterests(sameInterests);
 	
-			double dist = 0;
+			int dist = 0;
 			if (!currentUser.isAdmin()) {
 				dist = Tools.getDistanceToUser(user, currentUser);
 			}
-			int distRounded = (int) Math.round(dist);
-			distRounded = distRounded - distRounded % LOCATION_ROUNDING;
-			dto.setDistanceToUser(distRounded / Tools.THOUSAND); // convert meters to km
+			dto.setDistanceToUser(dist);
 		}
 		return dto;
 	}

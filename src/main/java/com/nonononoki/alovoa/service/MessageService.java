@@ -53,6 +53,10 @@ public class MessageService {
 			throw new Exception();
 		}
 		
+		if(currUser.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
+			throw new Exception();
+		}
+		
 		String lastMessage = message;
 		boolean allowedFormatting = false;
 		if(message.startsWith(URL_PREFIX + URL_JITSI)) {

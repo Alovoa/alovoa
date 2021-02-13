@@ -17,7 +17,7 @@ public class UserHide {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne 
 	private User userFrom;
 	
 	@ManyToOne

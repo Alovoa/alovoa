@@ -69,11 +69,12 @@ public class Tools {
 		}
 	}
 
-	public static double getDistanceToUser(User user, User currUser) {
-		return calcDistance(Double.parseDouble(user.getLastLocation().getLatitude()),
+	public static int getDistanceToUser(User user, User currUser) {
+		int dist = calcDistance(Double.parseDouble(user.getLastLocation().getLatitude()),
 				Double.parseDouble(user.getLastLocation().getLongitude()),
 				Double.parseDouble(currUser.getLastLocation().getLatitude()),
 				Double.parseDouble(currUser.getLastLocation().getLongitude()));
+		return dist;
 	}
 	
 	//https://stackoverflow.com/a/45732035
@@ -93,17 +94,17 @@ public class Tools {
 	}
 
 	// https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude/20410612#20410612
-	private static double calcDistance(double lat1, double lng1, double lat2, double lng2) {
+	//to km
+	public static int calcDistance(double lat1, double lng1, double lat2, double lng2) {
 		double a = (lat1 - lat2) * distPerLat(lat1);
 		double b = (lng1 - lng2) * distPerLng(lat1);
-		return Math.sqrt(a * a + b * b);
+		double dist = Math.sqrt(a * a + b * b);
+		return (int) dist/THOUSAND;
 	}
-
 	private static double distPerLng(double lat) {
 		return 0.0003121092 * Math.pow(lat, 4) + 0.0101182384 * Math.pow(lat, 3) - 17.2385140059 * lat * lat
 				+ 5.5485277537 * lat + 111301.967182595;
 	}
-
 	private static double distPerLat(double lat) {
 		return -0.000000487305676 * Math.pow(lat, 4) - 0.0033668574 * Math.pow(lat, 3) + 0.4601181791 * lat * lat
 				- 1.4558127346 * lat + 110579.25662316;
