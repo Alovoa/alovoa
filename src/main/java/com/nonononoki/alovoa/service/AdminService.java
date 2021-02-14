@@ -81,11 +81,12 @@ public class AdminService {
 		
 		user.setDates(null);
 		user.setFirstName(null);
-		user.setLastLocation(null);
 		user.setPassword(null);
 		user.setPasswordToken(null);
 		user.setProfilePicture(null);
 		user.setDisabled(true);
+		user.setLocationLatitude(null);
+		user.setLocationLongitude(null);
 
 		user = userRepo.saveAndFlush(user);
 		return;

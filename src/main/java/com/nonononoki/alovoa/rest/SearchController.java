@@ -20,7 +20,7 @@ public class SearchController {
 	private SearchService searchService;	
 
 	@GetMapping("/users/{latitude}/{longitude}/{distance}/{search}")
-    public String getUsers(Model model, @PathVariable String latitude, @PathVariable String longitude, @PathVariable int distance, @PathVariable int search) throws Exception{
+    public String getUsers(Model model, @PathVariable Double latitude, @PathVariable Double longitude, @PathVariable int distance, @PathVariable int search) throws Exception{
 		List<UserDto> users = searchService.search(latitude, longitude, distance, search);
 		model.addAttribute("users", users);
 		return "fragments :: search-users";

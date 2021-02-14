@@ -52,8 +52,7 @@ public class DonateService {
 			donationsToDtos = DonationDto.donationsToDtos(userDonationRepo.findAllByOrderByDateDesc(), currentUser,
 					textEncryptor, maxEntries);
 		} else if (filter == FILTER_AMOUNT) {
-			donationsToDtos = DonationDto.usersToDtos(userRepo
-					.findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullOrderByTotalDonationsDesc(),
+			donationsToDtos = DonationDto.usersToDtos(userRepo.usersDonate(),
 					currentUser, textEncryptor, maxEntries);
 		} else {
 			throw new Exception("");

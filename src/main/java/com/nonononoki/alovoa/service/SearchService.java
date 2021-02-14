@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
-import com.nonononoki.alovoa.entity.Location;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.UserRepository;
+
+import lombok.Builder;
+import lombok.Data;
 
 @Service
 public class SearchService {
@@ -39,8 +41,30 @@ public class SearchService {
 	
 	@Value("${app.search.max.distance}")
 	private int maxDistance;
+	
+	@Data
+	@Builder
+	public static class MinMaxLatLong {
+		double minLat;
+		double minLon;
+		double maxLat;
+		double maxLon;
+	}
+	
+	private static final double LATITUDE = 111.1;
+	private static final double LONGITUDE = 111.320;
+	
+	public static MinMaxLatLong calcMinMaxLatLong(int radius, double latitude, double longitude) {
+		double deltaLat = radius / LATITUDE;
+		double deltaLong = radius / (LONGITUDE * Math.cos( latitude / 180.0 * Math.PI));
+		double minLat = latitude - deltaLat;  
+		double maxLat = latitude + deltaLat;
+		double minLong = longitude - deltaLong; 
+		double maxLong = longitude + deltaLong;
+		return MinMaxLatLong.builder().minLat(minLat).minLon(minLong).maxLat(maxLat).maxLon(maxLong).build();
+	}
 
-	public List<UserDto> search(String latitude, String longitude, int distance, int sort) throws Exception {
+	public List<UserDto> search(Double latitude, Double longitude, int distance, int sort) throws Exception {
 		
 		if(distance > maxDistance) {
 			throw new Exception("");
@@ -48,18 +72,16 @@ public class SearchService {
 		
 		User user = authService.getCurrentUser();
 		user.getDates().setActiveDate(new Date());
-		Location loc = new Location();
-		loc.setLatitude(latitude);
-		loc.setLongitude(longitude);
-		user.setLastLocation(loc);
+		user.setLocationLatitude(latitude);
+		user.setLocationLongitude(longitude);
 		userRepo.saveAndFlush(user);
 		
 		LocalDate minDate = LocalDate.now().minusYears(user.getPreferedMaxAge());
 		LocalDate maxDate = LocalDate.now().minusYears(user.getPreferedMinAge());
+		
+		MinMaxLatLong minMaxLatLong = calcMinMaxLatLong(distance, latitude, longitude);
 
-		List<User> users = userRepo
-				.findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLastLocationNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqual(
-						minDate, maxDate);
+		List<User> users = userRepo.usersSearch(minDate, maxDate, minMaxLatLong);
 		List<UserDto> userDtos = new ArrayList<>();
 		for (int i = 0; i < users.size(); i++) {
 			UserDto dto = UserDto.userToUserDto(users.get(i), user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY);

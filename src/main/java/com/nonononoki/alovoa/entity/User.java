@@ -58,6 +58,9 @@ public class User implements UserDetails {
 	private int preferedMinAge;
 
 	private int preferedMaxAge;
+	
+	private Double locationLatitude;
+	private Double locationLongitude;
 
 	// private int age;
 
@@ -67,10 +70,6 @@ public class User implements UserDetails {
 	private double totalDonations;
 
 	private int theme;
-
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn
-	private Location lastLocation;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn

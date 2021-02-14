@@ -70,10 +70,10 @@ public class Tools {
 	}
 
 	public static int getDistanceToUser(User user, User currUser) {
-		int dist = calcDistance(Double.parseDouble(user.getLastLocation().getLatitude()),
-				Double.parseDouble(user.getLastLocation().getLongitude()),
-				Double.parseDouble(currUser.getLastLocation().getLatitude()),
-				Double.parseDouble(currUser.getLastLocation().getLongitude()));
+		int dist = calcDistance(user.getLocationLatitude(),
+				user.getLocationLongitude(),
+				currUser.getLocationLatitude(),
+				currUser.getLocationLongitude());
 		return dist;
 	}
 	

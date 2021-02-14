@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Captcha;
-import com.nonononoki.alovoa.entity.Location;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.RegisterDto;
 import com.nonononoki.alovoa.model.UserDto;
@@ -148,22 +147,14 @@ public class UserTests {
 		User user3 = testUsers.get(2);
 
 		// set location manually since no extra service is needed
-		Location loc1 = new Location();
-		loc1.setLatitude("0");
-		loc1.setLongitude("0");
-		user1.setLastLocation(loc1);
+		user1.setLocationLatitude(0.0);
+		user1.setLocationLongitude(0.0);
 
-		Location loc2 = new Location();
-		loc2.setLatitude("0");
-		loc2.setLongitude("0");
-		loc2.setUser(user2);
-		user2.setLastLocation(loc2);
+		user2.setLocationLatitude(0.0);
+		user2.setLocationLongitude(0.0);
 
-		Location loc3 = new Location();
-		loc3.setLatitude("0");
-		loc3.setLongitude("0");
-		loc3.setUser(user3);
-		user3.setLastLocation(loc3);
+		user3.setLocationLatitude(0.0);
+		user3.setLocationLongitude(0.0);
 
 		userRepo.saveAndFlush(user1);
 		userRepo.saveAndFlush(user2);
@@ -236,16 +227,17 @@ public class UserTests {
 	}
 	
 	private void searchTest(User user1, User user2, User user3) throws Exception {
+		
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		List<UserDto> searchDtos1 = searchService.search("0", "0", 50, 1);
+		List<UserDto> searchDtos1 = searchService.search(0.0,0.0, 50, 1);
 		Assert.assertEquals(searchDtos1.size(), 2);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
-		List<UserDto> searchDtos2 = searchService.search("0", "0", 50, 1);
+		List<UserDto> searchDtos2 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos2.size(), 1);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
-		List<UserDto> searchDtos3 = searchService.search("0", "0", 50, 1);
+		List<UserDto> searchDtos3 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos3.size(), 1);
 		
 		//Tip: 1 degree equals roughly 111km
@@ -264,13 +256,13 @@ public class UserTests {
 		userService.updatePreferedGender(2, true);
 		userService.updatePreferedGender(3, true);
 		
-		List<UserDto> searchDtos4 = searchService.search("0", "0", 50, 1);
+		List<UserDto> searchDtos4 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos4.size(), 2);
 		
-		List<UserDto> searchDtos5 = searchService.search("0.46", "0", 50, 1);
+		List<UserDto> searchDtos5 = searchService.search(0.45, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos5.size(), 2);
 		
-		List<UserDto> searchDtos6 = searchService.search("0.47", "0", 50, 1);
+		List<UserDto> searchDtos6 = searchService.search(0.46, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos6.size(), 0);
 
 		// likeUser
@@ -278,14 +270,14 @@ public class UserTests {
 		Assert.assertEquals(userLikeRepo.count(), 1);
 		Assert.assertEquals(user3.getLikes().size(), 1);
 		Assert.assertEquals(userNotificationRepo.count(), 1);
-		List<UserDto> searchDtos7 = searchService.search("0", "0", 50, 1);
+		List<UserDto> searchDtos7 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos7.size(), 1);
 		
 		//hideUser
 		userService.hideUser(UserDto.encodeId(user2.getId(), textEncryptor));
 		Assert.assertEquals(userHideRepo.count(), 1);
 		Assert.assertEquals(user3.getHiddenUsers().size(), 1);
-		List<UserDto> searchDtos8 = searchService.search("0", "0", 50, 1);
+		List<UserDto> searchDtos8 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos8.size(), 0);
 		
 		user3.getHiddenUsers().clear();

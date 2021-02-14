@@ -30,7 +30,6 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		if (ivSpec == null) {
 			ivSpec = new IvParameterSpec(salt.getBytes("UTF-8"));
 		}
-
 		return ivSpec;
 	}
 
@@ -39,7 +38,6 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 			keySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
 		}
 		return keySpec;
-
 	}
 
 	private Cipher getEnCipher() throws Exception {
@@ -75,7 +73,6 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		try {
 			return encode(attribute);
 		} catch (Exception e) {
-			// e.printStackTrace();
 			return null;
 		}
 	}
@@ -85,7 +82,6 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		try {
 			return decode(dbData);
 		} catch (Exception e) {
-			// e.printStackTrace();
 			return null;
 		}
 	}

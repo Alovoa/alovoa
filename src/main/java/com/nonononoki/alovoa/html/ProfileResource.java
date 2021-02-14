@@ -86,7 +86,7 @@ public class ProfileResource {
 			noGender = true;
 			hasWarning = true;
 		}
-		if (user.getLastLocation() == null) {
+		if (user.getLocationLatitude() == null) {
 			noLocation = true;
 			hasWarning = true;
 		}

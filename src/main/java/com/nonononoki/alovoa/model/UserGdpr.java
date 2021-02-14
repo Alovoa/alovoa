@@ -7,7 +7,6 @@ import javax.persistence.Convert;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Gender;
-import com.nonononoki.alovoa.entity.Location;
 import com.nonononoki.alovoa.entity.Message;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserDates;
@@ -30,6 +29,10 @@ public class UserGdpr {
 
 	private int preferedMaxAge;
 	
+	private Double locationLatitude;
+	
+	private Double locationLongitude;
+	
 	private double totalDonations;
 	
 	private int theme;
@@ -48,8 +51,6 @@ public class UserGdpr {
 	/*
 	 * Custom classes
 	 */
-
-	private Location lastLocation;
 
 	private Gender gender;
 	
@@ -96,7 +97,9 @@ public class UserGdpr {
 		
 		u.setProfilePicture(user.getProfilePicture());
 		
-		u.setLastLocation(user.getLastLocation());
+		u.setLocationLatitude(user.getLocationLatitude());
+		u.setLocationLongitude(user.getLocationLongitude());
+		
 		u.setGender(user.getGender());
 		u.setIntention(user.getIntention());
 		u.setInterests(user.getInterests());
