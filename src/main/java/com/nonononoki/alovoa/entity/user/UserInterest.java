@@ -1,4 +1,4 @@
-package com.nonononoki.alovoa.entity;
+package com.nonononoki.alovoa.entity.user;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nonononoki.alovoa.entity.User;
 
 import lombok.Data;
 

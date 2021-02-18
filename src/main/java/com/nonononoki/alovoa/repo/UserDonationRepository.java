@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.nonononoki.alovoa.entity.UserDonation;
+import com.nonononoki.alovoa.entity.user.UserDonation;
 
 public interface UserDonationRepository extends JpaRepository<UserDonation, Long> {
 	public List<UserDonation> findAllByOrderByDateDesc();

@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.UserDonation;
+import com.nonononoki.alovoa.entity.user.UserDonation;
 
 import lombok.Data;
 

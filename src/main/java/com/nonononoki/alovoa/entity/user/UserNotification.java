@@ -1,4 +1,4 @@
-package com.nonononoki.alovoa.entity;
+package com.nonononoki.alovoa.entity.user;
 
 import java.util.Date;
 
@@ -7,12 +7,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
+import com.nonononoki.alovoa.entity.User;
 
 import lombok.Data;
 
 @Data
 @Entity
-public class UserLike {
+public class UserNotification{
+	
+	@Transient
+	private final String USER_LIKE = "USER_LIKE";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -24,5 +30,7 @@ public class UserLike {
 	@ManyToOne
 	private User userTo;
 	
-	private Date date;
+	private String content;
+	private Date creationDate;
+	
 }

@@ -18,6 +18,10 @@ public class Tools {
 	public static final String B64IMAGEPREFIX = "data:image/";
 	public static final String B64AUDIOPREFIX = "data:audio/";
 	public static final String B64PREFIX = ";base64,";
+	
+	public static final String TEST = "test";
+	public static final String PROD = "prod";
+	public static final String DEV = "dev";
 
 	public static File getFileFromResources(String fileName) {
 

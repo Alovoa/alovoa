@@ -7,14 +7,14 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -42,8 +42,9 @@ import com.nonononoki.alovoa.service.UserService;
 @SpringBootTest
 @ContextConfiguration
 @ActiveProfiles("test")
-@Service
-public class UserTests {
+@AutoConfigureTestDatabase
+@Transactional
+public class UserTest {
 
 	@Autowired
 	private RegisterService registerService;
@@ -92,56 +93,68 @@ public class UserTests {
 
 	private final int INTENTION_TEST = 1;
 
-	private List<User> testUsers = null;
-
-	@Transactional
-	public void registerTestUsers() throws Exception {
-		// register and confirm test users
-		Captcha c1 = captchaService.generate();
-		RegisterDto user1Dto = createTestUserDto(1, c1, "test1");
-		String tokenContent1 = registerService.register(user1Dto);
-		User user1 = registerService.registerConfirm(tokenContent1);
-
-		Captcha c2 = captchaService.generate();
-		RegisterDto user2Dto = createTestUserDto(2, c2, "test2");
-		String tokenContent2 = registerService.register(user2Dto);
-		User user2 = registerService.registerConfirm(tokenContent2);
-
-		Captcha c3 = captchaService.generate();
-		RegisterDto user3Dto = createTestUserDto(2, c3, "test3");
-		String tokenContent3 = registerService.register(user3Dto);
-		User user3 = registerService.registerConfirm(tokenContent3);
-
-		testUsers = new ArrayList<>();
-		testUsers.add(user1);
-		testUsers.add(user2);
-		testUsers.add(user3);
+	private static List<User> testUsers = null;
+	
+	public static List<User> getTestUsers(CaptchaService captchaService, RegisterService registerService) throws Exception {
+		if(testUsers == null) {
+			// register and confirm test users
+			Captcha c1 = captchaService.generate();
+			RegisterDto user1Dto = createTestUserDto(1, c1, "test1");
+			String tokenContent1 = registerService.register(user1Dto);
+			User user1 = registerService.registerConfirm(tokenContent1);
+	
+			Captcha c2 = captchaService.generate();
+			RegisterDto user2Dto = createTestUserDto(2, c2, "test2");
+			String tokenContent2 = registerService.register(user2Dto);
+			User user2 = registerService.registerConfirm(tokenContent2);
+	
+			Captcha c3 = captchaService.generate();
+			RegisterDto user3Dto = createTestUserDto(2, c3, "test3");
+			String tokenContent3 = registerService.register(user3Dto);
+			User user3 = registerService.registerConfirm(tokenContent3);
+	
+			testUsers = new ArrayList<>();
+			testUsers.add(user1);
+			testUsers.add(user2);
+			testUsers.add(user3);
+		}
+		
+		return testUsers;
+	}
+	
+	public static void resetTestUsers() {
+		testUsers = null;
 	}
 
-	private RegisterDto createTestUserDto(long gender, Captcha c, String email) throws IOException {
+	private static RegisterDto createTestUserDto(long gender, Captcha c, String email) throws IOException {
+		final int AGE = 20;
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.YEAR, minAge * (-1));
+		calendar.add(Calendar.YEAR, AGE * (-1));
 		RegisterDto dto = new RegisterDto();
 		dto.setEmail(email + "@mailinator.com");
 		dto.setDateOfBirth(calendar.getTime());
 		dto.setPassword("test123");
 		dto.setFirstName("test");
 		dto.setGender(gender);
-		dto.setCaptchaId(c.getId());
-		dto.setCaptchaText(c.getText());
+		if(c != null) { //Captcjas aren't important in tests
+			dto.setCaptchaId(c.getId());
+			dto.setCaptchaText(c.getText());
+		} else {
+			dto.setCaptchaId(0);
+			dto.setCaptchaText("test");
+		}
 		dto.setTermsConditions(true);
 		dto.setPrivacy(true);
 		return dto;
 	}
 
-	@Transactional
 	@Test
 	public void test() throws Exception {
 
 		// one default admin user
 		Assert.assertEquals(userRepo.count(), 1);
 
-		registerTestUsers();
+		List<User> testUsers = getTestUsers(captchaService, registerService);
 		User user1 = testUsers.get(0);
 		User user2 = testUsers.get(1);
 		User user3 = testUsers.get(2);
@@ -224,6 +237,8 @@ public class UserTests {
 		Assert.assertTrue("audio", user3.getAudio() == null);
 		
 		searchTest(user1, user2, user3);
+		
+		UserTest.resetTestUsers();
 	}
 	
 	private void searchTest(User user1, User user2, User user3) throws Exception {

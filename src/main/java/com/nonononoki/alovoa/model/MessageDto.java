@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.nonononoki.alovoa.entity.Message;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.Message;
 
 import lombok.Data;
 

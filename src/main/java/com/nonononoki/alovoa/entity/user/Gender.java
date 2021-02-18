@@ -1,4 +1,4 @@
-package com.nonononoki.alovoa.entity;
+package com.nonononoki.alovoa.entity.user;
 
 import java.util.List;
 
@@ -11,6 +11,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nonononoki.alovoa.entity.User;
 
 import lombok.Data;
 

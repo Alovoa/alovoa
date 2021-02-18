@@ -1,30 +1,32 @@
-package com.nonononoki.alovoa.entity;
+package com.nonononoki.alovoa.entity.user;
 
-import java.util.List;
+import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nonononoki.alovoa.entity.User;
 
 import lombok.Data;
 
 @Data
 @Entity
-public class UserIntention {
-
+public class UserDonation {
+	
 	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
+	@ManyToOne
 	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "intention")
-	private List<User> user;
+	private User user;
 	
-	private String text;
+	private Date date;
+	
+	private double amount;
 }

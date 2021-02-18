@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Contact;
-import com.nonononoki.alovoa.entity.UserReport;
+import com.nonononoki.alovoa.entity.user.UserReport;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.ContactRepository;
 import com.nonononoki.alovoa.repo.UserReportRepository;

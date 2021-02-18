@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.nonononoki.alovoa.entity.Conversation;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.Conversation;
 import com.nonononoki.alovoa.model.MessageDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.service.AuthService;

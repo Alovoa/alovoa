@@ -26,6 +26,23 @@ import org.springframework.stereotype.Component;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.config.SecurityConfig;
+import com.nonononoki.alovoa.entity.user.Conversation;
+import com.nonononoki.alovoa.entity.user.Gender;
+import com.nonononoki.alovoa.entity.user.Message;
+import com.nonononoki.alovoa.entity.user.UserBlock;
+import com.nonononoki.alovoa.entity.user.UserDates;
+import com.nonononoki.alovoa.entity.user.UserDeleteToken;
+import com.nonononoki.alovoa.entity.user.UserDonation;
+import com.nonononoki.alovoa.entity.user.UserHide;
+import com.nonononoki.alovoa.entity.user.UserImage;
+import com.nonononoki.alovoa.entity.user.UserIntention;
+import com.nonononoki.alovoa.entity.user.UserInterest;
+import com.nonononoki.alovoa.entity.user.UserLike;
+import com.nonononoki.alovoa.entity.user.UserNotification;
+import com.nonononoki.alovoa.entity.user.UserPasswordToken;
+import com.nonononoki.alovoa.entity.user.UserRegisterToken;
+import com.nonononoki.alovoa.entity.user.UserReport;
+import com.nonononoki.alovoa.entity.user.UserWebPush;
 
 import lombok.Data;
 
@@ -129,6 +146,8 @@ public class User implements UserDetails {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
 	private List<UserNotification> notifications;
+	
+	//Tables with multiple users
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<UserHide> hiddenUsers;

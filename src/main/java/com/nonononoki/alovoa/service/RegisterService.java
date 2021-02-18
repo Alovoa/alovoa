@@ -16,20 +16,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.Tools;
-import com.nonononoki.alovoa.entity.Conversation;
-import com.nonononoki.alovoa.entity.Message;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.UserBlock;
-import com.nonononoki.alovoa.entity.UserDates;
-import com.nonononoki.alovoa.entity.UserDonation;
-import com.nonononoki.alovoa.entity.UserHide;
-import com.nonononoki.alovoa.entity.UserImage;
-import com.nonononoki.alovoa.entity.UserInterest;
-import com.nonononoki.alovoa.entity.UserLike;
-import com.nonononoki.alovoa.entity.UserNotification;
-import com.nonononoki.alovoa.entity.UserRegisterToken;
-import com.nonononoki.alovoa.entity.UserReport;
-import com.nonononoki.alovoa.entity.UserWebPush;
+import com.nonononoki.alovoa.entity.user.Conversation;
+import com.nonononoki.alovoa.entity.user.Message;
+import com.nonononoki.alovoa.entity.user.UserBlock;
+import com.nonononoki.alovoa.entity.user.UserDates;
+import com.nonononoki.alovoa.entity.user.UserDonation;
+import com.nonononoki.alovoa.entity.user.UserHide;
+import com.nonononoki.alovoa.entity.user.UserImage;
+import com.nonononoki.alovoa.entity.user.UserInterest;
+import com.nonononoki.alovoa.entity.user.UserLike;
+import com.nonononoki.alovoa.entity.user.UserNotification;
+import com.nonononoki.alovoa.entity.user.UserRegisterToken;
+import com.nonononoki.alovoa.entity.user.UserReport;
+import com.nonononoki.alovoa.entity.user.UserWebPush;
 import com.nonononoki.alovoa.model.BaseRegisterDto;
 import com.nonononoki.alovoa.model.RegisterDto;
 import com.nonononoki.alovoa.repo.GenderRepository;
@@ -109,7 +109,7 @@ public class RegisterService {
 		user = baseRegisterDto.getUser();
 
 		// check if email is in spam mail list
-		if (profile.equals("prod")) {
+		if (profile.equals(Tools.PROD)) {
 			try {
 				if (Tools.isTextContainingLineFromFile(Tools.getFileFromResources(TEMP_EMAIL_FILE_NAME),
 						user.getEmail())) {
@@ -154,7 +154,7 @@ public class RegisterService {
 	public UserRegisterToken generateToken(User user) {
 		UserRegisterToken token = new UserRegisterToken();
 		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
-		token.setCreationDate(new Date());
+		token.setDate(new Date());
 		token.setUser(user);
 		return registerTokenRepo.saveAndFlush(token);
 	}

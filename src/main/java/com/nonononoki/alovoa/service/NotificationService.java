@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.UserWebPush;
+import com.nonononoki.alovoa.entity.user.UserWebPush;
 import com.nonononoki.alovoa.model.WebPushMessage;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.repo.UserWebPushRepository;

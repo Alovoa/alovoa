@@ -7,9 +7,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.nonononoki.alovoa.entity.Gender;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.UserIntention;
+import com.nonononoki.alovoa.entity.user.Gender;
+import com.nonononoki.alovoa.entity.user.UserIntention;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserRepository;

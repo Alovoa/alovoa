@@ -6,15 +6,15 @@ import java.util.Set;
 import javax.persistence.Convert;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
-import com.nonononoki.alovoa.entity.Gender;
-import com.nonononoki.alovoa.entity.Message;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.UserDates;
-import com.nonononoki.alovoa.entity.UserDonation;
-import com.nonononoki.alovoa.entity.UserImage;
-import com.nonononoki.alovoa.entity.UserIntention;
-import com.nonononoki.alovoa.entity.UserInterest;
-import com.nonononoki.alovoa.entity.UserWebPush;
+import com.nonononoki.alovoa.entity.user.Gender;
+import com.nonononoki.alovoa.entity.user.Message;
+import com.nonononoki.alovoa.entity.user.UserDates;
+import com.nonononoki.alovoa.entity.user.UserDonation;
+import com.nonononoki.alovoa.entity.user.UserImage;
+import com.nonononoki.alovoa.entity.user.UserIntention;
+import com.nonononoki.alovoa.entity.user.UserInterest;
+import com.nonononoki.alovoa.entity.user.UserWebPush;
 
 import lombok.Data;
 

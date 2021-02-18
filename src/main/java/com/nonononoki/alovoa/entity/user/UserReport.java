@@ -1,4 +1,4 @@
-package com.nonononoki.alovoa.entity;
+package com.nonononoki.alovoa.entity.user;
 
 import java.util.Date;
 
@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+
+import com.nonononoki.alovoa.entity.User;
 
 import lombok.Data;
 

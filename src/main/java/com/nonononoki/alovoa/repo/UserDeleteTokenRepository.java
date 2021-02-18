@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.nonononoki.alovoa.entity.UserDeleteToken;
+import com.nonononoki.alovoa.entity.user.UserDeleteToken;
 
 public interface UserDeleteTokenRepository extends JpaRepository<UserDeleteToken, Long> {
 

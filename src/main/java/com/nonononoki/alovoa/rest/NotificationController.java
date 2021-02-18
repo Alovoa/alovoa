@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nonononoki.alovoa.entity.UserWebPush;
+import com.nonononoki.alovoa.entity.user.UserWebPush;
 import com.nonononoki.alovoa.service.NotificationService;
 
 @RestController

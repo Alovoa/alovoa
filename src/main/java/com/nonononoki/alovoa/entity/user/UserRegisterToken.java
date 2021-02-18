@@ -1,33 +1,32 @@
-package com.nonononoki.alovoa.entity;
+package com.nonononoki.alovoa.entity.user;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nonononoki.alovoa.entity.User;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-public class UserImage {
-	
-	@JsonIgnore
+@EqualsAndHashCode(exclude="user")
+public class UserRegisterToken {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@JsonIgnore
-	@ManyToOne
+	@OneToOne
 	private User user;
 
-	@Column(columnDefinition="mediumtext")
 	private String content;
 
 	private Date date;
+
 }

@@ -9,8 +9,9 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.UserPasswordToken;
+import com.nonononoki.alovoa.entity.user.UserPasswordToken;
 import com.nonononoki.alovoa.model.PasswordChangeDto;
 import com.nonononoki.alovoa.model.PasswordResetDto;
 import com.nonononoki.alovoa.repo.UserPasswordTokenRepository;
@@ -37,7 +38,7 @@ public class PasswordService {
 	@Value("${app.password-token.length}")
 	private int tokenLength;
 
-	public void resetPasword(PasswordResetDto dto) throws Exception {
+	public UserPasswordToken resetPasword(PasswordResetDto dto) throws Exception {
 		if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
 			throw new Exception("");
 		}
@@ -54,6 +55,8 @@ public class PasswordService {
 		token = userPasswordTokenRepo.save(token);
 
 		mailService.sendPasswordResetMail(u, token);
+		
+		return token;
 
 	}
 

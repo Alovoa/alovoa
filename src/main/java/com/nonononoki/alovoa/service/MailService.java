@@ -15,9 +15,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.UserDeleteToken;
-import com.nonononoki.alovoa.entity.UserPasswordToken;
-import com.nonononoki.alovoa.entity.UserRegisterToken;
+import com.nonononoki.alovoa.entity.user.UserDeleteToken;
+import com.nonononoki.alovoa.entity.user.UserPasswordToken;
+import com.nonononoki.alovoa.entity.user.UserRegisterToken;
 
 @Service
 public class MailService {

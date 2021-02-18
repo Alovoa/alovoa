@@ -1,20 +1,27 @@
 package com.nonononoki.alovoa.service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.nonononoki.alovoa.entity.Captcha;
+import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.UserDeleteToken;
+import com.nonononoki.alovoa.entity.user.UserHide;
+import com.nonononoki.alovoa.entity.user.UserPasswordToken;
 import com.nonononoki.alovoa.repo.CaptchaRepository;
 import com.nonononoki.alovoa.repo.UserDeleteTokenRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
 import com.nonononoki.alovoa.repo.UserPasswordTokenRepository;
+import com.nonononoki.alovoa.repo.UserRepository;
 
 @Service
-@EnableScheduling
 public class ScheduleService {
 	
 	@Autowired
@@ -24,13 +31,13 @@ public class ScheduleService {
 	private UserHideRepository userHideRepo;
 	
 	@Autowired
+	private UserRepository userRepo;
+	
+	@Autowired
 	private UserPasswordTokenRepository passwordTokenRepository;
 	
 	@Autowired
 	private UserDeleteTokenRepository userDeleteTokenRepository;
-	
-	@Value("${app.schedule.delay}")
-	private long delay;
 	
 	@Value("${app.schedule.delay.captcha}")
 	private long captchaDelay;
@@ -44,48 +51,79 @@ public class ScheduleService {
 	@Value("${app.schedule.delay.delete-account}")
 	private long deleteAccountDelay;
 	
-	@Scheduled( fixedDelayString = "${app.schedule.delay}")
-	public void schedule() {
-		cleanCaptcha();
-		cleanHide();
-		cleanPasswordToken();
-		cleanUserDeleteToken();
+	@Scheduled( fixedDelayString = "${app.schedule.short}")
+	@ConditionalOnProperty(value = "app.schedule.enabled", matchIfMissing = true, havingValue = "true")
+	public void scheduleShort() {
+		Date date = new Date();
+		cleanCaptcha(date);
+		cleanUserPasswordToken(date);
+		cleanUserDeleteToken(date);
 	}
 	
-	public void cleanCaptcha() {
+	@Scheduled( fixedDelayString = "${app.schedule.long}")
+	@ConditionalOnProperty(value = "app.schedule.enabled", matchIfMissing = true, havingValue = "true")
+	public void scheduleLong() {
+		//TODO disable schedule for tests
 		Date date = new Date();
+		cleanUserHide(date);
+	}
+	
+	public void cleanCaptcha(Date date) {
 		long ms = date.getTime();
 		ms -= captchaDelay;
-		date = new Date(ms);
+		Date d = new Date(ms);
 		
-		captchaRepo.deleteAll(captchaRepo.findByDateBefore(date));
+		List<Captcha> captchas = captchaRepo.findByDateBefore(d);
+		captchaRepo.deleteAll(captchas);
 	}
 	
-	public void cleanHide() {
-		Date date = new Date();
+	public void cleanUserHide(Date date) {
 		long ms = date.getTime();
 		ms -= hideDelay;
-		date = new Date(ms);
+		Date d = new Date(ms);
 		
-		userHideRepo.deleteAll(userHideRepo.findByDateBefore(date));
+		List<UserHide> tokens = userHideRepo.findByDateBefore(d);
+		List<User> users = new ArrayList<>();
+		for(UserHide hide : tokens ) {
+			//TODO Check if this even works when hide is references by 2 users
+			User u = hide.getUserFrom();
+			User u2 =hide.getUserTo();
+			u.getHiddenUsers().remove(hide);
+			u2.getHiddenByUsers().remove(hide);
+			users.add(u);
+			users.add(u2);
+		}
+		userRepo.saveAll(users);
 	}
 	
-	public void cleanPasswordToken() {
-		Date date = new Date();
+	public void cleanUserPasswordToken(Date date) {
 		long ms = date.getTime();
 		ms -= passwordResetDelay;
-		date = new Date(ms);
+		Date d = new Date(ms);
 		
-		passwordTokenRepository.deleteAll(passwordTokenRepository.findByDateBefore(date));
+		List<UserPasswordToken> tokens = passwordTokenRepository.findByDateBefore(d);
+		List<User> users = new ArrayList<>();
+		for(UserPasswordToken token : tokens ) {
+			User u = token.getUser();
+			u.setPasswordToken(null);
+			users.add(u);
+		}
+		userRepo.saveAll(users);
 	}
 	
-	public void cleanUserDeleteToken() {
-		Date date = new Date();
+	public void cleanUserDeleteToken(Date date) {
 		long ms = date.getTime();
 		ms -= deleteAccountDelay;
-		date = new Date(ms);
+		Date d = new Date(ms);
 		
-		userDeleteTokenRepository.deleteAll(userDeleteTokenRepository.findByDateBefore(date));
+		List<UserDeleteToken> tokens = userDeleteTokenRepository.findByDateBefore(d);
+		List<User> users = new ArrayList<>();
+		for(UserDeleteToken token : tokens ) {
+			User u = token.getUser();
+			u.setDeleteToken(null);
+			users.add(u);
+		}
+		userRepo.saveAll(users);
 	}
 	
 }

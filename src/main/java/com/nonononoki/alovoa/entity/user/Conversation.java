@@ -1,4 +1,4 @@
-package com.nonononoki.alovoa.entity;
+package com.nonononoki.alovoa.entity.user;
 
 import java.util.Date;
 import java.util.List;
@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
 
 import lombok.Data;

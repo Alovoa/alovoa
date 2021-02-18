@@ -1,7 +1,8 @@
-package com.nonononoki.alovoa.entity;
+package com.nonononoki.alovoa.entity.user;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,13 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nonononoki.alovoa.entity.User;
 
 import lombok.Data;
 
 @Data
 @Entity
-public class UserWebPush {
-
+public class UserImage {
+	
 	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,14 +26,9 @@ public class UserWebPush {
 	@JsonIgnore
 	@ManyToOne
 	private User user;
-	
-	private String ip;
-	
-	private Date date;
-	
-	private String publicKey;
 
-	private String endPoint;
-	
-	private String auth;
+	@Column(columnDefinition="mediumtext")
+	private String content;
+
+	private Date date;
 }

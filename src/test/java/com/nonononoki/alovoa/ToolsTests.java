@@ -1,12 +1,12 @@
 package com.nonononoki.alovoa;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ToolsTest {
+class ToolsTests {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		int dist = (int)Math.round(Tools.calcDistance(0, 0, 0, 0));
 		Assert.assertEquals(dist, 0);
 		
@@ -15,6 +15,5 @@ public class ToolsTest {
 		
 		int dist3 = (int)Math.round(Tools.calcDistance(0.46, 0, 0, 0));
 		Assert.assertEquals(dist3, 50);
-		
 	}
 }

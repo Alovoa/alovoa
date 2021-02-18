@@ -1,4 +1,4 @@
-package com.nonononoki.alovoa.entity;
+package com.nonononoki.alovoa.entity.user;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nonononoki.alovoa.entity.User;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

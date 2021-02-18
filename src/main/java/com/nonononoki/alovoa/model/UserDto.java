@@ -10,13 +10,13 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
-import com.nonononoki.alovoa.entity.Gender;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.UserBlock;
-import com.nonononoki.alovoa.entity.UserImage;
-import com.nonononoki.alovoa.entity.UserIntention;
-import com.nonononoki.alovoa.entity.UserInterest;
-import com.nonononoki.alovoa.entity.UserReport;
+import com.nonononoki.alovoa.entity.user.Gender;
+import com.nonononoki.alovoa.entity.user.UserBlock;
+import com.nonononoki.alovoa.entity.user.UserImage;
+import com.nonononoki.alovoa.entity.user.UserIntention;
+import com.nonononoki.alovoa.entity.user.UserInterest;
+import com.nonononoki.alovoa.entity.user.UserReport;
 
 import lombok.Data;
 

@@ -31,18 +31,18 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
-import com.nonononoki.alovoa.entity.Conversation;
-import com.nonononoki.alovoa.entity.Gender;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.UserBlock;
-import com.nonononoki.alovoa.entity.UserDeleteToken;
-import com.nonononoki.alovoa.entity.UserHide;
-import com.nonononoki.alovoa.entity.UserImage;
-import com.nonononoki.alovoa.entity.UserIntention;
-import com.nonononoki.alovoa.entity.UserInterest;
-import com.nonononoki.alovoa.entity.UserLike;
-import com.nonononoki.alovoa.entity.UserNotification;
-import com.nonononoki.alovoa.entity.UserReport;
+import com.nonononoki.alovoa.entity.user.Conversation;
+import com.nonononoki.alovoa.entity.user.Gender;
+import com.nonononoki.alovoa.entity.user.UserBlock;
+import com.nonononoki.alovoa.entity.user.UserDeleteToken;
+import com.nonononoki.alovoa.entity.user.UserHide;
+import com.nonononoki.alovoa.entity.user.UserImage;
+import com.nonononoki.alovoa.entity.user.UserIntention;
+import com.nonononoki.alovoa.entity.user.UserInterest;
+import com.nonononoki.alovoa.entity.user.UserLike;
+import com.nonononoki.alovoa.entity.user.UserNotification;
+import com.nonononoki.alovoa.entity.user.UserReport;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserGdpr;
@@ -148,12 +148,11 @@ public class UserService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	public void deleteAccountRequest() throws Exception {
+	public UserDeleteToken deleteAccountRequest() throws Exception {
 		User user = authService.getCurrentUser();
 		UserDeleteToken token = null;
 
 		if (user.getDeleteToken() != null) {
-//			userDeleteTokenRepo.delete(user.getDeleteToken());
 			token = user.getDeleteToken();
 		} else {
 			token = new UserDeleteToken();
@@ -165,9 +164,11 @@ public class UserService {
 		userDeleteTokenRepo.save(token);
 
 		user.setDeleteToken(token);
-		userRepo.save(user);
+		user = userRepo.saveAndFlush(user);
 
 		mailService.sendAccountDeleteRequest(user, token);
+		
+		return user.getDeleteToken();
 	}
 
 	public void deleteAccountConfirm(UserDeleteAccountDto dto) throws Exception {

@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
-import com.nonononoki.alovoa.entity.Conversation;
-import com.nonononoki.alovoa.entity.Message;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.Conversation;
+import com.nonononoki.alovoa.entity.user.Message;
 import com.nonononoki.alovoa.model.ConversationDto;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;

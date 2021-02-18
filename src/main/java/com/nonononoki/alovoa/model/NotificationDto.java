@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.UserNotification;
+import com.nonononoki.alovoa.entity.user.UserNotification;
 
 import lombok.Data;
 
