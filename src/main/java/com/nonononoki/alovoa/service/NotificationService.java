@@ -88,7 +88,7 @@ public class NotificationService {
 
 	public void newMatch(User user) throws Exception {
 		user.getDates().setMessageDate(new Date());
-		user = userRepo.saveAndFlush(user);
+		user = userRepo.save(user);
 
 		Locale locale = LocaleContextHolder.getLocale();
 		String title = messageSource.getMessage("backend.webpush.match.message", null, locale);

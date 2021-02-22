@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,8 +73,10 @@ public class SearchService {
 		
 		User user = authService.getCurrentUser();
 		user.getDates().setActiveDate(new Date());
-		user.setLocationLatitude(latitude);
-		user.setLocationLongitude(longitude);
+		// rounding to improve privacy
+		DecimalFormat df = new DecimalFormat("#.##");  
+		user.setLocationLatitude(Double.valueOf(df.format(latitude)));
+		user.setLocationLongitude(Double.valueOf(df.format(longitude)));
 		userRepo.saveAndFlush(user);
 		
 		LocalDate minDate = LocalDate.now().minusYears(user.getPreferedMaxAge());

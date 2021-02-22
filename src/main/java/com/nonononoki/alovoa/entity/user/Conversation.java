@@ -8,8 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
@@ -28,9 +32,11 @@ public class Conversation {
 	private User userFrom;
 
 	@ManyToOne
+	@JoinColumn
 	private User userTo;
 	
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "conversation")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@OneToMany(cascade= CascadeType.ALL, orphanRemoval = true, mappedBy = "conversation")
 	private List<Message> messages;
 	
 	private Date creationDate;

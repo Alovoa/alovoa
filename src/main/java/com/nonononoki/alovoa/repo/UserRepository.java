@@ -24,6 +24,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetween(
 			LocalDate min, LocalDate max, Double latitudeFrom, Double latitudeTo, Double longitudeFrom, Double longitudeTo);
 
-
 	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullOrderByTotalDonationsDesc();
 }

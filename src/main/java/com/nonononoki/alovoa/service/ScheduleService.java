@@ -85,15 +85,17 @@ public class ScheduleService {
 		List<UserHide> tokens = userHideRepo.findByDateBefore(d);
 		List<User> users = new ArrayList<>();
 		for(UserHide hide : tokens ) {
-			//TODO Check if this even works when hide is references by 2 users
 			User u = hide.getUserFrom();
 			User u2 =hide.getUserTo();
 			u.getHiddenUsers().remove(hide);
 			u2.getHiddenByUsers().remove(hide);
 			users.add(u);
 			users.add(u2);
+			userHideRepo.delete(hide);
 		}
 		userRepo.saveAll(users);
+		userRepo.flush();
+		userHideRepo.flush();
 	}
 	
 	public void cleanUserPasswordToken(Date date) {
@@ -109,6 +111,8 @@ public class ScheduleService {
 			users.add(u);
 		}
 		userRepo.saveAll(users);
+		userRepo.flush();
+		passwordTokenRepository.flush();
 	}
 	
 	public void cleanUserDeleteToken(Date date) {
@@ -124,6 +128,8 @@ public class ScheduleService {
 			users.add(u);
 		}
 		userRepo.saveAll(users);
+		userRepo.flush();
+		userDeleteTokenRepository.flush();
 	}
 	
 }

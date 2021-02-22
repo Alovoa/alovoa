@@ -59,7 +59,8 @@ public class ScheduleTest {
 	@Autowired
 	private ScheduleService scheduleService;
 
-	@MockBean
+	//@MockBean
+	@Autowired
 	private CaptchaService captchaService;
 
 	@MockBean
@@ -93,9 +94,9 @@ public class ScheduleTest {
 	public void test() throws Exception {
 		
 		//always valid on tests
-		Mockito.when(
-				captchaService.isValid(Mockito.anyLong(), Mockito.nullable(String.class)))			
-		.thenReturn(true);
+		//Mockito.when(
+		//		captchaService.isValid(Mockito.anyLong(), Mockito.nullable(String.class)))			
+		//.thenReturn(true);
 		
 		//UserTest userTest = new UserTest();
 		//List<User> testUsers = userTest.getTestUsers();
@@ -144,15 +145,22 @@ public class ScheduleTest {
 		Assert.assertEquals(userHideRepo.count(), 1);
 		
 		//USERPASSWORDTOKEN
-		PasswordResetDto pwResetDto = new PasswordResetDto();
-		pwResetDto.setEmail(user1.getEmail());
-		UserPasswordToken passwordTokenOld = passwordService.resetPasword(pwResetDto);
+		Captcha captcha1 = captchaService.generate();
+		PasswordResetDto pwResetDto1 = new PasswordResetDto();
+		pwResetDto1.setEmail(user1.getEmail());
+		pwResetDto1.setCaptchaId(captcha1.getId());
+		pwResetDto1.setCaptchaText(captcha1.getText());
+		UserPasswordToken passwordTokenOld = passwordService.resetPasword(pwResetDto1);
 		passwordTokenOld.setDate(new Date(currentDateTime - passwordResetDelay - 1));
 		user1.setPasswordToken(passwordTokenOld);
 		userRepo.saveAndFlush(user1);
 		
-		pwResetDto.setEmail(user2.getEmail());
-		UserPasswordToken passwordTokenNew = passwordService.resetPasword(pwResetDto);
+		Captcha captcha2 = captchaService.generate();
+		PasswordResetDto pwResetDto2 = new PasswordResetDto();
+		pwResetDto2.setEmail(user2.getEmail());
+		pwResetDto2.setCaptchaId(captcha2.getId());
+		pwResetDto2.setCaptchaText(captcha2.getText());
+		UserPasswordToken passwordTokenNew = passwordService.resetPasword(pwResetDto2);
 		passwordTokenNew.setDate(new Date(currentDateTime - passwordResetDelay));
 		user2.setPasswordToken(passwordTokenNew);
 		userRepo.saveAndFlush(user2);
@@ -179,7 +187,7 @@ public class ScheduleTest {
 		scheduleService.cleanUserDeleteToken(currentDate);
 		Assert.assertEquals(userDeleteTokenRepository.count(), 1);
 		
-		UserTest.resetTestUsers();
+		//UserTest.deleteAllUsers(userService, authService, captchaService);
 	}
 	
 	private Captcha generateCaptcha() {

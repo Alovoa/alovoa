@@ -9,5 +9,7 @@ import com.nonononoki.alovoa.entity.user.UserReport;
 
 public interface UserReportRepository extends JpaRepository<UserReport, Long> {
 	public UserReport findByUserFromAndUserTo(User userFrom, User userTo);
+	public List<UserReport> findByUserFrom(User userFrom);
+	public List<UserReport> findByUserTo(User userTo);
 	public List<UserReport> findTop20ByOrderByDateAsc();
 }

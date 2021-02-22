@@ -19,6 +19,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -87,6 +89,12 @@ public class User implements UserDetails {
 	private double totalDonations;
 
 	private int theme;
+	
+	private boolean admin;
+
+	private boolean confirmed;
+
+	private boolean disabled;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn
@@ -122,59 +130,54 @@ public class User implements UserDetails {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	private List<UserDonation> donations;
+	
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+	private List<UserWebPush> webPush;
+	
+	//Tables with multiple users
+	
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
+	private List<Message> messageSent;
+
+	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
+	private List<Message> messageReceived;
+	
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@OneToMany(cascade = CascadeType.ALL,  orphanRemoval = true, mappedBy = "userFrom")
+	private List<Conversation> conversations;
+
+	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
+	private List<Conversation> conversationsBy;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<UserLike> likes;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
+	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
 	private List<UserLike> likedBy;
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
-	private List<Conversation> conversations;
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
-	private List<Conversation> conversationsBy;
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
-	private List<Message> messageSent;
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
-	private List<Message> messageReceived;
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
-	private List<UserNotification> notificationsFrom;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
 	private List<UserNotification> notifications;
 	
-	//Tables with multiple users
+	@OneToMany(orphanRemoval = true, mappedBy = "userFrom")
+	private List<UserNotification> notificationsFrom;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<UserHide> hiddenUsers;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
+	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
 	private List<UserHide> hiddenByUsers;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<UserBlock> blockedUsers;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
+	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
 	private List<UserBlock> blockedByUsers;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<UserReport> reported;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
+	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
 	private List<UserReport> reportedByUsers;
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-	private List<UserWebPush> webPush;
-
-	private boolean admin;
-
-	private boolean confirmed;
-
-	private boolean disabled;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

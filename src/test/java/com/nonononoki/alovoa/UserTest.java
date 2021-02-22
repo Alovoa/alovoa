@@ -23,13 +23,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.UserDeleteToken;
 import com.nonononoki.alovoa.model.RegisterDto;
+import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
+import com.nonononoki.alovoa.repo.MessageRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
 import com.nonononoki.alovoa.repo.UserLikeRepository;
 import com.nonononoki.alovoa.repo.UserNotificationRepository;
+import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.CaptchaService;
@@ -74,10 +78,16 @@ public class UserTest {
 	private UserBlockRepository userBlockRepo;
 	
 	@Autowired
+	private UserReportRepository userReportRepo;
+	
+	@Autowired
 	private UserNotificationRepository userNotificationRepo;
 	
 	@Autowired
 	private ConversationRepository conversationRepo;
+	
+	@Autowired
+	private MessageRepository messageRepo;
 	
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
@@ -122,8 +132,25 @@ public class UserTest {
 		return testUsers;
 	}
 	
-	public static void resetTestUsers() {
-		testUsers = null;
+	public static void deleteAllUsers(UserService userService, AuthService authService, CaptchaService captchaService, ConversationRepository conversationRepo, UserRepository userRepo) throws Exception {
+		if(testUsers != null) {
+			for(User user : testUsers) {
+				if(!user.isAdmin()) {
+					user = userRepo.findById(user.getId()).get();
+					Mockito.when(authService.getCurrentUser()).thenReturn(user);
+					UserDeleteToken token = userService.deleteAccountRequest();
+					UserDeleteAccountDto dto = new UserDeleteAccountDto();
+					Captcha captcha = captchaService.generate();
+					dto.setCaptchaId(captcha.getId());
+					dto.setCaptchaText(captcha.getText());
+					dto.setConfirm(true);
+					dto.setEmail(user.getEmail());
+					dto.setTokenString(token.getContent());
+					userService.deleteAccountConfirm(dto);
+				}
+			}
+			testUsers = null;
+		}
 	}
 
 	private static RegisterDto createTestUserDto(long gender, Captcha c, String email) throws IOException {
@@ -136,7 +163,7 @@ public class UserTest {
 		dto.setPassword("test123");
 		dto.setFirstName("test");
 		dto.setGender(gender);
-		if(c != null) { //Captcjas aren't important in tests
+		if(c != null) {
 			dto.setCaptchaId(c.getId());
 			dto.setCaptchaText(c.getText());
 		} else {
@@ -238,7 +265,11 @@ public class UserTest {
 		
 		searchTest(user1, user2, user3);
 		
-		UserTest.resetTestUsers();
+		UserTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+		
+		Assert.assertEquals(conversationRepo.count(), 0);
+		Assert.assertEquals(userRepo.count(), 1);
+		
 	}
 	
 	private void searchTest(User user1, User user2, User user3) throws Exception {
@@ -323,13 +354,20 @@ public class UserTest {
 		Assert.assertEquals(userNotificationRepo.count(), 2);
 		Assert.assertEquals(conversationRepo.count(), 1);
 		Assert.assertEquals(user1.getConversations().size(), 1);
+		
 		messageService.send(user1.getConversations().get(0),"Hello");
+		Assert.assertEquals(messageRepo.count(), 1);
+		
 		String verylongString = StringUtils.repeat("*", maxMessageSize);
 		messageService.send(user1.getConversations().get(0), verylongString);
+		
+		Assert.assertEquals(messageRepo.count(), 2);
 		
 		Assert.assertThrows(Exception.class, () -> {
 			messageService.send(user1.getConversations().get(0), verylongString + "a");
 	    });
+		
+		Assert.assertEquals(messageRepo.count(), 2);
 		
 		//test sending message to blocked users
 		userService.blockUser(UserDto.encodeId(user3.getId(), textEncryptor));
@@ -338,9 +376,24 @@ public class UserTest {
 			messageService.send(user3.getConversations().get(0), "Hello");
 	    });
 		
+		Assert.assertEquals(messageRepo.count(), 2);
+		
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		Assert.assertThrows(Exception.class, () -> {
 			messageService.send(user1.getConversations().get(0), "Hello");
 	    });
+		
+		Assert.assertEquals(messageRepo.count(), 2);
+		
+		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		userService.unblockUser(UserDto.encodeId(user3.getId(), textEncryptor));
+		Assert.assertEquals(userBlockRepo.count(), 0);
+		
+		messageService.send(user1.getConversations().get(0), verylongString);	
+		Assert.assertEquals(messageRepo.count(), 3);
+		
+		Captcha captchaReport = captchaService.generate();
+		userService.reportUser(UserDto.encodeId(user3.getId(), textEncryptor), captchaReport.getId(), captchaReport.getText(), "report");
+		Assert.assertEquals(userReportRepo.count(), 1);
 	}
-}
+ }

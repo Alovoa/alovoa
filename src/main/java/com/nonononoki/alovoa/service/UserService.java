@@ -48,13 +48,14 @@ import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserGdpr;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.GenderRepository;
+import com.nonononoki.alovoa.repo.MessageRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
-import com.nonononoki.alovoa.repo.UserDeleteTokenRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
 import com.nonononoki.alovoa.repo.UserImageRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserInterestRepository;
 import com.nonononoki.alovoa.repo.UserLikeRepository;
+import com.nonononoki.alovoa.repo.UserNotificationRepository;
 import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 
@@ -90,12 +91,15 @@ public class UserService {
 
 	@Autowired
 	private UserReportRepository userReportRepo;
+	
+	@Autowired
+	private UserNotificationRepository userNotificationRepo;
 
 	@Autowired
 	private ConversationRepository conversationRepo;
-
+	
 	@Autowired
-	private UserDeleteTokenRepository userDeleteTokenRepo;
+	private MessageRepository messageRepo;
 
 	@Autowired
 	private CaptchaService captchaService;
@@ -150,19 +154,11 @@ public class UserService {
 
 	public UserDeleteToken deleteAccountRequest() throws Exception {
 		User user = authService.getCurrentUser();
-		UserDeleteToken token = null;
-
-		if (user.getDeleteToken() != null) {
-			token = user.getDeleteToken();
-		} else {
-			token = new UserDeleteToken();
-		}
+		UserDeleteToken  token = new UserDeleteToken();
 
 		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
 		token.setDate(new Date());
 		token.setUser(user);
-		userDeleteTokenRepo.save(token);
-
 		user.setDeleteToken(token);
 		user = userRepo.saveAndFlush(user);
 
@@ -191,9 +187,176 @@ public class UserService {
 			throw new Exception("");
 		}
 
-		conversationRepo.deleteAll(conversationRepo.findAllByUserFrom(user));
-		conversationRepo.deleteAll(conversationRepo.findAllByUserTo(user));
+
+		//DELETE USER LIKE
+		{
+			for(UserLike like : userLikeRepo.findByUserFrom(user)) {
+				User u= like.getUserTo();
+				u.getLikedBy().remove(like);
+				userRepo.save(u);
+				
+				like.setUserTo(null);
+				userLikeRepo.save(like);
+			}
+			for(UserLike like : userLikeRepo.findByUserTo(user)) {
+				User u= like.getUserFrom();
+				u.getLikes().remove(like);
+				userRepo.save(u);
+				
+				like.setUserFrom(null);
+				userLikeRepo.save(like);
+			}
+			userRepo.flush();
+			userLikeRepo.flush();
+		}
+		
+		/*
+		//DELETE USER MESSAGE
+		{
+			for(Message message : messageRepo.findByUserFrom(user)) {
+				User u= message.getUserTo();
+				u.getMessageReceived().remove(message);
+				userRepo.save(u);
+				
+				message.setUserTo(null);
+				message.setConversation(null);
+				messageRepo.save(message);
+			}
+			for(Message message : messageRepo.findByUserTo(user)) {
+				User u= message.getUserFrom();
+				u.getMessageSent().remove(message);
+				userRepo.save(u);
+				
+				message.setUserFrom(null);
+				message.setConversation(null);
+				messageRepo.save(message);
+			}
+			userRepo.flush();
+			messageRepo.flush();
+		}
+		*/
+		
+		//DELETE USER CONVERSATION
+		{
+			for(Conversation conversation : conversationRepo.findByUserFrom(user)) {
+				User u= conversation.getUserTo();
+				u.getConversationsBy().remove(conversation);
+				userRepo.save(u);
+				
+				conversation.setUserTo(null);
+				conversationRepo.save(conversation);
+			}
+			for(Conversation conversation : conversationRepo.findByUserTo(user)) {
+				User u= conversation.getUserFrom();
+				u.getConversations().remove(conversation);
+				userRepo.save(u);
+				
+				conversation.setUserFrom(null);
+				conversationRepo.save(conversation);
+			}
+			userRepo.flush();
+			conversationRepo.flush();
+		}
+		
+		//DELETE USER NOTIFICATION
+		{
+			for(UserNotification notification : userNotificationRepo.findByUserFrom(user)) {
+				User u= notification.getUserTo();
+				u.getNotificationsFrom().remove(notification);
+				userRepo.save(u);
+				
+				notification.setUserTo(null);
+				userNotificationRepo.save(notification);
+			}
+			for(UserNotification notificaton : userNotificationRepo.findByUserTo(user)) {
+				User u= notificaton.getUserFrom();
+				u.getNotifications().remove(notificaton);
+				userRepo.save(u);
+				
+				notificaton.setUserFrom(null);
+				userNotificationRepo.save(notificaton);
+			}
+			userRepo.flush();
+			userNotificationRepo.flush();
+		}
+		
+		//DELETE USER HIDE
+		{
+			for(UserHide hide : userHideRepo.findByUserFrom(user)) {
+				User u= hide.getUserTo();
+				u.getHiddenByUsers().remove(hide);
+				userRepo.save(u);
+				
+				hide.setUserTo(null);
+				userHideRepo.save(hide);
+			}
+			for(UserHide hide : userHideRepo.findByUserTo(user)) {
+				User u= hide.getUserFrom();
+				u.getHiddenUsers().remove(hide);
+				userRepo.save(u);
+				
+				hide.setUserFrom(null);
+				userHideRepo.save(hide);
+			}
+			userRepo.flush();
+			userHideRepo.flush();
+		}
+		
+		//DELETE USER BLOCK
+		{
+			for(UserBlock block : userBlockRepo.findByUserFrom(user)) {
+				User u= block.getUserTo();
+				u.getBlockedByUsers().remove(block);
+				userRepo.save(u);
+				
+				block.setUserTo(null);
+				userBlockRepo.save(block);
+			}
+			for(UserBlock block : userBlockRepo.findByUserTo(user)) {
+				User u= block.getUserFrom();
+				u.getBlockedUsers().remove(block);
+				userRepo.save(u);
+				
+				block.setUserFrom(null);
+				userBlockRepo.save(block);
+			}
+			userRepo.flush();
+			userBlockRepo.flush();
+		}
+		
+		
+		//DELETE USER REPORT
+		{
+			for(UserReport report : userReportRepo.findByUserFrom(user)) {
+				User u= report.getUserTo();
+				u.getReportedByUsers().remove(report);
+				userRepo.save(u);
+				
+				report.setUserTo(null);
+				userReportRepo.save(report);
+			}
+			for(UserReport report : userReportRepo.findByUserTo(user)) {
+				User u= report.getUserFrom();
+				u.getReported().remove(report);
+				userRepo.save(u);
+				
+				report.setUserFrom(null);
+				userReportRepo.save(report);
+			}
+			userRepo.flush();
+			userReportRepo.flush();
+		}
+		
+		
+		user = authService.getCurrentUser();
+		//user.getLikes().clear();
+		//user.getLikedBy().clear();
+		//user.getReported().clear();
+		
+		user = userRepo.saveAndFlush(user);
 		userRepo.delete(user);
+		userRepo.flush();
+		
 		mailService.sendAccountDeleteConfirm(user);
 	}
 
@@ -201,7 +364,7 @@ public class UserService {
 		User user = authService.getCurrentUser();
 		String newImgB64 = adjustPicture(imgB64);
 		user.setProfilePicture(newImgB64);
-		userRepo.save(user);
+		userRepo.saveAndFlush(user);
 	}
 
 	public void updateDescription(String description) throws Exception {
@@ -213,7 +376,7 @@ public class UserService {
 		}
 		User user = authService.getCurrentUser();
 		user.setDescription(description);
-		userRepo.save(user);
+		userRepo.saveAndFlush(user);
 	}
 
 	public void updateIntention(long intention) throws Exception {
@@ -221,7 +384,7 @@ public class UserService {
 		UserIntention i = userIntentionRepo.findById(intention).orElse(null);
 		user.setIntention(i);
 		user.getDates().setIntentionChangeDate(new Date());
-		userRepo.save(user);
+		userRepo.saveAndFlush(user);
 	}
 
 	public void updateMinAge(int userMinAge) throws Exception {
@@ -230,7 +393,7 @@ public class UserService {
 		}
 		User user = authService.getCurrentUser();
 		user.setPreferedMinAge(userMinAge);
-		userRepo.save(user);
+		userRepo.saveAndFlush(user);
 	}
 
 	public void updateMaxAge(int userMaxAge) throws Exception {
@@ -239,7 +402,7 @@ public class UserService {
 		}
 		User user = authService.getCurrentUser();
 		user.setPreferedMaxAge(userMaxAge);
-		userRepo.save(user);
+		userRepo.saveAndFlush(user);
 	}
 
 	public void updatePreferedGender(long genderId, boolean activated) throws Exception {
@@ -260,7 +423,7 @@ public class UserService {
 			}
 		}
 		user.setPreferedGenders(list);
-		userRepo.save(user);
+		userRepo.saveAndFlush(user);
 	}
 
 	public void addInterest(String value) throws Exception {
@@ -291,7 +454,7 @@ public class UserService {
 		
 		user.getInterests().add(interest);
 
-		userRepo.save(user);
+		userRepo.saveAndFlush(user);
 	}
 
 	public void deleteInterest(long interestId) throws Exception {
@@ -308,13 +471,13 @@ public class UserService {
 
 		// userInterestRepo.delete(interest);
 		user.getInterests().remove(interest);
-		userRepo.save(user);
+		userRepo.saveAndFlush(user);
 	}
 
 	public void updateTheme(int themeId) throws Exception {
 		User user = authService.getCurrentUser();
 		user.setTheme(themeId);
-		userRepo.save(user);
+		userRepo.saveAndFlush(user);
 	}
 
 	public void addImage(String imgB64) throws Exception {
@@ -326,7 +489,7 @@ public class UserService {
 			img.setDate(new Date());
 			img.setUser(user);
 			user.getImages().add(img);
-			userRepo.save(user);
+			userRepo.saveAndFlush(user);
 		} else {
 			throw new Exception("");
 		}
@@ -338,7 +501,7 @@ public class UserService {
 
 		if (user.getImages().contains(img)) {
 			user.getImages().remove(img);
-			userRepo.save(user);
+			userRepo.saveAndFlush(user);
 		}
 	}
 
@@ -464,19 +627,22 @@ public class UserService {
 				convo.setUserFrom(currUser);
 				convo.setUserTo(user);
 				convo.setLastUpdated(new Date());
-				conversationRepo.save(convo);
+				convo.setMessages(new ArrayList<>());
 				currUser.getConversations().add(convo);
-				user.getConversationsBy().add(convo);
+//				conversationRepo.save(convo);
+//				currUser.getConversations().add(convo);
+//				user.getConversationsBy().add(convo);
 //				user.getDates().setMessageDate(new Date());
 //				userRepo.saveAndFlush(user);
 
 				notificationService.newMatch(user);
 				notificationService.newMatch(currUser);
 			}
+			userRepo.saveAndFlush(currUser);
 
 			user.getDates().setNotificationDate(new Date());
 			userRepo.saveAndFlush(user);
-			userRepo.saveAndFlush(currUser);
+			
 		}
 	}
 
@@ -489,6 +655,7 @@ public class UserService {
 			hide.setUserFrom(currUser);
 			hide.setUserTo(user);
 			currUser.getHiddenUsers().add(hide);
+			userRepo.saveAndFlush(currUser);
 		}
 	}
 
@@ -500,8 +667,8 @@ public class UserService {
 			block.setDate(new Date());
 			block.setUserFrom(currUser);
 			block.setUserTo(user);
-			//userBlockRepo.save(block);
 			currUser.getBlockedUsers().add(block);
+			userRepo.saveAndFlush(currUser);
 		}
 	}
 
@@ -532,7 +699,8 @@ public class UserService {
 			report.setUserFrom(currUser);
 			report.setUserTo(user);
 			report.setComment(comment);
-			userReportRepo.save(report);
+			currUser.getReported().add(report);
+			userRepo.saveAndFlush(currUser);
 		}
 	}
 
@@ -557,7 +725,7 @@ public class UserService {
 
 	private void updateActiveDate(User user) {
 		user.getDates().setActiveDate(new Date());
-		userRepo.save(user);
+		userRepo.saveAndFlush(user);
 	}
 
 	public ResponseEntity<Resource> getUserdata() throws Exception {
