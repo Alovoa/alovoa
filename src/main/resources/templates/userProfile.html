@@ -13,8 +13,6 @@
 <link rel="stylesheet" href="/css/lib/swiper.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/search.css" />
-<link th:if="${currUser.theme == 1}" rel="stylesheet"
-	href="/css/alovoa-dark.css" />
 <title th:value="${user.firstName}"></title>
 </head>
 <body>
@@ -86,7 +84,7 @@
 					</div>
 
 					<div style="padding-top: 24px;"></div>
-					
+
 					<div class="field">
 						<label class="label" th:text="#{description}"></label>
 						<textarea class="textarea" id="description"
@@ -94,7 +92,8 @@
 							readOnly></textarea>
 					</div>
 
-					<div class="field" th:if="${user.audio}" style="padding-top: 24px; padding-bottom: 24px;">
+					<div class="field" th:if="${user.audio}"
+						style="padding-top: 24px; padding-bottom: 24px;">
 						<label class="label" th:text="#{profile.audio}"></label>
 						<audio id="audio" th:if="${user.audio}" controls hidden></audio>
 						<div class="colored button is-info" id="audio-play-button"
@@ -125,7 +124,8 @@
 							</tr>
 							<tr>
 								<th th:text="#{donated}"></th>
-								<td th:text=" ${#numbers.formatDecimal(user.totalDonations, 2, 2, 'POINT') + ' €'}"></td>
+								<td
+									th:text=" ${#numbers.formatDecimal(user.totalDonations, 2, 2, 'POINT') + ' €'}"></td>
 							</tr>
 							<tr>
 								<th th:text="#{userprofile.num-blocks}"></th>

@@ -16,7 +16,7 @@ public class CaptchaController {
 	private CaptchaService captchaService;
 	
 	@GetMapping("/generate")
-	public Captcha generate() {	
+	public Captcha generate() throws Exception {	
 		return captchaService.generate();
 	}
 }

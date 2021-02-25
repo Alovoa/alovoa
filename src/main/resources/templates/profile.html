@@ -14,8 +14,6 @@
 <link rel="stylesheet" href="/css/lib/swiper.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/profile.css" />
-<link th:if="${user.theme == 1}" rel="stylesheet"
-	href="/css/alovoa-dark.css" />
 <title th:text="#{profile.title}"></title>
 </head>
 <body>
@@ -209,20 +207,6 @@
 					</div>
 					<div class="notification is-info"
 						th:text="#{profile.interest.info}"></div>
-				</div>
-
-				<div class="box">
-					<div class="field">
-						<label class="label" th:text="#{theme}"></label>
-						<div class="select">
-							<select id="theme">
-								<option value="0" th:selected="${user.theme == 0}"
-									th:text="#{light}"></option>
-								<option value="1" th:selected="${user.theme == 1}"
-									th:text="#{dark}"></option>
-							</select>
-						</div>
-					</div>
 				</div>
 
 				<div style="padding-top: 32px;"></div>

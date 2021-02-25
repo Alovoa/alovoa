@@ -35,8 +35,6 @@ public class UserGdpr {
 	
 	private double totalDonations;
 	
-	private int theme;
-	
 	@Convert(converter = TextEncryptorConverter.class)
 	private String email;
 
@@ -87,8 +85,6 @@ public class UserGdpr {
 		u.setPreferedMinAge(user.getPreferedMinAge());
 		u.setPreferedMaxAge(user.getPreferedMaxAge());
 		u.setTotalDonations(user.getTotalDonations());
-		
-		u.setTheme(user.getTheme());
 		
 		u.setEmail(user.getEmail());
 		u.setFirstName(user.getFirstName());

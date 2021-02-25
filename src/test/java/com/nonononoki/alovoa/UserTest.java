@@ -54,40 +54,40 @@ public class UserTest {
 
 	@Autowired
 	private SearchService searchService;
-	
+
 	@Autowired
 	private MessageService messageService;
 
 	@Autowired
 	private UserRepository userRepo;
-	
+
 	@Autowired
 	private UserLikeRepository userLikeRepo;
-	
+
 	@Autowired
 	private UserHideRepository userHideRepo;
-	
+
 	@Autowired
 	private UserBlockRepository userBlockRepo;
-	
+
 	@Autowired
 	private UserReportRepository userReportRepo;
-	
+
 	@Autowired
 	private UserNotificationRepository userNotificationRepo;
-	
+
 	@Autowired
 	private ConversationRepository conversationRepo;
-	
+
 	@Autowired
 	private MessageRepository messageRepo;
-	
+
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
 	@Value("${app.age.min}")
 	private int minAge;
-	
+
 	@Value("${app.message.size}")
 	private int maxMessageSize;
 
@@ -97,38 +97,40 @@ public class UserTest {
 	private final int INTENTION_TEST = 1;
 
 	private static List<User> testUsers = null;
-	
-	public static List<User> getTestUsers(CaptchaService captchaService, RegisterService registerService) throws Exception {
-		if(testUsers == null) {
+
+	public static List<User> getTestUsers(CaptchaService captchaService, RegisterService registerService)
+			throws Exception {
+		if (testUsers == null) {
 			// register and confirm test users
 			Captcha c1 = captchaService.generate();
 			RegisterDto user1Dto = createTestUserDto(1, c1, "test1");
 			String tokenContent1 = registerService.register(user1Dto);
 			User user1 = registerService.registerConfirm(tokenContent1);
-	
+
 			Captcha c2 = captchaService.generate();
 			RegisterDto user2Dto = createTestUserDto(2, c2, "test2");
 			String tokenContent2 = registerService.register(user2Dto);
 			User user2 = registerService.registerConfirm(tokenContent2);
-	
+
 			Captcha c3 = captchaService.generate();
 			RegisterDto user3Dto = createTestUserDto(2, c3, "test3");
 			String tokenContent3 = registerService.register(user3Dto);
 			User user3 = registerService.registerConfirm(tokenContent3);
-	
+
 			testUsers = new ArrayList<>();
 			testUsers.add(user1);
 			testUsers.add(user2);
 			testUsers.add(user3);
 		}
-		
+
 		return testUsers;
 	}
-	
-	public static void deleteAllUsers(UserService userService, AuthService authService, CaptchaService captchaService, ConversationRepository conversationRepo, UserRepository userRepo) throws Exception {
-		if(testUsers != null) {
-			for(User user : testUsers) {
-				if(!user.isAdmin()) {
+
+	public static void deleteAllUsers(UserService userService, AuthService authService, CaptchaService captchaService,
+			ConversationRepository conversationRepo, UserRepository userRepo) throws Exception {
+		if (testUsers != null) {
+			for (User user : testUsers) {
+				if (!user.isAdmin()) {
 					user = userRepo.findById(user.getId()).get();
 					Mockito.when(authService.getCurrentUser()).thenReturn(user);
 					UserDeleteToken token = userService.deleteAccountRequest();
@@ -156,7 +158,7 @@ public class UserTest {
 		dto.setPassword("test123");
 		dto.setFirstName("test");
 		dto.setGender(gender);
-		if(c != null) {
+		if (c != null) {
 			dto.setCaptchaId(c.getId());
 			dto.setCaptchaText(c.getText());
 		} else {
@@ -236,13 +238,10 @@ public class UserTest {
 		userService.updateMinAge(minAge);
 		Assert.assertTrue("min_age", user3.getPreferedMinAge() == minAge);
 		userService.updatePreferedGender(1, true);
-		//TODO Assert PREF_GENDER
+		// TODO Assert PREF_GENDER
 		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getId());
 		Assert.assertTrue("interest", user3.getInterests().size() == 0);
 		userService.addInterest(INTEREST);
-		int theme = 1;
-		userService.updateTheme(theme);
-		Assert.assertTrue("theme", user3.getTheme() == theme);
 		userService.addImage(img3);
 		Assert.assertTrue("image", user3.getImages().size() == 1);
 		userService.deleteImage(authService.getCurrentUser().getImages().get(0).getId());
@@ -255,20 +254,20 @@ public class UserTest {
 		Assert.assertTrue("audio", user3.getAudio() != null);
 		userService.deleteAudio();
 		Assert.assertTrue("audio", user3.getAudio() == null);
-		
+
 		searchTest(user1, user2, user3);
-		
+
 		UserTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
-		
+
 		Assert.assertEquals(conversationRepo.count(), 0);
 		Assert.assertEquals(userRepo.count(), 1);
-		
+
 	}
-	
+
 	private void searchTest(User user1, User user2, User user3) throws Exception {
-		
+
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		List<UserDto> searchDtos1 = searchService.search(0.0,0.0, 50, 1);
+		List<UserDto> searchDtos1 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos1.size(), 2);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
@@ -278,29 +277,29 @@ public class UserTest {
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		List<UserDto> searchDtos3 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos3.size(), 1);
-		
-		//Tip: 1 degree equals roughly 111km
+
+		// Tip: 1 degree equals roughly 111km
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		userService.updatePreferedGender(1, true);
 		userService.updatePreferedGender(2, true);
 		userService.updatePreferedGender(3, true);
-		
+
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		userService.updatePreferedGender(1, true);
 		userService.updatePreferedGender(2, true);
 		userService.updatePreferedGender(3, true);
-		
+
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		userService.updatePreferedGender(1, true);
 		userService.updatePreferedGender(2, true);
 		userService.updatePreferedGender(3, true);
-		
+
 		List<UserDto> searchDtos4 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos4.size(), 2);
-		
+
 		List<UserDto> searchDtos5 = searchService.search(0.45, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos5.size(), 2);
-		
+
 		List<UserDto> searchDtos6 = searchService.search(0.46, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos6.size(), 0);
 
@@ -311,83 +310,84 @@ public class UserTest {
 		Assert.assertEquals(userNotificationRepo.count(), 1);
 		List<UserDto> searchDtos7 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos7.size(), 1);
-		
-		//hideUser
+
+		// hideUser
 		userService.hideUser(UserDto.encodeId(user2.getId(), textEncryptor));
 		Assert.assertEquals(userHideRepo.count(), 1);
 		Assert.assertEquals(user3.getHiddenUsers().size(), 1);
 		List<UserDto> searchDtos8 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos8.size(), 0);
-		
+
 		user3.getHiddenUsers().clear();
 		userRepo.saveAndFlush(user3);
 		Assert.assertEquals(userHideRepo.count(), 0);
-		
+
 		// blockUser
 		userService.blockUser(UserDto.encodeId(user2.getId(), textEncryptor));
 		Assert.assertEquals(userBlockRepo.count(), 1);
-		Assert.assertEquals(user3.getBlockedUsers().size(), 1);	
+		Assert.assertEquals(user3.getBlockedUsers().size(), 1);
 		Assert.assertThrows(Exception.class, () -> {
-			//cannot like user when blocked
-	        userService.likeUser(UserDto.encodeId(user2.getId(), textEncryptor));
-	    });
-		
+			// cannot like user when blocked
+			userService.likeUser(UserDto.encodeId(user2.getId(), textEncryptor));
+		});
+
 		userService.unblockUser(UserDto.encodeId(user2.getId(), textEncryptor));
 		Assert.assertEquals(userBlockRepo.count(), 0);
-		
-		//like back
+
+		// like back
 		Assert.assertThrows(Exception.class, () -> {
 			userService.likeUser(UserDto.encodeId(user3.getId(), textEncryptor));
-	    });
-		
+		});
+
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		userService.likeUser(UserDto.encodeId(user3.getId(), textEncryptor));
-		
+
 		Assert.assertEquals(userLikeRepo.count(), 2);
 		Assert.assertEquals(userNotificationRepo.count(), 2);
 		Assert.assertEquals(conversationRepo.count(), 1);
 		Assert.assertEquals(user1.getConversations().size(), 1);
-		
-		messageService.send(user1.getConversations().get(0),"Hello");
+
+		messageService.send(user1.getConversations().get(0), "Hello");
 		Assert.assertEquals(messageRepo.count(), 1);
-		
+
 		String verylongString = StringUtils.repeat("*", maxMessageSize);
 		messageService.send(user1.getConversations().get(0), verylongString);
-		
+
 		Assert.assertEquals(messageRepo.count(), 2);
-		
+
 		Assert.assertThrows(Exception.class, () -> {
 			messageService.send(user1.getConversations().get(0), verylongString + "a");
-	    });
-		
+		});
+
 		Assert.assertEquals(messageRepo.count(), 2);
-		
-		//test sending message to blocked users
+
+		// test sending message to blocked users
 		userService.blockUser(UserDto.encodeId(user3.getId(), textEncryptor));
 		Assert.assertEquals(userBlockRepo.count(), 1);
 		Assert.assertThrows(Exception.class, () -> {
 			messageService.send(user3.getConversations().get(0), "Hello");
-	    });
-		
+		});
+
 		Assert.assertEquals(messageRepo.count(), 2);
-		
+
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		Assert.assertThrows(Exception.class, () -> {
 			messageService.send(user1.getConversations().get(0), "Hello");
-	    });
-		
+		});
+
 		Assert.assertEquals(messageRepo.count(), 2);
-		
+
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		userService.unblockUser(UserDto.encodeId(user3.getId(), textEncryptor));
 		Assert.assertEquals(userBlockRepo.count(), 0);
-		
-		messageService.send(user1.getConversations().get(0), verylongString);	
+
+		messageService.send(user1.getConversations().get(0), verylongString);
 		Assert.assertEquals(messageRepo.count(), 3);
-		
+
 		Assert.assertEquals(userReportRepo.count(), 0);
 		Captcha captchaReport = captchaService.generate();
-		userService.reportUser(UserDto.encodeId(user3.getId(), textEncryptor), captchaReport.getId(), captchaReport.getText(), "report");
+		userService.reportUser(UserDto.encodeId(user3.getId(), textEncryptor), captchaReport.getId(),
+				captchaReport.getText(), "report");
 		Assert.assertEquals(userReportRepo.count(), 1);
 	}
- }
+}

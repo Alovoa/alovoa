@@ -87,8 +87,6 @@ public class User implements UserDetails {
 	private String profilePicture;
 
 	private double totalDonations;
-
-	private int theme;
 	
 	private boolean admin;
 

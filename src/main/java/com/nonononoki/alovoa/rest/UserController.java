@@ -106,11 +106,6 @@ public class UserController {
 	public void deleteImage(@PathVariable long imageId) throws Exception {
 		userService.deleteImage(imageId);
 	}
-	
-	@PostMapping("/update/theme/{themeId}")
-	public void updateTheme(@PathVariable int themeId) throws Exception {
-		userService.updateTheme(themeId);
-	}
 
 	@PostMapping(value = "/like/{idEnc}")
 	public void likeUser(@PathVariable String idEnc) throws Exception {

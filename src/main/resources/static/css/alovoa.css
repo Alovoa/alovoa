@@ -151,11 +151,9 @@ input[type=range].slider {
 	#oauth-div button span {
 		font-size: 16px;
 	}
-	
 	#captcha-image {
 		width: 156px;
 	}
-	
 	#captcha-refresh-button {
 		width: 60px;
 	}
@@ -164,5 +162,61 @@ input[type=range].slider {
 @media screen and (max-width: 700px) {
 	.navigation-item span {
 		display: none;
+	}
+}
+
+/* DARK THEME */
+@media ( prefers-color-scheme : dark) {
+	body, .card, .box, .textarea, .footer, .table, .select select, select option
+		{
+		background-color: #121212;
+	}
+	.button:not(.colored) {
+		background-color: #121212;
+		color: white;
+	}
+	.input {
+		background-color: #121212;
+		color: white;
+	}
+	.message {
+		background-color: #121212;
+	}
+	body *, container *, .subtitle, .label, .textarea, .select select {
+		color: white;
+	}
+	.option {
+		color: #363636 !important;
+	}
+	.content table td, .content table th {
+		border-color: rgba(219, 219, 219, .5);
+		color: white;
+	}
+	.footer {
+		background-color: #000000;
+	}
+	#logout:hover span {
+		color: #0a0a0a;
+	}
+	.content-background {
+		/*background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%,
+		rgba(46, 52, 54, 0.9) 10%, rgba(46, 52, 54, 0.9) 100%);
+		*/
+		background: rgba(46, 52, 54, 0.9);
+	}
+	.input::placeholder {
+		color: #E0E0E0;;
+	}
+	textarea::placeholder {
+		color: white !important;
+		opacity: 0.5;
+	}
+	.title {
+		color: white;
+	}
+	@media screen and (max-width: 1024px) {
+		.profile-bottom.dimmed {
+			background: rgba(46, 52, 54, 0.9);
+		}
 	}
 }

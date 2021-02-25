@@ -1,18 +1,19 @@
 package com.nonononoki.alovoa.service;
 
+import java.awt.Color;
+import java.io.ByteArrayOutputStream;
 import java.util.Base64;
 import java.util.Date;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.github.cage.Cage;
-import com.github.cage.GCage;
 import com.nonononoki.alovoa.entity.Captcha;
+import com.nonononoki.alovoa.lib.OxCaptcha;
 import com.nonononoki.alovoa.repo.CaptchaRepository;
 
 @Service
@@ -26,19 +27,40 @@ public class CaptchaService {
 
 	@Value("${app.captcha.length}")
 	private int captchaLength;
+	
+	private final int WIDTH = 120;
+	private final int HEIGHT = 70;
+	
+	private final  Color BG_COLOR = new Color(0, 0, 0, 0);
+	private final  Color FG_COLOR = new Color(41, 182, 246);
 
-	public Captcha generate() {
-		Cage cage = new GCage();
-		String rand = RandomStringUtils.randomAlphanumeric(captchaLength);
-		byte[] ba = cage.draw(rand);
+	public Captcha generate() throws Exception {
+		OxCaptcha ox = generateCaptchaImage(captchaLength);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ImageIO.write(ox.getImage(), "png", baos);
+		byte[] ba = baos.toByteArray();
 		String encoded = Base64.getEncoder().encodeToString(ba);
 		Captcha captcha = new Captcha();
 		captcha.setDate(new Date());
 		captcha.setImage(encoded);
-		captcha.setText(rand);
+		captcha.setText(ox.getText());
 		captcha.setIp(request.getRemoteAddr());
 		captcha = captchaRepo.saveAndFlush(captcha);
 		return captcha;
+	}
+	
+	private OxCaptcha generateCaptchaImage(int length) {
+		OxCaptcha c = new OxCaptcha(WIDTH, HEIGHT);
+		c.foreground(FG_COLOR);
+		c.background(BG_COLOR);
+		c.text(captchaLength);
+		
+		c.distortion();
+		c.noiseStraightLine();
+		c.noiseStraightLine();
+		c.noiseStraightLine();
+		
+		return c;	
 	}
 
 	public boolean isValid(long id, String text) {

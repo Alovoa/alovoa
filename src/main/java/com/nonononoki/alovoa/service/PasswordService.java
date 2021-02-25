@@ -1,7 +1,6 @@
 package com.nonononoki.alovoa.service;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +42,6 @@ public class PasswordService {
 			throw new Exception("");
 		}
 		User u = userRepo.findByEmail(dto.getEmail().toLowerCase());
-		
-		List<User> users = userRepo.findAll();
 		
 		if(u.isDisabled()) {
 			throw new DisabledException("");

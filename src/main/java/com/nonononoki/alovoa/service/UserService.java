@@ -489,12 +489,6 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
-	public void updateTheme(int themeId) throws Exception {
-		User user = authService.getCurrentUser();
-		user.setTheme(themeId);
-		userRepo.saveAndFlush(user);
-	}
-
 	public void addImage(String imgB64) throws Exception {
 		User user = authService.getCurrentUser();
 		if (user.getImages() != null && user.getImages().size() < imageMax) {

@@ -37,8 +37,6 @@ public class UserDto {
 	
 	private int preferedMinAge;
 	private int preferedMaxAge;
-	
-	private int theme;
 
 	private Set<Gender> preferedGenders;
 	private UserIntention intention;
@@ -81,7 +79,6 @@ public class UserDto {
 		UserDto dto = new UserDto();
 		dto.setId(user.getId());
 		dto.setIdEncoded(encodeId(user.getId(), textEncryptor));
-		dto.setTheme(user.getTheme());
 		dto.setActiveDate(user.getDates().getActiveDate());
 		LocalDate now = LocalDate.now();
 		Period period = Period.between(user.getDates().getDateOfBirth(), now);

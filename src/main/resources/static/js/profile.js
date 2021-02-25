@@ -207,27 +207,6 @@ $(function() {
 
 	});
 
-	$("#theme").change(function(e) {
-
-		let data = $("#theme").val();
-		if (data) {
-			$.ajax({
-				type : "POST",
-				url : "/user/update/theme/" + data,
-				headers : {
-					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
-				},
-				success : function(e) {
-					location.reload(true);
-				},
-				error : function(e) {
-					console.log(e);
-					alert(getGenericErrorText());
-				}
-			});
-		}
-	});
-
 	$("#interest-form").submit(function(e) {
 		e.preventDefault();
 		let val = e.target.elements['value'].value;
