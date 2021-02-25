@@ -8,16 +8,12 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
@@ -42,11 +38,8 @@ import com.nonononoki.alovoa.service.RegisterService;
 import com.nonononoki.alovoa.service.SearchService;
 import com.nonononoki.alovoa.service.UserService;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
-@ContextConfiguration
 @ActiveProfiles("test")
-@AutoConfigureTestDatabase
 @Transactional
 public class UserTest {
 
@@ -158,7 +151,7 @@ public class UserTest {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.YEAR, AGE * (-1));
 		RegisterDto dto = new RegisterDto();
-		dto.setEmail(email + "@mailinator.com");
+		dto.setEmail(email + Tools.MAIL_TEST_DOMAIN);
 		dto.setDateOfBirth(calendar.getTime());
 		dto.setPassword("test123");
 		dto.setFirstName("test");
@@ -392,6 +385,7 @@ public class UserTest {
 		messageService.send(user1.getConversations().get(0), verylongString);	
 		Assert.assertEquals(messageRepo.count(), 3);
 		
+		Assert.assertEquals(userReportRepo.count(), 0);
 		Captcha captchaReport = captchaService.generate();
 		userService.reportUser(UserDto.encodeId(user3.getId(), textEncryptor), captchaReport.getId(), captchaReport.getText(), "report");
 		Assert.assertEquals(userReportRepo.count(), 1);

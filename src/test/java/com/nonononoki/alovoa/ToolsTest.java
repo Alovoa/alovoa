@@ -3,7 +3,7 @@ package com.nonononoki.alovoa;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-class ToolsTests {
+class ToolsTest {
 
 	@Test
 	void test() throws Exception {

@@ -21,7 +21,7 @@ public class ImprintService {
 	@Autowired
 	private ContactRepository contactRepo;
 	
-	public void contact(ContactDto dto) throws Exception {
+	public Contact contact(ContactDto dto) throws Exception {
 		boolean isValid = captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText());
 		if (!isValid) {
 			throw new Exception(publicService.text("backend.error.captcha.invalid"));
@@ -31,6 +31,6 @@ public class ImprintService {
 		c.setDate(new Date());
 		c.setEmail(dto.getEmail());
 		c.setMessage(dto.getMessage());
-		contactRepo.save(c);
+		return contactRepo.save(c);
 	}
 }

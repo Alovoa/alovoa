@@ -1,8 +1,8 @@
 package com.nonononoki.alovoa.model;
 
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class PasswordChangeDto {
 
 	private String email;

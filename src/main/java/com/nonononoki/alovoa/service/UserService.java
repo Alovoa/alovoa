@@ -44,11 +44,11 @@ import com.nonononoki.alovoa.entity.user.UserLike;
 import com.nonononoki.alovoa.entity.user.UserNotification;
 import com.nonononoki.alovoa.entity.user.UserReport;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
+import com.nonononoki.alovoa.model.UserDeleteParams;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserGdpr;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.GenderRepository;
-import com.nonononoki.alovoa.repo.MessageRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
 import com.nonononoki.alovoa.repo.UserImageRepository;
@@ -97,9 +97,6 @@ public class UserService {
 
 	@Autowired
 	private ConversationRepository conversationRepo;
-	
-	@Autowired
-	private MessageRepository messageRepo;
 
 	@Autowired
 	private CaptchaService captchaService;
@@ -187,7 +184,35 @@ public class UserService {
 			throw new Exception("");
 		}
 
+		UserDeleteParams userDeleteParam = UserDeleteParams.builder()
+				.conversationRepo(conversationRepo)
+				.userBlockRepo(userBlockRepo)
+				.userHideRepo(userHideRepo)
+				.userLikeRepo(userLikeRepo)
+				.userNotificationRepo(userNotificationRepo)
+				.userRepo(userRepo)
+				.userReportRepo(userReportRepo)
+				.build();
 
+		removeUserLinkedLists(user, userDeleteParam);
+		user = authService.getCurrentUser();	
+		user = userRepo.saveAndFlush(user);
+		userRepo.delete(user);
+		userRepo.flush();
+		
+		mailService.sendAccountDeleteConfirm(user);
+	}
+	
+	public static User removeUserLinkedLists(User user, UserDeleteParams userDeleteParam) throws Exception {
+		
+		UserRepository userRepo = userDeleteParam.getUserRepo();
+		UserLikeRepository userLikeRepo = userDeleteParam.getUserLikeRepo();
+		ConversationRepository conversationRepo = userDeleteParam.getConversationRepo();
+		UserNotificationRepository userNotificationRepo = userDeleteParam.getUserNotificationRepo();
+		UserHideRepository userHideRepo = userDeleteParam.getUserHideRepo();
+		UserBlockRepository userBlockRepo = userDeleteParam.getUserBlockRepo();
+		UserReportRepository userReportRepo = userDeleteParam.getUserReportRepo();
+		
 		//DELETE USER LIKE
 		{
 			for(UserLike like : userLikeRepo.findByUserFrom(user)) {
@@ -347,17 +372,7 @@ public class UserService {
 			userReportRepo.flush();
 		}
 		
-		
-		user = authService.getCurrentUser();
-		//user.getLikes().clear();
-		//user.getLikedBy().clear();
-		//user.getReported().clear();
-		
-		user = userRepo.saveAndFlush(user);
-		userRepo.delete(user);
-		userRepo.flush();
-		
-		mailService.sendAccountDeleteConfirm(user);
+		return user;
 	}
 
 	public void updateProfilePicture(String imgB64) throws Exception {
@@ -684,7 +699,7 @@ public class UserService {
 		}
 	}
 
-	public void reportUser(String idEnc, long captchaId, String captchaText, String comment)
+	public UserReport reportUser(String idEnc, long captchaId, String captchaText, String comment)
 			throws NumberFormatException, Exception {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
@@ -700,8 +715,12 @@ public class UserService {
 			report.setUserTo(user);
 			report.setComment(comment);
 			currUser.getReported().add(report);
-			userRepo.saveAndFlush(currUser);
+			currUser = userRepo.saveAndFlush(currUser);
+			
+			return currUser.getReported().get(currUser.getReported().size() - 1);
 		}
+		
+		return null;
 	}
 
 	public User encodedIdToUser(String idEnc) throws NumberFormatException, Exception {

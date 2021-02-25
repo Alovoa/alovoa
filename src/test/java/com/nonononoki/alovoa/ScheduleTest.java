@@ -5,15 +5,12 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nonononoki.alovoa.entity.Captcha;
@@ -23,6 +20,7 @@ import com.nonononoki.alovoa.entity.user.UserHide;
 import com.nonononoki.alovoa.entity.user.UserPasswordToken;
 import com.nonononoki.alovoa.model.PasswordResetDto;
 import com.nonononoki.alovoa.repo.CaptchaRepository;
+import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserDeleteTokenRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
 import com.nonononoki.alovoa.repo.UserPasswordTokenRepository;
@@ -34,9 +32,7 @@ import com.nonononoki.alovoa.service.RegisterService;
 import com.nonononoki.alovoa.service.ScheduleService;
 import com.nonononoki.alovoa.service.UserService;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
-@ContextConfiguration
 @ActiveProfiles("test")
 @Transactional
 public class ScheduleTest {
@@ -55,6 +51,9 @@ public class ScheduleTest {
 
 	@Autowired
 	private UserDeleteTokenRepository userDeleteTokenRepository;
+	
+	@Autowired
+	private ConversationRepository conversationRepo;
 	
 	@Autowired
 	private ScheduleService scheduleService;
@@ -187,7 +186,7 @@ public class ScheduleTest {
 		scheduleService.cleanUserDeleteToken(currentDate);
 		Assert.assertEquals(userDeleteTokenRepository.count(), 1);
 		
-		//UserTest.deleteAllUsers(userService, authService, captchaService);
+		UserTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 	
 	private Captcha generateCaptcha() {

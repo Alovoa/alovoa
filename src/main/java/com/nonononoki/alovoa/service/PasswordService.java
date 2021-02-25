@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserPasswordToken;
 import com.nonononoki.alovoa.model.PasswordChangeDto;
@@ -44,6 +44,8 @@ public class PasswordService {
 		}
 		User u = userRepo.findByEmail(dto.getEmail().toLowerCase());
 		
+		List<User> users = userRepo.findAll();
+		
 		if(u.isDisabled()) {
 			throw new DisabledException("");
 		}
@@ -52,12 +54,12 @@ public class PasswordService {
 		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
 		token.setDate(new Date());
 		token.setUser(u);
-		token = userPasswordTokenRepo.save(token);
+		u.setPasswordToken(token);
+		u = userRepo.saveAndFlush(u);
 
 		mailService.sendPasswordResetMail(u, token);
 		
-		return token;
-
+		return u.getPasswordToken();
 	}
 
 	public void changePasword(PasswordChangeDto dto) throws Exception {
@@ -74,7 +76,6 @@ public class PasswordService {
 		}
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 		user.setPasswordToken(null);
-		userRepo.save(user);
-		//userPasswordTokenRepo.delete(token);
+		userRepo.saveAndFlush(user);
 	}
 }
