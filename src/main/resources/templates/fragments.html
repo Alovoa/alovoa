@@ -33,15 +33,13 @@
 
 			<div style="width: 100%; display: flex;">
 				<div class="navbar-end">
-					<span class="navbar-item" id="navbar-item-register"> <a
-						class="button is-white is-outlined" href="/register"> <span
-							th:text="#{sign-up}"></span>
+					<div class="navbar-item" id="navbar-item-register"> <a
+						class="button is-white is-outlined" href="/register" th:text="#{sign-up}"></a>
+					</div> 
+					<div class="navbar-item"> <a
+						class="button is-white is-outlined" href="/login" th:text="#{login}">
 					</a>
-					</span> <span class="navbar-item"> <a
-						class="button is-white is-outlined" href="/login"> <span
-							th:text="#{login}"></span>
-					</a>
-					</span>
+					</div>
 				</div>
 			</div>
 		</nav>

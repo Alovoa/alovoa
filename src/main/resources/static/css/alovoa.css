@@ -182,11 +182,12 @@ input[type=range].slider {
 	.message {
 		background-color: #121212;
 	}
-	body *, container *, .subtitle, .label, .textarea, .select select {
-		color: white;
-	}
 	.option {
-		color: #363636 !important;
+		color: #121212 !important;
+	}
+	body *, container *, .subtitle, .label, .content h4, .textarea, .select select
+		{
+		color: white;
 	}
 	.content table td, .content table th {
 		border-color: rgba(219, 219, 219, .5);
@@ -213,6 +214,10 @@ input[type=range].slider {
 	}
 	.title {
 		color: white;
+	}
+	.card, .box {
+		box-shadow: 0 .5em 1em -.125em rgba(10, 10, 10, .9), 0 0 0 1px
+			rgba(10, 10, 10, .9);
 	}
 	@media screen and (max-width: 1024px) {
 		.profile-bottom.dimmed {

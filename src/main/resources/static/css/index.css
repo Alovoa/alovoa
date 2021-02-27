@@ -25,3 +25,7 @@
 #cookie-banner {
 	font-size: 0.9em;
 }
+
+svg path {
+	color: #209cee;
+}
