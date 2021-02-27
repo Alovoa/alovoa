@@ -171,7 +171,7 @@ input[type=range].slider {
 }
 
 .datepicker-year span, .datepicker-month, .date-item {
-	color: black !important;
+	color: #4a4a4a !important;
 }
 
 @media screen and (max-width: 700px) {
