@@ -34,13 +34,60 @@
 	height: auto;
 }
 
+.searched {
+	display: none;
+}
+
+.card.is-horizontal {
+	flex-direction: row;
+	display: flex;
+	box-shadow: none;
+}
+
+.card.is-horizontal .card-image {
+	align-self: center;
+}
+
+.card.is-horizontal .image {
+	min-height: 100%;
+}
+
+.card.is-horizontal .card-content {
+	flex: 1;
+}
+
+.card.is-horizontal .card-content {
+	padding-left: 1em;
+	padding-top: 0;
+	padding-bottom: 0;
+	font-size: 0.8em;
+}
+
+.hidden {
+	visibility: visible;
+}
+
+#search-right {
+	float: right;
+}
+
+.user-search-div{
+	 margin-bottom: 24px;
+	 scroll-snap-type: y mandatory;
+	 height: calc(100vh - 108px);
+	 overflow-y: scroll;
+	 scrollbar-width: none;  
+	 scrollbar-height: none;  
+}
+
 @media screen and (max-width: 1024px) {
 	.card.is-horizontal {
 		flex-direction: column !important;
+		margin-top: 12px;
 	}
 	.card {
 		border: initial;
-		border-top: 1px solid #d3d3d3;
+		/*border-top: 1px solid #d3d3d3;*/
 		border-radius: 0px !important;
 		height: calc(100vh - 236px);
 		position: relative;
@@ -67,9 +114,7 @@
 		height: initial;
 	}
 	.image img {
-		max-height: calc(100vh - 280px);
-		max-width: calc(100vh - 280px);
-		margin-bottom: 24px;
+		/*margin-bottom: 24px;*/
 		/*width: auto;*/
 		/*height: auto;*/
 	}
@@ -114,9 +159,6 @@
 		margin-top: 0.2em !important;
 		margin-bottom: 0.2em !important;
 	}
-	.searched {
-		display: none;
-	}
 	.card {
 		padding: 0px;
 		height: calc(100vh - 132px);
@@ -137,42 +179,18 @@
 	    border-radius: 0px;
 	}
 	
-		.image img {
+	.image img {
 		max-height: calc(100vh - 0px);
 		max-width: calc(100vh - 0px);
-		margin-bottom: 24px;
-		/*width: auto;*/
-		/*height: auto;*/
 	}
+	
+	.hidden {
+		visibility: hidden;
+	}
+	
+	.user-search-div {
+		 margin-bottom: 0px;
+	}
+	
 }
-
-.card.is-horizontal {
-	flex-direction: row;
-	display: flex;
-	box-shadow: none;
-}
-
-.card.is-horizontal .card-image {
-	align-self: center;
-}
-
-.card.is-horizontal .image {
-	min-height: 100%;
-}
-
-.card.is-horizontal .card-content {
-	flex: 1;
-}
-
-.card.is-horizontal .card-content {
-	padding-left: 1em;
-	padding-top: 0;
-	padding-bottom: 0;
-	font-size: 0.8em;
-}
-
-#search-right {
-	float: right;
-}
-
 

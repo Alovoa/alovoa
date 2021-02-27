@@ -31,9 +31,6 @@ function search() {
 			    	
 
 					slider.on('transitionEnd', function () { 
-						console.log(slider.activeIndex);
-						console.log($(slider.el).attr('id'));
-						
 						let id = $(slider.el).attr("id");
 						
 						if(slider.activeIndex == 0) {
@@ -47,8 +44,6 @@ function search() {
 				});
 			});
 			$("#filter-div").addClass("searched");
-
-			console.log("TEST");
 		}, function(error) {
 			console.log(error);
 		});

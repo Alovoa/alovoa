@@ -218,7 +218,7 @@ input[type=range].slider {
 		/*background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%,
 		rgba(46, 52, 54, 0.9) 10%, rgba(46, 52, 54, 0.9) 100%);
 		*/
-		background: rgba(46, 52, 54, 0.9);
+		/*background: rgba(46, 52, 54, 0.9);*/
 	}
 	.input::placeholder {
 		color: #E0E0E0;;
@@ -241,8 +241,13 @@ input[type=range].slider {
 		color: #209cee !important;
 	}
 	@media screen and (max-width: 1024px) {
+
+		.content-background {
+			background: rgba(18, 18, 18, 0.9) !important;
+		}
+		
 		.profile-bottom.dimmed {
-			background: rgba(46, 52, 54, 0.9);
+		    background: rgba(18, 18, 18, 0.9) !important;
 		}
 	}
 }
