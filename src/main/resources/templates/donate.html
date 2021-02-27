@@ -17,26 +17,21 @@
 <body>
 	<div id="main-logged-in">
 		<header th:insert="fragments.html::header-logged-in"></header>
-		<div class="section">
-			<div class="container is-small" style="display: flex">
-				<div>
-					<label class="label" th:text="#{filter}"></label>
-					<div class="select">
-						<select id="sort" onchange="search()">
-							<option value="1" th:text="#{donate.latest-donations}"></option>
-							<option value="2" th:text="#{donate.largest-donations}"></option>
-						</select>
-					</div>
-				</div>
+		<div id="donate-top-margin"></div>
+		<section class="container" id="main-container"></section>
+		<div class="section" id="donate-bottom">
+			<div class="select" id="donation-select">
+				<select id="sort" onchange="search()">
+					<option value="1" th:text="#{donate.latest-donations}"></option>
+					<option value="2" th:text="#{donate.largest-donations}"></option>
+				</select>
 			</div>
-
-			<div style="padding-top: 24px;"></div>
-			<div class="container">
-				<a class="button colored is-primary" style="width: 100%;"
-					href="/donate-list" target="_blank"><i
-					class="fa fa-hand-holding-usd" style="padding-right: 4px;"></i><span
-					th:text="#{donate.donate-now}"></span></a>
-				<section class="container" id="main-container"></section>
+			<div class="container" id="donate-button">
+				<a class="button colored is-primary"
+					style="width: 100%; padding: 4px;" href="/donate-list"
+					target="_blank"><i class="fa fa-hand-holding-usd fa-lg"></i><span
+					th:text="#{donate.donate-now}" style="padding-left: 8px;"
+					id="donate-now-text"></span></a>
 			</div>
 		</div>
 	</div>

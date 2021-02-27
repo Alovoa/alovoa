@@ -82,7 +82,9 @@
 							<div class="content">
 								<h4 th:utext="#{index.private.title}"></h4>
 								<p th:utext="#{index.private.description}"></p>
-								<a href="/privacy" th:utext="#{privacy-policy}"></a>
+								<p>
+									<a href="/privacy" th:utext="#{privacy-policy}"></a>
+								</p>
 							</div>
 						</div>
 					</div>
@@ -134,7 +136,8 @@
 		</section>
 		<section class="container cards" style="margin-top: 1.5em">
 			<div class="card">
-			<a class="button" th:utext="#{index.sign-up-now}" style="width: 100%;" href="/register"></a>
+				<a class="button" th:utext="#{index.sign-up-now}"
+					style="width: 100%;" href="/register"></a>
 			</div>
 		</section>
 

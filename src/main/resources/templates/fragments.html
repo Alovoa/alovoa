@@ -209,7 +209,7 @@
 								</div>
 								<div class="profile-bottom full-width dimmed"
 									style="display: inline-block;">
-									<button class="button left"
+									<button class="button colored is-info left"
 										th:onclick="viewProfile([[${user.idEncoded}]])"
 										th:text="#{view-profile}"></button>
 									<div class="right">
@@ -232,7 +232,6 @@
 					</div>
 				</div>
 			</div>
-			<div style="margin-bottom: 24px;"></div>
 		</div>
 	</div>
 
@@ -257,8 +256,8 @@
 		</div>
 	</div>
 
-	<div th:fragment="donate-filter">
-		<div class="card is-horizontal" th:each="donation : ${donations}" style="margin-top: 12px;">
+	<div th:fragment="donate-filter" id="donate-cards-div" >
+		<div class="card is-horizontal" th:each="donation : ${donations}" style="scroll-snap-align: end;">
 			<div class="card-image">
 				<figure class="image">
 					<img th:src="${donation.user.profilePicture}" class="profile-pic"

@@ -42,6 +42,7 @@
 	flex-direction: row;
 	display: flex;
 	box-shadow: none;
+	margin-bottom: 16px;
 }
 
 .card.is-horizontal .card-image {
@@ -145,6 +146,12 @@
 }
 /*very small screens*/
 @media screen and (max-width: 600px) {
+	
+	.card.is-horizontal {
+		margin-top: 0px;
+		margin-bottom: 16px;
+	}
+	
 	.section {
 		padding: 0.5rem 0.5rem;
 	}

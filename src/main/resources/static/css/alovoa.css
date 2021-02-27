@@ -147,6 +147,7 @@ input[type=range].slider {
 .datepicker-nav svg {
 	color: white;
 }
+
 @media screen and (max-width: 400px) {
 	#navbar-text {
 		display: none;
@@ -166,7 +167,8 @@ input[type=range].slider {
 	min-width: 232px;
 }
 
-.datepicker-nav .button.is-text:active, .datepicker-nav .button.is-text:focus {
+.datepicker-nav .button.is-text:active, .datepicker-nav .button.is-text:focus
+	{
 	background: #00d1b2;
 }
 
@@ -186,7 +188,8 @@ input[type=range].slider {
 		{
 		background-color: #121212;
 	}
-	.button:not(.colored):not(.datetimepicker-footer-cancel):not(.datepicker-nav-previous):not(.datepicker-nav-next)::hover {
+	.button:not(.colored):not(.datetimepicker-footer-cancel):not(.datepicker-nav-previous):not(.datepicker-nav-next)::hover
+		{
 		background-color: #121212;
 		color: white;
 	}
@@ -211,14 +214,11 @@ input[type=range].slider {
 	.footer {
 		background-color: #000000;
 	}
+	p a {
+		color: #3273dc;
+	}
 	#logout:hover span {
 		color: #0a0a0a;
-	}
-	.content-background {
-		/*background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%,
-		rgba(46, 52, 54, 0.9) 10%, rgba(46, 52, 54, 0.9) 100%);
-		*/
-		/*background: rgba(46, 52, 54, 0.9);*/
 	}
 	.input::placeholder {
 		color: #E0E0E0;;
@@ -241,13 +241,11 @@ input[type=range].slider {
 		color: #209cee !important;
 	}
 	@media screen and (max-width: 1024px) {
-
 		.content-background {
 			background: rgba(18, 18, 18, 0.9) !important;
 		}
-		
 		.profile-bottom.dimmed {
-		    background: rgba(18, 18, 18, 0.9) !important;
+			background: rgba(18, 18, 18, 0.9) !important;
 		}
 	}
 }
