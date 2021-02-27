@@ -186,7 +186,7 @@ input[type=range].slider {
 		{
 		background-color: #121212;
 	}
-	.button:not(.colored):not(.datetimepicker-footer-cancel):not(.datepicker-nav-previous):not(.datepicker-nav-next) {
+	.button:not(.colored):not(.datetimepicker-footer-cancel):not(.datepicker-nav-previous):not(.datepicker-nav-next)::hover {
 		background-color: #121212;
 		color: white;
 	}
