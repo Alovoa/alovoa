@@ -144,6 +144,9 @@ input[type=range].slider {
 	margin: initial;
 }
 
+.datepicker-nav svg {
+	color: white;
+}
 @media screen and (max-width: 400px) {
 	#navbar-text {
 		display: none;
@@ -159,6 +162,18 @@ input[type=range].slider {
 	}
 }
 
+.datetimepicker-dummy-input {
+	min-width: 232px;
+}
+
+.datepicker-nav .button.is-text:active, .datepicker-nav .button.is-text:focus {
+	background: #00d1b2;
+}
+
+.datepicker-year span, .datepicker-month, .date-item {
+	color: black !important;
+}
+
 @media screen and (max-width: 700px) {
 	.navigation-item span {
 		display: none;
@@ -171,7 +186,7 @@ input[type=range].slider {
 		{
 		background-color: #121212;
 	}
-	.button:not(.colored) {
+	.button:not(.colored):not(.datetimepicker-footer-cancel):not(.datepicker-nav-previous):not(.datepicker-nav-next) {
 		background-color: #121212;
 		color: white;
 	}
@@ -218,6 +233,12 @@ input[type=range].slider {
 	.card, .box {
 		box-shadow: 0 .5em 1em -.125em rgba(10, 10, 10, .9), 0 0 0 1px
 			rgba(10, 10, 10, .9);
+	}
+	.datetimepicker-dummy-input {
+		color: white !important;
+	}
+	.datetimepicker-footer-cancel svg {
+		color: #209cee !important;
 	}
 	@media screen and (max-width: 1024px) {
 		.profile-bottom.dimmed {
