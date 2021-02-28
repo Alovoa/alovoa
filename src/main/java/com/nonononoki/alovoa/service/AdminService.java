@@ -124,6 +124,8 @@ public class AdminService {
 		user.setPreferedMinAge(0);
 		user.setRegisterToken(null);
 		user.setTotalDonations(0);
+		user.setNumberProfileViews(0);
+		user.setNumberSearches(0);
 		user.getWebPush().clear();
 
 		userRepo.saveAndFlush(user);

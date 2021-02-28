@@ -118,3 +118,8 @@ function hideProfileTile(id) {
 function getUserDivFromButton(btn) {
 	return $(btn).parent().parent().parent().parent();
 }
+
+function onDonateModalClicked() {
+	$('#donate-modal').removeClass('is-active'); 
+	window.open('/donate-list', '_blank');
+}

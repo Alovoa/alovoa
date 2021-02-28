@@ -176,6 +176,14 @@ public class User implements UserDetails {
 
 	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
 	private List<UserReport> reportedByUsers;
+	
+	//some more data
+	long numberProfileViews;
+	
+	long numberSearches;
+	
+	
+	
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

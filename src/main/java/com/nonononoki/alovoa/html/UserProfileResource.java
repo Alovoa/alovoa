@@ -42,10 +42,16 @@ public class UserProfileResource {
 			if(userView.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
 				throw new Exception("");
 			}	
+			
+			userView.setNumberProfileViews(userView.getNumberProfileViews()+1);
+			userView = userRepo.saveAndFlush(userView);
+			
 			ModelAndView mav = new ModelAndView("userProfile");
 			mav.addObject("user", UserDto.userToUserDto(userView, user, textEncryptor, UserDto.NO_AUDIO));
 			mav.addObject("currUser", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
+
 			return mav;
+			
 		} else {
 			throw new Exception("");
 		}		

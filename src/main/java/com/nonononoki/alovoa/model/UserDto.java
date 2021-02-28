@@ -63,6 +63,9 @@ public class UserDto {
 	private boolean reportedByCurrentUser;
 	private boolean likedByCurrentUser;
 	private boolean hiddenByCurrentUser;
+	
+	long numberProfileViews;
+	long numberSearches;
 
 	public static int ALL = 0;
 	public static int PROFILE_PICTURE_ONLY = 1;
@@ -103,6 +106,8 @@ public class UserDto {
 		if(mode != NO_AUDIO || mode != PROFILE_PICTURE_ONLY) {
 			dto.setAudio(user.getAudio());
 		}
+		dto.setNumberProfileViews(user.getNumberProfileViews());
+		dto.setNumberSearches(user.getNumberSearches());
 		
 		if(!user.equals(currentUser)) {
 			dto.blockedByCurrentUser = currentUser.getBlockedUsers().stream()

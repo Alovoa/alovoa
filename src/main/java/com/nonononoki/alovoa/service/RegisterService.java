@@ -245,6 +245,9 @@ public class RegisterService {
 		user.setReportedByUsers(new ArrayList<UserReport>());
 		user.setWebPush(new ArrayList<UserWebPush>());
 		
+		user.setNumberProfileViews(0);
+		user.setNumberSearches(0);
+		
 		user = userRepo.saveAndFlush(user);
 
 		BaseRegisterDto baseRegisterDto = new BaseRegisterDto();

@@ -78,6 +78,10 @@ public class UserGdpr {
 
 	private UserDates dates;
 	
+	long numberProfileViews;
+	
+	long numberSearches;
+	
 	public static UserGdpr userToUserGdpr(User user) {
 		UserGdpr u = new UserGdpr();
 		u.setConfirmed(user.isConfirmed());
@@ -105,6 +109,9 @@ public class UserGdpr {
 		u.setMessageSent(user.getMessageSent());
 		u.setWebPush(user.getWebPush());
 		u.setDates(user.getDates());
+		
+		u.setNumberProfileViews(user.getNumberProfileViews());
+		u.setNumberSearches(user.getNumberSearches());
 
 		return u;
 	}

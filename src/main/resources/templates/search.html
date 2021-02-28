@@ -62,6 +62,37 @@
 		</div>
 
 		<section class="container" id="main-container"></section>
+
+		<div id="donate-modal" class="modal is-active" th:if="${showDonationPopup}">
+			<div class="modal-background"></div>
+			<div class="modal-content">
+				<div class="box">
+					<article class="media">
+						<div class="media-left">
+							<i class="fa fa-coins fa-2x"></i>
+						</div>
+						<div class="media-content">
+							<div>
+									<strong th:text="#{donate.donate-now}"></strong> <br> 
+									<span>The
+									content for the modal comes here. You may use text, images,
+									buttons etc. here.
+									</span>
+								<div style="padding-top: 12px;"></div>
+								<button class="button right is-danger colored"
+									th:text="#{cancel}"
+									onclick="$('#donate-modal').removeClass('is-active')"
+									></button>
+								<button class="button right is-info colored"
+									style="margin-right: 4px;"
+									onclick="onDonateModalClicked()"
+									th:text="#{donate}"></button>
+							</div>
+						</div>
+					</article>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<footer th:replace="fragments.html::navigation"></footer>
