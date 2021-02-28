@@ -1,0 +1,9 @@
+#audio-play-button {
+	width: 300px;
+}
+
+@media screen and (max-width: 338px) {
+	#audio-play-button {
+		width: 100%;
+	}
+}

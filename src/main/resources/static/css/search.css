@@ -72,6 +72,10 @@
 	float: right;
 }
 
+.user-search-card {
+	scroll-snap-align: start;
+}
+
 .user-search-div{
 	 margin-bottom: 24px;
 	 scroll-snap-type: y mandatory;
@@ -142,6 +146,10 @@
 	.content {	
 		padding: 12px;
 		padding-top: 36px;	
+	}
+	
+	.user-search-card {
+		height: 100%;
 	}
 }
 /*very small screens*/

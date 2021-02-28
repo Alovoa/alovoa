@@ -163,8 +163,7 @@
 			<span th:text="#{no-users-found}"></span>
 		</div>
 
-		<div th:each="user : ${users}" class="user-search-card"
-			style="scroll-snap-align: start; height: 100%;">
+		<div th:each="user : ${users}" class="user-search-card">
 			<div class="swiper-container" th:id="${user.idEncoded}">
 				<div class="swiper-wrapper">
 
