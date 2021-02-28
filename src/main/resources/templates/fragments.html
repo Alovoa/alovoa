@@ -9,9 +9,9 @@
 
 		<div class="field">
 			<img id="captcha-image">
-			<button type="button" id="captcha-refresh-button" class="button is-info colored"
-				onclick="refreshCaptcha()">
-				<i class="fa fa-sync"  id="captcha-refresh-icon" ></i>
+			<button type="button" id="captcha-refresh-button"
+				class="button is-info colored" onclick="refreshCaptcha()">
+				<i class="fa fa-sync" id="captcha-refresh-icon"></i>
 			</button>
 		</div>
 		<div class="field">
@@ -33,12 +33,13 @@
 
 			<div style="width: 100%; display: flex;">
 				<div class="navbar-end">
-					<div class="navbar-item" id="navbar-item-register"> <a
-						class="button is-white is-outlined" href="/register" th:text="#{sign-up}"></a>
-					</div> 
-					<div class="navbar-item"> <a
-						class="button is-white is-outlined" href="/login" th:text="#{login}">
-					</a>
+					<div class="navbar-item" id="navbar-item-register">
+						<a class="button is-white is-outlined" href="/register"
+							th:text="#{sign-up}"></a>
+					</div>
+					<div class="navbar-item">
+						<a class="button is-white is-outlined" href="/login"
+							th:text="#{login}"> </a>
 					</div>
 				</div>
 			</div>
@@ -155,14 +156,15 @@
 		</nav>
 	</div>
 
-	<div th:fragment="search-users" class="user-search-div" >
+	<div th:fragment="search-users" class="user-search-div">
 
 		<div th:if="${#lists.isEmpty(users)}"
 			style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding-top: 12px;">
 			<span th:text="#{no-users-found}"></span>
 		</div>
 
-		<div th:each="user : ${users}" class="user-search-card" style="scroll-snap-align: start;">
+		<div th:each="user : ${users}" class="user-search-card"
+			style="scroll-snap-align: start; height: 100%;">
 			<div class="swiper-container" th:id="${user.idEncoded}">
 				<div class="swiper-wrapper">
 
@@ -177,41 +179,47 @@
 									<img th:src="${user.profilePicture}" class="profile-pic">
 								</figure>
 							</div>
-							<div class="card-content" onclick="toggleCardContent()">
-								<div class="content-background">
-									<div class="content">
-										<div class="media">
-											<div class="full-width">
-												<div class="left" style="font-size: 2em"
-													th:text="${user.firstName}"></div>
-												<div class="right" style="font-size: 1.5em">
-													<span th:text="#{age}"></span><span>: </span><span
-														th:text="${user.age}"></span>
+							<div class="card-content">
+								<div onclick="toggleCardContent()">
+									<div class="content-background" >
+										<div class="content">
+											<div class="media">
+												<div class="full-width">
+													<div class="left" style="font-size: 2em"
+														th:text="${user.firstName}"></div>
+													<div class="right" style="font-size: 1.5em">
+														<span th:text="#{age}"></span><span>: </span><span
+															th:text="${user.age}"></span>
+													</div>
 												</div>
 											</div>
-										</div>
-										<div class="media">
-											<div class="full-width">
-												<div class="left" style="font-size: 1.2em">
-													<span th:text="#{last-active}"></span><span>: </span><span
-														th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
-												</div>
-												<div class="right" style="font-size: 1.2em">
-													<span th:text="${user.distanceToUser}"></span><span>
-													</span><span th:text="#{km-from-you}"></span>
+											<div class="media">
+												<div class="full-width">
+													<div class="left" style="font-size: 1.2em">
+														<span th:text="#{last-active}"></span><span>: </span><span
+															th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
+													</div>
+													<div class="right" style="font-size: 1.2em">
+														<span th:text="${user.distanceToUser}"></span><span>
+														</span><span th:text="#{km-from-you}"></span>
+													</div>
 												</div>
 											</div>
-										</div>
 
-										<div style="font-size: 1.1em; word-break: break-all;"
-											class="description" th:text="${user.description}"></div>
+											<div style="font-size: 1.1em; word-break: break-all;"
+												class="description" th:text="${user.description}"></div>
+										</div>
 									</div>
 								</div>
 								<div class="profile-bottom full-width dimmed"
 									style="display: inline-block;">
-									<button class="button colored is-info left"
-										th:onclick="viewProfile([[${user.idEncoded}]])"
-										th:text="#{view-profile}"></button>
+									<div
+										style="width: 140px; float: left; padding-top: 33px; font-size: 1.3em;">
+										<P>
+											<a th:href="${'/profile/view/' + user.idEncoded}"
+												target="_blank" th:text="#{view-profile}"></a>
+										</P>
+									</div>
 									<div class="right">
 										<button class="button colored is-rounded is-danger"
 											th:onclick="hideUser([[${user.idEncoded}]])">
@@ -256,8 +264,9 @@
 		</div>
 	</div>
 
-	<div th:fragment="donate-filter" id="donate-cards-div" >
-		<div class="card is-horizontal" th:each="donation : ${donations}" style="scroll-snap-align: end;">
+	<div th:fragment="donate-filter" id="donate-cards-div">
+		<div class="card is-horizontal" th:each="donation : ${donations}"
+			style="scroll-snap-align: end;">
 			<div class="card-image">
 				<figure class="image">
 					<img th:src="${donation.user.profilePicture}" class="profile-pic"
@@ -279,9 +288,11 @@
 					<div class="media">
 						<div class="full-width">
 							<div class="left" style="font-size: 1.2em">
-								<span th:text="#{donated}"></span><span> </span>
-								<span th:text="${#numbers.formatDecimal(donation.amount, 2, 2, 'POINT') + ' €'}" th:if="${filter == 1}"></span>
-								<span th:text="${#numbers.formatDecimal(donation.user.totalDonations, 2, 2, 'POINT') + ' €'}" th:if="${filter == 2}"></span>
+								<span th:text="#{donated}"></span><span> </span> <span
+									th:text="${#numbers.formatDecimal(donation.amount, 1, 2, 'POINT') + ' €'}"
+									th:if="${filter == 1}"></span> <span
+									th:text="${#numbers.formatDecimal(donation.user.totalDonations, 1, 2, 'POINT') + ' €'}"
+									th:if="${filter == 2}"></span>
 							</div>
 							<div class="right" style="font-size: 1.2em">
 								<span th:text="${donation.user.distanceToUser}"></span><span>

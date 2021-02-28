@@ -125,7 +125,7 @@
 							<tr>
 								<th th:text="#{donated}"></th>
 								<td
-									th:text=" ${#numbers.formatDecimal(user.totalDonations, 2, 2, 'POINT') + ' €'}"></td>
+									th:text=" ${#numbers.formatDecimal(user.totalDonations, 1, 2, 'POINT') + ' €'}"></td>
 							</tr>
 							<tr>
 								<th th:text="#{userprofile.num-blocks}"></th>
