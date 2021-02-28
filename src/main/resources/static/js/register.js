@@ -26,13 +26,9 @@ $(function() {
 							a[x.name] = x.value;
 							return a;
 						}, {});
-
-				console.log(formdata);
 				if (!checkPassword()) {
 					return;
 				}
-
-				console.log(actionUrl)
 
 				$.ajax({
 					url : actionUrl,

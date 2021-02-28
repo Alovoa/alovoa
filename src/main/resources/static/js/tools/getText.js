@@ -1,7 +1,6 @@
 function getText(param) {
 	var res;
 	let url = "/text/" + param;
-	console.log(url);
 	$.ajax({
 		type : "GET",
 		url : url,
@@ -23,7 +22,6 @@ function getText(param) {
 function getTextAsync(param, callback) {
 	var res;
 	let url = "/text/" + param;
-	console.log(url);
 	$.ajax({
 		type : "GET",
 		url : url,

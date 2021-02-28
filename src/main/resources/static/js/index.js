@@ -1,7 +1,6 @@
 $(function() {
 	
 	let cookie = localStorage.getItem('cookie');
-	console.log(cookie)
 	if(!cookie) {
 		$('#cookie-banner').show();
 	}
@@ -24,7 +23,6 @@ $(function() {
 	}
 	
 	if(param) {
-		console.log(param)
 		let text = getText(param);
 		if(text) {
 			alert(text);

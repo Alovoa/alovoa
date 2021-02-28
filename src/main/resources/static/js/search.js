@@ -11,11 +11,8 @@ $(function() {
 });
 
 function search() {
-	console.log("search");
-
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function(position) {
-			console.log(position);
 			let distance = $("#max-distance-slider").val();
 			let sort = $("#sort").val();
 			let url = "/search/users/" + position.coords.latitude + "/"
@@ -44,8 +41,8 @@ function search() {
 				});
 			});
 			$("#filter-div").addClass("searched");
-		}, function(error) {
-			console.log(error);
+		}, function(e) {
+			console.log(e);
 		});
 	} else {
 		alert(getText("search.js.error.no-geolocation"));

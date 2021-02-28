@@ -45,7 +45,6 @@ function banUser(id, idReal) {
 						"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 					},
 					success : function() {
-						console.log(".user" + idReal);
 						$( ".user" + idReal ).hide();
 					},
 					error : function(e) {

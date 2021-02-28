@@ -7,8 +7,6 @@ var txtErrorWeak = "";
 $(function() {
 	txtErrorNoMatch = getText("error.password-no-match");
 	txtErrorWeak = getText("error.password-weak");
-	console.log(txtErrorNoMatch)
-	console.log(txtErrorWeak)
 });
 
 function checkPassword() {

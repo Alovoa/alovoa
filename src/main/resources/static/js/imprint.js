@@ -10,9 +10,6 @@ $(function() {
 							return a;
 						}, {});
 
-				console.log(formdata);
-				console.log(actionUrl)
-
 				$.ajax({
 					url : actionUrl,
 					headers : {

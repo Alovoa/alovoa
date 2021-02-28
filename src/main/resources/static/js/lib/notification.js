@@ -18,26 +18,9 @@ $(document).ready(function () {
 		$('#btnPushNotifications').hide();
 	} else {
 	    $('#btnPushNotifications').click(function (event) {
-		// if(isSubscribed){
-		// console.log("Unsubscribing...");
-		// unsubscribe();
-		// } else{
-		// subscribe();
-		// }
 	    	subscribe();
 	    });
 	}
-    
-// Notification.requestPermission().then(function (status) {
-// if (status === 'denied') {
-// console.log('[Notification.requestPermission] The user has blocked
-// notifications.');
-// disableAndSetBtnMessage('Notification permission denied');
-// } else if (status === 'granted') {
-// console.log('[Notification.requestPermission] Initializing service worker.');
-// initialiseServiceWorker();
-// }
-// });
 });
 
 function initialiseServiceWorker() {
@@ -77,17 +60,12 @@ function initialiseState(reg) {
         disableAndSetBtnMessage('Push messaging unsupported');
         return;
     }
-    
-    console.log('initialiseState')
 
     // We need the service worker registration to check for a subscription
     navigator.serviceWorker.ready.then(function (reg) {
         // Do we already have a push message subscription?
         reg.pushManager.getSubscription()
             .then(function (subscription) {
-            	
-            	console.log("subscription");
-            	console.log(subscription);
             	
                 if (!subscription) {
                     console.log('Not yet subscribed to Push');
@@ -112,8 +90,6 @@ function subscribe() {
 	
 	if(!isSubscribed) {
 		Notification.requestPermission().then(function (status) {
-			
-			console.log(status);			
 			if(status == 'granted') {
 				initialiseServiceWorker();
 			}
@@ -146,7 +122,6 @@ function subscribe() {
 function sendSubscriptionToServer(endpoint, key, auth) {
     var encodedKey = btoa(String.fromCharCode.apply(null, new Uint8Array(key)));
     var encodedAuth = btoa(String.fromCharCode.apply(null, new Uint8Array(auth)));
-    console.log("sendSubscriptionToServer");
     $.ajax({
         type: 'POST',
         url: notificationSubscriptionUrl,
@@ -187,7 +162,6 @@ function enableAndSetBtnMessage(message) {
 function makeButtonSubscribable(reg) {
 // enableAndSetBtnMessage('Subscribe to push notifications');
 // $('#btnPushNotifications').addClass('btn-primary').removeClass('btn-danger');
-	console.log("makeButtonSubscribable");
     var subscribeParams = {userVisibleOnly: true};
     
     // Setting the public key of our VAPID key pair.

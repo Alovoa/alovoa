@@ -64,7 +64,6 @@ function reloadMessages(first) {
 		},
 		contentType : "text/plain",
 		success : function(res) {	
-		//console.log(res);
 			if(res != "<div></div>") {
 				$("#messages-div").html(res);
 				$("#messages-div").scrollTop($("#messages-div")[0].scrollHeight);

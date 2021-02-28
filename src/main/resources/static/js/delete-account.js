@@ -12,8 +12,6 @@ $(function() {
 						}, {});
 				
 				formdata.confirm = formdata.confirm == "on";
-
-				console.log(formdata);
 			
 				$.ajax({
 					url : actionUrl,

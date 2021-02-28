@@ -23,7 +23,6 @@ $(function() {
 
 	$("#profilePictureUpload").change(function() {
 		let file = document.querySelector('#profilePictureUpload').files[0];
-		console.log($("input[name='_csrf']").val());
 		getBase64(file, function(b64) {
 			if (b64) {
 				$.ajax({
@@ -48,7 +47,6 @@ $(function() {
 
 	$("#addImageInput").change(function() {
 		let file = document.querySelector('#addImageInput').files[0];
-		console.log($("input[name='_csrf']").val());
 		getBase64(file, function(b64) {
 			if (b64) {
 				$.ajax({
@@ -90,8 +88,6 @@ $(function() {
 			}
 			if ($('#description').val) {
 				timerDescription = setTimeout(function() {
-
-					console.log("uploading description")
 					$.ajax({
 						type : "POST",
 						url : "/user/update/description",
@@ -137,8 +133,6 @@ $(function() {
 	$("#min-age-slider").change(function(e) {
 
 		let data = $("#min-age-slider").val();
-		console.log(data)
-
 		if (data) {
 			$("#min-age-display").html(data);
 			$.ajax({
@@ -178,9 +172,7 @@ $(function() {
 	$(".gender-switch").change(function(e) {
 
 		let obj = e.target;
-		console.log(obj);
 		let checked = obj.checked;
-		console.log(checked);
 		if (checked) {
 			checked = 1;
 		} else {
@@ -278,7 +270,6 @@ $(function() {
 			if (b64) {
 			
 			var type = file.type.split('/')[1];
-			console.log(type);
 			
 				$.ajax({
 					type : "POST",
