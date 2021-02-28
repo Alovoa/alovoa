@@ -18,7 +18,7 @@ function downloadAndPlayAudio() {
 		headers : {
 			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 		},
-		success : function(res) {ch
+		success : function(res) {
 		 	let audio = document.getElementById('audio');
 		 	$("#audio").show();
 		 	$("#audio-play-button").hide();
