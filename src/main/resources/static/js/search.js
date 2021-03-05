@@ -13,6 +13,7 @@ $(function() {
 function search() {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function(position) {
+		
 			let distance = $("#max-distance-slider").val();
 			let sort = $("#sort").val();
 			let url = "/search/users/" + position.coords.latitude + "/"
@@ -43,6 +44,7 @@ function search() {
 			$("#filter-div").addClass("searched");
 		}, function(e) {
 			console.log(e);
+			alert(getText("search.js.error.no-location"));
 		});
 	} else {
 		alert(getText("search.js.error.no-geolocation"));
