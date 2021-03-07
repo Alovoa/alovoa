@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.AuthFilter;
 import com.nonononoki.alovoa.component.AuthProvider;
 import com.nonononoki.alovoa.component.FailureHandler;
@@ -35,16 +36,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private FailureHandler failureHandler;
 	
 	public static String ROLE_USER = "ROLE_USER";
-	public static String ROLE_ADMIN = "ROLE_USER";
+	public static String ROLE_ADMIN = "ROLE_ADMIN";
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-
+				.antMatchers("/admin/**").hasAnyAuthority(ROLE_ADMIN)
+				
 				.antMatchers("/css/**").permitAll().antMatchers("/js/**").permitAll()
 				.antMatchers("/img/**").permitAll().antMatchers("/font/**").permitAll()
 				.antMatchers("/json/**").permitAll().antMatchers("/oauth2/**").permitAll()
-
 				.antMatchers("/").permitAll().antMatchers("/login/**")
 				.permitAll().antMatchers("/terms-conditions").permitAll().antMatchers("/imprint")
 				.permitAll().antMatchers("/imprint/*").permitAll().antMatchers("/privacy").permitAll()
@@ -52,22 +53,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/register").permitAll().antMatchers("/register/**").permitAll()
 				.antMatchers("/captcha/**").permitAll().antMatchers("/donate-list").permitAll()
 				.antMatchers("/password/**").permitAll()
-
-				.antMatchers("/favicon.ico").permitAll().antMatchers("/sw.js").permitAll()
-				.antMatchers("/manifest.json").permitAll()
-				
-				.antMatchers("/admin/**").hasAnyAuthority(ROLE_ADMIN)
-
-				.antMatchers("/text/*").permitAll()
+				.antMatchers("/favicon.ico").permitAll().antMatchers("/sw.js").permitAll()	
+				.antMatchers("/text/*").permitAll().antMatchers("/manifest/**").permitAll()
 				
 				.anyRequest().authenticated().and().formLogin()
-				
-				.loginPage("/login").and().logout().deleteCookies("JSESSIONID").logoutUrl("/logout")
-				.logoutSuccessUrl("/?logout").and().oauth2Login().loginPage("/login").defaultSuccessUrl("/login/oauth2/success").and()
+				.loginPage("/login").and()
+				.logout().deleteCookies("JSESSIONID")
+				.logoutUrl("/logout")
+				.logoutSuccessUrl("/?logout").and().oauth2Login().loginPage("/login")
+				.defaultSuccessUrl("/login/oauth2/success").and()
 				.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.rememberMe().key(key);
 		
-		http.requiresChannel().anyRequest().requiresSecure();
+		if(!Tools.DEV.equals(profile)) {
+			http.requiresChannel().anyRequest().requiresSecure();
+		}
 	}
 
 	@Override

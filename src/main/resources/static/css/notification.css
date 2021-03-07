@@ -1,3 +1,8 @@
+.card-image:first-child img {
+    border-top-left-radius:12px;
+    border-top-right-radius: 12px;
+}
+
 .image img {
 	max-height: 100px;
 	max-width: 100px;
@@ -14,7 +19,7 @@
 	color: white;
 }
 
-.profile-bottom .button {
+.notification-div .button {
 	height: 58px;
 }
 
@@ -23,12 +28,16 @@
 	
 }
 
-.profile-bottom {
+.notification-div {
 	font-size: 2em;
 	/*line-height: 150px;*/
 }
 
-.profile-bottom {
+.notification-card {
+	min-height: 60px;
+}
+
+.notification-div {
 	text-align: center;
 	min-width: 240px;
 }
@@ -41,7 +50,7 @@
 		max-height: initial;
 		max-width: initial;
 	}
-	.profile-bottom {
+	.notification-div {
 		font-size: 1.2em !important; 
 	}
 	.card {

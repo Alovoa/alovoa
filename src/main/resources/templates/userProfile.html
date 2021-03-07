@@ -204,9 +204,14 @@
 					<div class="field">
 						<div th:replace="fragments.html::captcha"></div>
 						<div class="field" style="height: 42px">
-							<button class="button is-info" style="float: right"
+
+							<button class="button is-info" style="float: right;"
 								th:onclick="reportUserSubmit([[${user.idEncoded}]])"
 								th:text="#{submit}"></button>
+							<button class="button right is-danger colored"
+								style="margin-right: 4px;" onclick="closeModal()"
+								th:text="#{cancel}"></button>
+
 						</div>
 					</div>
 				</div>

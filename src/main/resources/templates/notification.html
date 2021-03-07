@@ -20,7 +20,7 @@
 		<section class="container" id="main-container">
 			<div class="section">
 				<div class="container" style="width: 100%;">
-					<div class="card is-horizontal"
+					<div class="card is-horizontal notification-card"
 						th:each="notification : ${notifications}" style="width: 100%;"
 						th:onclick="viewProfile([[${notification.userFromDto.idEncoded}]])">
 						<div class="card-image">
@@ -31,7 +31,7 @@
 							</figure>
 						</div>
 						<div class="card-content">
-							<div class="profile-bottom full-width"
+							<div class="notification-div full-width"
 								style="height: 100%; display:flex; line-height: initial; align-items: center;  justify-content: center;">
 								<div>
 									<span th:text="#{notification.liked-by}"></span><span

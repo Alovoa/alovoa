@@ -19,12 +19,6 @@
 <body>
 	<div id="main">
 		<header th:replace="fragments.html::header"></header>
-
-		<div class="box" id="cookie-banner" onclick="cookieClick()">
-			<div class="has-text-centered" th:text="#{index.cookie.notice}">
-				<a href="/privacy#cookies" th:text="#{index.cookie.more}"></a>
-			</div>
-		</div>
 		<section class="hero is-info is-medium is-bold">
 			<div class="hero-body">
 				<div class="container has-text-centered">
@@ -138,6 +132,13 @@
 			<div class="card">
 				<a class="button" th:utext="#{index.sign-up-now}"
 					style="width: 100%;" href="/register"></a>
+			</div>
+		</section>
+		<section>
+			<div class="box" id="cookie-banner" onclick="cookieClick()">
+				<div class="has-text-centered" th:text="#{index.cookie.notice}">
+					<a href="/privacy#cookies" th:text="#{index.cookie.more}"></a>
+				</div>
 			</div>
 		</section>
 

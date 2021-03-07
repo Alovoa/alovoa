@@ -39,7 +39,8 @@
 							<label class="label" th:text="#{dob}" style="float: left;"></label><span
 								class="asterisk">*</span>
 							<div class="control">
-								<input type="date" name="dateOfBirth" style="width: 100%;" required>
+								<input type="date" name="dateOfBirth" style="width: 100%;"
+									required>
 							</div>
 						</div>
 
@@ -57,7 +58,7 @@
 									required>
 							</div>
 						</div>
-						
+
 						<div class="notification is-danger" id="password-info"
 							th:text="#{password-change.warning}"></div>
 
@@ -113,11 +114,15 @@
 					</form>
 				</div>
 
-				<div class="container" style="margin-bottom: 48px;" id="oauth-div">
+				<p>
+					<a href="/login" th:text="#{register.login}"></a>
+				</p>
+
+				<div class="container" style="margin-bottom: 48px; margin-top: 48px;" id="oauth-div">
 					<div class="box">
 						<div class="columns">
 							<button class="button colored"
-								style="background-color: #4285F4; width: 100%; margin-right: 4px;margin-bottom: 4px;"
+								style="background-color: #4285F4; width: 100%; margin-right: 4px; margin-bottom: 4px;"
 								onclick="window.location='/oauth2/authorization/google'">
 								<img src="/img/google-icon.svg" style="height: 32px;"><span
 									style="padding-left: 12px; color: white;"

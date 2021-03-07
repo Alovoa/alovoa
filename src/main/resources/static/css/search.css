@@ -85,10 +85,19 @@
 	 scrollbar-height: none;  
 }
 
+/*
+.view-profile-div {
+	width: 140px; 
+	float: left; 
+	padding-top: 33px; 
+	font-size: 1.3em;
+}
+*/
+
 @media screen and (max-width: 1024px) {
 	.card.is-horizontal {
 		flex-direction: column !important;
-		margin-top: 12px;
+		/*margin-top: 12px;*/
 	}
 	.card {
 		border: initial;

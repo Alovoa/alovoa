@@ -1,13 +1,5 @@
 .card {
-	/*height: calc(100vh - 262px);*/
 	height: initial;
-}
-
-.image img {
-	/*
-    max-height: calc(100vh - 580px);
-    max-width: calc(100vh - 580px);
-    */
 }
 
 .card-content {

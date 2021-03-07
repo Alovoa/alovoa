@@ -1,0 +1,25 @@
+{
+	  "version": "1.0.0",
+	  "name": "Alovoa",
+	  "description": "Open-source app for meeting new and awesome people",
+	  "type": "web",
+	  "launch_path": "/",
+	  "cursor": true,
+	  "icons": {
+	    "56": "/img/alovoa_56.png",
+	    "112": "/img/alovoa_112.png",
+	    "128": "/img/alovoa_128.png"
+	  },
+	  "developer": {
+	    "name": "Nho Quy Dinh",
+	    "url": "http://alovoa.com"
+	  },
+	  "locales": {
+	    "en-US": {
+	      "name": "Alovoa",
+	      "subtitle": "Meet awesome people",
+	      "description": "Open-source app for meeting new and awesome people"
+	    }
+	  },
+	  "default_locale": "en-US"
+}

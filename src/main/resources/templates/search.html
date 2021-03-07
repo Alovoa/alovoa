@@ -63,7 +63,8 @@
 
 		<section class="container" id="main-container"></section>
 
-		<div id="donate-modal" class="modal is-active" th:if="${showDonationPopup}">
+		<div id="donate-modal" class="modal is-active"
+			th:if="${showDonationPopup}">
 			<div class="modal-background"></div>
 			<div class="modal-content">
 				<div class="box">
@@ -73,17 +74,17 @@
 						</div>
 						<div class="media-content">
 							<div>
-									<strong th:text="#{donate.donate-now}"></strong> <br> 
-									<span th:text="#{search.donation.popup}"></span>
+								<strong th:text="#{donate.donate-now}"></strong> <br> <span
+									th:text="#{search.donation.popup}"></span>
 								<div style="padding-top: 12px;"></div>
-								<button class="button right is-danger colored"
-									th:text="#{cancel}"
-									onclick="$('#donate-modal').removeClass('is-active')"
-									></button>
+
 								<button class="button right is-info colored"
-									style="margin-right: 4px;"
-									onclick="onDonateModalClicked()"
-									th:text="#{donate}"></button>
+									onclick="onDonateModalClicked()" th:text="#{donate}"></button>
+
+								<button class="button right is-danger colored"
+									th:text="#{cancel}" style="margin-right: 4px;"
+									onclick="$('#donate-modal').removeClass('is-active')"></button>
+
 							</div>
 						</div>
 					</article>

@@ -20,7 +20,7 @@
 		<section class="container" id="main-container">
 			<div class="section">
 				<div class="container" style="width: 100%;">
-					<div class="card is-horizontal" th:each="convo : ${conversations}"
+					<div class="card is-horizontal messages-card" th:each="convo : ${conversations}"
 						th:onclick="viewMessageDetail(this, [[${convo.id}]])">
 						<div class="card-image">
 							<figure class="image"

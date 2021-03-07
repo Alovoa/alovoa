@@ -18,17 +18,29 @@
 		<header th:insert="fragments.html::header"></header>
 		<div class="section">
 			<div class="container">
-				<a href="https://ko-fi.com/alovoa" class="button is-primary" style="width: 100%; margin-bottom: 32px; border-color: #dbdbdb;"><i
-					class="fa fa-coins"></i><span th:text="#{kofi}" style="padding-left: 4px;"></span></a>
-				<div class="notification is-success" th:text="#{donate.notice-1}" style="margin-bottom: 4px;"></div>
+				<div class="notification is-info" style="margin-bottom: 8px;">
+					<span style="word-break: break-all">BTC:
+						bc1q5yejhe5rv0m7j0euxml7klkd2ummw0gc3vx58p</span>
+				</div>
+
+				<a href="https://ko-fi.com/alovoa" class="button is-info"
+					style="width: 100%; border-color: #dbdbdb; margin-bottom: 4px;"><i
+					class="fa fa-coins"></i><span th:text="#{kofi}"
+					style="padding-left: 4px;"></span></a>
+
+				<div style="margin-bottom: 32px;"></div>
+
+				<div class="notification is-success" th:text="#{donate.notice-1}"
+					style="margin-bottom: 4px;"></div>
 				<div class="notification is-success" th:text="#{donate.notice-2}"></div>
+
 			</div>
 		</div>
 
 
 	</div>
 	<footer th:replace="fragments.html::footer"></footer>
-	
+
 	<script src="/js/tools/getText.js"></script>
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>

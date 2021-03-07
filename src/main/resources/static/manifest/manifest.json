@@ -3,6 +3,21 @@
   "name": "Alovoa",
   "icons": [
     {
+      "src": "/img/alovoa_56.png",
+      "type": "image/png",
+      "sizes": "56x56"
+    },
+    {
+      "src": "/img/alovoa_112.png",
+      "type": "image/png",
+      "sizes": "112x112"
+    },
+    {
+      "src": "/img/alovoa_128.png",
+      "type": "image/png",
+      "sizes": "128x128"
+    },
+    {
       "src": "/img/android-chrome-192x192.png",
       "type": "image/png",
       "sizes": "192x192"
@@ -18,7 +33,7 @@
   "display": "standalone",
   "scope": "/",
   "theme_color": "#3298DC",
-  "description" : "Open-source dating app",
+  "description" : "Open-source app for meeting new and awesome people",
   "orientation" : "any",
   "lang" : "English"
 }
