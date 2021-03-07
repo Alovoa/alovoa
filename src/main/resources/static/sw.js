@@ -11,22 +11,7 @@
 
 const cacheName = 'v1';
 const staticAssets = [
-  './',
-  '/index.html',
-  '/css/lib/bulma.min.css',
-  '/css/alovoa.css',
-  '/css/index.css',
-  
-  '/sw.js',
-  '/js/lib/fontawesome.all.js',
-  '/js/lib/jquery.min.js',
-  '/js/index.js',
-  
-  '/img/android-chrome-512x512.png',
-  '/img/android-chrome-192x192.png',
-  '/manifest.json',
-  '/favicon.ico'
-  
+  './'
 ];
 
 self.addEventListener('push', function(event) {

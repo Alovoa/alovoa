@@ -77,7 +77,7 @@ public class Oauth2Controller {
 			
 			//administrator cannot use oauth for security reason e.g. password breach on oath provider
 			if (user.isAdmin()) {
-				throw new Exception("");
+				throw new Exception("not_supported_for_admin");
 			} 
 
 			if (!user.isConfirmed()) {
@@ -87,6 +87,6 @@ public class Oauth2Controller {
 			}
 		}
 
-		throw new Exception("");
+		throw new Exception("unknown_error");
 	}
 }

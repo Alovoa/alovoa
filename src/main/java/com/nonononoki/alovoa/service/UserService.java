@@ -169,19 +169,19 @@ public class UserService {
 		String userTokenString = user.getDeleteToken().getContent();
 
 		if (!dto.isConfirm()) {
-			throw new Exception("");
+			throw new Exception("deletion_not_confirmed");
 		}
 
 		if (!dto.getTokenString().equals(userTokenString)) {
-			throw new Exception("");
+			throw new Exception("deletion_wrong_token");
 		}
 
 		if (!dto.getEmail().equals(user.getEmail())) {
-			throw new Exception("");
+			throw new Exception("deletion_wrong_email");
 		}
 
 		if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
-			throw new Exception("");
+			throw new Exception("captcha_invalid");
 		}
 
 		UserDeleteParams userDeleteParam = UserDeleteParams.builder()
@@ -384,7 +384,7 @@ public class UserService {
 
 	public void updateDescription(String description) throws Exception {
 		if (description.length() > descriptionSize) {
-			throw new Exception("");
+			throw new Exception("max_length_exceeded");
 		}
 		if (description.trim().length() == 0) {
 			description = null;
@@ -500,7 +500,7 @@ public class UserService {
 			user.getImages().add(img);
 			userRepo.saveAndFlush(user);
 		} else {
-			throw new Exception("");
+			throw new Exception("max_image_amount_exceeded");
 		}
 	}
 
@@ -548,23 +548,21 @@ public class UserService {
 				image = image.getSubimage(x, y, idealLength, idealLength);
 			}
 
-			if (image.getWidth() > imageLength) {
-				// scale image if it's too big
-				BufferedImage scaledImage = new BufferedImage(imageLength, imageLength, image.getType());
-				Graphics2D graphics2D = scaledImage.createGraphics();
+			//all images are equal in size
+			BufferedImage scaledImage = new BufferedImage(imageLength, imageLength, image.getType());
+			Graphics2D graphics2D = scaledImage.createGraphics();
 
-				// chose one
-				graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-						RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-				// graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING,
-				// RenderingHints.VALUE_RENDER_QUALITY);
-				// graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				// RenderingHints.VALUE_ANTIALIAS_ON);
+			// chose one
+			graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+					RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			// graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING,
+			// RenderingHints.VALUE_RENDER_QUALITY);
+			// graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+			// RenderingHints.VALUE_ANTIALIAS_ON);
 
-				graphics2D.drawImage(image, 0, 0, imageLength, imageLength, null);
-				graphics2D.dispose();
-				image = scaledImage;
-			}
+			graphics2D.drawImage(image, 0, 0, imageLength, imageLength, null);
+			graphics2D.dispose();
+			image = scaledImage;
 
 			// image to b64
 			bos = new ByteArrayOutputStream();
@@ -701,7 +699,7 @@ public class UserService {
 
 			boolean isValid = captchaService.isValid(captchaId, captchaText);
 			if (!isValid) {
-				throw new Exception("");
+				throw new Exception("captcha_invalid");
 			}
 			UserReport report = new UserReport();
 			report.setDate(new Date());
@@ -793,8 +791,8 @@ public class UserService {
 		DataInputStream dis = null;
 		*/
 
-		if (Tools.getBase64Size(audioB64) > audioMaxSize) {
-			throw new Exception("");
+		if (Tools.getBase64Size(audioB64) * Tools.THOUSAND > audioMaxSize) {
+			throw new Exception("file_size_too_large");
 		}
 		
 		return audioB64;

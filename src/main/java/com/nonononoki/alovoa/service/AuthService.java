@@ -34,7 +34,7 @@ public class AuthService {
 		
 		User user = userRepo.findByEmail(email);
 		if(user != null && user.isDisabled()) {
-			throw new Exception("");
+			throw new Exception("user_not_found");
 		}
 		
 		return user;

@@ -40,7 +40,7 @@ public class UserProfileResource {
 		
 		if(userView != null) {		
 			if(userView.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
-				throw new Exception("");
+				throw new Exception("blocked");
 			}	
 			
 			userView.setNumberProfileViews(userView.getNumberProfileViews()+1);
@@ -53,7 +53,7 @@ public class UserProfileResource {
 			return mav;
 			
 		} else {
-			throw new Exception("");
+			throw new Exception("user_not_found");
 		}		
 	}
 }

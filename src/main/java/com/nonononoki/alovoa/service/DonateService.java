@@ -60,7 +60,7 @@ public class DonateService {
 			donationsToDtos = DonationDto.usersToDtos(userRepo.usersDonate(),
 					currentUser, textEncryptor, maxEntries);
 		} else {
-			throw new Exception("");
+			throw new Exception("filter_not_found");
 		}
 
 		return donationsToDtos;

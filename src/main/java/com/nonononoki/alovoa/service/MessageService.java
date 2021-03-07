@@ -43,7 +43,7 @@ public class MessageService {
 	public void send(Conversation c, String message) throws Exception {
 		
 		if(message.length() > maxMessageSize) {
-			throw new Exception("");	
+			throw new Exception("message_length_too_long");	
 		}
 		
 		User currUser = authService.getCurrentUser();

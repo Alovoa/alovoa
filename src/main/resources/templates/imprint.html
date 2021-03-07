@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Alovoa">
-<link rel="manifest" href="/json/manifest.json">
+<link rel="manifest" href="/manifest/manifest.json">
 
 <link rel="stylesheet" href="/css/lib/bulma.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
@@ -18,7 +18,7 @@
 		<header th:insert="fragments.html::header"></header>
 		<div class="section">
 			<div class="box">
-				<p>Alovoa GmbH</p>
+				<p th:text="${companyName}"></p>
 				<p>Nho Quy Dinh</p>
 				<p>Impressumsstraße 7, 22222 Impressumsstadt</p>
 				<p>contact@alovoa.com</p>

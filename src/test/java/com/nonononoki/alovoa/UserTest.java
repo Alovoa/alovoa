@@ -250,7 +250,10 @@ public class UserTest {
 		Assert.assertTrue("profile_picture", user3.getProfilePicture() == null);
 		userService.updateProfilePicture(img3);
 		Assert.assertTrue("profile_picture", user3.getProfilePicture() != null);
-		userService.updateAudio(Tools.resourceToB64("audio/file_example_MP3_700KB.mp3"));
+		Assert.assertThrows(Exception.class, () -> {
+			userService.updateAudio(Tools.resourceToB64("audio/file_example_MP3_700KB.mp3"));
+		});
+		userService.updateAudio(Tools.resourceToB64("audio/file_example_MP3_470KB.mp3"));
 		Assert.assertTrue("audio", user3.getAudio() != null);
 		userService.deleteAudio();
 		Assert.assertTrue("audio", user3.getAudio() == null);

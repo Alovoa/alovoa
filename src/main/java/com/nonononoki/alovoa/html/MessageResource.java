@@ -80,7 +80,7 @@ public class MessageResource {
 		User user = authService.getCurrentUser();
 		Conversation c = conversationRepo.findById(id).orElse(null);
 		if(!c.containsUser(user)) {
-			throw new Exception("");
+			throw new Exception("user_not_in_conversation");
 		}
 		
 		User u = c.getPartner(user);

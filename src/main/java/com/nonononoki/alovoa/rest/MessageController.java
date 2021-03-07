@@ -38,7 +38,7 @@ public class MessageController {
 		User user = authService.getCurrentUser();
 		Conversation c = conversationRepo.findById(convoId).orElse(null);
 		if (!c.containsUser(user)) {
-			throw new Exception("");
+			throw new Exception("user_not_in_conversation");
 		}
 		messageService.send(c, msg);
 	}
@@ -48,7 +48,7 @@ public class MessageController {
 		User user = authService.getCurrentUser();
 		Conversation c = conversationRepo.findById(convoId).orElse(null);
 		if (!c.containsUser(user)) {
-			throw new Exception("");
+			throw new Exception("user_not_in_conversation");
 		}
 
 		Date now = new Date();

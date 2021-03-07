@@ -244,6 +244,9 @@ input[type=range].slider {
 	.datetimepicker-footer-cancel svg {
 		color: #209cee !important;
 	}
+	#addImageDiv path {
+		color: #209cee;
+	}
 	@media screen and (max-width: 1024px) {
 		.content-background {
 			background: rgba(18, 18, 18, 0.9) !important;

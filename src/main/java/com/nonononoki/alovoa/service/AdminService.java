@@ -89,7 +89,7 @@ public class AdminService {
 		User user = userRepo.findById(UserDto.decodeId(id, textEncryptor)).get();
 		
 		if(user == null) {
-			throw new Exception("");
+			throw new Exception("user_not_found");
 		}
 		
 		UserDeleteParams userDeleteParam = UserDeleteParams.builder()

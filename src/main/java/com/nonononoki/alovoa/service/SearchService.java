@@ -68,7 +68,7 @@ public class SearchService {
 	public List<UserDto> search(Double latitude, Double longitude, int distance, int sort) throws Exception {
 		
 		if(distance > maxDistance) {
-			throw new Exception("");
+			throw new Exception("max_distance_exceeded");
 		}
 		
 		User user = authService.getCurrentUser();

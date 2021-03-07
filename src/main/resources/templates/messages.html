@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Alovoa">
-<link rel="manifest" href="/json/manifest.json">
+<link rel="manifest" href="/manifest/manifest.json">
 
 <link rel="stylesheet" href="/css/lib/bulma.min.css" />
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
@@ -33,7 +33,7 @@
 							style="display: flex; justify-items: center; align-items: center;">
 							<div class="full-width profile-bottom">
 								<div style="font-size: 1.5em" th:text="${convo.userName}"></div>
-								<span style="font-size: 0.8em; overflow-wrap: normal; background-color: initial;" class="message"
+								<span style="overflow-wrap: normal; background-color: initial;" class="message"
 									th:text="${convo.lastMessage}"
 									th:if="${convo.lastMessage != null}"></span> <span
 									style="font-size: 0.8em; overflow-wrap: normal;"

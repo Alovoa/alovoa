@@ -206,9 +206,6 @@ public class RegisterService {
 		user.setPreferedMinAge(userMinAge);
 		user.setPreferedMaxAge(userMaxAge);
 		user.setGender(genderRepo.findById(dto.getGender()).orElse(null));
-		if (user.getGender() == null) {
-			throw new Exception("");
-		}
 		user.setIntention(userIntentionRepo.findById(dto.getIntention()).orElse(null));
 
 		UserDates dates = new UserDates();
