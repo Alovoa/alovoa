@@ -69,6 +69,9 @@ public class User implements UserDetails {
 	private String firstName;
 
 	private String description;
+	
+	//used for emails
+	private String language;
 
 	@Column(columnDefinition = "mediumtext")
 	@Convert(converter = TextEncryptorConverter.class)

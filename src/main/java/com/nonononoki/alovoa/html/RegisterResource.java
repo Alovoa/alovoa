@@ -14,9 +14,6 @@ import com.nonononoki.alovoa.service.RegisterService;
 @Controller
 public class RegisterResource {
 
-	// @Autowired
-	// private CaptchaService captchaService;
-
 	@Autowired
 	private RegisterService registerService;
 
@@ -26,10 +23,6 @@ public class RegisterResource {
 	@Autowired
 	private UserIntentionRepository userIntentionRepo;
 	
-	//@Autowired
-	//private TextEncryptorConverter textEncryptor;
-	
-
 	@GetMapping("/register")
 	public ModelAndView register() {
 		ModelAndView mav = new ModelAndView("register");
@@ -47,7 +40,6 @@ public class RegisterResource {
 
 	@GetMapping("/register/confirm/{tokenString}")
 	public String registerConfirm(@PathVariable String tokenString) {
-
 		try {
 			registerService.registerConfirm(tokenString);
 			return "redirect:/?registration-confirm-success";

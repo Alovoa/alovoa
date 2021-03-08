@@ -5,9 +5,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
 
+import com.google.common.io.Resources;
 import com.nonononoki.alovoa.entity.User;
 
 public class Tools {
@@ -26,16 +28,24 @@ public class Tools {
 	public static final String MAIL_TEST_DOMAIN= "@mailinator.com";
 
 	public static File getFileFromResources(String fileName) {
-
-		ClassLoader classLoader = Tools.class.getClassLoader();
-
-		URL res = classLoader.getResource(fileName);
+		URL res = getUrlFromResources(fileName);
 		if (res != null) {
 			return new File(res.getFile());
 		} else {
 			return null;
 		}
-
+	}
+	
+	public static URL getUrlFromResources(String fileName) {
+		ClassLoader classLoader = Tools.class.getClassLoader();
+		return classLoader.getResource(fileName);
+	}
+	
+	public static String getResourceText(String path) throws IOException {
+		File file = getFileFromResources(path);
+		byte[] bytes = Files.readAllBytes(file.toPath());
+		String content = new String(bytes, StandardCharsets.UTF_8);
+        return content;
 	}
 	
 	public static String resourceToB64(String path) throws IOException {

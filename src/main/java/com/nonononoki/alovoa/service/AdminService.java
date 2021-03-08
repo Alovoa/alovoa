@@ -2,8 +2,6 @@ package com.nonononoki.alovoa.service;
 
 import java.util.List;
 
-import javax.mail.MessagingException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,15 +64,13 @@ public class AdminService {
 		contactRepository.saveAndFlush(contact);
 	}	
 	
-	public void sendMailSingle(MailDto dto) throws MessagingException {
+	public void sendMailSingle(MailDto dto) throws Exception {
 		mailService.sendAdminMail(dto.getEmail(), dto.getSubject(), dto.getBody());
 	}
 	
-	public void sendMailAll(MailDto dto) throws MessagingException {		
+	public void sendMailAll(MailDto dto) throws Exception {		
 		List<User> users = userRepo.findAll();	
-		for(User u : users) {
-			mailService.sendAdminMail(u.getEmail(), dto.getSubject(), dto.getBody());
-		}		
+		mailService.sendAdminMailAll(dto.getSubject(), dto.getBody(), users);
 	}
 
 	public void deleteReport(long id) {

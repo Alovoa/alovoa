@@ -7,8 +7,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.mail.MessagingException;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,6 +84,9 @@ public class RegisterService {
 
 	@Autowired
 	protected CaptchaService captchaService;
+	
+	@Autowired
+	private UserService userService;
 
 	//@Autowired
 	//private TextEncryptorConverter textEncryptor;
@@ -143,7 +144,7 @@ public class RegisterService {
 		userRepo.saveAndFlush(user);
 	}
 
-	public UserRegisterToken createUserToken(User user) throws MessagingException {
+	public UserRegisterToken createUserToken(User user) throws Exception {
 		UserRegisterToken token = generateToken(user);
 		user.setRegisterToken(token);
 		user = userRepo.saveAndFlush(user);
@@ -246,6 +247,8 @@ public class RegisterService {
 		user.setNumberSearches(0);
 		
 		user = userRepo.saveAndFlush(user);
+		
+		userService.updateUserInfo(user);
 
 		BaseRegisterDto baseRegisterDto = new BaseRegisterDto();
 		baseRegisterDto.setRegisterDto(dto);

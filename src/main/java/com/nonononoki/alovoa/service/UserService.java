@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +20,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -723,9 +725,8 @@ public class UserService {
 
 	public boolean hasNewAlert() throws Exception {
 		User currUser = authService.getCurrentUser();
-		// user always check their alerts periodically in the background, so just update
-		// it here
-		updateActiveDate(currUser);
+		// user always check their alerts periodically in the background, so just update  it here
+		updateUserInfo(currUser);
 		return currUser.getDates().getNotificationDate().after(currUser.getDates().getNotificationCheckedDate());
 	}
 
@@ -734,8 +735,10 @@ public class UserService {
 		return currUser.getDates().getMessageDate().after(currUser.getDates().getMessageCheckedDate());
 	}
 
-	private void updateActiveDate(User user) {
-		user.getDates().setActiveDate(new Date());
+	public void updateUserInfo(User user) {
+		user.getDates().setActiveDate(new Date());	
+		Locale locale = LocaleContextHolder.getLocale();
+		user.setLanguage(locale.getLanguage());
 		userRepo.saveAndFlush(user);
 	}
 

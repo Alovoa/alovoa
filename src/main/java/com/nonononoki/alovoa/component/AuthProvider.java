@@ -1,7 +1,5 @@
 package com.nonononoki.alovoa.component;
 
-import javax.mail.MessagingException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -75,7 +73,7 @@ public class AuthProvider implements AuthenticationProvider {
 
 			try {
 				registerService.createUserToken(user);
-			} catch (MessagingException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
