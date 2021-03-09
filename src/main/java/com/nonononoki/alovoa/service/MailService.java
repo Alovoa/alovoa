@@ -80,8 +80,10 @@ public class MailService {
 		String text = new String();
 		String hrefWebsite = appDomain + "/"; 
 		String hrefDonate = appDomain + "/donate-list"; 
+		String imgSrc = Tools.imageToB64(Tools.getFileFromResources("static/img/mail_icon.jpg"), "jpeg" );
 		text = template.replaceAll("MAIL_BODY", body);
 		text = text.replaceAll("COMPANY_NAME", companyName);
+		text = text.replaceAll("SRC_IMAGE", imgSrc);
 		text = text.replaceAll("HREF_WEBSITE", hrefWebsite);
 		text = text.replaceAll("HREF_DONATE", hrefDonate);
 
