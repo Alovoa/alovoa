@@ -46,10 +46,12 @@
 	.section {
 		padding: 0;
 	}
+	/*
 	.image img {
 		max-height: initial;
 		max-width: initial;
 	}
+	*/
 	.notification-div {
 		font-size: 1.2em !important; 
 	}

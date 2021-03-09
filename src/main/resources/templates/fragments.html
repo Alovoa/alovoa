@@ -163,83 +163,86 @@
 			<span th:text="#{no-users-found}"></span>
 		</div>
 
-		<div th:each="user : ${users}" class="user-search-card">
-			<div class="swiper-container" th:id="${user.idEncoded}">
-				<div class="swiper-wrapper">
+		<th:block th:each="user : ${users}">
+			<div class="user-search-card" th:id="${user.idEncoded}">
+				<div class="swiper-container " th:id="${user.idEncoded}">
+					<div class="swiper-wrapper">
 
-					<div class="swiper-slide colored"
-						style="background-color: #48c774; display: flex; align-items: center; justify-content: center">
-						<i class="fa fa-thumbs-up fa-10x"></i>
-					</div>
-					<div class="swiper-slide">
-						<div class="card is-horizontal" style="width: 100%; height: 100%;">
-							<div class="card-image" onclick="toggleCardContent()">
-								<figure class="image">
-									<img th:src="${user.profilePicture}" class="profile-pic">
-								</figure>
-							</div>
-							<div class="card-content">
-								<div onclick="toggleCardContent()">
-									<div class="content-background" >
-										<div class="content">
-											<div class="media">
-												<div class="full-width">
-													<div class="left" style="font-size: 2em"
-														th:text="${user.firstName}"></div>
-													<div class="right" style="font-size: 1.5em">
-														<span th:text="#{age}"></span><span>: </span><span
-															th:text="${user.age}"></span>
+						<div class="swiper-slide colored"
+							style="background-color: #48c774; display: flex; align-items: center; justify-content: center">
+							<i class="fa fa-thumbs-up fa-10x"></i>
+						</div>
+						<div class="swiper-slide">
+							<div class="card is-horizontal"
+								style="width: 100%; height: 100%;">
+								<div class="card-image" onclick="toggleCardContent()">
+									<figure class="image">
+										<img th:src="${user.profilePicture}" class="profile-pic">
+									</figure>
+								</div>
+								<div class="card-content">
+									<div onclick="toggleCardContent()">
+										<div class="content-background">
+											<div class="content">
+												<div class="media">
+													<div class="full-width">
+														<div class="left" style="font-size: 2em"
+															th:text="${user.firstName}"></div>
+														<div class="right" style="font-size: 1.5em">
+															<span th:text="#{age}"></span><span>: </span><span
+																th:text="${user.age}"></span>
+														</div>
 													</div>
 												</div>
-											</div>
-											<div class="media">
-												<div class="full-width">
-													<div class="left" style="font-size: 1.2em">
-														<span th:text="#{last-active}"></span><span>: </span><span
-															th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
-													</div>
-													<div class="right" style="font-size: 1.2em">
-														<span th:text="${user.distanceToUser}"></span><span>
-														</span><span th:text="#{km-from-you}"></span>
+												<div class="media">
+													<div class="full-width">
+														<div class="left" style="font-size: 1.2em">
+															<span th:text="#{last-active}"></span><span>: </span><span
+																th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
+														</div>
+														<div class="right" style="font-size: 1.2em">
+															<span th:text="${user.distanceToUser}"></span><span>
+															</span><span th:text="#{km-from-you}"></span>
+														</div>
 													</div>
 												</div>
-											</div>
 
-											<div style="font-size: 1.1em; word-break: break-all;"
-												class="description" th:text="${user.description}"></div>
+												<div style="font-size: 1.1em; word-break: break-all;"
+													class="description" th:text="${user.description}"></div>
+											</div>
 										</div>
 									</div>
-								</div>
-								<div class="profile-bottom full-width dimmed"
-									style="display: inline-block;">
-									<div class="left">
-										<button class="button colored is-rounded is-info" 
-											th:onclick="window.open([[${'/profile/view/' + user.idEncoded}]], '_blank');" >
-											<i class="fa fa-user"></i>
-										</button>
-									</div>
-									<div class="right">
-										<button class="button colored is-rounded is-danger"
-											th:onclick="hideUser([[${user.idEncoded}]])">
-											<i class="fa fa-thumbs-down"></i>
-										</button>
-										<button class="button colored is-rounded is-success"
-											th:onclick="likeUser([[${user.idEncoded}]])">
-											<i class="fa fa-thumbs-up"></i>
-										</button>
+									<div class="profile-bottom full-width dimmed"
+										style="display: inline-block;">
+										<div class="left">
+											<button class="button colored is-rounded is-info"
+												th:onclick="window.open([[${'/profile/view/' + user.idEncoded}]], '_blank');">
+												<i class="fa fa-user"></i>
+											</button>
+										</div>
+										<div class="right">
+											<button class="button colored is-rounded is-danger"
+												th:onclick="hideUser([[${user.idEncoded}]])">
+												<i class="fa fa-thumbs-down"></i>
+											</button>
+											<button class="button colored is-rounded is-success"
+												th:onclick="likeUser([[${user.idEncoded}]])">
+												<i class="fa fa-thumbs-up"></i>
+											</button>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="swiper-slide colored"
-						style="background-color: #f14668; display: flex; align-items: center; justify-content: center;">
-						<i class="fa fa-thumbs-down fa-10x"></i>
+						<div class="swiper-slide colored"
+							style="background-color: #f14668; display: flex; align-items: center; justify-content: center;">
+							<i class="fa fa-thumbs-down fa-10x"></i>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 	</div>
+	</th:block>
 
 	<div th:fragment="message-detail">
 		<div th:each="message : ${messages}"

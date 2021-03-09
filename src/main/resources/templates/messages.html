@@ -36,7 +36,7 @@
 								<span style="overflow-wrap: normal; background-color: initial;" class="message"
 									th:text="${convo.lastMessage}"
 									th:if="${convo.lastMessage != null}"></span> <span
-									style="font-size: 0.8em; overflow-wrap: normal;"
+									style="overflow-wrap: normal;"
 									th:unless="${convo.lastMessage != null}"
 									th:text="#{message.match}"></span>
 							</div>

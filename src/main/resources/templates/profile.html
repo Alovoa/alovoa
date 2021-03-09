@@ -215,7 +215,7 @@
 					<div class="field">
 						<label class="label" th:text="#{profile.userdata.request}"></label>
 						<div class="field" style="display: flex">
-							<button class="button" id="userdata-submit" th:text="#{submit}"
+							<button class="button is-info is-outlined" id="userdata-submit" th:text="#{submit}"
 								style="margin-left: 4px;"></button>
 						</div>
 					</div>
@@ -225,7 +225,7 @@
 					<div class="field">
 						<label class="label" th:text="#{profile.account.delete}"></label>
 						<div class="field" style="display: flex">
-							<button class="button" id="delete-acc-submit" th:text="#{submit}"
+							<button class="button is-info is-outlined" id="delete-acc-submit" th:text="#{submit}"
 								style="margin-left: 4px;"></button>
 						</div>
 					</div>
@@ -235,7 +235,7 @@
 					<div class="field">
 						<form th:action="@{/logout}" method="post">
 							<span class="navbar-item">
-								<button class="button is-white is-outlined" href="/logout" style="width: 100%;"
+								<button class="button is-info is-outlined" href="/logout" style="width: 100%;"
 									id="logout">
 									<span th:text="#{logout}"></span>
 								</button>
