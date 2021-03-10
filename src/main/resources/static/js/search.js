@@ -51,10 +51,6 @@ function search() {
 	}
 }
 
-function viewProfile(idEnc) {
-	window.open('/profile/view/' + idEnc, '_blank');
-}
-
 function likeUser(idEnc) {
 	$.ajax({
 		type : "POST",
@@ -120,5 +116,6 @@ function getUserDivFromButton(btn) {
 
 function onDonateModalClicked() {
 	$('#donate-modal').removeClass('is-active'); 
-	window.open('/donate-list', '_blank');
+	//window.open('/donate-list', '_blank');
+	loadIframe("donate-list" +  "?showHeader=false");
 }

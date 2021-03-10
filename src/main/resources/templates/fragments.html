@@ -22,7 +22,7 @@
 
 	</div>
 
-	<div th:fragment="header" id="header">
+	<div th:fragment="header" id="header" th:unless="${hideHeader}">
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
 				<a class="navbar-item" href="/"> <img src="/img/icon.png"
@@ -46,7 +46,8 @@
 		</nav>
 	</div>
 
-	<div th:fragment="header-logged-in" id="header-logged-in">
+	<div th:fragment="header-logged-in" id="header-logged-in"
+		th:unless="${hideHeader}">
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
 				<a class="navbar-item"> <img src="/img/icon.png" width="40"
@@ -216,7 +217,7 @@
 										style="display: inline-block;">
 										<div class="left">
 											<button class="button colored is-rounded is-info"
-												th:onclick="window.open([[${'/profile/view/' + user.idEncoded}]], '_blank');">
+												th:onclick="viewProfile([[${user.idEncoded}]]);">
 												<i class="fa fa-user"></i>
 											</button>
 										</div>
@@ -323,5 +324,19 @@
 				th:text="#{profile.warning.no-location}"></div>
 		</div>
 	</div>
+
+	<div th:fragment="iframe">
+		<div id="iframe-div">
+			<div id="iframe-header">
+				<i id="iframe-close-icon" class="fa fa-times"
+					onclick="deleteIframe()"></i>
+			</div>
+			<div id="iframe-parent">
+				<iframe id="iframe"></iframe>
+			</div>
+		</div>
+	</div>
+
+
 </body>
 </html>

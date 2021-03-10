@@ -27,14 +27,18 @@
 				</select>
 			</div>
 			<div class="container" id="donate-button">
-				<a class="button colored is-primary"
-					style="width: 100%; padding: 4px;" href="/donate-list"
-					target="_blank"><i class="fa fa-hand-holding-usd fa-lg"></i><span
-					th:text="#{donate.donate-now}" style="padding-left: 8px;"
-					id="donate-now-text"></span></a>
+				<button class="button colored is-primary"
+					style="width: 100%; padding: 4px;"
+					onclick="onDonateClick()">
+					<i class="fa fa-hand-holding-usd fa-lg"></i><span
+						th:text="#{donate.donate-now}" style="padding-left: 8px;"
+						id="donate-now-text"></span>
+				</button>
 			</div>
 		</div>
 	</div>
+
+	<div th:replace="fragments.html::iframe"></div>
 
 	<footer th:replace="fragments.html::navigation"></footer>
 	<footer th:replace="fragments.html::footer"></footer>
@@ -43,6 +47,7 @@
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/tools/getNotification.js"></script>
 	<script src="/js/tools/getText.js"></script>
+	<script src="/js/tools/iframe.js"></script>
 	<script src="/js/donate.js"></script>
 </body>
 </html>

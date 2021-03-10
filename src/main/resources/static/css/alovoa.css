@@ -180,6 +180,39 @@ input[type=range].slider {
 	color: #4a4a4a !important;
 }
 
+#iframe-div {
+	position: fixed;
+	display: none;
+	width: 100vw;
+	height: 100vh;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 99999;
+}
+
+#iframe-close-icon {
+	padding: 4px;
+	height: 50px;
+	width: 50px;
+	margin-right: 12px;
+	cursor: pointer;
+}
+
+#iframe-header {
+	height: 50px;
+	display: flex;
+	justify-content: right;
+	background-color: white;
+	border-bottom: 1px solid rgba(219, 219, 219, .5);
+}
+
+#iframe {
+	width: 100vw;
+	height: calc(100vh - 50px);
+}
+
 @media screen and (max-width: 700px) {
 	.navigation-item span {
 		display: none;
@@ -246,6 +279,10 @@ input[type=range].slider {
 	}
 	#addImageDiv path {
 		color: #209cee;
+	}
+	#iframe-header {
+		background-color: #121212;;
+		border-bottom: 1px solid rgba(219, 219, 219, .5);
 	}
 	@media screen and (max-width: 1024px) {
 		.content-background {
@@ -349,8 +386,7 @@ input[type=range].slider {
 	.modal-content .box {
 		padding: 6px;
 	}
-	
 	#donate-cards-div {
-	    height: calc(100vh - 122px) !important;
+		height: calc(100vh - 122px) !important;
 	}
 }

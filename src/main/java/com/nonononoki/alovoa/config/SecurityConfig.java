@@ -65,6 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.rememberMe().key(key);
 		
+		http.headers().frameOptions().sameOrigin();
+		
 		if(!Tools.DEV.equals(profile)) {
 			http.requiresChannel().anyRequest().requiresSecure();
 		}

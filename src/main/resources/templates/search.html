@@ -81,8 +81,8 @@
 								<button class="button right is-info colored"
 									onclick="onDonateModalClicked()" th:text="#{donate}"></button>
 
-								<button class="button is-danger is-outlined"
-									th:text="#{cancel}" style="margin-right: 4px;"
+								<button class="button is-danger is-outlined" th:text="#{cancel}"
+									style="margin-right: 4px;"
 									onclick="$('#donate-modal').removeClass('is-active')"></button>
 
 							</div>
@@ -93,6 +93,8 @@
 		</div>
 	</div>
 
+	<div th:replace="fragments.html::iframe"></div>
+
 	<footer th:replace="fragments.html::navigation"></footer>
 	<footer th:replace="fragments.html::footer"></footer>
 
@@ -101,6 +103,7 @@
 	<script src="/js/lib/swiper.min.js"></script>
 	<script src="/js/tools/getNotification.js"></script>
 	<script src="/js/tools/getText.js"></script>
+	<script src="/js/tools/iframe.js"></script>
 	<script src="/js/search.js"></script>
 </body>
 </html>

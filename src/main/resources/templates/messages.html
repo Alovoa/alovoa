@@ -20,7 +20,8 @@
 		<section class="container" id="main-container">
 			<div class="section">
 				<div class="container" style="width: 100%;">
-					<div class="card is-horizontal messages-card" th:each="convo : ${conversations}"
+					<div class="card is-horizontal messages-card"
+						th:each="convo : ${conversations}"
 						th:onclick="viewMessageDetail(this, [[${convo.id}]])">
 						<div class="card-image">
 							<figure class="image"
@@ -33,8 +34,8 @@
 							style="display: flex; justify-items: center; align-items: center;">
 							<div class="full-width profile-bottom">
 								<div style="font-size: 1.5em" th:text="${convo.userName}"></div>
-								<span style="overflow-wrap: normal; background-color: initial;" class="message"
-									th:text="${convo.lastMessage}"
+								<span style="overflow-wrap: normal; background-color: initial;"
+									class="message" th:text="${convo.lastMessage}"
 									th:if="${convo.lastMessage != null}"></span> <span
 									style="overflow-wrap: normal;"
 									th:unless="${convo.lastMessage != null}"
@@ -47,6 +48,8 @@
 		</section>
 	</div>
 
+	<div th:replace="fragments.html::iframe"></div>
+
 	<footer th:replace="fragments.html::navigation"></footer>
 	<footer th:replace="fragments.html::footer"></footer>
 
@@ -54,6 +57,7 @@
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/tools/getNotification.js"></script>
 	<script src="/js/tools/getText.js"></script>
+	<script src="/js/tools/iframe.js"></script>
 	<script src="/js/message.js"></script>
 </body>
 </html>

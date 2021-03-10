@@ -9,5 +9,11 @@ function search() {
 }
 
 function viewProfile(idEnc) {
-	window.open('/profile/view/' + idEnc, '_blank');
+	let url = 'profile/view/' + idEnc + "?showHeader=false";
+	loadIframe(url);
+}
+
+function onDonateClick() {
+	$('#donate-modal').removeClass('is-active');
+	loadIframe('donate-list' +  '?showHeader=false');
 }
