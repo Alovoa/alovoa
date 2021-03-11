@@ -18,6 +18,8 @@ function search() {
 			let sort = $("#sort").val();
 			let url = "/search/users/" + position.coords.latitude + "/"
 					+ position.coords.longitude + "/" + distance + "/" + sort;
+				
+			$( ".loader-parent" ).css("display", "flex");
 			$("#main-container").load(url, function() {
 				
 				var sliders = [];
@@ -40,6 +42,9 @@ function search() {
 					 
 					 sliders.push(slider);
 				});
+				
+				$( ".loader-parent" ).css("display", "none");
+				
 			});
 			$("#filter-div").addClass("searched");
 		}, function(e) {

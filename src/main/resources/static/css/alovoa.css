@@ -213,6 +213,21 @@ input[type=range].slider {
 	height: calc(100vh - 50px);
 }
 
+.loader-parent {
+	position: fixed;
+	display: none;
+	width: 100vw;
+	height: 100vh;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 100000;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(18, 18, 18 , 0.9);
+}
+
 @media screen and (max-width: 700px) {
 	.navigation-item span {
 		display: none;

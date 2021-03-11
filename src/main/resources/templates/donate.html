@@ -9,6 +9,7 @@
 <link rel="manifest" href="/manifest/manifest.json">
 
 <link rel="stylesheet" href="/css/lib/bulma.min.css" />
+<link rel="stylesheet" href="/css/lib/css-loaders.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/search.css" />
 <link rel="stylesheet" href="/css/donate.css" />
@@ -28,14 +29,17 @@
 			</div>
 			<div class="container" id="donate-button">
 				<button class="button colored is-primary"
-					style="width: 100%; padding: 4px;"
-					onclick="onDonateClick()">
+					style="width: 100%; padding: 4px;" onclick="onDonateClick()">
 					<i class="fa fa-hand-holding-usd fa-lg"></i><span
 						th:text="#{donate.donate-now}" style="padding-left: 8px;"
 						id="donate-now-text"></span>
 				</button>
 			</div>
 		</div>
+	</div>
+
+	<div class="loader-parent">
+		<div class="loader"></div>
 	</div>
 
 	<div th:replace="fragments.html::iframe"></div>

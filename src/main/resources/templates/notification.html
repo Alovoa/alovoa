@@ -10,6 +10,7 @@
 
 <link rel="stylesheet" href="/css/lib/bulma.min.css" />
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
+<link rel="stylesheet" href="/css/lib/css-loaders.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/notification.css" />
 <title th:text="#{notification.title}"></title>
@@ -44,7 +45,10 @@
 			</div>
 		</section>
 	</div>
-
+	
+	<div class="loader-parent">
+		<div class="loader"></div>
+	</div>
 	<div th:replace="fragments.html::iframe"></div>
 
 	<footer th:replace="fragments.html::navigation"></footer>
