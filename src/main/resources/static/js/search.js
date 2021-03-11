@@ -47,6 +47,7 @@ function search() {
 				
 			});
 			$("#filter-div").addClass("searched");
+			$("#search-div").addClass("searched");
 		}, function(e) {
 			console.log(e);
 			alert(getText("search.js.error.no-location"));

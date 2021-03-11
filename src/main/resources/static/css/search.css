@@ -22,12 +22,12 @@
 }
 
 .content {
-	padding-top: 36px;	
+	padding-top: 36px;
 }
 
 .swiper-container {
-      width: 100%;
-      height: 100%;
+	width: 100%;
+	height: 100%;
 }
 
 .swiper-slide {
@@ -76,37 +76,42 @@
 	scroll-snap-align: start;
 }
 
-.user-search-div{
-	 margin-bottom: 24px;
-	 scroll-snap-type: y mandatory;
-	 height: calc(100vh - 108px);
-	 overflow-y: scroll;
-	 scrollbar-width: none;  
-	 scrollbar-height: none;  
+.user-search-div {
+	margin-bottom: 24px;
+	scroll-snap-type: y mandatory;
+	height: calc(100vh - 108px);
+	overflow-y: scroll;
+	scrollbar-width: none;
+	scrollbar-height: none;
 }
 
-/*
-.view-profile-div {
-	width: 140px; 
-	float: left; 
-	padding-top: 33px; 
-	font-size: 1.3em;
+#search-div {
+	z-index: 2;
+	margin-top: -150px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
 }
-*/
+
+#search-button {
+	height: 56px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	margin-bottom: 64px;
+	margin-right: 12px;
+}
 
 @media screen and (max-width: 1024px) {
 	.card.is-horizontal {
 		flex-direction: column !important;
-		/*margin-top: 12px;*/
 	}
 	.card {
 		border: initial;
-		/*border-top: 1px solid #d3d3d3;*/
 		border-radius: 0px !important;
 		height: calc(100vh - 236px);
 		position: relative;
 		padding: 0px;
-		/*padding-top: 4px !important;*/
 	}
 	.card-image {
 		z-index: 1;
@@ -117,9 +122,7 @@
 		margin-top: -150px;
 		position: absolute;
 		bottom: 0;
-		
 		width: 100%;
-		
 		margin: 0;
 		padding: initial !important;
 		width: 100%;
@@ -127,48 +130,36 @@
 	.card-content .content {
 		height: initial;
 	}
-	.image img {
-		/*margin-bottom: 24px;*/
-		/*width: auto;*/
-		/*height: auto;*/
-	}
 	.section {
 		padding: 1rem 1.5rem;
 	}
-	
 	.content-background {
 		height: 100%;
 		z-index: 0;
 		/*background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(255,255,255,0.9) 10%, rgba(255,255,255,0.9) 100%);*/
-		background: rgba(255,255,255,0.9)
+		background: rgba(255, 255, 255, 0.9)
 	}
-	
 	.profile-bottom.dimmed {
-		background: rgba(255,255,255,0.9)
+		background: rgba(255, 255, 255, 0.9)
 	}
-	
 	.profile-bottom {
 		padding-left: 12px;
 		padding-right: 12px;
 	}
-	
-	.content {	
+	.content {
 		padding: 12px;
-		padding-top: 36px;	
+		padding-top: 36px;
 	}
-	
 	.user-search-card {
 		height: 100%;
 	}
 }
 /*very small screens*/
 @media screen and (max-width: 600px) {
-	
 	.card.is-horizontal {
 		margin-top: 0px;
 		margin-bottom: 16px;
 	}
-	
 	.section {
 		padding: 0.5rem 0.5rem;
 	}
@@ -178,7 +169,6 @@
 	#sort-search-spacing {
 		padding-left: 4px !important;
 	}
-	
 	.media {
 		margin-top: 0.2em !important;
 		margin-bottom: 0.2em !important;
@@ -188,33 +178,22 @@
 		height: calc(100vh - 132px);
 		padding-top: 0px !important;
 	}
-	
 	.card-image {
 		width: 100%;
 	}
-	
 	.card-content {
 		margin: 0;
 		padding: initial !important;
 		width: 100%;
 	}
-	
 	.profile-pic {
-	    border-radius: 0px;
+		border-radius: 0px;
 	}
-	
 	.image img {
 		max-height: calc(100vh - 0px);
 		max-width: calc(100vh - 0px);
 	}
-	
-	.hidden {
-		visibility: hidden;
-	}
-	
 	.user-search-div {
-		 margin-bottom: 0px;
+		margin-bottom: 0px;
 	}
-	
 }
-

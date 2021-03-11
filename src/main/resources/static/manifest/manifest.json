@@ -30,7 +30,7 @@
   ],
   "start_url": "/",
   "background_color": "#3298DC",
-  "display": "standalone",
+  "display": "fullscreen",
   "scope": "/",
   "theme_color": "#3298DC",
   "description" : "Open-source app for meeting new and awesome people",
