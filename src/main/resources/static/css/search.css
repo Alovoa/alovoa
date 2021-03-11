@@ -14,7 +14,8 @@
 }
 
 .profile-bottom .button {
-	height: 58px;
+	height: 56px;
+	width: 56px;
 }
 
 .card-content .content {
@@ -65,7 +66,7 @@
 }
 
 .hidden {
-	visibility: visible;
+	visibility: hidden;
 }
 
 #search-right {
