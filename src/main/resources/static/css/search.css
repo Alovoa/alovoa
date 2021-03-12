@@ -6,7 +6,8 @@
 .card {
 	padding: 24px;
 	box-sizing: border-box;
-	border: 1px solid #dbdbdb;
+	border-bottom: 1px solid #dbdbdb;
+	border-radius: initial;
 }
 
 .button.colored svg {
