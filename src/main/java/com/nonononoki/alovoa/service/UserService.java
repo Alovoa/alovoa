@@ -144,6 +144,9 @@ public class UserService {
 
 	@Value("${app.audio.max-size}")
 	private int audioMaxSize; // in MB
+	
+	@Value("${app.user.delete.delay}")
+	private long userDeleteDelay;  
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
@@ -154,9 +157,12 @@ public class UserService {
 	public UserDeleteToken deleteAccountRequest() throws Exception {
 		User user = authService.getCurrentUser();
 		UserDeleteToken  token = new UserDeleteToken();
+		Date currentDate = new Date();
 
 		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
-		token.setDate(new Date());
+		token.setDate(currentDate);
+		long ms = currentDate.getTime() + userDeleteDelay;
+		token.setActiveDate(new Date (ms));
 		token.setUser(user);
 		user.setDeleteToken(token);
 		user = userRepo.saveAndFlush(user);
@@ -168,10 +174,16 @@ public class UserService {
 
 	public void deleteAccountConfirm(UserDeleteAccountDto dto) throws Exception {
 		User user = authService.getCurrentUser();
-		String userTokenString = user.getDeleteToken().getContent();
-
+		UserDeleteToken deleteToken = user.getDeleteToken();
+		String userTokenString = deleteToken.getContent();
+		
 		if (!dto.isConfirm()) {
 			throw new Exception("deletion_not_confirmed");
+		}
+		
+		long ms = new Date().getTime();
+		if(ms < user.getDeleteToken().getActiveDate().getTime()) {
+			throw new Exception("deletion_not_active_yet");
 		}
 
 		if (!dto.getTokenString().equals(userTokenString)) {

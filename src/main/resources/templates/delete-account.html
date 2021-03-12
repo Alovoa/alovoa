@@ -20,21 +20,29 @@
 		<div class="section">
 			<div class="container">
 				<h3 class="title" th:text="#{delete-account.title}"></h3>
-				<form th:action="@{/user/delete-account-confirm}" method="POST"
-					id="delete-account-form">
-					<input type="hidden" name="tokenString" th:value="${tokenString}"
-						required>
-					<div class="field">
-						<input name="email" type="email" th:placeholder="#{email}" class="input" required>
-					</div>
-					<div style="padding-top: 32px;"></div>
-					<div th:replace="fragments.html::captcha"></div>
-					<div class="field">
-						<input id="confirm" type="checkbox" name="confirm" class="switch"
-							style="position: absolute" required> <label for="confirm"><span th:text="#{delete-account.confirm}"></span> </label>
-					</div>
-					<button class="button" th:text="#{submit}"></button>
-				</form>
+				<th:block th:if="${active}">
+					<form th:action="@{/user/delete-account-confirm}" method="POST"
+						id="delete-account-form">
+						<input type="hidden" name="tokenString" th:value="${tokenString}"
+							required>
+						<div class="field">
+							<input name="email" type="email" th:placeholder="#{email}"
+								class="input" required>
+						</div>
+						<div style="padding-top: 32px;"></div>
+						<div th:replace="fragments.html::captcha"></div>
+						<div class="field">
+							<input id="confirm" type="checkbox" name="confirm" class="switch"
+								style="position: absolute" required> <label
+								for="confirm"><span th:text="#{delete-account.confirm}"></span>
+							</label>
+						</div>
+						<button class="button" th:text="#{submit}"></button>
+					</form>
+				</th:block>
+				<th:block th:unless="${active}">
+					<span th:text="#{delete-account.not-active}"></span>
+				</th:block>
 			</div>
 		</div>
 

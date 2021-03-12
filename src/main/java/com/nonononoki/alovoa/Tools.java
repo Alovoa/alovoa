@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
 
-import com.google.common.io.Resources;
 import com.nonononoki.alovoa.entity.User;
 
 public class Tools {

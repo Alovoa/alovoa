@@ -250,7 +250,7 @@ $(function() {
 				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 			},
 			success : function(e) {
-				alert(getGenericSubmitSuccessText());
+				alert(getText("profile.delete-account.success"));
 			},
 			error : function(e) {
 				console.log(e);

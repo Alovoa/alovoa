@@ -3,6 +3,7 @@ package com.nonononoki.alovoa;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -134,6 +135,9 @@ public class UserTest {
 					user = userRepo.findById(user.getId()).get();
 					Mockito.when(authService.getCurrentUser()).thenReturn(user);
 					UserDeleteToken token = userService.deleteAccountRequest();
+					token.setActiveDate(new Date());
+					user.setDeleteToken(token);
+					userRepo.saveAndFlush(user);
 					UserDeleteAccountDto dto = new UserDeleteAccountDto();
 					Captcha captcha = captchaService.generate();
 					dto.setCaptchaId(captcha.getId());
@@ -257,14 +261,31 @@ public class UserTest {
 		Assert.assertTrue("audio", user3.getAudio() != null);
 		userService.deleteAudio();
 		Assert.assertTrue("audio", user3.getAudio() == null);
+		//TODO UserPasswordChange
 
 		searchTest(user1, user2, user3);
 
+		Assert.assertThrows(Exception.class, () -> {
+			deleteTest(user1);
+		});
+		
 		UserTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 
 		Assert.assertEquals(conversationRepo.count(), 0);
 		Assert.assertEquals(userRepo.count(), 1);
 
+	}
+	
+	private void deleteTest(User user) throws Exception {
+		UserDeleteToken token = userService.deleteAccountRequest();
+		UserDeleteAccountDto dto = new UserDeleteAccountDto();
+		Captcha captcha = captchaService.generate();
+		dto.setCaptchaId(captcha.getId());
+		dto.setCaptchaText(captcha.getText());
+		dto.setConfirm(true);
+		dto.setEmail(user.getEmail());
+		dto.setTokenString(token.getContent());
+		userService.deleteAccountConfirm(dto);
 	}
 
 	private void searchTest(User user1, User user2, User user3) throws Exception {

@@ -57,15 +57,14 @@ public class ScheduleService {
 		Date date = new Date();
 		cleanCaptcha(date);
 		cleanUserPasswordToken(date);
-		cleanUserDeleteToken(date);
 	}
 	
 	@Scheduled( fixedDelayString = "${app.schedule.long}")
 	@ConditionalOnProperty(value = "app.schedule.enabled", matchIfMissing = true, havingValue = "true")
 	public void scheduleLong() {
-		//TODO disable schedule for tests
 		Date date = new Date();
 		cleanUserHide(date);
+		cleanUserDeleteToken(date);
 	}
 	
 	public void cleanCaptcha(Date date) {
@@ -120,7 +119,7 @@ public class ScheduleService {
 		ms -= deleteAccountDelay;
 		Date d = new Date(ms);
 		
-		List<UserDeleteToken> tokens = userDeleteTokenRepository.findByDateBefore(d);
+		List<UserDeleteToken> tokens = userDeleteTokenRepository.findByActiveDateBefore(d);
 		List<User> users = new ArrayList<>();
 		for(UserDeleteToken token : tokens ) {
 			User u = token.getUser();

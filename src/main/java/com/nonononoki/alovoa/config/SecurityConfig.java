@@ -34,42 +34,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private FailureHandler failureHandler;
-	
+
 	public static String ROLE_USER = "ROLE_USER";
 	public static String ROLE_ADMIN = "ROLE_ADMIN";
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-				.antMatchers("/admin/**").hasAnyAuthority(ROLE_ADMIN)
-				
-				.antMatchers("/css/**").permitAll().antMatchers("/js/**").permitAll()
-				.antMatchers("/img/**").permitAll().antMatchers("/font/**").permitAll()
-				.antMatchers("/json/**").permitAll().antMatchers("/oauth2/**").permitAll()
-				.antMatchers("/").permitAll().antMatchers("/login/**")
-				.permitAll().antMatchers("/terms-conditions").permitAll().antMatchers("/imprint")
-				.permitAll().antMatchers("/imprint/*").permitAll().antMatchers("/privacy").permitAll()
-				.antMatchers("/faq").permitAll().antMatchers("/tos").permitAll()
-				.antMatchers("/register").permitAll().antMatchers("/register/**").permitAll()
-				.antMatchers("/captcha/**").permitAll().antMatchers("/donate-list").permitAll()
-				.antMatchers("/password/**").permitAll()
-				.antMatchers("/favicon.ico").permitAll().antMatchers("/sw.js").permitAll()	
-				.antMatchers("/text/*").permitAll().antMatchers("/manifest/**").permitAll()
-				
-				.anyRequest().authenticated().and().formLogin()
-				.loginPage("/login").and()
-				.logout().deleteCookies("JSESSIONID")
-				.logoutUrl("/logout")
-				.logoutSuccessUrl("/?logout").and().oauth2Login().loginPage("/login")
-				.defaultSuccessUrl("/login/oauth2/success").and()
-				.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-				.rememberMe().key(key);
-		
+		http.authorizeRequests().antMatchers("/admin/**").hasAnyAuthority(ROLE_ADMIN)
+
+				.antMatchers("/css/**").permitAll().antMatchers("/js/**").permitAll().antMatchers("/img/**").permitAll()
+				.antMatchers("/font/**").permitAll().antMatchers("/json/**").permitAll().antMatchers("/oauth2/**")
+				.permitAll().antMatchers("/").permitAll().antMatchers("/login/**").permitAll()
+				.antMatchers("/terms-conditions").permitAll().antMatchers("/imprint").permitAll()
+				.antMatchers("/imprint/*").permitAll().antMatchers("/privacy").permitAll().antMatchers("/faq")
+				.permitAll().antMatchers("/tos").permitAll().antMatchers("/register").permitAll()
+				.antMatchers("/register/**").permitAll().antMatchers("/captcha/**").permitAll()
+				.antMatchers("/donate-list").permitAll().antMatchers("/password/**").permitAll()
+				.antMatchers("/favicon.ico").permitAll().antMatchers("/sw.js").permitAll().antMatchers("/text/*")
+				.permitAll().antMatchers("/manifest/**").permitAll()
+
+				.anyRequest().authenticated().and().formLogin().loginPage("/login").and().logout()
+				.deleteCookies("JSESSIONID").logoutUrl("/logout").logoutSuccessUrl("/?logout").and().oauth2Login()
+				.loginPage("/login").defaultSuccessUrl("/login/oauth2/success").and()
+				.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class).rememberMe()
+				.key(key);
+
 		http.headers().frameOptions().sameOrigin();
-		
-		if(!Tools.DEV.equals(profile)) {
-			http.requiresChannel().anyRequest().requiresSecure();
-		}
+		http.requiresChannel().anyRequest().requiresSecure();
 	}
 
 	@Override
