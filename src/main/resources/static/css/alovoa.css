@@ -2,6 +2,10 @@ html {
 	min-width: 240px;
 }
 
+* {
+	scrollbar-width: none;
+}
+
 button {
 	cursor: pointer;
 }
@@ -196,7 +200,6 @@ input[type=range].slider {
 	padding: 4px;
 	height: 50px;
 	width: 50px;
-	margin-right: 12px;
 	cursor: pointer;
 }
 

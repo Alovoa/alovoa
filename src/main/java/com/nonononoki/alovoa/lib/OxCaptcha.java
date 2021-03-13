@@ -1,5 +1,6 @@
 //BSD 2-Clause "Simplified" License
 //https://github.com/gbaydin/OxCaptcha/blob/master/LICENSE
+// Copyright (c) 2016, Atılım Güneş Baydin
 
 package com.nonononoki.alovoa.lib;
 
