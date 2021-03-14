@@ -1,13 +1,41 @@
+@font-face {
+	font-family: "Montserrat";
+	src: url("../fonts/Montserrat/Montserrat-Medium.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: "Bree_Serif";
+	src: url("../fonts/Bree_Serif/BreeSerif-Regular.ttf") format("truetype");
+}
+
 html {
 	min-width: 240px;
 }
 
 * {
 	scrollbar-width: none;
+	font-family: "Montserrat";
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: "Abril_Fatface";
+}
+
+p.customfont {
+	font-family: "My Custom Font", Verdana, Tahoma;
 }
 
 button {
 	cursor: pointer;
+	border-radius: 290486px;
+}
+
+.button, .input, .select, select {
+	border-radius: 290486px;
+}
+
+.input {
+	padding-left: 20px;
 }
 
 .center-parent {
@@ -156,6 +184,10 @@ input[type=range].slider {
 	color: white;
 }
 
+#navbar-item-register {
+	padding-right: 0px;
+}
+
 @media screen and (max-width: 400px) {
 	#navbar-text {
 		display: none;
@@ -228,7 +260,7 @@ input[type=range].slider {
 	z-index: 100000;
 	align-items: center;
 	justify-content: center;
-	background-color: rgba(18, 18, 18 , 0.9);
+	background-color: rgba(18, 18, 18, 0.9);
 }
 
 @media screen and (max-width: 700px) {

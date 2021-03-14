@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.AuthFilter;
 import com.nonononoki.alovoa.component.AuthProvider;
 import com.nonononoki.alovoa.component.FailureHandler;
@@ -51,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/register/**").permitAll().antMatchers("/captcha/**").permitAll()
 				.antMatchers("/donate-list").permitAll().antMatchers("/password/**").permitAll()
 				.antMatchers("/favicon.ico").permitAll().antMatchers("/sw.js").permitAll().antMatchers("/text/*")
-				.permitAll().antMatchers("/manifest/**").permitAll()
+				.permitAll().antMatchers("/manifest/**").permitAll().antMatchers("/fonts/**").permitAll()
 
 				.anyRequest().authenticated().and().formLogin().loginPage("/login").and().logout()
 				.deleteCookies("JSESSIONID").logoutUrl("/logout").logoutSuccessUrl("/?logout").and().oauth2Login()
