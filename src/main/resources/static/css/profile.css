@@ -7,6 +7,10 @@
 	align-items: center;
 }
 
+#addImageDiv {
+	border-radius: 12px;
+}
+
 @media screen and (max-width: 460px) {
 	.box {
 		padding: 0px;
