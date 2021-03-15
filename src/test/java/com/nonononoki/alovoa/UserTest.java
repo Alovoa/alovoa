@@ -235,7 +235,7 @@ public class UserTest {
 		Assert.assertTrue("description", user3.getDescription().equals(description));
 		userService.updateIntention(INTENTION_TEST);
 		Assert.assertTrue("intention", user3.getIntention().getId() == INTENTION_TEST);
-		int maxAge = 100;
+		int maxAge = 99;
 		userService.updateMaxAge(maxAge);
 		Assert.assertTrue("max_age", user3.getPreferedMaxAge() == maxAge);
 		int minAge = 16;
