@@ -20,11 +20,15 @@
 }
 
 .card-content .content {
-	height: 313px;
+	height: 339px;
 }
 
 .content {
 	padding-top: 36px;
+}
+
+#max-distance-slider {
+	margin-right: 8px;
 }
 
 .swiper-container {

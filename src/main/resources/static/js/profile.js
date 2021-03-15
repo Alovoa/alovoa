@@ -129,12 +129,21 @@ $(function() {
 			});
 		}
 	});
+	
+	
+	bulmaSlider.attach();
 
 	$("#min-age-slider").change(function(e) {
 
 		let data = $("#min-age-slider").val();
+		let dataMax = $("#max-age-slider").val();
+		if(data > dataMax) {
+			data = dataMax;
+			$("#min-age-slider").val(data);
+			$("#min-age-slider-output").val(data);
+		}
+		
 		if (data) {
-			$("#min-age-display").html(data);
 			$.ajax({
 				type : "POST",
 				url : "/user/update/min-age/" + data,
@@ -152,9 +161,14 @@ $(function() {
 	$("#max-age-slider").change(function(e) {
 
 		let data = $("#max-age-slider").val();
+		let dataMin = $("#min-age-slider").val();
+		if(data < dataMin) {
+			data = dataMin;
+			$("#max-age-slider").val(data);
+			$("#max-age-slider-output").val(data);
+		}
 
 		if (data) {
-			$("#max-age-display").html(data);
 			$.ajax({
 				type : "POST",
 				url : "/user/update/max-age/" + data,

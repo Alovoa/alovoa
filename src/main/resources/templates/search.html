@@ -26,9 +26,9 @@
 						<label class="label" th:text="#{search.max-distance}"></label>
 						<div class="slider-container"
 							style="padding-top: 8px; padding-bottom: 8px;">
-							<input class="slider is-info" step="1" min="1" max="100"
-								value="20" type="range" id="max-distance-slider">
-							<p id="max-distance-display">20</p>
+							<input class="slider has-output " step="1" min="1"
+								max="100" value="20" type="range" id="max-distance-slider">
+							<output for="max-distance-slider"></output>
 							<div style="padding-left: 4px"></div>
 							<span th:text="#{km}"></span>
 						</div>
@@ -36,7 +36,7 @@
 					<div id="distance-spacing" style="padding-left: 24px;"></div>
 				</div>
 				<div id="search-right"
-					style="display: flex; min-width: 230px; max-width: 300px; margin-bottom: 12px;">
+					style="display: flex; width: 100%; margin-bottom: 12px;">
 					<div style="flex: 1;">
 						<label class="label" th:text="#{sort}"></label>
 						<div class="select">
@@ -98,11 +98,11 @@
 	<div th:replace="fragments.html::iframe"></div>
 
 	<footer th:replace="fragments.html::navigation"></footer>
-	<footer th:replace="fragments.html::footer"></footer>
 
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/swiper.min.js"></script>
+	<script src="/js/lib/bulma-slider.min.js"></script>
 	<script src="/js/tools/getNotification.js"></script>
 	<script src="/js/tools/getText.js"></script>
 	<script src="/js/tools/iframe.js"></script>

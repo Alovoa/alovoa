@@ -1,7 +1,7 @@
 {
 	  "version": "1.0.0",
 	  "name": "Alovoa",
-	  "description": "Open-source app for meeting new and awesome people",
+	  "description": "Meet amazing people around you, privately!",
 	  "type": "web",
 	  "launch_path": "/",
 	  "cursor": true,
@@ -18,7 +18,7 @@
 	    "en-US": {
 	      "name": "Alovoa",
 	      "subtitle": "Meet awesome people",
-	      "description": "Open-source app for meeting new and awesome people"
+	      "description": "Meet amazing people around you, privately!"
 	    }
 	  },
 	  "default_locale": "en-US"

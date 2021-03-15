@@ -15,14 +15,11 @@ html {
 * {
 	scrollbar-width: none;
 	font-family: "Montserrat";
+	word-wrap: break-word;
 }
 
 h1, h2, h3, h4, h5, h6 {
 	font-family: "Abril_Fatface";
-}
-
-p.customfont {
-	font-family: "My Custom Font", Verdana, Tahoma;
 }
 
 button {
@@ -198,9 +195,6 @@ input[type=range].slider {
 	#captcha-image {
 		width: 156px;
 	}
-	#captcha-refresh-button {
-		width: 60px;
-	}
 }
 
 .datetimepicker-dummy-input {
@@ -374,21 +368,8 @@ input[type=range].slider {
 	.modal-content .box {
 		border-radius: 0px;
 	}
-	#search-right .label {
-		display: none;
-	}
 	#search-right {
 		display: block;
-	}
-	#filter-div:not(.searched) {
-		max-width: 100%;
-		display: inline-block;
-	}
-	#filter-div .slider-container {
-		width: 160px;
-	}
-	#max-distance-slider {
-		width: 120px;
 	}
 	.content-background {
 		display: none;

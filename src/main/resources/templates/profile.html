@@ -108,19 +108,19 @@
 							<div class="column">
 								<label class="label" th:text="#{profile.min-age}"></label>
 								<div class="slider-container">
-									<input class="slider is-info" step="1" min="16" max="100"
+									<input class="slider has-output" step="1" min="16" max="99"
 										th:value="${user.preferedMinAge}" type="range"
-										id="min-age-slider">
-									<p id="min-age-display" th:text="${user.preferedMinAge}"></p>
+										id="min-age-slider" style="margin-right: 8px;">
+									<output for="min-age-slider"  id="min-age-slider-output" th:text="${user.preferedMinAge}"></output>
 								</div>
 							</div>
 							<div class="column">
 								<label class="label" th:text="#{profile.max-age}"></label>
 								<div class="slider-container">
-									<input class="slider is-info" step="1" min="16" max="100"
+									<input class="slider has-output" step="1" min="16" max="99"
 										th:value="${user.preferedMaxAge}" type="range"
-										id="max-age-slider">
-									<p id="max-age-display" th:text="${user.preferedMaxAge}"></p>
+										id="max-age-slider" style="margin-right: 8px;">
+									<output for="max-age-slider" id="max-age-slider-output" th:text="${user.preferedMaxAge}"></output>
 								</div>
 							</div>
 						</div>
@@ -215,8 +215,8 @@
 					<div class="field">
 						<label class="label" th:text="#{profile.userdata.request}"></label>
 						<div class="field" style="display: flex">
-							<button class="button is-info is-outlined" id="userdata-submit" th:text="#{submit}"
-								style="margin-left: 4px;"></button>
+							<button class="button is-info is-outlined" id="userdata-submit"
+								th:text="#{submit}" style="margin-left: 4px;"></button>
 						</div>
 					</div>
 				</div>
@@ -225,8 +225,8 @@
 					<div class="field">
 						<label class="label" th:text="#{profile.account.delete}"></label>
 						<div class="field" style="display: flex">
-							<button class="button is-info is-outlined" id="delete-acc-submit" th:text="#{submit}"
-								style="margin-left: 4px;"></button>
+							<button class="button is-info is-outlined" id="delete-acc-submit"
+								th:text="#{submit}" style="margin-left: 4px;"></button>
 						</div>
 					</div>
 				</div>
@@ -235,8 +235,8 @@
 					<div class="field">
 						<form th:action="@{/logout}" method="post">
 							<span class="navbar-item">
-								<button class="button is-info is-outlined" href="/logout" style="width: 100%;"
-									id="logout">
+								<button class="button is-info is-outlined" href="/logout"
+									style="width: 100%;" id="logout">
 									<span th:text="#{logout}"></span>
 								</button>
 							</span>
@@ -260,6 +260,7 @@
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/notification.js"></script>
+	<script src="/js/lib/bulma-slider.min.js"></script>
 	<script src="/js/lib/swiper.min.js"></script>
 	<script src="/js/tools/getNotification.js"></script>
 	<script src="/js/tools/getText.js"></script>

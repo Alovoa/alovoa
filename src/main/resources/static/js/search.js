@@ -1,13 +1,7 @@
 var locationFound = false;
 
 $(function() {
-	$("#max-distance-slider").change(function(e) {
-
-		let data = $("#max-distance-slider").val();
-		if (data) {
-			$("#max-distance-display").html(data);
-		}
-	});
+	bulmaSlider.attach();
 });
 
 function search() {
