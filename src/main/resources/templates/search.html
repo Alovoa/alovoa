@@ -27,8 +27,8 @@
 						<div class="slider-container"
 							style="padding-top: 8px; padding-bottom: 8px;">
 							<input class="slider has-output " step="1" min="1" max="100"
-								value="20" type="range" id="max-distance-slider">
-							<output for="max-distance-slider">20</output>
+								value="50" type="range" id="max-distance-slider">
+							<output for="max-distance-slider">50</output>
 							<div style="padding-left: 4px"></div>
 							<span th:text="#{km}"></span>
 						</div>
@@ -52,12 +52,17 @@
 				</div>
 			</div>
 
-			<div id="search-div">
-				<button class="button colored is-info is-rounded" onclick="search()"
-					id="search-button">
-					<i class="fa fa-search"></i>
-				</button>
+			<div class="section" id="search-button-section">
+				<div class="container">
+					<div>
+						<button class="button colored is-info is-rounded"
+							onclick="search()" id="search-button">
+							<i class="fa fa-search"></i>
+						</button>
+					</div>
+				</div>
 			</div>
+
 		</div>
 
 		<section class="container" id="main-container"></section>

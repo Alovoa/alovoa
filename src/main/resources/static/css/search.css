@@ -91,7 +91,7 @@
 	scrollbar-height: none;
 }
 
-#search-div {
+#search-button-section {
 	z-index: 2;
 	margin-top: -150px;
 	position: absolute;
