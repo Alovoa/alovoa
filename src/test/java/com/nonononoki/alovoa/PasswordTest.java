@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,6 +62,9 @@ public class PasswordTest {
 
 	@Autowired
 	private UserPasswordTokenRepository userPasswordTokenRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Test
 	public void test() throws Exception {
@@ -80,11 +85,18 @@ public class PasswordTest {
 		
 		Assert.assertEquals(userPasswordTokenRepository.count(), 1);
 		
+		String newPassword = "newPassword";
 		PasswordChangeDto passwordChangeDto = new PasswordChangeDto();
 		passwordChangeDto.setEmail(user1.getEmail());
-		passwordChangeDto.setPassword("newPassword");
+		passwordChangeDto.setPassword(newPassword);
 		passwordChangeDto.setToken(userPasswordToken.getContent());
 		passwordService.changePasword(passwordChangeDto);
+		
+		user1 = userRepo.findById(user1.getId()).get();
+		
+		if (!passwordEncoder.matches(newPassword, user1.getPassword())) {
+			throw new BadCredentialsException("");
+		}
 		
 		Assert.assertEquals(userPasswordTokenRepository.count(), 0);
 		

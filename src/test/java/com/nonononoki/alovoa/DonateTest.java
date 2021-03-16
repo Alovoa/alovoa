@@ -35,9 +35,6 @@ public class DonateTest {
 	
 	@Autowired
 	private UserDonationRepository userDonationRepository;
-	
-	@Value("${app.ip.kofi}")
-	private String kofiIp;
 
 	@Value("${app.age.min}")
 	private int minAge;

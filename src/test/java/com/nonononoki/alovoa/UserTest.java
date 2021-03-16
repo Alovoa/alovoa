@@ -242,18 +242,24 @@ public class UserTest {
 		userService.updateMinAge(minAge);
 		Assert.assertTrue("min_age", user3.getPreferedMinAge() == minAge);
 		userService.updatePreferedGender(1, true);
-		// TODO Assert PREF_GENDER
+		Assert.assertTrue(user3.getPreferedGenders().size() == 1);
+		userService.updatePreferedGender(2, true);
+		Assert.assertTrue(user3.getPreferedGenders().size() == 2);
+		userService.updatePreferedGender(2, false);
+		Assert.assertTrue(user3.getPreferedGenders().size() == 1);
+		
+		
 		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getId());
-		Assert.assertTrue("interest", user3.getInterests().size() == 0);
+		Assert.assertTrue("interest", authService.getCurrentUser().getInterests().size() == 0);
 		userService.addInterest(INTEREST);
 		userService.addImage(img3);
-		Assert.assertTrue("image", user3.getImages().size() == 1);
+		Assert.assertTrue("image", authService.getCurrentUser().getImages().size() == 1);
 		userService.deleteImage(authService.getCurrentUser().getImages().get(0).getId());
-		Assert.assertTrue("image", user3.getImages().size() == 0);
+		Assert.assertTrue("image", authService.getCurrentUser().getImages().size() == 0);
 		userService.deleteProfilePicture();
-		Assert.assertTrue("profile_picture", user3.getProfilePicture() == null);
+		Assert.assertTrue("profile_picture", authService.getCurrentUser().getProfilePicture() == null);
 		userService.updateProfilePicture(img3);
-		Assert.assertTrue("profile_picture", user3.getProfilePicture() != null);
+		Assert.assertTrue("profile_picture", authService.getCurrentUser().getProfilePicture() != null);
 		Assert.assertThrows(Exception.class, () -> {
 			userService.updateAudio(Tools.resourceToB64("audio/file_example_MP3_700KB.mp3"));
 		});
@@ -261,7 +267,6 @@ public class UserTest {
 		Assert.assertTrue("audio", user3.getAudio() != null);
 		userService.deleteAudio();
 		Assert.assertTrue("audio", user3.getAudio() == null);
-		//TODO UserPasswordChange
 
 		searchTest(user1, user2, user3);
 

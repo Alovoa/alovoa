@@ -68,9 +68,10 @@ public class DonateService {
 	}
 
 	public void donationReceivedKofi(DonationKofi donation) throws Exception {
-		String kofiIp = InetAddress.getByName(new URL(KOFI_URL).getHost()).getHostAddress();
+		String kofiIp = InetAddress.getByName(new URL(KOFI_URL).getHost()).getHostAddress().trim();
+		String ip = request.getRemoteAddr().trim();
 		
-		if (kofiIp.contains(request.getRemoteAddr().trim()) || !profile.equals(Tools.PROD)) {
+		if (kofiIp.equals(ip) || !profile.equals(Tools.PROD)) {
 			User u = null;
 			
 			if(donation.getFrom_name() != null) {
