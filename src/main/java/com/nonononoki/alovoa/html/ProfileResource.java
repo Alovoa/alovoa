@@ -34,6 +34,9 @@ public class ProfileResource {
 
 	@Value("${app.profile.image.max}")
 	private int imageMax;
+	
+	@Value("${app.vapid.public}")
+	private String vapidPublicKey;
 
 	@GetMapping("/profile")
 	public ModelAndView profile() throws Exception {
@@ -47,6 +50,7 @@ public class ProfileResource {
 			mav.addObject("genders", genderRepo.findAll());
 			mav.addObject("intentions", userIntentionRepo.findAll());
 			mav.addObject("imageMax", imageMax);
+			mav.addObject("vapidPublicKey", vapidPublicKey);
 			return mav;
 		}
 	}
@@ -97,6 +101,7 @@ public class ProfileResource {
 		model.addAttribute("noIntention", noIntention);
 		model.addAttribute("noGender", noGender);
 		model.addAttribute("noLocation", noLocation);
+		
 		return "fragments :: profile-warning";
 	}
 }

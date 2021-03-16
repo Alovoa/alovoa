@@ -3,12 +3,8 @@
 
 var notificationSubscriptionUrl = '/notification/subscribe';
 
-// Vapid public key.
-// var applicationServerPublicKey = 'BC5Ur3Wq8-2djUYGD-VSXbMByIgxFFqtXoewSOYrthgxNUTOeueIHSB2b_81UT7p0By8MoFI2Bv9hrWeB8P3k2Q';
-
 var serviceWorkerName = '/sw.js';
 
-// var isSubscribed = false;
 var isSubscribed = (Notification.permission == "granted");
 var swRegistration = null;
 
@@ -97,28 +93,6 @@ function subscribe() {
 	}
 }
 
-// function unsubscribe() {
-// var endpoint = null;
-// swRegistration.pushManager.getSubscription()
-// .then(function(subscription) {
-// if (subscription) {
-// endpoint = subscription.endpoint;
-// return subscription.unsubscribe();
-// }
-// })
-// .catch(function(error) {
-// console.log('Error unsubscribing', error);
-// })
-// .then(function() {
-// removeSubscriptionFromServer(endpoint);
-//
-// console.log('User is unsubscribed.');
-// isSubscribed = false;
-//
-// makeButtonSubscribable(endpoint);
-// });
-// }
-
 function sendSubscriptionToServer(endpoint, key, auth) {
     var encodedKey = btoa(String.fromCharCode.apply(null, new Uint8Array(key)));
     var encodedAuth = btoa(String.fromCharCode.apply(null, new Uint8Array(auth)));
@@ -136,35 +110,16 @@ function sendSubscriptionToServer(endpoint, key, auth) {
     });
 }
 
-// function removeSubscriptionFromServer(endpoint) {
-// $.ajax({
-// type: 'POST',
-// url: '/unsubscribe',
-// data: {notificationEndPoint: endpoint},
-// success: function (response) {
-// console.log('Unsubscribed successfully! ' + JSON.stringify(response));
-// },
-// dataType: 'json'
-// });
-// }
-
 function disableAndSetBtnMessage(message) {
-// setBtnMessage(message);
-// $('#btnPushNotifications').attr('disabled','disabled');
-	('#btnPushNotifications').hide();
-}
-
-function enableAndSetBtnMessage(message) {
-// setBtnMessage(message);
-// $('#btnPushNotifications').removeAttr('disabled');
+	$('#btnPushNotifications').hide();
 }
 
 function makeButtonSubscribable(reg) {
-// enableAndSetBtnMessage('Subscribe to push notifications');
-// $('#btnPushNotifications').addClass('btn-primary').removeClass('btn-danger');
     var subscribeParams = {userVisibleOnly: true};
     
     // Setting the public key of our VAPID key pair.
+    let applicationServerPublicKey = $("#vapidPublicKey").val();
+    console.log(applicationServerPublicKey)
     var applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
     subscribeParams.applicationServerKey = applicationServerKey;
 
@@ -188,14 +143,8 @@ function makeButtonSubscribable(reg) {
 }
 
 function makeButtonUnsubscribable() {
-// enableAndSetBtnMessage('Unsubscribe from push notifications');
-// $('#btnPushNotifications').addClass('btn-danger').removeClass('btn-primary');
     $('#btnPushNotifications').hide();
 }
-
-// function setBtnMessage(message) {
-// $('#btnPushNotifications').text(message);
-// }
 
 function urlB64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
