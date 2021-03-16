@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.service;
 
+import java.net.InetAddress;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -38,15 +40,14 @@ public class DonateService {
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
-	
-	@Value("${app.ip.kofi}")
-	private String kofiIp;
 
 	@Value("${app.donate.users.max}")
 	private int maxEntries;
 	
 	@Value("${spring.profiles.active}")
 	private String profile;
+	
+	private final String KOFI_URL = "https://ko-fi.com/";
 
 	public List<DonationDto> filter(int filter) throws Exception {
 		List<DonationDto> donationsToDtos = null;
@@ -67,7 +68,9 @@ public class DonateService {
 	}
 
 	public void donationReceivedKofi(DonationKofi donation) throws Exception {
-		if (request.getRemoteAddr().trim().equals(kofiIp) || !profile.equals(Tools.PROD)) {
+		String kofiIp = InetAddress.getByName(new URL(KOFI_URL).getHost()).getHostAddress();
+		
+		if (kofiIp.contains(request.getRemoteAddr().trim()) || !profile.equals(Tools.PROD)) {
 			User u = null;
 			
 			if(donation.getFrom_name() != null) {

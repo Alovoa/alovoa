@@ -69,7 +69,7 @@ public class AdminService {
 	}
 	
 	public void sendMailAll(MailDto dto) throws Exception {		
-		List<User> users = userRepo.findAll();	
+		List<User> users = userRepo.findByDisabledFalseAndAdminFalseAndConfirmedTrue();	
 		mailService.sendAdminMailAll(dto.getSubject(), dto.getBody(), users);
 	}
 

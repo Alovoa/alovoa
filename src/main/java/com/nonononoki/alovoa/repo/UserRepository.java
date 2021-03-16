@@ -20,6 +20,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	default List<User> usersDonate() {
 		return findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullOrderByTotalDonationsDesc();
 	}
+	
+	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrue();
 
 	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetween(
 			LocalDate min, LocalDate max, Double latitudeFrom, Double latitudeTo, Double longitudeFrom, Double longitudeTo);

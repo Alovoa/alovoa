@@ -36,5 +36,5 @@ $(function() {
 
 function cookieClick() {
 	localStorage.setItem('cookie', true);
-	$('#cookie-banner').hide();
+	$('#cookie-banner').css("visibility", "hidden");
 }
