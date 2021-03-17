@@ -96,6 +96,8 @@ public class UserTest {
 	private AuthService authService;
 
 	private final int INTENTION_TEST = 1;
+	
+	private final String INTEREST = "interest";
 
 	private static List<User> testUsers = null;
 
@@ -200,7 +202,6 @@ public class UserTest {
 		userRepo.saveAndFlush(user3);
 
 		Assert.assertEquals(userRepo.count(), 4);
-		final String INTEREST = "interest";
 
 		String imgMime = "png";
 		// setup settings
@@ -331,6 +332,17 @@ public class UserTest {
 
 		List<UserDto> searchDtos6 = searchService.search(0.46, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos6.size(), 0);
+		
+		//search filtered by interest
+		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		userService.deleteInterest(user1.getInterests().get(0).getId());
+		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		List<UserDto> interestSearchDto1 = searchService.search(0.0, 0.0, 50, SearchService.SORT_INTEREST);
+		Assert.assertEquals(interestSearchDto1.size(), 1);
+		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		userService.addInterest(INTEREST);
+		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		
 
 		// likeUser
 		userService.likeUser(UserDto.encodeId(user1.getId(), textEncryptor));

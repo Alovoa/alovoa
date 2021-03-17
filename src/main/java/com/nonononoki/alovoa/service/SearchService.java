@@ -23,10 +23,10 @@ import lombok.Data;
 @Service
 public class SearchService {
 
-	private final int SORT_DISTANCE = 1;
-	private final int SORT_ACTIVE_DATE = 2;
-	private final int SORT_INTEREST = 3;
-	private final int SORT_DONATION = 4;
+	public static final int SORT_DISTANCE = 1;
+	public static final int SORT_ACTIVE_DATE = 2;
+	public static final int SORT_INTEREST = 3;
+	public static final int SORT_DONATION = 4;
 	
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
