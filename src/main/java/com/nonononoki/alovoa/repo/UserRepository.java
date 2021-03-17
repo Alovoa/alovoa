@@ -1,6 +1,6 @@
 package com.nonononoki.alovoa.repo;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	public User findByEmail(String email);
 	
-	default List<User> usersSearch(LocalDate min, LocalDate max, SearchService.MinMaxLatLong minMaxLatLong) {
+	default List<User> usersSearch(Date min, Date max, SearchService.MinMaxLatLong minMaxLatLong) {
 		return findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetween(
 				min, max, minMaxLatLong.getMinLat(), minMaxLatLong.getMaxLat(), minMaxLatLong.getMinLon(), minMaxLatLong.getMaxLon());
 	}
@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrue();
 
 	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetween(
-			LocalDate min, LocalDate max, Double latitudeFrom, Double latitudeTo, Double longitudeFrom, Double longitudeTo);
+			Date min, Date max, Double latitudeFrom, Double latitudeTo, Double longitudeFrom, Double longitudeTo);
 
 	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullOrderByTotalDonationsDesc();
 }

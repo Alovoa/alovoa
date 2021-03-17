@@ -249,32 +249,6 @@ public class UserService {
 			userLikeRepo.flush();
 		}
 		
-		/*
-		//DELETE USER MESSAGE
-		{
-			for(Message message : messageRepo.findByUserFrom(user)) {
-				User u= message.getUserTo();
-				u.getMessageReceived().remove(message);
-				userRepo.save(u);
-				
-				message.setUserTo(null);
-				message.setConversation(null);
-				messageRepo.save(message);
-			}
-			for(Message message : messageRepo.findByUserTo(user)) {
-				User u= message.getUserFrom();
-				u.getMessageSent().remove(message);
-				userRepo.save(u);
-				
-				message.setUserFrom(null);
-				message.setConversation(null);
-				messageRepo.save(message);
-			}
-			userRepo.flush();
-			messageRepo.flush();
-		}
-		*/
-		
 		//DELETE USER CONVERSATION
 		{
 			for(Conversation conversation : conversationRepo.findByUserFrom(user)) {

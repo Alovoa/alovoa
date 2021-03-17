@@ -2,6 +2,7 @@ package com.nonononoki.alovoa.service;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -79,9 +80,9 @@ public class SearchService {
 		user.setLocationLongitude(Double.valueOf(df.format(longitude)));
 		userRepo.saveAndFlush(user);
 		
-		LocalDate minDate = LocalDate.now().minusYears(user.getPreferedMaxAge());
-		LocalDate maxDate = LocalDate.now().minusYears(user.getPreferedMinAge());
-		
+		Date minDate = Date.from(LocalDate.now().minusYears(user.getPreferedMaxAge()).atStartOfDay(ZoneId.systemDefault()).toInstant()); 
+		Date maxDate = Date.from(LocalDate.now().minusYears(user.getPreferedMinAge()).atStartOfDay(ZoneId.systemDefault()).toInstant());  
+
 		MinMaxLatLong minMaxLatLong = calcMinMaxLatLong(distance, latitude, longitude);
 
 		List<User> users = userRepo.usersSearch(minDate, maxDate, minMaxLatLong);

@@ -213,7 +213,7 @@ public class RegisterService {
 		Date today = new Date();
 		dates.setActiveDate(today);
 		dates.setCreationDate(today);
-		dates.setDateOfBirth(dto.getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+		dates.setDateOfBirth(dto.getDateOfBirth());
 		dates.setIntentionChangeDate(today);
 		dates.setMessageCheckedDate(today);
 		dates.setMessageDate(today);

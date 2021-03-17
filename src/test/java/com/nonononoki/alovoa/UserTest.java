@@ -1,10 +1,15 @@
 package com.nonononoki.alovoa;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
@@ -14,9 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
@@ -24,6 +33,7 @@ import com.nonononoki.alovoa.entity.user.UserDeleteToken;
 import com.nonononoki.alovoa.model.RegisterDto;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.model.UserDto;
+import com.nonononoki.alovoa.model.UserGdpr;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.MessageRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
@@ -85,12 +95,19 @@ public class UserTest {
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Value("${app.age.min}")
 	private int minAge;
 
+	@Value("${app.age.max}")
+	private int maxAge;
+	
 	@Value("${app.message.size}")
 	private int maxMessageSize;
+
 
 	@MockBean
 	private AuthService authService;
@@ -100,23 +117,28 @@ public class UserTest {
 	private final String INTEREST = "interest";
 
 	private static List<User> testUsers = null;
+	
+	private static int user1Age = 18;
+	private static int user2Age = 20;
+	private static int user3Age = 30;
+
 
 	public static List<User> getTestUsers(CaptchaService captchaService, RegisterService registerService)
 			throws Exception {
 		if (testUsers == null) {
 			// register and confirm test users
 			Captcha c1 = captchaService.generate();
-			RegisterDto user1Dto = createTestUserDto(1, c1, "test1");
+			RegisterDto user1Dto = createTestUserDto(1, c1, "test1", user1Age);
 			String tokenContent1 = registerService.register(user1Dto);
 			User user1 = registerService.registerConfirm(tokenContent1);
 
 			Captcha c2 = captchaService.generate();
-			RegisterDto user2Dto = createTestUserDto(2, c2, "test2");
+			RegisterDto user2Dto = createTestUserDto(2, c2, "test2", user2Age);
 			String tokenContent2 = registerService.register(user2Dto);
 			User user2 = registerService.registerConfirm(tokenContent2);
 
 			Captcha c3 = captchaService.generate();
-			RegisterDto user3Dto = createTestUserDto(2, c3, "test3");
+			RegisterDto user3Dto = createTestUserDto(2, c3, "test3", user3Age);
 			String tokenContent3 = registerService.register(user3Dto);
 			User user3 = registerService.registerConfirm(tokenContent3);
 
@@ -154,13 +176,13 @@ public class UserTest {
 		}
 	}
 
-	private static RegisterDto createTestUserDto(long gender, Captcha c, String email) throws IOException {
-		final int AGE = 20;
+	private static RegisterDto createTestUserDto(long gender, Captcha c, String email, int age) throws IOException {
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.YEAR, AGE * (-1));
+		calendar.add(Calendar.YEAR, age * (-1));
 		RegisterDto dto = new RegisterDto();
+		Date dobDate = calendar.getTime();
 		dto.setEmail(email + Tools.MAIL_TEST_DOMAIN);
-		dto.setDateOfBirth(calendar.getTime());
+		dto.setDateOfBirth(dobDate);
 		dto.setPassword("test123");
 		dto.setFirstName("test");
 		dto.setGender(gender);
@@ -236,10 +258,9 @@ public class UserTest {
 		Assert.assertTrue("description", user3.getDescription().equals(description));
 		userService.updateIntention(INTENTION_TEST);
 		Assert.assertTrue("intention", user3.getIntention().getId() == INTENTION_TEST);
-		int maxAge = 99;
 		userService.updateMaxAge(maxAge);
 		Assert.assertTrue("max_age", user3.getPreferedMaxAge() == maxAge);
-		int minAge = 16;
+
 		userService.updateMinAge(minAge);
 		Assert.assertTrue("min_age", user3.getPreferedMinAge() == minAge);
 		userService.updatePreferedGender(1, true);
@@ -274,6 +295,32 @@ public class UserTest {
 		Assert.assertThrows(Exception.class, () -> {
 			deleteTest(user1);
 		});
+		
+		//USERDATA 
+		ResponseEntity<Resource> userData = userService.getUserdata();
+		InputStream inputStream = ((ByteArrayResource) userData.getBody()).getInputStream();
+		String userDataString = new BufferedReader(
+			      new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+			        .lines()
+			        .collect(Collectors.joining("\n"));
+		UserGdpr gdpr = objectMapper.readValue(userDataString, UserGdpr.class);
+		Assert.assertTrue(gdpr.getDescription().equals(authService.getCurrentUser().getDescription()));
+		Assert.assertTrue(gdpr.getEmail().equals(authService.getCurrentUser().getEmail()));
+		Assert.assertTrue(gdpr.getFirstName().equals(authService.getCurrentUser().getFirstName()));
+		//Assert.assertTrue(gdpr.getDates().equals(authService.getCurrentUser().getDates()));
+		Assert.assertTrue(gdpr.getDonations().equals(authService.getCurrentUser().getDonations()));
+		//Assert.assertTrue(gdpr.getGender().equals(authService.getCurrentUser().getGender()));
+		//Assert.assertTrue(gdpr.getIntention().equals(authService.getCurrentUser().getIntention()));
+		Assert.assertTrue(gdpr.getInterests().equals(authService.getCurrentUser().getInterests()));
+		Assert.assertTrue(gdpr.getLocationLatitude().equals(authService.getCurrentUser().getLocationLatitude()));
+		Assert.assertTrue(gdpr.getLocationLongitude().equals(authService.getCurrentUser().getLocationLongitude()));
+		Assert.assertTrue(gdpr.getMessageSent().equals(authService.getCurrentUser().getMessageSent()));
+		Assert.assertTrue(gdpr.getNumberProfileViews() == authService.getCurrentUser().getNumberProfileViews());
+		Assert.assertTrue(gdpr.getNumberSearches() == authService.getCurrentUser().getNumberSearches());
+		//Assert.assertTrue(gdpr.getPreferedGenders().equals(authService.getCurrentUser().getPreferedGenders()));
+		Assert.assertTrue(gdpr.getPreferedMaxAge() == (authService.getCurrentUser().getPreferedMaxAge()));
+		Assert.assertTrue(gdpr.getTotalDonations() == (authService.getCurrentUser().getTotalDonations()));
+		Assert.assertTrue(gdpr.getWebPush().equals(authService.getCurrentUser().getWebPush()));
 		
 		UserTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 
@@ -340,11 +387,19 @@ public class UserTest {
 		List<UserDto> interestSearchDto1 = searchService.search(0.0, 0.0, 50, SearchService.SORT_INTEREST);
 		Assert.assertEquals(interestSearchDto1.size(), 1);
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		userService.addInterest(INTEREST);
-		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		userService.addInterest(INTEREST);		
 		
+		//test preferedAge
+		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
+		userService.updateMinAge(user1Age+1);
+		List<UserDto> ageSearchDto1 = searchService.search(0.0, 0.0, 50, 1);
+		Assert.assertEquals(ageSearchDto1.size(), 1);
+		userService.updateMaxAge(user3Age-1);
+		List<UserDto> ageSearchDto8 = searchService.search(0.0, 0.0, 50, 1);
+		Assert.assertEquals(ageSearchDto8.size(), 0);
 
 		// likeUser
+		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		userService.likeUser(UserDto.encodeId(user1.getId(), textEncryptor));
 		Assert.assertEquals(userLikeRepo.count(), 1);
 		Assert.assertEquals(user3.getLikes().size(), 1);
