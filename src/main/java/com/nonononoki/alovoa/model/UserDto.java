@@ -1,8 +1,5 @@
 package com.nonononoki.alovoa.model;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -84,10 +81,7 @@ public class UserDto {
 		dto.setId(user.getId());
 		dto.setIdEncoded(encodeId(user.getId(), textEncryptor));
 		dto.setActiveDate(user.getDates().getActiveDate());
-		LocalDate now = LocalDate.now();
-		LocalDate localDob = user.getDates().getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(); 
-		Period period = Period.between(localDob, now);
-		dto.setAge(period.getYears());
+		dto.setAge(Tools.calcUserAge(user));
 		dto.setDescription(user.getDescription());
 		dto.setFirstName(user.getFirstName());
 		dto.setGender(user.getGender());

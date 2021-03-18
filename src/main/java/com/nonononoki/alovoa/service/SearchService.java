@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.UserDto;
@@ -43,6 +44,15 @@ public class SearchService {
 	
 	@Value("${app.search.max.distance}")
 	private int maxDistance;
+	
+	@Value("${app.age.legal}")
+	private int ageLegal;
+	
+	@Value("${app.age.min}")
+	private int minAge;
+
+	@Value("${app.age.max}")
+	private int maxAge;
 	
 	@Data
 	@Builder
@@ -80,9 +90,21 @@ public class SearchService {
 		user.setLocationLongitude(Double.valueOf(df.format(longitude)));
 		userRepo.saveAndFlush(user);
 		
-		Date minDate = Date.from(LocalDate.now().minusYears(user.getPreferedMaxAge()).atStartOfDay(ZoneId.systemDefault()).toInstant()); 
-		Date maxDate = Date.from(LocalDate.now().minusYears(user.getPreferedMinAge()).atStartOfDay(ZoneId.systemDefault()).toInstant());  
-
+		
+		int age = Tools.calcUserAge(user);
+		boolean isLegalAge = age >= ageLegal;
+		int minAge = user.getPreferedMaxAge();
+		int maxAge = user.getPreferedMaxAge();
+		if(isLegalAge && minAge < this.minAge) {
+			minAge = this.minAge;
+		}
+		if(!isLegalAge && maxAge >= this.maxAge) {
+			maxAge = this.maxAge;
+		}
+		
+		Date minDate = Date.from(LocalDate.now().minusYears(user.getPreferedMinAge()).atStartOfDay(ZoneId.systemDefault()).toInstant());  
+		Date maxDate = Date.from(LocalDate.now().minusYears(user.getPreferedMaxAge()).atStartOfDay(ZoneId.systemDefault()).toInstant()); 
+		
 		MinMaxLatLong minMaxLatLong = calcMinMaxLatLong(distance, latitude, longitude);
 
 		List<User> users = userRepo.usersSearch(minDate, maxDate, minMaxLatLong);
@@ -99,8 +121,6 @@ public class SearchService {
 			if (user.getId() == dto.getId()) {
 				continue;
 			}
-			
-			//TODO Use less streams for better performance
 			if (user.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(dto.getId()))) {
 				continue;
 			}

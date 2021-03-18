@@ -1,9 +1,6 @@
 package com.nonononoki.alovoa.service;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -184,10 +181,7 @@ public class RegisterService {
 
 	private BaseRegisterDto registerBase(RegisterDto dto) throws Exception {
 		// check minimum age
-		LocalDate now = LocalDate.now();
-		Period period = Period.between(
-				dto.getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), now);
-		int userAge = period.getYears();
+		int userAge = Tools.calcUserAge(dto.getDateOfBirth());
 		if (userAge < minAge) {
 			throw new Exception(publicService.text("backend.error.register.min-age"));
 		}

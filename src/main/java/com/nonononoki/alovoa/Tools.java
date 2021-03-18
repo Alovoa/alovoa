@@ -7,7 +7,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Base64;
+import java.util.Date;
 
 import com.nonononoki.alovoa.entity.User;
 
@@ -25,6 +29,22 @@ public class Tools {
 	public static final String DEV = "dev";
 	
 	public static final String MAIL_TEST_DOMAIN= "@mailinator.com";
+	
+	public static LocalDate dateToLocalDate(Date date) {
+		return date.toInstant()
+			      .atZone(ZoneId.systemDefault())
+			      .toLocalDate();
+	}
+	
+	public static int calcUserAge(User user) {
+		LocalDate currentDate = LocalDate.now();
+		return Period.between(Tools.dateToLocalDate(user.getDates().getDateOfBirth()), currentDate).getYears();
+	}
+	
+	public static int calcUserAge(Date dateOfBirth) {
+		LocalDate currentDate = LocalDate.now();
+		return Period.between(Tools.dateToLocalDate(dateOfBirth), currentDate).getYears();
+	}
 
 	public static File getFileFromResources(String fileName) {
 		URL res = getUrlFromResources(fileName);

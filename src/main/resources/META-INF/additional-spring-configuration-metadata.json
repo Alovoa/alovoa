@@ -183,5 +183,10 @@
     "name": "app.user.delete.delay",
     "type": "java.lang.String",
     "description": "A description for 'app.user.delete.delay'"
+  },
+  {
+    "name": "app.age.legal",
+    "type": "java.lang.String",
+    "description": "A description for 'app.age.legal'"
   }
 ]}

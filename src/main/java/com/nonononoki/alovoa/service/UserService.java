@@ -117,6 +117,9 @@ public class UserService {
 
 	@Value("${app.age.max}")
 	private int maxAge;
+	
+	@Value("${app.age.legal}")
+	private int ageLegal;
 
 	@Value("${app.profile.image.length}")
 	private int imageLength;
@@ -384,6 +387,10 @@ public class UserService {
 
 	public void updateIntention(long intention) throws Exception {
 		User user = authService.getCurrentUser();
+		boolean isLegal = Tools.calcUserAge(user) >= ageLegal;
+		if(!isLegal && intention == UserIntention.SEX) {
+			throw new Exception("not_supported");
+		}
 		UserIntention i = userIntentionRepo.findById(intention).orElse(null);
 		user.setIntention(i);
 		user.getDates().setIntentionChangeDate(new Date());
@@ -589,15 +596,23 @@ public class UserService {
 		User currUser = authService.getCurrentUser();
 		
 		if(user.equals(currUser)) {
-			throw new Exception();
+			throw new Exception("user_is_same_user");
 		}
 
 		if (user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
-			throw new Exception();
+			throw new Exception("is_blocked");
 		}
 		
 		if (currUser.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
-			throw new Exception();
+			throw new Exception("is_blocked");
+		}
+		
+		int userAge = Tools.calcUserAge(user);
+		int currentUserAge = Tools.calcUserAge(currUser);
+		boolean isUserLegalAge = userAge >= ageLegal;
+		boolean isCurrentUserLegalAge = currentUserAge >= ageLegal;
+		if(isUserLegalAge !=  isCurrentUserLegalAge) {
+			throw new Exception("one_user_is_minor");
 		}
 		
 		if (userLikeRepo.findByUserFromAndUserTo(currUser, user) == null) {
@@ -624,11 +639,6 @@ public class UserService {
 				convo.setLastUpdated(new Date());
 				convo.setMessages(new ArrayList<>());
 				currUser.getConversations().add(convo);
-//				conversationRepo.save(convo);
-//				currUser.getConversations().add(convo);
-//				user.getConversationsBy().add(convo);
-//				user.getDates().setMessageDate(new Date());
-//				userRepo.saveAndFlush(user);
 
 				notificationService.newMatch(user);
 				notificationService.newMatch(currUser);
