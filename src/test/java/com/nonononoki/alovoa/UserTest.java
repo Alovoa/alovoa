@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -177,12 +178,9 @@ public class UserTest {
 	}
 
 	private static RegisterDto createTestUserDto(long gender, Captcha c, String email, int age) throws IOException {
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.YEAR, age * (-1));
 		RegisterDto dto = new RegisterDto();
-		Date dobDate = calendar.getTime();
 		dto.setEmail(email + Tools.MAIL_TEST_DOMAIN);
-		dto.setDateOfBirth(dobDate);
+		dto.setDateOfBirth(Tools.ageToDate(age));
 		dto.setPassword("test123");
 		dto.setFirstName("test");
 		dto.setGender(gender);
@@ -395,9 +393,20 @@ public class UserTest {
 		List<UserDto> ageSearchDto1 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(ageSearchDto1.size(), 1);
 		userService.updateMaxAge(user3Age-1);
-		List<UserDto> ageSearchDto8 = searchService.search(0.0, 0.0, 50, 1);
-		Assert.assertEquals(ageSearchDto8.size(), 0);
-
+		List<UserDto> ageSearchDto2 = searchService.search(0.0, 0.0, 50, 1);
+		Assert.assertEquals(ageSearchDto2.size(), 0);
+		
+		user2.getDates().setDateOfBirth(Tools.localDateToDate(LocalDateTime.now().minusYears(minAge).toLocalDate()));
+		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
+		userService.updateMinAge(minAge);
+		userService.updateMaxAge(maxAge);
+		List<UserDto> ageSearchDto3 = searchService.search(0.0, 0.0, 50, 1);
+		Assert.assertEquals(ageSearchDto3.size(), 0);
+		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		List<UserDto> ageSearchDto4 = searchService.search(0.0, 0.0, 50, 1);
+		Assert.assertEquals(ageSearchDto4.size(), 1);
+		user2.getDates().setDateOfBirth(Tools.ageToDate(user2Age));
+		
 		// likeUser
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		userService.likeUser(UserDto.encodeId(user1.getId(), textEncryptor));

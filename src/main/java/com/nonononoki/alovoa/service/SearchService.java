@@ -1,8 +1,6 @@
 package com.nonononoki.alovoa.service;
 
 import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -93,17 +91,18 @@ public class SearchService {
 		
 		int age = Tools.calcUserAge(user);
 		boolean isLegalAge = age >= ageLegal;
-		int minAge = user.getPreferedMaxAge();
+		int minAge = user.getPreferedMinAge();
 		int maxAge = user.getPreferedMaxAge();
-		if(isLegalAge && minAge < this.minAge) {
-			minAge = this.minAge;
+		
+		if(isLegalAge && minAge < this.ageLegal) {
+			minAge = this.ageLegal;
 		}
-		if(!isLegalAge && maxAge >= this.maxAge) {
-			maxAge = this.maxAge;
+		if(!isLegalAge && maxAge >= this.ageLegal) {
+			maxAge = this.ageLegal - 1;
 		}
 		
-		Date minDate = Date.from(LocalDate.now().minusYears(user.getPreferedMinAge()).atStartOfDay(ZoneId.systemDefault()).toInstant());  
-		Date maxDate = Date.from(LocalDate.now().minusYears(user.getPreferedMaxAge()).atStartOfDay(ZoneId.systemDefault()).toInstant()); 
+		Date minDate = Tools.ageToDate(maxAge);
+		Date maxDate = Tools.ageToDate(minAge);
 		
 		MinMaxLatLong minMaxLatLong = calcMinMaxLatLong(distance, latitude, longitude);
 

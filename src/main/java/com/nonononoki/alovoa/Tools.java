@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Date;
 
 import com.nonononoki.alovoa.entity.User;
@@ -30,6 +31,16 @@ public class Tools {
 	
 	public static final String MAIL_TEST_DOMAIN= "@mailinator.com";
 	
+	public static Date ageToDate(int age) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, age * (-1));
+		Date dobDate = calendar.getTime();
+		return dobDate;
+	}
+	
+	public static Date localDateToDate(LocalDate localDate) {
+		return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+	}
 	public static LocalDate dateToLocalDate(Date date) {
 		return date.toInstant()
 			      .atZone(ZoneId.systemDefault())
