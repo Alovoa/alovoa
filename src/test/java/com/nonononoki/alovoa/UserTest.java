@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -122,6 +121,8 @@ public class UserTest {
 	private static int user1Age = 18;
 	private static int user2Age = 20;
 	private static int user3Age = 30;
+	
+	
 
 
 	public static List<User> getTestUsers(CaptchaService captchaService, RegisterService registerService)

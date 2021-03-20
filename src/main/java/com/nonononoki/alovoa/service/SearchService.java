@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,10 +17,8 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.UserDto;
+import com.nonononoki.alovoa.model.UserSearchRequest;
 import com.nonononoki.alovoa.repo.UserRepository;
-
-import lombok.Builder;
-import lombok.Data;
 
 @Service
 public class SearchService {
@@ -27,7 +27,7 @@ public class SearchService {
 	public static final int SORT_ACTIVE_DATE = 2;
 	public static final int SORT_INTEREST = 3;
 	public static final int SORT_DONATION = 4;
-	
+
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
@@ -39,120 +39,109 @@ public class SearchService {
 
 	@Value("${app.search.max}")
 	private int maxResults;
-	
+
 	@Value("${app.search.max.distance}")
 	private int maxDistance;
-	
+
 	@Value("${app.age.legal}")
 	private int ageLegal;
-	
+
 	@Value("${app.age.min}")
 	private int minAge;
 
 	@Value("${app.age.max}")
 	private int maxAge;
-	
-	@Data
-	@Builder
-	public static class MinMaxLatLong {
-		double minLat;
-		double minLon;
-		double maxLat;
-		double maxLon;
-	}
-	
+
 	private static final double LATITUDE = 111.1;
 	private static final double LONGITUDE = 111.320;
-	
-	public static MinMaxLatLong calcMinMaxLatLong(int radius, double latitude, double longitude) {
-		double deltaLat = radius / LATITUDE;
-		double deltaLong = radius / (LONGITUDE * Math.cos( latitude / 180.0 * Math.PI));
-		double minLat = latitude - deltaLat;  
-		double maxLat = latitude + deltaLat;
-		double minLong = longitude - deltaLong; 
-		double maxLong = longitude + deltaLong;
-		return MinMaxLatLong.builder().minLat(minLat).minLon(minLong).maxLat(maxLat).maxLon(maxLong).build();
-	}
 
 	public List<UserDto> search(Double latitude, Double longitude, int distance, int sort) throws Exception {
-		
-		if(distance > maxDistance) {
+
+		if (distance > maxDistance) {
 			throw new Exception("max_distance_exceeded");
 		}
-		
+
 		User user = authService.getCurrentUser();
 		user.getDates().setActiveDate(new Date());
 		// rounding to improve privacy
-		DecimalFormat df = new DecimalFormat("#.##");  
+		DecimalFormat df = new DecimalFormat("#.##");
 		user.setLocationLatitude(Double.valueOf(df.format(latitude)));
 		user.setLocationLongitude(Double.valueOf(df.format(longitude)));
 		userRepo.saveAndFlush(user);
-		
-		
+
 		int age = Tools.calcUserAge(user);
 		boolean isLegalAge = age >= ageLegal;
 		int minAge = user.getPreferedMinAge();
 		int maxAge = user.getPreferedMaxAge();
-		
-		if(isLegalAge && minAge < this.ageLegal) {
+
+		if (isLegalAge && minAge < this.ageLegal) {
 			minAge = this.ageLegal;
 		}
-		if(!isLegalAge && maxAge >= this.ageLegal) {
+		if (!isLegalAge && maxAge >= this.ageLegal) {
 			maxAge = this.ageLegal - 1;
 		}
-		
+
 		Date minDate = Tools.ageToDate(maxAge);
 		Date maxDate = Tools.ageToDate(minAge);
-		
-		MinMaxLatLong minMaxLatLong = calcMinMaxLatLong(distance, latitude, longitude);
 
-		List<User> users = userRepo.usersSearch(minDate, maxDate, minMaxLatLong);
-		List<UserDto> userDtos = new ArrayList<>();
-		for (int i = 0; i < users.size(); i++) {
-			UserDto dto = UserDto.userToUserDto(users.get(i), user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY);
-			userDtos.add(dto);
-		}
+		double deltaLat = distance / LATITUDE;
+		double deltaLong = distance / (LONGITUDE * Math.cos(latitude / 180.0 * Math.PI));
+		double minLat = latitude - deltaLat;
+		double maxLat = latitude + deltaLat;
+		double minLong = longitude - deltaLong;
+		double maxLong = longitude + deltaLong;
+
+		UserSearchRequest request = UserSearchRequest.builder().minLat(minLat).minLong(minLong).maxLat(maxLat)
+				.maxLong(maxLong).maxDate(maxDate).minDate(minDate).intentionText(user.getIntention().getText())
+				.likeIds(user.getLikes().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
+				.blockIds(user.getBlockedUsers().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
+				.hideIds(user.getHiddenUsers().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
+				.genderTexts(user.getPreferedGenders().stream().map(o -> o.getText()).collect(Collectors.toSet()))
+				.build();
+
+		// because IS IN does not work with empty list
+		request.getBlockIds().add(0L);
+		request.getLikeIds().add(0L);
+		request.getHideIds().add(0L);
+
+		List<User> users = userRepo.usersSearch(request);
+
+		Set<Long> ignoreIds = user.getLikedBy().stream().map(o -> o.getUserFrom().getId()).collect(Collectors.toSet());
+		ignoreIds.addAll(
+				user.getBlockedByUsers().stream().map(o -> o.getUserFrom().getId()).collect(Collectors.toSet()));
+		ignoreIds.add(user.getId());
+
+		List<User> filteredUsers = new ArrayList<User>();
 
 		// filter users
-		List<UserDto> filteredUserDtos = new ArrayList<>();
-		for (int i = 0; i < userDtos.size(); i++) {
-			UserDto dto = userDtos.get(i);
-			if (user.getId() == dto.getId()) {
+		for (User u : users) {
+
+			if (ignoreIds.contains(u.getId())) {
 				continue;
 			}
-			if (user.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(dto.getId()))) {
+
+			if (!u.getPreferedGenders().contains(user.getGender())) {
 				continue;
 			}
-			if (user.getHiddenUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(dto.getId()))) {
-				continue;
-			}
-			if (user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(dto.getId()))) {
-				continue;
-			}
-			if (dto.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
-				continue;
-			}
-			if (!user.getPreferedGenders().contains(dto.getGender())) {
-				continue;
-			}
-			if (!dto.getPreferedGenders().contains(user.getGender())) {
-				continue;
-			}
-			if (!user.getIntention().equals(dto.getIntention())) {
-				continue;
-			}
-			if (dto.getDistanceToUser() > distance) {
-				continue;
-			}
-			filteredUserDtos.add(dto);
-			
-			if(filteredUserDtos.size() >= maxResults) {
+			// square is fine, reduces CPU load when not calculating radius distance
+			/*
+			 * if (dto.getDistanceToUser() > distance) { continue; }
+			 */
+			filteredUsers.add(u);
+
+			if (filteredUsers.size() >= maxResults) {
 				break;
 			}
 		}
 
+		List<UserDto> userDtos = new ArrayList<>();
+		for (User u : filteredUsers) {
+			UserDto dto = UserDto.userToUserDto(u, user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY);
+			userDtos.add(dto);
+		}
+
 		if (sort == SORT_DISTANCE) {
-			Collections.sort(filteredUserDtos, new Comparator<UserDto>() {
+			Collections.sort(userDtos, new Comparator<UserDto>() {
 				@Override
 				public int compare(UserDto a, UserDto b) {
 					return a.getDistanceToUser() < b.getDistanceToUser() ? -1
@@ -160,16 +149,16 @@ public class SearchService {
 				}
 			});
 		} else if (sort == SORT_ACTIVE_DATE) {
-			Collections.sort(filteredUserDtos, new Comparator<UserDto>() {
+			Collections.sort(userDtos, new Comparator<UserDto>() {
 				@Override
 				public int compare(UserDto a, UserDto b) {
 					return b.getActiveDate().compareTo(a.getActiveDate());
 				}
 			});
-			Collections.reverse(filteredUserDtos);
+			Collections.reverse(userDtos);
 		} else if (sort == SORT_INTEREST) {
-			filteredUserDtos.removeIf(f->f.getSameInterests() == 0);
-			Collections.sort(filteredUserDtos, new Comparator<UserDto>() {
+			userDtos.removeIf(f -> f.getSameInterests() == 0);
+			Collections.sort(userDtos, new Comparator<UserDto>() {
 				@Override
 				public int compare(UserDto a, UserDto b) {
 					return a.getSameInterests() < b.getSameInterests() ? -1
@@ -177,8 +166,8 @@ public class SearchService {
 				}
 			});
 		} else if (sort == SORT_DONATION) {
-			filteredUserDtos.removeIf(f->f.getTotalDonations() == 0);
-			Collections.sort(filteredUserDtos, new Comparator<UserDto>() {
+			userDtos.removeIf(f -> f.getTotalDonations() == 0);
+			Collections.sort(userDtos, new Comparator<UserDto>() {
 				@Override
 				public int compare(UserDto a, UserDto b) {
 					return a.getTotalDonations() < b.getTotalDonations() ? -1
@@ -186,8 +175,8 @@ public class SearchService {
 				}
 			});
 		}
-		
-		return filteredUserDtos;
+
+		return userDtos;
 	}
 
 }
