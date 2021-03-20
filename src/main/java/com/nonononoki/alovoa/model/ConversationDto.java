@@ -32,7 +32,9 @@ public class ConversationDto {
 			u = c.getUserTo();
 		}
 		dto.setUserName(u.getFirstName());
-		dto.setUserProfilePicture(u.getProfilePicture());
+		if(u.getProfilePicture() != null) {
+			dto.setUserProfilePicture(u.getProfilePicture().getData());
+		}
 		dto.setUserIdEncoded(UserDto.encodeId(u.getId(), textEncryptor));
 		return dto;
 	}

@@ -93,14 +93,16 @@ public class UserDto {
 		}
 		dto.setGender(user.getGender());
 		dto.setIntention(user.getIntention());
-		dto.setProfilePicture(user.getProfilePicture());
+		if(user.getProfilePicture() != null) {
+			dto.setProfilePicture(user.getProfilePicture().getData());
+		}
 		dto.setBlockedUsers(user.getBlockedUsers());
 		dto.setTotalDonations(user.getTotalDonations());
 		dto.setBlockedByUsers(user.getBlockedByUsers());
 		dto.setReportedByUsers(user.getReportedByUsers());
 		dto.setInterests(user.getInterests());
-		if(mode != NO_AUDIO || mode != PROFILE_PICTURE_ONLY) {
-			dto.setAudio(user.getAudio());
+		if((mode != NO_AUDIO || mode != PROFILE_PICTURE_ONLY) && user.getAudio() != null) {
+			dto.setAudio(user.getAudio().getData());
 		}
 		dto.setNumberProfileViews(user.getNumberProfileViews());
 		dto.setNumberSearches(user.getNumberSearches());

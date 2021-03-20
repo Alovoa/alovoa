@@ -72,8 +72,6 @@ public class ProfileResource {
 		boolean noLocation = false;
 
 		User user = authService.getCurrentUser();
-		// if(user.getProfilePicture() == null || user.getProfilePicture() != null &&
-		// user.getProfilePicture().isEmpty()) {
 		if (user.getProfilePicture() == null) {
 			noProfilePicture = true;
 			hasWarning = true;

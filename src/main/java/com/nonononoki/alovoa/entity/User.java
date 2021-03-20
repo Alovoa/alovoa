@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,6 +32,7 @@ import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.user.Conversation;
 import com.nonononoki.alovoa.entity.user.Gender;
 import com.nonononoki.alovoa.entity.user.Message;
+import com.nonononoki.alovoa.entity.user.UserAudio;
 import com.nonononoki.alovoa.entity.user.UserBlock;
 import com.nonononoki.alovoa.entity.user.UserDates;
 import com.nonononoki.alovoa.entity.user.UserDeleteToken;
@@ -42,6 +44,7 @@ import com.nonononoki.alovoa.entity.user.UserInterest;
 import com.nonononoki.alovoa.entity.user.UserLike;
 import com.nonononoki.alovoa.entity.user.UserNotification;
 import com.nonononoki.alovoa.entity.user.UserPasswordToken;
+import com.nonononoki.alovoa.entity.user.UserProfilePicture;
 import com.nonononoki.alovoa.entity.user.UserRegisterToken;
 import com.nonononoki.alovoa.entity.user.UserReport;
 import com.nonononoki.alovoa.entity.user.UserWebPush;
@@ -73,9 +76,7 @@ public class User implements UserDetails {
 	//used for emails
 	private String language;
 
-	@Column(columnDefinition = "mediumtext")
-	@Convert(converter = TextEncryptorConverter.class)
-	private String audio;
+
 
 	private int preferedMinAge;
 
@@ -85,9 +86,6 @@ public class User implements UserDetails {
 	private Double locationLongitude;
 
 	// private int age;
-
-	@Column(columnDefinition = "mediumtext")
-	private String profilePicture;
 
 	private double totalDonations;
 	
@@ -112,9 +110,19 @@ public class User implements UserDetails {
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn
 	private UserDates dates;
+	
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn
+	private UserAudio audio;
+	
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn
+	private UserProfilePicture profilePicture;
 
 	@ManyToOne
 	private Gender gender;
+	
+	
 
 	@ManyToMany
 	@JoinTable(name = "user2genders")

@@ -222,7 +222,8 @@
 											</button>
 										</div>
 										<div class="right">
-											<button class="button colored is-rounded is-danger" style="margin-right: 4px;"
+											<button class="button colored is-rounded is-danger"
+												style="margin-right: 4px;"
 												th:onclick="hideUser([[${user.idEncoded}]])">
 												<i class="fa fa-thumbs-down"></i>
 											</button>
@@ -271,8 +272,11 @@
 			style="scroll-snap-align: end;">
 			<div class="card-image">
 				<figure class="image">
-					<img th:src="${donation.user.profilePicture}" class="profile-pic"
-						th:onclick="viewProfile([[${donation.user.idEncoded}]])">
+					<th:block th:if="${user.profilePicture}">
+						<img th:src="${donation.user.profilePicture}"
+							class="profile-pic"
+							th:onclick="viewProfile([[${donation.user.idEncoded}]])">
+					</th:block>
 				</figure>
 			</div>
 			<div class="card-content">

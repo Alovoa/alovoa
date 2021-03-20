@@ -36,7 +36,7 @@
 			<div th:each="report : ${reports}" style="padding-bottom: 16px;"  th:id="'report' + ${report.id}" th:class="'user' + ${report.userTo.id}">
 				<h4 th:text="${report.userTo.firstName}"></h4>
 				<div>
-					<img th:src="${report.userTo.profilePicture}" width=250> <img
+					<img th:src="${report.userTo.profilePicture.data}" width=250> <img
 						th:each="img : ${report.userTo.images}" th:src="${img.content}"
 						width=250>
 				</div>

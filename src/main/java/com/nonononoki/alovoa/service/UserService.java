@@ -36,6 +36,7 @@ import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
 import com.nonononoki.alovoa.entity.user.Gender;
+import com.nonononoki.alovoa.entity.user.UserAudio;
 import com.nonononoki.alovoa.entity.user.UserBlock;
 import com.nonononoki.alovoa.entity.user.UserDeleteToken;
 import com.nonononoki.alovoa.entity.user.UserHide;
@@ -44,6 +45,7 @@ import com.nonononoki.alovoa.entity.user.UserIntention;
 import com.nonononoki.alovoa.entity.user.UserInterest;
 import com.nonononoki.alovoa.entity.user.UserLike;
 import com.nonononoki.alovoa.entity.user.UserNotification;
+import com.nonononoki.alovoa.entity.user.UserProfilePicture;
 import com.nonononoki.alovoa.entity.user.UserReport;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.model.UserDeleteParams;
@@ -93,7 +95,7 @@ public class UserService {
 
 	@Autowired
 	private UserReportRepository userReportRepo;
-	
+
 	@Autowired
 	private UserNotificationRepository userNotificationRepo;
 
@@ -109,15 +111,15 @@ public class UserService {
 	@Autowired
 	private NotificationService notificationService;
 
-	//@Autowired
-	//private PasswordEncoder passwordEncoder;
+	// @Autowired
+	// private PasswordEncoder passwordEncoder;
 
 	@Value("${app.age.min}")
 	private int minAge;
 
 	@Value("${app.age.max}")
 	private int maxAge;
-	
+
 	@Value("${app.age.legal}")
 	private int ageLegal;
 
@@ -147,31 +149,31 @@ public class UserService {
 
 	@Value("${app.audio.max-size}")
 	private int audioMaxSize; // in MB
-	
+
 	@Value("${app.user.delete.delay}")
-	private long userDeleteDelay;  
+	private long userDeleteDelay;
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper;
 
 	public UserDeleteToken deleteAccountRequest() throws Exception {
 		User user = authService.getCurrentUser();
-		UserDeleteToken  token = new UserDeleteToken();
+		UserDeleteToken token = new UserDeleteToken();
 		Date currentDate = new Date();
 
 		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
 		token.setDate(currentDate);
 		long ms = currentDate.getTime() + userDeleteDelay;
-		token.setActiveDate(new Date (ms));
+		token.setActiveDate(new Date(ms));
 		token.setUser(user);
 		user.setDeleteToken(token);
 		user = userRepo.saveAndFlush(user);
 
 		mailService.sendAccountDeleteRequest(user, token);
-		
+
 		return user.getDeleteToken();
 	}
 
@@ -179,13 +181,13 @@ public class UserService {
 		User user = authService.getCurrentUser();
 		UserDeleteToken deleteToken = user.getDeleteToken();
 		String userTokenString = deleteToken.getContent();
-		
+
 		if (!dto.isConfirm()) {
 			throw new Exception("deletion_not_confirmed");
 		}
-		
+
 		long ms = new Date().getTime();
-		if(ms < user.getDeleteToken().getActiveDate().getTime()) {
+		if (ms < user.getDeleteToken().getActiveDate().getTime()) {
 			throw new Exception("deletion_not_active_yet");
 		}
 
@@ -201,27 +203,21 @@ public class UserService {
 			throw new Exception("captcha_invalid");
 		}
 
-		UserDeleteParams userDeleteParam = UserDeleteParams.builder()
-				.conversationRepo(conversationRepo)
-				.userBlockRepo(userBlockRepo)
-				.userHideRepo(userHideRepo)
-				.userLikeRepo(userLikeRepo)
-				.userNotificationRepo(userNotificationRepo)
-				.userRepo(userRepo)
-				.userReportRepo(userReportRepo)
-				.build();
+		UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
+				.userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
+				.userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
 
 		removeUserLinkedLists(user, userDeleteParam);
-		user = authService.getCurrentUser();	
+		user = authService.getCurrentUser();
 		user = userRepo.saveAndFlush(user);
 		userRepo.delete(user);
 		userRepo.flush();
-		
+
 		mailService.sendAccountDeleteConfirm(user);
 	}
-	
+
 	public static User removeUserLinkedLists(User user, UserDeleteParams userDeleteParam) throws Exception {
-		
+
 		UserRepository userRepo = userDeleteParam.getUserRepo();
 		UserLikeRepository userLikeRepo = userDeleteParam.getUserLikeRepo();
 		ConversationRepository conversationRepo = userDeleteParam.getConversationRepo();
@@ -229,147 +225,154 @@ public class UserService {
 		UserHideRepository userHideRepo = userDeleteParam.getUserHideRepo();
 		UserBlockRepository userBlockRepo = userDeleteParam.getUserBlockRepo();
 		UserReportRepository userReportRepo = userDeleteParam.getUserReportRepo();
-		
-		//DELETE USER LIKE
+
+		// DELETE USER LIKE
 		{
-			for(UserLike like : userLikeRepo.findByUserFrom(user)) {
-				User u= like.getUserTo();
+			for (UserLike like : userLikeRepo.findByUserFrom(user)) {
+				User u = like.getUserTo();
 				u.getLikedBy().remove(like);
 				userRepo.save(u);
-				
+
 				like.setUserTo(null);
 				userLikeRepo.save(like);
 			}
-			for(UserLike like : userLikeRepo.findByUserTo(user)) {
-				User u= like.getUserFrom();
+			for (UserLike like : userLikeRepo.findByUserTo(user)) {
+				User u = like.getUserFrom();
 				u.getLikes().remove(like);
 				userRepo.save(u);
-				
+
 				like.setUserFrom(null);
 				userLikeRepo.save(like);
 			}
 			userRepo.flush();
 			userLikeRepo.flush();
 		}
-		
-		//DELETE USER CONVERSATION
+
+		// DELETE USER CONVERSATION
 		{
-			for(Conversation conversation : conversationRepo.findByUserFrom(user)) {
-				User u= conversation.getUserTo();
+			for (Conversation conversation : conversationRepo.findByUserFrom(user)) {
+				User u = conversation.getUserTo();
 				u.getConversationsBy().remove(conversation);
 				userRepo.save(u);
-				
+
 				conversation.setUserTo(null);
 				conversationRepo.save(conversation);
 			}
-			for(Conversation conversation : conversationRepo.findByUserTo(user)) {
-				User u= conversation.getUserFrom();
+			for (Conversation conversation : conversationRepo.findByUserTo(user)) {
+				User u = conversation.getUserFrom();
 				u.getConversations().remove(conversation);
 				userRepo.save(u);
-				
+
 				conversation.setUserFrom(null);
 				conversationRepo.save(conversation);
 			}
 			userRepo.flush();
 			conversationRepo.flush();
 		}
-		
-		//DELETE USER NOTIFICATION
+
+		// DELETE USER NOTIFICATION
 		{
-			for(UserNotification notification : userNotificationRepo.findByUserFrom(user)) {
-				User u= notification.getUserTo();
+			for (UserNotification notification : userNotificationRepo.findByUserFrom(user)) {
+				User u = notification.getUserTo();
 				u.getNotificationsFrom().remove(notification);
 				userRepo.save(u);
-				
+
 				notification.setUserTo(null);
 				userNotificationRepo.save(notification);
 			}
-			for(UserNotification notificaton : userNotificationRepo.findByUserTo(user)) {
-				User u= notificaton.getUserFrom();
+			for (UserNotification notificaton : userNotificationRepo.findByUserTo(user)) {
+				User u = notificaton.getUserFrom();
 				u.getNotifications().remove(notificaton);
 				userRepo.save(u);
-				
+
 				notificaton.setUserFrom(null);
 				userNotificationRepo.save(notificaton);
 			}
 			userRepo.flush();
 			userNotificationRepo.flush();
 		}
-		
-		//DELETE USER HIDE
+
+		// DELETE USER HIDE
 		{
-			for(UserHide hide : userHideRepo.findByUserFrom(user)) {
-				User u= hide.getUserTo();
+			for (UserHide hide : userHideRepo.findByUserFrom(user)) {
+				User u = hide.getUserTo();
 				u.getHiddenByUsers().remove(hide);
 				userRepo.save(u);
-				
+
 				hide.setUserTo(null);
 				userHideRepo.save(hide);
 			}
-			for(UserHide hide : userHideRepo.findByUserTo(user)) {
-				User u= hide.getUserFrom();
+			for (UserHide hide : userHideRepo.findByUserTo(user)) {
+				User u = hide.getUserFrom();
 				u.getHiddenUsers().remove(hide);
 				userRepo.save(u);
-				
+
 				hide.setUserFrom(null);
 				userHideRepo.save(hide);
 			}
 			userRepo.flush();
 			userHideRepo.flush();
 		}
-		
-		//DELETE USER BLOCK
+
+		// DELETE USER BLOCK
 		{
-			for(UserBlock block : userBlockRepo.findByUserFrom(user)) {
-				User u= block.getUserTo();
+			for (UserBlock block : userBlockRepo.findByUserFrom(user)) {
+				User u = block.getUserTo();
 				u.getBlockedByUsers().remove(block);
 				userRepo.save(u);
-				
+
 				block.setUserTo(null);
 				userBlockRepo.save(block);
 			}
-			for(UserBlock block : userBlockRepo.findByUserTo(user)) {
-				User u= block.getUserFrom();
+			for (UserBlock block : userBlockRepo.findByUserTo(user)) {
+				User u = block.getUserFrom();
 				u.getBlockedUsers().remove(block);
 				userRepo.save(u);
-				
+
 				block.setUserFrom(null);
 				userBlockRepo.save(block);
 			}
 			userRepo.flush();
 			userBlockRepo.flush();
 		}
-		
-		
-		//DELETE USER REPORT
+
+		// DELETE USER REPORT
 		{
-			for(UserReport report : userReportRepo.findByUserFrom(user)) {
-				User u= report.getUserTo();
+			for (UserReport report : userReportRepo.findByUserFrom(user)) {
+				User u = report.getUserTo();
 				u.getReportedByUsers().remove(report);
 				userRepo.save(u);
-				
+
 				report.setUserTo(null);
 				userReportRepo.save(report);
 			}
-			for(UserReport report : userReportRepo.findByUserTo(user)) {
-				User u= report.getUserFrom();
+			for (UserReport report : userReportRepo.findByUserTo(user)) {
+				User u = report.getUserFrom();
 				u.getReported().remove(report);
 				userRepo.save(u);
-				
+
 				report.setUserFrom(null);
 				userReportRepo.save(report);
 			}
 			userRepo.flush();
 			userReportRepo.flush();
 		}
-		
+
 		return user;
 	}
 
 	public void updateProfilePicture(String imgB64) throws Exception {
 		User user = authService.getCurrentUser();
 		String newImgB64 = adjustPicture(imgB64);
-		user.setProfilePicture(newImgB64);
+		if (user.getProfilePicture() == null) {
+			UserProfilePicture profilePic = new UserProfilePicture();
+			profilePic.setData(newImgB64);
+			profilePic.setUser(user);
+			user.setProfilePicture(profilePic);
+		} else {
+			user.getProfilePicture().setData(newImgB64);
+		}
+		
 		userRepo.saveAndFlush(user);
 	}
 
@@ -388,7 +391,7 @@ public class UserService {
 	public void updateIntention(long intention) throws Exception {
 		User user = authService.getCurrentUser();
 		boolean isLegal = Tools.calcUserAge(user) >= ageLegal;
-		if(!isLegal && intention == UserIntention.SEX) {
+		if (!isLegal && intention == UserIntention.SEX) {
 			throw new Exception("not_supported");
 		}
 		UserIntention i = userIntentionRepo.findById(intention).orElse(null);
@@ -457,11 +460,11 @@ public class UserService {
 		if (user.getInterests().contains(interest)) {
 			throw new Exception("interest_already_exists");
 		}
-		
-		if(user.getInterests() == null) {
+
+		if (user.getInterests() == null) {
 			user.setInterests(new ArrayList<UserInterest>());
 		}
-		
+
 		user.getInterests().add(interest);
 
 		userRepo.saveAndFlush(user);
@@ -543,13 +546,12 @@ public class UserService {
 				image = image.getSubimage(x, y, idealLength, idealLength);
 			}
 
-			//all images are equal in size
+			// all images are equal in size
 			BufferedImage scaledImage = new BufferedImage(imageLength, imageLength, image.getType());
 			Graphics2D graphics2D = scaledImage.createGraphics();
 
 			// chose one
-			graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-					RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 			// graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING,
 			// RenderingHints.VALUE_RENDER_QUALITY);
 			// graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -594,33 +596,33 @@ public class UserService {
 	public void likeUser(String idEnc) throws NumberFormatException, Exception {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
-		
-		if(user.equals(currUser)) {
+
+		if (user.equals(currUser)) {
 			throw new Exception("user_is_same_user");
 		}
 
 		if (user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
 			throw new Exception("is_blocked");
 		}
-		
+
 		if (currUser.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
 			throw new Exception("is_blocked");
 		}
-		
+
 		int userAge = Tools.calcUserAge(user);
 		int currentUserAge = Tools.calcUserAge(currUser);
 		boolean isUserLegalAge = userAge >= ageLegal;
 		boolean isCurrentUserLegalAge = currentUserAge >= ageLegal;
-		if(isUserLegalAge !=  isCurrentUserLegalAge) {
+		if (isUserLegalAge != isCurrentUserLegalAge) {
 			throw new Exception("one_user_is_minor");
 		}
-		
+
 		if (userLikeRepo.findByUserFromAndUserTo(currUser, user) == null) {
 			UserLike like = new UserLike();
 			like.setDate(new Date());
 			like.setUserFrom(currUser);
 			like.setUserTo(user);
-			//userLikeRepo.save(like);
+			// userLikeRepo.save(like);
 			currUser.getLikes().add(like);
 
 			UserNotification not = new UserNotification();
@@ -647,7 +649,7 @@ public class UserService {
 
 			user.getDates().setNotificationDate(new Date());
 			userRepo.saveAndFlush(user);
-			
+
 		}
 	}
 
@@ -706,10 +708,10 @@ public class UserService {
 			report.setComment(comment);
 			currUser.getReported().add(report);
 			currUser = userRepo.saveAndFlush(currUser);
-			
+
 			return currUser.getReported().get(currUser.getReported().size() - 1);
 		}
-		
+
 		return null;
 	}
 
@@ -721,7 +723,8 @@ public class UserService {
 
 	public boolean hasNewAlert() throws Exception {
 		User currUser = authService.getCurrentUser();
-		// user always check their alerts periodically in the background, so just update  it here
+		// user always check their alerts periodically in the background, so just update
+		// it here
 		updateUserInfo(currUser);
 		return currUser.getDates().getNotificationDate().after(currUser.getDates().getNotificationCheckedDate());
 	}
@@ -732,14 +735,14 @@ public class UserService {
 	}
 
 	public void updateUserInfo(User user) {
-		user.getDates().setActiveDate(new Date());	
+		user.getDates().setActiveDate(new Date());
 		Locale locale = LocaleContextHolder.getLocale();
 		user.setLanguage(locale.getLanguage());
 		userRepo.saveAndFlush(user);
 	}
 
 	public ResponseEntity<Resource> getUserdata() throws Exception {
-		
+
 		User user = authService.getCurrentUser();
 		UserGdpr ug = UserGdpr.userToUserGdpr(user);
 		String json = objectMapper.writeValueAsString(ug);
@@ -760,7 +763,10 @@ public class UserService {
 
 	public String getAudio(String userIdEnc) throws Exception {
 		User user = encodedIdToUser(userIdEnc);
-		return user.getAudio();
+		if(user.getAudio() == null) {
+			return null;
+		}
+		return user.getAudio().getData();
 	}
 
 	public void deleteAudio() throws Exception {
@@ -772,89 +778,69 @@ public class UserService {
 	public void updateAudio(String audioB64) throws Exception {
 		updateAudio(audioB64, null);
 	}
-	
+
 	public void updateAudio(String audioB64, String mimeType) throws Exception {
 		User user = authService.getCurrentUser();
 		String newAudioB64 = adjustAudio(audioB64, mimeType);
-		user.setAudio(newAudioB64);
+		
+		if (user.getAudio() == null) {
+			UserAudio audio = new UserAudio();
+			audio.setData(newAudioB64);
+			audio.setUser(user);
+			user.setAudio(audio);
+		} else {
+			user.getAudio().setData(newAudioB64);
+		}
+		
 		userRepo.saveAndFlush(user);
 	}
 
-	//TODO Trim audio to a specific length
+	// TODO Trim audio to a specific length
 	private String adjustAudio(String audioB64, String mimeType) throws Exception {
 
 		/*
-		ByteArrayInputStream bis = null;
-		AudioInputStream ais = null;
-		AudioInputStream aisShort = null;
-		DataInputStream dis = null;
-		*/
+		 * ByteArrayInputStream bis = null; AudioInputStream ais = null;
+		 * AudioInputStream aisShort = null; DataInputStream dis = null;
+		 */
 
 		if (Tools.getBase64Size(audioB64) * Tools.THOUSAND > audioMaxSize) {
 			throw new Exception("file_size_too_large");
 		}
-		
+
 		return audioB64;
 
 		/*
-		try {
-			int maxSeconds = audioMaxTime;
-			byte[] decodedBytes = Base64.getDecoder().decode(stripB64Type(audioB64));
-			bis = new ByteArrayInputStream(decodedBytes);
-			ais = AudioSystem.getAudioInputStream(bis);
-			AudioFormat format = ais.getFormat();
-			long frameLength = ais.getFrameLength();
-			// float bytesPerSecond = format.getFrameSize() * format.getFrameRate();
-
-			// check if audio is shorter or equal max length
-			double durationInSeconds = frameLength * format.getFrameRate();
-			if(durationInSeconds < 0.0) {
-				durationInSeconds = durationInSeconds * (-1);
-			}
-			if (durationInSeconds <= maxSeconds) {
-				ais.close();
-				bis.close();
-				audioB64 = Tools.B64AUDIOPREFIX + mimeType + Tools.B64PREFIX + stripB64Type(audioB64);
-				return audioB64;
-			} else {
-				long frames = (long) (format.getFrameRate() * maxSeconds);
-
-				aisShort = new AudioInputStream(ais, format, frames);
-				dis = new DataInputStream(aisShort);
-				
-				int byteLength = (int)(aisShort.getFrameLength() * format.getFrameSize());
-				if(byteLength < 0) {
-					byteLength = byteLength * (-1);
-				}
-				
-				byte[] bytes = new byte[byteLength];
-				dis.readFully(bytes);
-				
-				String base64bytes = Base64.getEncoder().encodeToString(bytes);
-
-				base64bytes = Tools.B64AUDIOPREFIX + mimeType + Tools.B64PREFIX + base64bytes;
-
-				aisShort.close();
-				dis.close();
-				ais.close();
-				bis.close();
-				return base64bytes;
-			}
-		} catch (Exception e) {
-			if (ais != null) {
-				ais.close();
-			}
-			if (bis != null) {
-				bis.close();
-			}
-			if (aisShort != null) {
-				aisShort.close();
-			}
-			if (dis != null) {
-				dis.close();
-			}
-			throw e;
-		}
-		*/
+		 * try { int maxSeconds = audioMaxTime; byte[] decodedBytes =
+		 * Base64.getDecoder().decode(stripB64Type(audioB64)); bis = new
+		 * ByteArrayInputStream(decodedBytes); ais =
+		 * AudioSystem.getAudioInputStream(bis); AudioFormat format = ais.getFormat();
+		 * long frameLength = ais.getFrameLength(); // float bytesPerSecond =
+		 * format.getFrameSize() * format.getFrameRate();
+		 * 
+		 * // check if audio is shorter or equal max length double durationInSeconds =
+		 * frameLength * format.getFrameRate(); if(durationInSeconds < 0.0) {
+		 * durationInSeconds = durationInSeconds * (-1); } if (durationInSeconds <=
+		 * maxSeconds) { ais.close(); bis.close(); audioB64 = Tools.B64AUDIOPREFIX +
+		 * mimeType + Tools.B64PREFIX + stripB64Type(audioB64); return audioB64; } else
+		 * { long frames = (long) (format.getFrameRate() * maxSeconds);
+		 * 
+		 * aisShort = new AudioInputStream(ais, format, frames); dis = new
+		 * DataInputStream(aisShort);
+		 * 
+		 * int byteLength = (int)(aisShort.getFrameLength() * format.getFrameSize());
+		 * if(byteLength < 0) { byteLength = byteLength * (-1); }
+		 * 
+		 * byte[] bytes = new byte[byteLength]; dis.readFully(bytes);
+		 * 
+		 * String base64bytes = Base64.getEncoder().encodeToString(bytes);
+		 * 
+		 * base64bytes = Tools.B64AUDIOPREFIX + mimeType + Tools.B64PREFIX +
+		 * base64bytes;
+		 * 
+		 * aisShort.close(); dis.close(); ais.close(); bis.close(); return base64bytes;
+		 * } } catch (Exception e) { if (ais != null) { ais.close(); } if (bis != null)
+		 * { bis.close(); } if (aisShort != null) { aisShort.close(); } if (dis != null)
+		 * { dis.close(); } throw e; }
+		 */
 	}
 }

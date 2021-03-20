@@ -39,11 +39,13 @@
 								<div class="center-parent">
 									<img id="profilePicture" class="profile-pic" height=300
 										width=300 src="/img/profile.jpg" style="cursor: pointer;"
-										th:unless="${user.profilePicture}" th:value=0 /> <img
-										id="profilePicture" style="cursor: pointer;"
-										th:if="${user.profilePicture}" class="profile-pic " height=300
-										width=300 th:src="${user.profilePicture}" th:value=1 /> <input
-										id="profilePictureUpload" type="file" accept="image/*"
+										th:unless="${user.profilePicture}" th:value=0 />
+									<th:block th:if="${user.profilePicture}">
+										<img id="profilePicture" style="cursor: pointer;"
+											class="profile-pic " height=300 width=300
+											th:src="${user.profilePicture}" th:value=1 />
+									</th:block>
+									<input id="profilePictureUpload" type="file" accept="image/*"
 										style="display: none">
 								</div>
 							</div>
@@ -249,7 +251,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<input type="hidden" th:value="${vapidPublicKey}" id="vapidPublicKey"></input>
 
 	<footer th:replace="fragments.html::navigation"></footer>

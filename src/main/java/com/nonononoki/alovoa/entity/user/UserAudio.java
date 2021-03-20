@@ -1,8 +1,7 @@
 package com.nonononoki.alovoa.entity.user;
 
-import java.util.Date;
-
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 
 import lombok.Data;
@@ -18,8 +18,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 @EqualsAndHashCode(exclude="user")
-public class UserDates {
-	
+public class UserAudio {
+
 	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,15 +28,9 @@ public class UserDates {
 	@JsonIgnore
 	@OneToOne
 	private User user;
-	
-	@Column(nullable = false)
-	private Date dateOfBirth;
 
-	private Date activeDate = new Date();
-	private Date creationDate = new Date();
-	private Date intentionChangeDate = new Date();
-	private Date notificationDate = new Date();
-	private Date notificationCheckedDate = new Date();
-	private Date messageDate = new Date();
-	private Date messageCheckedDate = new Date();
+	@Column(columnDefinition = "mediumtext")
+	@Convert(converter = TextEncryptorConverter.class)
+	private String data;
+
 }
