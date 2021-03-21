@@ -224,7 +224,7 @@ public class UserTest {
 
 		Assert.assertEquals(userRepo.count(), 4);
 
-		String imgMime = "png";
+		String imgMime = "webp";
 		// setup settings
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		String img1 = Tools.imageToB64(Tools.getFileFromResources("img/profile1.png"), imgMime);

@@ -563,7 +563,7 @@ public class UserService {
 
 			// image to b64
 			bos = new ByteArrayOutputStream();
-			String fileType = "png";
+			String fileType = "webp";
 			ImageIO.write(image, fileType, bos);
 			byte[] bytes = bos.toByteArray();
 			String base64bytes = Base64.getEncoder().encodeToString(bytes);

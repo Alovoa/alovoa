@@ -37,7 +37,7 @@ public class CaptchaService {
 	public Captcha generate() throws Exception {
 		OxCaptcha ox = generateCaptchaImage(captchaLength);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ImageIO.write(ox.getImage(), "png", baos);
+		ImageIO.write(ox.getImage(), "webp", baos);
 		byte[] ba = baos.toByteArray();
 		String encoded = Base64.getEncoder().encodeToString(ba);
 		Captcha captcha = new Captcha();

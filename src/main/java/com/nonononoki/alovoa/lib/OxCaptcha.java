@@ -1012,7 +1012,7 @@ public class OxCaptcha {
                 i++;
             }
         }
-        ImageIO.write(img, "png", new File(fileName));
+        ImageIO.write(img, "webp", new File(fileName));
     }
 
     public void save(int[][] pixels, String fileName) throws IOException {
@@ -1026,7 +1026,7 @@ public class OxCaptcha {
                 img.setRGB(x, y, new Color(pixels[x][y], pixels[x][y], pixels[x][y]).getRGB());
             }
         }
-        ImageIO.write(img, "png", new File(fileName));
+        ImageIO.write(img, "webp", new File(fileName));
     }
 
     public String getText() {
@@ -1065,7 +1065,7 @@ public class OxCaptcha {
     }
 
     public void save(String fileName) throws IOException {
-        ImageIO.write(_img, "png", new File(fileName));
+        ImageIO.write(_img, "webp", new File(fileName));
     }
 
     private int ranInt(int i, int j) {

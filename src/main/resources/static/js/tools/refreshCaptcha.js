@@ -4,7 +4,7 @@ function refreshCaptcha() {
 		$("#captcha").val("");
 		$("#captcha-id").val(captcha.id);
 		$("#captcha-image").attr("src",
-				"data:image/png;base64," + captcha.image);
+				"data:image/webp;base64," + captcha.image);
 	});
 }
 
