@@ -282,9 +282,9 @@ public class UserTest {
 		userService.updateProfilePicture(img3);
 		Assert.assertTrue("profile_picture", authService.getCurrentUser().getProfilePicture() != null);
 		Assert.assertThrows(Exception.class, () -> {
-			userService.updateAudio(Tools.resourceToB64("audio/file_example_MP3_700KB.mp3"));
+			userService.updateAudio(Tools.resourceToB64("audio/file_example_MP3_2MB.mp3"), "mpeg");
 		});
-		userService.updateAudio(Tools.resourceToB64("audio/file_example_MP3_470KB.mp3"));
+		userService.updateAudio(Tools.resourceToB64("audio/file_example_MP3_700KB.mp3"), "mpeg");
 		Assert.assertTrue("audio", user3.getAudio() != null);
 		userService.deleteAudio();
 		Assert.assertTrue("audio", user3.getAudio() == null);

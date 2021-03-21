@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -16,6 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +67,7 @@ import com.nonononoki.alovoa.repo.UserLikeRepository;
 import com.nonononoki.alovoa.repo.UserNotificationRepository;
 import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
+import com.sipgate.mp3wav.Converter;
 
 @Service
 public class UserService {
@@ -372,7 +378,7 @@ public class UserService {
 		} else {
 			user.getProfilePicture().setData(newImgB64);
 		}
-		
+
 		userRepo.saveAndFlush(user);
 	}
 
@@ -763,7 +769,7 @@ public class UserService {
 
 	public String getAudio(String userIdEnc) throws Exception {
 		User user = encodedIdToUser(userIdEnc);
-		if(user.getAudio() == null) {
+		if (user.getAudio() == null) {
 			return null;
 		}
 		return user.getAudio().getData();
@@ -775,14 +781,16 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
-	public void updateAudio(String audioB64) throws Exception {
-		updateAudio(audioB64, null);
-	}
-
 	public void updateAudio(String audioB64, String mimeType) throws Exception {
 		User user = authService.getCurrentUser();
-		String newAudioB64 = adjustAudio(audioB64, mimeType);
 		
+		Double b64Size = Tools.getBase64Size(audioB64) ;		
+		if (b64Size * Tools.THOUSAND > audioMaxSize) {
+			throw new Exception("file_size_too_large");
+		}
+		
+		String newAudioB64 = adjustAudio(audioB64, mimeType);
+
 		if (user.getAudio() == null) {
 			UserAudio audio = new UserAudio();
 			audio.setData(newAudioB64);
@@ -791,56 +799,89 @@ public class UserService {
 		} else {
 			user.getAudio().setData(newAudioB64);
 		}
-		
+
 		userRepo.saveAndFlush(user);
 	}
 
-	// TODO Trim audio to a specific length
+	private final String MIME_X_WAV = "x-wav";
+	private final String MIME_WAV = "wav";
+	private final String MIME_MPEG = "mpeg";
+	private final String MIME_MP3 = "mp3";
+
 	private String adjustAudio(String audioB64, String mimeType) throws Exception {
-
-		/*
-		 * ByteArrayInputStream bis = null; AudioInputStream ais = null;
-		 * AudioInputStream aisShort = null; DataInputStream dis = null;
-		 */
-
-		if (Tools.getBase64Size(audioB64) * Tools.THOUSAND > audioMaxSize) {
-			throw new Exception("file_size_too_large");
+		if (mimeType.equals(MIME_X_WAV) || mimeType.equals(MIME_WAV)) {
+			String trimmedWav = trimAudioWav(audioB64, audioMaxTime);
+			return convertAudioMp3Wav(trimmedWav, MIME_MP3);
+		} else if (mimeType.equals(MIME_MPEG) || mimeType.equals(MIME_MP3)) {
+			String b64Wav = convertAudioMp3Wav(audioB64, MIME_WAV);
+			String trimmedWav = trimAudioWav(b64Wav, audioMaxTime);
+			return convertAudioMp3Wav(trimmedWav, MIME_MP3);
 		}
+		return null;
+	}
 
-		return audioB64;
+	private static String convertAudioMp3Wav(String audioB64, String mimeType) throws Exception {
+		byte[] bytes = Base64.getDecoder().decode(stripB64Type(audioB64).getBytes());
+		InputStream inputStream = new ByteArrayInputStream(bytes);
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final AudioFormat audioFormat = new AudioFormat(16000, 8, 1, false, false);
+		Converter.convertFrom(inputStream).withTargetFormat(audioFormat).to(output);
+		final byte[] wavContent = output.toByteArray();
+		return Tools.B64AUDIOPREFIX + mimeType + Tools.B64PREFIX + Base64.getEncoder().encodeToString(wavContent);
+	}
 
-		/*
-		 * try { int maxSeconds = audioMaxTime; byte[] decodedBytes =
-		 * Base64.getDecoder().decode(stripB64Type(audioB64)); bis = new
-		 * ByteArrayInputStream(decodedBytes); ais =
-		 * AudioSystem.getAudioInputStream(bis); AudioFormat format = ais.getFormat();
-		 * long frameLength = ais.getFrameLength(); // float bytesPerSecond =
-		 * format.getFrameSize() * format.getFrameRate();
-		 * 
-		 * // check if audio is shorter or equal max length double durationInSeconds =
-		 * frameLength * format.getFrameRate(); if(durationInSeconds < 0.0) {
-		 * durationInSeconds = durationInSeconds * (-1); } if (durationInSeconds <=
-		 * maxSeconds) { ais.close(); bis.close(); audioB64 = Tools.B64AUDIOPREFIX +
-		 * mimeType + Tools.B64PREFIX + stripB64Type(audioB64); return audioB64; } else
-		 * { long frames = (long) (format.getFrameRate() * maxSeconds);
-		 * 
-		 * aisShort = new AudioInputStream(ais, format, frames); dis = new
-		 * DataInputStream(aisShort);
-		 * 
-		 * int byteLength = (int)(aisShort.getFrameLength() * format.getFrameSize());
-		 * if(byteLength < 0) { byteLength = byteLength * (-1); }
-		 * 
-		 * byte[] bytes = new byte[byteLength]; dis.readFully(bytes);
-		 * 
-		 * String base64bytes = Base64.getEncoder().encodeToString(bytes);
-		 * 
-		 * base64bytes = Tools.B64AUDIOPREFIX + mimeType + Tools.B64PREFIX +
-		 * base64bytes;
-		 * 
-		 * aisShort.close(); dis.close(); ais.close(); bis.close(); return base64bytes;
-		 * } } catch (Exception e) { if (ais != null) { ais.close(); } if (bis != null)
-		 * { bis.close(); } if (aisShort != null) { aisShort.close(); } if (dis != null)
-		 * { dis.close(); } throw e; }
-		 */
+	private String trimAudioWav(String audioB64, int maxSeconds) throws Exception {
+
+		ByteArrayInputStream bis = null;
+		AudioInputStream ais = null;
+		AudioInputStream aisShort = null;
+		ByteArrayOutputStream baos = null;
+
+		try {
+			byte[] decodedBytes = Base64.getDecoder().decode(stripB64Type(audioB64));
+			bis = new ByteArrayInputStream(decodedBytes);
+			ais = AudioSystem.getAudioInputStream(bis);
+			AudioFormat format = ais.getFormat();
+			long frameLength = ais.getFrameLength();
+
+			// check if audio is shorter or equal max length
+			double durationInSeconds = frameLength * format.getFrameRate();
+			if (durationInSeconds < 0.0) {
+				durationInSeconds = durationInSeconds * (-1);
+			}
+			if (durationInSeconds <= maxSeconds) {
+				ais.close();
+				bis.close();
+				audioB64 = Tools.B64AUDIOPREFIX + MIME_WAV + Tools.B64PREFIX + stripB64Type(audioB64);
+				return audioB64;
+			} else {
+				long frames = (long) (format.getFrameRate() * maxSeconds);
+				aisShort = new AudioInputStream(ais, format, frames);
+				AudioFileFormat.Type targetType = AudioFileFormat.Type.WAVE;
+				baos = new ByteArrayOutputStream();
+				AudioSystem.write(aisShort, targetType, baos);
+
+				String base64bytes = Base64.getEncoder().encodeToString(baos.toByteArray());
+				base64bytes = Tools.B64AUDIOPREFIX + MIME_WAV + Tools.B64PREFIX + base64bytes;
+				aisShort.close();
+				ais.close();
+				bis.close();
+				return base64bytes;
+			}
+		} catch (Exception e) {
+			if (ais != null) {
+				ais.close();
+			}
+			if (bis != null) {
+				bis.close();
+			}
+			if (aisShort != null) {
+				aisShort.close();
+			}
+			if (baos != null) {
+				baos.close();
+			}
+			throw e;
+		}
 	}
 }
