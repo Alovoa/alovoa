@@ -11,6 +11,7 @@ import com.nonononoki.alovoa.entity.user.Gender;
 import com.nonononoki.alovoa.entity.user.Message;
 import com.nonononoki.alovoa.entity.user.UserDates;
 import com.nonononoki.alovoa.entity.user.UserDonation;
+import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserIntention;
 import com.nonononoki.alovoa.entity.user.UserInterest;
 import com.nonononoki.alovoa.entity.user.UserWebPush;
@@ -41,9 +42,9 @@ public class UserGdpr {
 
 	private String description;
 
-	// private String profilePicture;
+	private String profilePicture;
 	
-	// private String audio;
+	private String audio;
 	
 	/*
 	 * Custom classes
@@ -57,7 +58,7 @@ public class UserGdpr {
 
 	private Set<Gender> preferedGenders;
 
-	// private List<UserImage> images;
+	private List<UserImage> images;
 	 
 	private List<UserDonation> donations;
 	 
@@ -92,9 +93,7 @@ public class UserGdpr {
 		u.setEmail(user.getEmail());
 		u.setFirstName(user.getFirstName());
 		u.setDescription(user.getDescription());
-		//u.setAudio(user.getAudio());
-		
-		//u.setProfilePicture(user.getProfilePicture());
+
 		
 		u.setLocationLatitude(user.getLocationLatitude());
 		u.setLocationLongitude(user.getLocationLongitude());
@@ -103,7 +102,13 @@ public class UserGdpr {
 		u.setIntention(user.getIntention());
 		u.setInterests(user.getInterests());
 		u.setPreferedGenders(user.getPreferedGenders());
-		//u.setImages(user.getImages());
+
+		if(user.getAudio() != null)
+			u.setAudio(user.getAudio().getData());	
+		if(user.getProfilePicture() != null)
+			u.setProfilePicture(user.getProfilePicture().getData());
+		u.setImages(user.getImages());
+		
 		u.setDonations(user.getDonations());
 		u.setMessageSent(user.getMessageSent());
 		u.setWebPush(user.getWebPush());
