@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Value("${app.media.max-size}")
+	private int mediaMaxSize;
 
 	// GDPR
 	@PostMapping(value = "/delete-account", consumes = "text/plain") 
@@ -44,6 +48,9 @@ public class UserController {
 
 	@PostMapping(value = "/update/profile-picture", consumes = "text/plain")
 	public void updateProfilePicture(@RequestBody String imageB64) throws Exception {
+		if(Tools.getBase64Size(imageB64) > mediaMaxSize) {
+			throw new Exception("max_media_size_exceeded");
+		}
 		userService.updateProfilePicture(imageB64);
 	}
 	
@@ -59,6 +66,9 @@ public class UserController {
 
 	@PostMapping(value = "/update/audio/{mimeType}", consumes = "text/plain")
 	public void updateAudio(@RequestBody String audioB64, @PathVariable String mimeType) throws Exception {
+		if(Tools.getBase64Size(audioB64) > mediaMaxSize) {
+			throw new Exception("max_media_size_exceeded");
+		}
 		userService.updateAudio(audioB64, mimeType);
 	}
 
@@ -99,6 +109,9 @@ public class UserController {
 	
 	@PostMapping(value = "/image/add", consumes = "text/plain")
 	public void addImage(@RequestBody String imageB64) throws Exception {
+		if(Tools.getBase64Size(imageB64) > mediaMaxSize) {
+			throw new Exception("max_media_size_exceeded");
+		}
 		userService.addImage(imageB64);
 	}
 	

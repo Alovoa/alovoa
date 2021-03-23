@@ -153,9 +153,6 @@ public class UserService {
 	@Value("${app.audio.max-time}")
 	private int audioMaxTime; // in seconds
 
-	@Value("${app.audio.max-size}")
-	private int audioMaxSize; // in MB
-
 	@Value("${app.user.delete.delay}")
 	private long userDeleteDelay;
 
@@ -782,13 +779,7 @@ public class UserService {
 	}
 
 	public void updateAudio(String audioB64, String mimeType) throws Exception {
-		User user = authService.getCurrentUser();
-		
-		Double b64Size = Tools.getBase64Size(audioB64) ;		
-		if (b64Size * Tools.THOUSAND > audioMaxSize) {
-			throw new Exception("file_size_too_large");
-		}
-		
+		User user = authService.getCurrentUser();		
 		String newAudioB64 = adjustAudio(audioB64, mimeType);
 
 		if (user.getAudio() == null) {

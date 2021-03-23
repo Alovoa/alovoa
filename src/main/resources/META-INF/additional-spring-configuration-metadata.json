@@ -188,5 +188,15 @@
     "name": "app.age.legal",
     "type": "java.lang.String",
     "description": "A description for 'app.age.legal'"
+  },
+  {
+    "name": "app.profile.image.max-size",
+    "type": "java.lang.String",
+    "description": "A description for 'app.profile.image.max-size'"
+  },
+  {
+    "name": "app.media.max-size",
+    "type": "java.lang.String",
+    "description": "A description for 'app.media.max-size'"
   }
 ]}

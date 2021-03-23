@@ -41,6 +41,9 @@ public class ProfileResource {
 	
 	@Value("${app.age.legal}")
 	private int ageLegal;
+	
+	@Value("${app.media.max-size}")
+	private int mediaMaxSize;
 
 	@GetMapping("/profile")
 	public ModelAndView profile() throws Exception {
@@ -57,6 +60,7 @@ public class ProfileResource {
 			mav.addObject("imageMax", imageMax);
 			mav.addObject("vapidPublicKey", vapidPublicKey);
 			mav.addObject("isLegal", isLegal);
+			mav.addObject("mediaMaxSize", mediaMaxSize);
 			return mav;
 		}
 	}

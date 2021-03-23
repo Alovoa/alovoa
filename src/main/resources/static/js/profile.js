@@ -3,6 +3,8 @@ const descriptionMaxLength = 255;
 
 $(function() {
 
+	var mediaMaxSize = $("#mediaMaxSize").val();
+	
 	var swiper = new Swiper('.swiper-container', {
 		centeredSlides: true,
 		navigation : {
@@ -23,6 +25,10 @@ $(function() {
 
 	$("#profilePictureUpload").change(function() {
 		let file = document.querySelector('#profilePictureUpload').files[0];
+		if(file.size > mediaMaxSize) {
+			alert(getText("error.media.max-size-exceeded"));
+			return;
+		}
 		getBase64(file, function(b64) {
 			if (b64) {
 				$.ajax({
@@ -47,6 +53,10 @@ $(function() {
 
 	$("#addImageInput").change(function() {
 		let file = document.querySelector('#addImageInput').files[0];
+		if(file.size > mediaMaxSize) {
+			alert(getText("error.media.max-size-exceeded"));
+			return;
+		}
 		getBase64(file, function(b64) {
 			if (b64) {
 				$.ajax({
@@ -280,6 +290,10 @@ $(function() {
 
 	$("#audio-file").change(function() {
 		let file = document.querySelector('#audio-file').files[0];
+		if(file.size > mediaMaxSize) {
+			alert(getText("error.media.max-size-exceeded"));
+			return;
+		}
 		getBase64(file, function(b64) {
 			if (b64) {
 			

@@ -136,8 +136,9 @@ public class Tools {
 	        }
 	        result = (Math.ceil(base64String.length() / 4) * 3 ) - padding;
 	    }
-	    return result / (double) MILLION; //MB
+	    return result;
 	}
+	
 
 	// https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude/20410612#20410612
 	//to km

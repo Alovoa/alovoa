@@ -166,7 +166,7 @@ public class SearchService {
 				}
 			});
 		} else if (sort == SORT_DONATION) {
-			userDtos.removeIf(f -> f.getTotalDonations() == 0);
+			//userDtos.removeIf(f -> f.getTotalDonations() == 0);
 			Collections.sort(userDtos, new Comparator<UserDto>() {
 				@Override
 				public int compare(UserDto a, UserDto b) {
