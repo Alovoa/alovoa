@@ -295,7 +295,7 @@ input[type=range].slider {
 	.footer {
 		background-color: #000000;
 	}
-	p a {
+	p a, label a {
 		color: #3273dc;
 	}
 	#logout:hover span {

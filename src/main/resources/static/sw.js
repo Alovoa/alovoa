@@ -11,7 +11,25 @@
 
 const cacheName = 'v1';
 const staticAssets = [
-  './'
+
+  '/sw.js',
+
+  '/js/lib/bulma-calendar.min.js',
+  '/js/lib/fontawesome.all.js',
+  '/js/lib/jquery.min.js',
+  '/js/lib/swiper.all.js',
+  
+  '/css/lib/bulma.min.css',
+  '/css/lib/bulma-calendar.min.css',
+  '/css/lib/bulma-slider.min.css',
+  '/css/lib/bulma-switch.min.css',
+  '/css/lib/css-loaders.css',
+  '/css/lib/swiper.min.css',
+  
+  '/img/android-chrome-192x192.png',
+  '/img/android-chrome-512x512.png',
+  '/img/apple-touch-icon.png',
+  '/img/icon.png' 
 ];
 
 self.addEventListener('push', function(event) {
