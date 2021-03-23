@@ -30,7 +30,7 @@
   ],
   "start_url": "/",
   "background_color": "#3298DC",
-  "display": "fullscreen",
+  "display": "standalone",
   "scope": "/",
   "theme_color": "#3298DC",
   "description" : "Meet amazing people around you, privately!",
