@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.html.LoginResource;
 import com.nonononoki.alovoa.html.ProfileResource;
 import com.nonononoki.alovoa.html.RegisterResource;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -41,52 +42,60 @@ public class Oauth2Controller {
 	
 	@Autowired
 	private ProfileResource profileResource;
+	
+	@Autowired
+	private LoginResource loginResource;
 
 	@SuppressWarnings("rawtypes")
 	@GetMapping("/login/oauth2/success")
 	public ModelAndView oauth2Success() throws Exception {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-		OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
-
-		String clientRegistrationId = oauthToken.getAuthorizedClientRegistrationId();
-
-		OAuth2AuthorizedClient client = clientService.loadAuthorizedClient(clientRegistrationId,
-				oauthToken.getName());
-		String endpoint = client.getClientRegistration().getProviderDetails().getUserInfoEndpoint()
-				.getUri();
-		
-		if (!endpoint.isEmpty()) {
-			RestTemplate template = new RestTemplate();
-			HttpHeaders headers = new HttpHeaders();
-			headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + client.getAccessToken().getTokenValue());
-			HttpEntity<String> entity = new HttpEntity<String>("", headers);
-
-			// get user data via URL from the oauth2 provider
-			ResponseEntity<Map> response = template.exchange(endpoint, HttpMethod.GET, entity,
-					Map.class);
-			Map attributes = response.getBody();
-			String email = (String) attributes.get("email");
-			email = email.toLowerCase();
-
-			User user = userRepo.findByEmail(email);
-			if (user == null) {
-				user = new User();
-				user.setEmail(email);
-			}
+		try {
+			OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
+	
+			String clientRegistrationId = oauthToken.getAuthorizedClientRegistrationId();
+	
+			OAuth2AuthorizedClient client = clientService.loadAuthorizedClient(clientRegistrationId,
+					oauthToken.getName());
+			String endpoint = client.getClientRegistration().getProviderDetails().getUserInfoEndpoint()
+					.getUri();
 			
-			//administrator cannot use oauth for security reason e.g. password breach on oath provider
-			if (user.isAdmin()) {
-				throw new Exception("not_supported_for_admin");
-			} 
-
-			if (!user.isConfirmed()) {
-				return registerResource.registerOauth(user);				
-			} else {
-				return profileResource.profile();	
+			if (!endpoint.isEmpty()) {
+				RestTemplate template = new RestTemplate();
+				HttpHeaders headers = new HttpHeaders();
+				headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + client.getAccessToken().getTokenValue());
+				HttpEntity<String> entity = new HttpEntity<String>("", headers);
+	
+				// get user data via URL from the oauth2 provider
+				ResponseEntity<Map> response = template.exchange(endpoint, HttpMethod.GET, entity,
+						Map.class);
+				Map attributes = response.getBody();
+				String email = (String) attributes.get("email");
+				email = email.toLowerCase();
+	
+				User user = userRepo.findByEmail(email);
+				if (user == null) {
+					user = new User();
+					user.setEmail(email);
+				}
+				
+				//administrator cannot use oauth for security reason e.g. password breach on oath provider
+				if (user.isAdmin()) {
+					throw new Exception("not_supported_for_admin");
+				} 
+	
+				if (!user.isConfirmed()) {
+					return registerResource.registerOauth(user);				
+				} else {
+					return profileResource.profile();	
+				}
 			}
+	
+			return loginResource.login();
+			
+		} catch (Exception e) {
+			 return loginResource.login();
 		}
-
-		throw new Exception("unknown_error");
-	}
+	} 
 }
