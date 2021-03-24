@@ -14,12 +14,12 @@ html {
 
 * {
 	scrollbar-width: none;
-	font-family: "Montserrat";
+	font-family: "Montserrat" !important;
 	word-wrap: break-word;
 }
 
 h1, h2, h3, h4, h5, h6 {
-	font-family: "Abril_Fatface";
+	font-family: "Abril_Fatface" !important;
 }
 
 button {
@@ -257,6 +257,10 @@ input[type=range].slider {
 	background-color: rgba(18, 18, 18, 0.9);
 }
 
+#audio {
+	width: 270px;
+}
+
 @media screen and (max-width: 700px) {
 	.navigation-item span {
 		display: none;
@@ -349,9 +353,6 @@ input[type=range].slider {
 	#audio {
 		width: 208px;
 	}
-	.box {
-		box-shadow: initial;
-	}
 	#header-logged-in {
 		display: none;
 	}
@@ -419,5 +420,11 @@ input[type=range].slider {
 	}
 	#donate-cards-div {
 		height: calc(100vh - 122px) !important;
+	}
+	.cards {
+		padding: initial !important;
+	}
+	.card {
+		box-shadow: none !important;
 	}
 }
