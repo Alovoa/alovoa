@@ -108,6 +108,10 @@
 	margin-right: 12px;
 }
 
+.content-background {
+	margin-bottom: 8px;
+}
+
 @media screen and (max-width: 1024px) {
 	.card.is-horizontal {
 		flex-direction: column !important;
@@ -121,6 +125,7 @@
 	}
 	.card-image {
 		z-index: 1;
+		margin-top: 16px;
 	}
 	.card-content {
 		height: initial;
@@ -151,6 +156,7 @@
 	.profile-bottom {
 		padding-left: 12px;
 		padding-right: 12px;
+		margin-bottom: 8px;
 	}
 	.content {
 		padding: 12px;
@@ -186,6 +192,7 @@
 	}
 	.card-image {
 		width: 100%;
+		margin-top: 0px;
 	}
 	.card-content {
 		margin: 0;
