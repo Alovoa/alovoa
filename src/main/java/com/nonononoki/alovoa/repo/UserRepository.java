@@ -20,6 +20,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 				request.getMinLong(), request.getMaxLong(), request.getIntentionText(), request.getLikeIds(),
 				request.getHideIds(), request.getBlockIds(), request.getGenderTexts());
 	}
+	
+	default List<User> usersSearchAll(UserSearchRequest request) {
+
+		return findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetweenAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
+				request.getMinDate(), request.getMaxDate(), request.getMinLat(), request.getMaxLat(),
+				request.getMinLong(), request.getMaxLong(), request.getIntentionText(), request.getLikeIds(),
+				request.getHideIds(), request.getBlockIds(), request.getGenderTexts());
+	}
 
 	default List<User> usersDonate() {
 		return findTop100ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullOrderByTotalDonationsDesc();
@@ -28,6 +36,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrue();
 
 	public List<User> findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetweenAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
+			Date min, Date max, Double latitudeFrom, Double latitudeTo, Double longitudeFrom, Double longitudeTo,
+			String intentionText, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds,
+			Collection<String> genderTexts);
+	
+	public List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetweenAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 			Date min, Date max, Double latitudeFrom, Double latitudeTo, Double longitudeFrom, Double longitudeTo,
 			String intentionText, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds,
 			Collection<String> genderTexts);

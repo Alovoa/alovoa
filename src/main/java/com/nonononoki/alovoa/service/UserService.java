@@ -117,9 +117,6 @@ public class UserService {
 	@Autowired
 	private NotificationService notificationService;
 
-	// @Autowired
-	// private PasswordEncoder passwordEncoder;
-
 	@Value("${app.age.min}")
 	private int minAge;
 

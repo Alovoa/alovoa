@@ -133,6 +133,36 @@ public class SearchService {
 				break;
 			}
 		}
+		
+		if(filteredUsers.size() < maxResults) {
+			List<User> allUsers = userRepo.usersSearchAll(request);
+			if(allUsers.size() != users.size()) {
+				
+				filteredUsers.clear();
+				
+				// filter users
+				for (User u : allUsers) {
+
+					if (ignoreIds.contains(u.getId())) {
+						continue;
+					}
+
+					if (!u.getPreferedGenders().contains(user.getGender())) {
+						continue;
+					}
+					// square is fine, reduces CPU load when not calculating radius distance
+					/*
+					 * if (dto.getDistanceToUser() > distance) { continue; }
+					 */
+					filteredUsers.add(u);
+
+					if (filteredUsers.size() >= maxResults) {
+						break;
+					}
+				}
+				
+			}
+		}
 
 		List<UserDto> userDtos = new ArrayList<>();
 		for (User u : filteredUsers) {
