@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 <link rel="stylesheet" href="/css/lib/swiper.min.css" />
 <link rel="stylesheet" href="/css/lib/css-loaders.css" />
+<link rel="stylesheet" href="/css/lib/pulse-button.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/search.css" />
 <title th:text="#{search.title}"></title>
@@ -54,8 +55,8 @@
 
 			<div class="section" id="search-button-section">
 				<div class="container">
-					<div>
-						<button class="button colored is-info is-rounded"
+					<div class="pulse-button-container">
+						<button class="button colored is-info is-rounded pulse-button"
 							onclick="search()" id="search-button">
 							<i class="fa fa-search"></i>
 						</button>
