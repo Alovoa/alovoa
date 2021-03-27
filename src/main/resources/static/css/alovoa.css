@@ -346,7 +346,7 @@ input[type=range].slider {
 	.datetimepicker-footer-cancel svg {
 		color: #209cee !important;
 	}
-	#addImageDiv path {
+	#addImageDiv path, .profile-pic path {
 		color: #209cee;
 	}
 	#iframe-header {

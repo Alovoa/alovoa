@@ -37,9 +37,11 @@
 						<div class="swiper-wrapper">
 							<div class="swiper-slide">
 								<div class="center-parent">
-									<img id="profilePicture" class="profile-pic" height=300
-										width=300 src="/img/profile.jpg" style="cursor: pointer;"
-										th:unless="${user.profilePicture}" th:value=0 />
+									<div class="center-parent button profile-pic" id="profilePicture"
+										style="min-width: 174px; min-height: 200px; border-radius: 12px;"
+										th:unless="${user.profilePicture}" th:value=0>
+										<i class="fa fa-plus fa-4x"></i>
+									</div>
 									<th:block th:if="${user.profilePicture}">
 										<img id="profilePicture" style="cursor: pointer;"
 											class="profile-pic " height=300 width=300
@@ -56,7 +58,8 @@
 										th:onclick="deleteImage([[${img.id}]])" />
 								</div>
 							</div>
-							<div class="swiper-slide center-parent" style="height: 100%;">
+							<div class="swiper-slide center-parent" style="height: 100%;"
+								th:if="${user.profilePicture}">
 								<div th:if="${#lists.size(user.images) != imageMax}"
 									id="addImageDiv" class="center-parent button"
 									style="min-width: 174px; min-height: 200px;">
