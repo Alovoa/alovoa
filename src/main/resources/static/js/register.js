@@ -10,7 +10,7 @@ $(function() {
 	bulmaCalendar.attach('[type="date"]', {
 		showHeader : false,
 		startDate : startDate,
-		minDate : startDate,
+		maxDate : startDate,
 		showFooter : false,
 		type : 'date',
 		dateFormat : 'YYYY-MM-DD'

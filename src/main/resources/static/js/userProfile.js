@@ -1,4 +1,5 @@
 var locationFound = false;
+var csrf = $("meta[name='_csrf']").attr("content");
 
 $(function() {
 
@@ -16,7 +17,7 @@ function downloadAndPlayAudio() {
 		type : "GET",
 		url : "/user/get/audio/" + userIdEnc ,
 		headers : {
-			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+			"X-CSRF-TOKEN" : csrf
 		},
 		success : function(res) {
 		 	let audio = document.getElementById('audio');
@@ -39,7 +40,7 @@ function likeUser(idEnc) {
 		type : "POST",
 		url : "/user/like/" + idEnc,
 		headers : {
-			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+			"X-CSRF-TOKEN" : csrf
 		},
 		success : function() {
 			location.reload(true);
@@ -57,7 +58,7 @@ function hideUser(idEnc) {
 		type : "POST",
 		url : "/user/hide/" + idEnc,
 		headers : {
-			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+			"X-CSRF-TOKEN" : csrf
 		},
 		success : function() {
 			location.reload(true);
@@ -78,7 +79,7 @@ function blockUser(idEnc) {
 			type : "POST",
 			url : "/user/block/" + idEnc,
 			headers : {
-				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+				"X-CSRF-TOKEN" : csrf
 			},
 			success : function() {
 				location.reload(true);
@@ -99,7 +100,7 @@ function unblockUser(idEnc) {
 			type : "POST",
 			url : "/user/unblock/" + idEnc,
 			headers : {
-				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+				"X-CSRF-TOKEN" : csrf
 			},
 			success : function() {
 				location.reload(true);
@@ -122,7 +123,7 @@ function reportUserSubmit(idEncoded) {
 		url : "/user/report/" + idEncoded + "/"
 				+ $("#captcha-id").val() + "/" + $("#captcha").val(),
 		headers : {
-			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+			"X-CSRF-TOKEN" : csrf
 		},
 		contentType : "text/plain",
 		data: $("#report-comment").val(),

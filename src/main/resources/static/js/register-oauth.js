@@ -11,9 +11,7 @@ $(function() {
 		showHeader : false,
 		startDate : startDate,
 		maxDate : startDate,
-		showClearButton : false,
-		showTodayButton : false,
-		cancelLabel : '<i class="fa fa-times" style="width: 100%"></i>',
+		showFooter : false,
 		type : 'date',
 		dateFormat : 'YYYY-MM-DD'
 	});
