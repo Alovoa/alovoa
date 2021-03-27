@@ -190,10 +190,25 @@ input[type=range].slider {
 	padding-right: 0px;
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 510px) {
 	#navbar-text {
 		display: none;
 	}
+}
+
+@media screen and (max-width: 420px) {
+	#navbar-item-register {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 280px) {
+	#navbar-item-language {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 400px) {
 	#oauth-div button span {
 		font-size: 16px;
 	}
@@ -237,7 +252,8 @@ input[type=range].slider {
 #iframe-header {
 	height: 50px;
 	display: flex;
-	justify-content: flex-end; background-color : white;
+	justify-content: flex-end;
+	background-color: white;
 	border-bottom: 1px solid rgba(219, 219, 219, .5);
 	background-color: white;
 }
@@ -347,14 +363,20 @@ input[type=range].slider {
 	}
 }
 
+@media screen and (max-width: 340px) {
+	#oauth-div span {
+		font-size: 0.7em ! important;
+	}
+}
+
+@media screen and (max-width: 290px) {
+	#oauth-div span {
+		font-size: 0.5em ! important;
+	}
+}
+
 /* KAIOS Screns are very small */
 @media screen and (max-width: 302px) {
-	#navbar-item-register {
-		display: none;
-	}
-	#oauth-div span {
-		display: none;
-	}
 	#audio {
 		width: 208px;
 	}

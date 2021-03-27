@@ -33,6 +33,11 @@
 
 			<div style="width: 100%; display: flex;">
 				<div class="navbar-end">
+					<div class="navbar-item" id="navbar-item-language" style="padding-right: 0px;">
+						<a class="button is-white is-outlined" href="#footer"
+							style="width: 40px;"><i style="padding-right: 0px;"
+							class="fas fa-globe"></i></a>
+					</div>
 					<div class="navbar-item" id="navbar-item-register">
 						<a class="button is-white is-outlined" href="/register"
 							th:text="#{sign-up}"></a>
@@ -70,7 +75,7 @@
 		</nav>
 	</div>
 
-	<footer class="footer" th:fragment="footer">
+	<footer class="footer" th:fragment="footer" id="footer">
 		<div class="container">
 			<div class="columns">
 				<div class="column">
@@ -273,8 +278,7 @@
 			<div class="card-image">
 				<figure class="image">
 					<th:block th:if="${user.profilePicture}">
-						<img th:src="${donation.user.profilePicture}"
-							class="profile-pic"
+						<img th:src="${donation.user.profilePicture}" class="profile-pic"
 							th:onclick="viewProfile([[${donation.user.idEncoded}]])">
 					</th:block>
 				</figure>
