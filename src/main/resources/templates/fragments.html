@@ -33,10 +33,11 @@
 
 			<div style="width: 100%; display: flex;">
 				<div class="navbar-end">
-					<div class="navbar-item" id="navbar-item-language" style="padding-right: 0px;">
+					<div class="navbar-item" id="navbar-item-language"
+						style="padding-right: 0px;">
 						<a class="button is-white is-outlined" href="#footer"
-							style="width: 40px;"><i style="padding-right: 0px; color: white;" 
-							class="fas fa-globe"></i></a>
+							style="width: 40px;"><i
+							style="padding-right: 0px; color: white;" class="fas fa-globe"></i></a>
 					</div>
 					<div class="navbar-item" id="navbar-item-register">
 						<a class="button is-white is-outlined" href="/register"
@@ -320,16 +321,17 @@
 		<div th:if="${hasWarning}">
 			<div class="notification is-danger"
 				th:text="#{profile.warning.incomplete}"></div>
-			<div class="notification is-warning" th:if="${noProfilePicture}"
-				th:text="#{profile.warning.no-profile-picture}"></div>
-			<div class="notification is-warning" th:if="${noDescription}"
-				th:text="#{profile.warning.no-description}"></div>
-			<div class="notification is-warning" th:if="${noIntention}"
-				th:text="#{profile.warning.no-dating-preference}"></div>
-			<div class="notification is-warning" th:if="${noGender}"
-				th:text="#{profile.warning.no-gender-preference}"></div>
-			<div class="notification is-warning" th:if="${noLocation}"
-				th:text="#{profile.warning.no-location}"></div>
+			<a class="notification is-warning full-width" th:if="${noProfilePicture}"
+				th:text="#{profile.warning.no-profile-picture}"
+				href="#picture-field"></a> <a
+				class="notification is-warning full-width" th:if="${noDescription}"
+				th:text="#{profile.warning.no-description}" href="#description-field"></a> <a
+				class="notification is-warning full-width" th:if="${noIntention}"
+				th:text="#{profile.warning.no-dating-preference}" href="#intention-field"></a> <a
+				class="notification is-warning full-width" th:if="${noGender}"
+				th:text="#{profile.warning.no-gender-preference}" href="#gender-field"></a> <a
+				class="notification is-warning full-width" th:if="${noLocation}"
+				th:text="#{profile.warning.no-location}" href="/search"></a>
 		</div>
 	</div>
 

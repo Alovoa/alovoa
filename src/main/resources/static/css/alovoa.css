@@ -171,6 +171,7 @@ svg {
 }
 
 .full-width {
+	display: block;
 	width: 100%;
 }
 

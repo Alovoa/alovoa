@@ -31,7 +31,7 @@
 						th:text="#{profile.webpush}"></button>
 				</div>
 
-				<div class="field">
+				<div class="field" id="picture-field">
 
 					<div class="swiper-container">
 						<div class="swiper-wrapper">
@@ -79,14 +79,14 @@
 				</div>
 
 
-				<div class="box">
+				<div class="box"  id="description-field">
 					<div class="field">
 						<label class="label" th:text="#{description}"></label>
 						<textarea class="textarea" id="description" style="height: 240px;"
 							th:text="${user.description}"></textarea>
 					</div>
 
-					<div class="field">
+					<div class="field"   id="intention-field">
 						<label class="label" th:text="#{profile.intention}"></label>
 						<div class="select">
 							<select id="intention">
@@ -135,7 +135,7 @@
 					</div>
 
 
-					<div class="field">
+					<div class="field"  id="gender-field">
 						<label class="label" th:text="#{profile.gender}"></label>
 						<th:block th:each="gender : ${genders}">
 							<div class="field">
