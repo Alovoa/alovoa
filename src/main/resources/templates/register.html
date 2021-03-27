@@ -19,7 +19,39 @@
 		<div class="section">
 			<div class="container">
 				<h3 class="title" th:text="#{register.title}"></h3>
+
+				<div class="container"
+					style="margin-bottom: 24px; margin-top: 24px;" id="oauth-div">
+					<div class="box">
+						<div class="columns">
+							<button class="button colored"
+								style="background-color: #4285F4; width: 100%; margin-right: 4px; margin-bottom: 4px;"
+								onclick="window.location='/oauth2/authorization/google'">
+								<img src="/img/google-icon.svg" style="height: 32px;"><span
+									style="padding-left: 12px; color: white;"
+									th:text="#{register.oauth.google}"></span>
+							</button>
+							<button class="button colored"
+								style="background-color: #4267b2; width: 100%;"
+								onclick="window.location='/oauth2/authorization/facebook'">
+								<img src="/img/facebook-icon.svg" style="height: 32px;"><span
+									style="padding-left: 12px; color: white;"
+									th:text="#{register.oauth.facebook}"></span>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div
+					style="width: 100%; margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
+					<span class="tag is-light" style="font-size: 1em;"
+						th:text="#{or}"></span>
+				</div>
+
 				<div class="box">
+					<h3
+						style="font-size: 1.3em; font-weight: 600; margin-bottom: 12px;"
+						th:text="#{register.email.sign-up}"></h3>
 					<form th:action="@{/register}" method="POST" id="register-form">
 						<div class="field">
 							<label class="label" th:text="#{first-name}" style="float: left;"></label><span
@@ -118,26 +150,6 @@
 					<a href="/login" th:text="#{register.login}"></a>
 				</p>
 
-				<div class="container" style="margin-bottom: 48px; margin-top: 48px;" id="oauth-div">
-					<div class="box">
-						<div class="columns">
-							<button class="button colored"
-								style="background-color: #4285F4; width: 100%; margin-right: 4px; margin-bottom: 4px;"
-								onclick="window.location='/oauth2/authorization/google'">
-								<img src="/img/google-icon.svg" style="height: 32px;"><span
-									style="padding-left: 12px; color: white;"
-									th:text="#{register.oauth.google}"></span>
-							</button>
-							<button class="button colored"
-								style="background-color: #4267b2; width: 100%;"
-								onclick="window.location='/oauth2/authorization/facebook'">
-								<img src="/img/facebook-icon.svg" style="height: 32px;"><span
-									style="padding-left: 12px; color: white;"
-									th:text="#{register.oauth.facebook}"></span>
-							</button>
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
 	</div>

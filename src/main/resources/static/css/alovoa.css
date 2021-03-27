@@ -18,6 +18,11 @@ html {
 	word-wrap: break-word;
 }
 
+::-webkit-scrollbar {
+	width: 0; /* Remove scrollbar space */
+	background: transparent; /* Optional: just make scrollbar invisible */
+}
+
 h1, h2, h3, h4, h5, h6 {
 	font-family: "Abril_Fatface" !important;
 }
@@ -232,9 +237,9 @@ input[type=range].slider {
 #iframe-header {
 	height: 50px;
 	display: flex;
-	justify-content: right;
-	background-color: white;
+	justify-content: flex-end; background-color : white;
 	border-bottom: 1px solid rgba(219, 219, 219, .5);
+	background-color: white;
 }
 
 #iframe {
