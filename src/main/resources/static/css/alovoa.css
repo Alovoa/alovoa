@@ -133,6 +133,14 @@ svg {
 	padding-right: 4px;
 }
 
+#navbar-item-language path {
+	color: white;
+}
+
+#navbar-item-language:hover path {
+	color: #0a0a0a;;
+}
+
 .notification {
 	padding: 0.5rem 1rem 0.5rem 1rem;
 }
