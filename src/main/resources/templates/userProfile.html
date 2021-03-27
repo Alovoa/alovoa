@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Alovoa">
-<meta th:name="_csrf" th:content="${_csrf.token}"/>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
 <link rel="manifest" href="/manifest/manifest.json">
 
 <link rel="stylesheet" href="/css/lib/bulma.min.css" />
@@ -90,8 +90,8 @@
 					<div class="field">
 						<label class="label" th:text="#{description}"></label>
 						<textarea class="textarea" id="description"
-							th:text="${user.description}" style="word-break: break-all;"
-							readOnly></textarea>
+							th:text="${user.description}"
+							style="word-break: break-all; height: 240px;" readOnly></textarea>
 					</div>
 
 					<div class="field" th:if="${user.audio}"

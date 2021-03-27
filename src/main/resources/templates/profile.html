@@ -37,7 +37,8 @@
 						<div class="swiper-wrapper">
 							<div class="swiper-slide">
 								<div class="center-parent">
-									<div class="center-parent button profile-pic" id="profilePicture"
+									<div class="center-parent button profile-pic"
+										id="profilePicture"
 										style="min-width: 174px; min-height: 200px; border-radius: 12px;"
 										th:unless="${user.profilePicture}" th:value=0>
 										<i class="fa fa-plus fa-4x"></i>
@@ -81,7 +82,7 @@
 				<div class="box">
 					<div class="field">
 						<label class="label" th:text="#{description}"></label>
-						<textarea class="textarea" id="description"
+						<textarea class="textarea" id="description" style="height: 240px;"
 							th:text="${user.description}"></textarea>
 					</div>
 
@@ -216,7 +217,16 @@
 						th:text="#{profile.interest.info}"></div>
 				</div>
 
-				<div style="padding-top: 32px;"></div>
+				<div class="box">
+					<div class="field">
+						<button class="button is-info is-outlined"
+							onclick="location.reload()" style="width: 100%;">
+							<i class="fa fa-save" style="padding-right: 4px; font-size: 1.3em;"></i> <span th:text="#{save}"></span>
+						</button>
+					</div>
+				</div>
+
+				<div style="padding-top: 230px;"></div>
 
 				<div class="box">
 					<div class="field">
@@ -241,15 +251,15 @@
 				<div class="box">
 					<div class="field">
 						<form th:action="@{/logout}" method="post">
-							<span class="navbar-item">
-								<button class="button is-info is-outlined" href="/logout"
-									style="width: 100%;">
-									<span th:text="#{logout}"></span>
-								</button>
-							</span>
+							<button class="button is-danger is-outlined" href="/logout"
+								style="width: 100%;">
+								<span th:text="#{logout}"></span>
+							</button>
 						</form>
 					</div>
 				</div>
+
+				<div style="margin-top: 48px;"></div>
 
 			</div>
 		</div>
