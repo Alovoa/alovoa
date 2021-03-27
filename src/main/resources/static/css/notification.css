@@ -6,6 +6,8 @@
 .image img {
 	max-height: 100px;
 	max-width: 100px;
+	min-width: 40px;
+	min-height: 40px;
 }
 
 .card {
@@ -58,6 +60,8 @@
 	.card {
 		border-radius: 0px;
 		padding: 8px;
+		margin-bottom: 0px;
+		border-top: none;
 	}
 }
 /*https://github.com/jgthms/bulma/pull/1596#issuecomment-556416927*/
