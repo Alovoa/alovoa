@@ -13,7 +13,21 @@
 <link rel="stylesheet" href="/css/lib/bulma.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <link rel="stylesheet" href="/css/index.css" />
-<title th:text="#{app.name}"></title>
+
+<link rel="alternate" hreflang="en" href="/?lang=en" />
+<link rel="alternate" hreflang="de" href="/?lang=de" />
+<link rel="alternate" hreflang="es" href="/?lang=es" />
+<link rel="alternate" hreflang="fr" href="/?lang=fr" />
+<link rel="alternate" hreflang="pt" href="/?lang=pt" />
+<link rel="alternate" hreflang="it" href="/?lang=it" />
+<link rel="alternate" hreflang="ru" href="/?lang=ru" />
+<link rel="alternate" hreflang="ja" href="/?lang=ja" />
+<link rel="alternate" hreflang="zh" href="/?lang=zh" />
+<link rel="alternate" hreflang="ko" href="/?lang=ko" />
+
+<title th:text="#{app.name} + ' - ' + #{index.subtitle}"></title>
+<meta name="description" th:content="#{meta.content}">
+
 </head>
 
 <body>
