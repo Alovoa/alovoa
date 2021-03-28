@@ -69,7 +69,7 @@ public class User implements UserDetails {
 	// private String oauthProvider;
 
 	@Column(length = 12)
-	@Convert(converter = TextEncryptorConverter.class)
+	//@Convert(converter = TextEncryptorConverter.class)
 	private String firstName;
 
 	private String description;
