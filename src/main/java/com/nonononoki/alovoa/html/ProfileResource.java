@@ -52,7 +52,8 @@ public class ProfileResource {
 		if (user.isAdmin()) {
 			return adminResource.admin();
 		} else {
-			boolean isLegal = Tools.calcUserAge(user) >= ageLegal;
+			int age = Tools.calcUserAge(user);
+			boolean isLegal = age >= ageLegal;
 			ModelAndView mav = new ModelAndView("profile");
 			mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.ALL));
 			mav.addObject("genders", genderRepo.findAll());

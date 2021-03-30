@@ -1,11 +1,13 @@
 package com.nonononoki.alovoa.service;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -65,6 +67,7 @@ public class SearchService {
 		user.getDates().setActiveDate(new Date());
 		// rounding to improve privacy
 		DecimalFormat df = new DecimalFormat("#.##");
+		df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 		user.setLocationLatitude(Double.valueOf(df.format(latitude)));
 		user.setLocationLongitude(Double.valueOf(df.format(longitude)));
 		userRepo.saveAndFlush(user);
