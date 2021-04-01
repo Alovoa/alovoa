@@ -25,3 +25,22 @@
 #cookie-banner {
 	font-size: 0.9em;
 }
+
+#icon-free {
+	color: #e53935;
+}
+#icon-open-source {
+	color: #f4511e;
+}
+#icon-private {
+	color: #ec407a;
+}
+#icon-ad-free {
+	color: #c0ca33;
+}
+#icon-technology {
+	color: #43a047;
+}
+#icon-for-you {
+	color: #00897b;
+}
