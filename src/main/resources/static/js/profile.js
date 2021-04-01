@@ -2,6 +2,8 @@
 const descriptionMaxLength = 255;
 
 $(function() {
+	
+	$(window).scrollTop(0);
 
 	var mediaMaxSize = $("#mediaMaxSize").val();
 	

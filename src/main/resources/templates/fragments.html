@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <body>
 
 	<div th:fragment="empty"></div>
@@ -9,55 +10,53 @@
 
 		<div class="field">
 			<img id="captcha-image">
-			<button type="button" id="captcha-refresh-button"
-				class="button is-info colored" onclick="refreshCaptcha()">
+			<button type="button" id="captcha-refresh-button" class="button is-info colored" onclick="refreshCaptcha()">
 				<i class="fa fa-sync" id="captcha-refresh-icon"></i>
 			</button>
 		</div>
 		<div class="field">
-			<input class="input" id="captcha" name="captchaText"
-				th:placeholder="#{captcha}" autocomplete="off" required>
+			<input class="input" id="captcha" name="captchaText" th:placeholder="#{captcha}" autocomplete="off"
+				required>
 		</div>
 		<div style="padding-top: 4px;"></div>
-
 	</div>
 
 	<div th:fragment="header" id="header" th:unless="${hideHeader}">
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
-				<a class="navbar-item" href="/"> <img src="/img/icon.png"
-					width="40" height="40">
-				</a> <a class="navbar-item" href="/" id="navbar-text"
-					th:text="#{app.name}"></a>
+				<a class="navbar-item" href="/"> <img src="/img/icon.png" width="40" height="40">
+				</a> <a class="navbar-item" href="/" id="navbar-text" th:text="#{app.name}"></a>
 			</div>
 
 			<div style="width: 100%; display: flex;">
 				<div class="navbar-end">
-					<div class="navbar-item" id="navbar-item-language"
-						style="padding-right: 0px;">
-						<a class="button is-white is-outlined" href="#footer"
-							style="width: 40px;"><i
-							style="padding-right: 0px; color: white;" class="fas fa-globe"></i></a>
+					<div class="navbar-item" id="navbar-item-language" style="padding-right: 0px;">
+						<a class="button is-white is-outlined" onclick="onLanguageButtonClicked()"
+							style="width: 40px;"><i style="padding-right: 0px; color: white;"
+								class="fas fa-globe"></i></a>
 					</div>
 					<div class="navbar-item" id="navbar-item-register">
-						<a class="button is-white is-outlined" href="/register"
-							th:text="#{sign-up}"></a>
+						<a class="button is-white is-outlined" href="/register" th:text="#{sign-up}"></a>
 					</div>
 					<div class="navbar-item">
-						<a class="button is-white is-outlined" href="/login"
-							th:text="#{login}"> </a>
+						<a class="button is-white is-outlined" href="/login" th:text="#{login}"> </a>
 					</div>
 				</div>
 			</div>
 		</nav>
+
+		<script>
+			function onLanguageButtonClicked() {
+				document.getElementById('locale').scrollIntoView({behavior: 'smooth', block: 'center'});
+			}
+		</script>
+
 	</div>
 
-	<div th:fragment="header-logged-in" id="header-logged-in"
-		th:unless="${hideHeader}">
+	<div th:fragment="header-logged-in" id="header-logged-in" th:unless="${hideHeader}">
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
-				<a class="navbar-item"> <img src="/img/icon.png" width="40"
-					height="40">
+				<a class="navbar-item"> <img src="/img/icon.png" width="40" height="40">
 				</a> <a id="header-app-name" class="navbar-item" th:text="#{app.name}"></a>
 			</div>
 
@@ -65,8 +64,7 @@
 				<div class="navbar-end">
 					<form th:action="@{/logout}" method="post">
 						<span class="navbar-item">
-							<button class="button is-white is-outlined" href="/logout"
-								id="logout">
+							<button class="button is-white is-outlined" href="/logout" id="logout">
 								<span th:text="#{logout}"></span>
 							</button>
 						</span>
@@ -133,28 +131,25 @@
 	</footer>
 
 	<div th:fragment="navigation">
-		<nav class="navbar is-link is-fixed-bottom" role="navigation"
-			style="display: block;">
+		<nav class="navbar is-link is-fixed-bottom" role="navigation" style="display: block;">
 			<div class="navbar-brand">
-				<a class="navbar-item is-expanded navigation-item" href="/search">
+				<a class="navbar-item is-expanded navigation-item" href="/search" id="nav-search">
 					<div>
 						<i class="fa fa-search"></i><span th:text="#{search}"></span>
 					</div>
-				</a> <a class="navbar-item is-expanded navigation-item" href="/donate">
+				</a> <a class="navbar-item is-expanded navigation-item" href="/donate" id="nav-donate">
 					<div>
 						<i class="fa fa-coins"></i><span th:text="#{donate}"></span>
 					</div>
-				</a> <a class="navbar-item is-expanded navigation-item" id="nav-alerts"
-					href="/alerts">
+				</a> <a class="navbar-item is-expanded navigation-item" id="nav-alerts" href="/alerts">
 					<div>
 						<i class="fa fa-bell"></i> <span th:text="#{alerts}"></span>
 					</div>
-				</a> <a class="navbar-item is-expanded navigation-item" id="nav-chats"
-					href="/chats">
+				</a> <a class="navbar-item is-expanded navigation-item" id="nav-chats" href="/chats">
 					<div>
 						<i class="fa fa-comments"></i> <span th:text="#{chats}"></span>
 					</div>
-				</a> <a class="navbar-item is-expanded navigation-item" href="/profile">
+				</a> <a class="navbar-item is-expanded navigation-item" href="/profile" id="nav-profile">
 					<div>
 						<i class="fa fa-user"></i> <span th:text="#{profile}"></span>
 					</div>
@@ -323,16 +318,34 @@
 				th:text="#{profile.warning.incomplete}"></div>
 			<a class="notification is-warning full-width" th:if="${noProfilePicture}"
 				th:text="#{profile.warning.no-profile-picture}"
-				href="#picture-field"></a> <a
+				onclick="onWarningProfileClicked()"></a> <a
 				class="notification is-warning full-width" th:if="${noDescription}"
-				th:text="#{profile.warning.no-description}" href="#description-field"></a> <a
-				class="notification is-warning full-width" th:if="${noIntention}"
-				th:text="#{profile.warning.no-intention}" href="#intention-field"></a> <a
-				class="notification is-warning full-width" th:if="${noGender}"
-				th:text="#{profile.warning.no-gender-preference}" href="#gender-field"></a> <a
+				th:text="#{profile.warning.no-description}" 
+				onclick="onWarningDescriptionClicked()"></a> <a
+				class="notification is-warning full-width" th:if="${noIntention}" 
+				onclick="onWarningIntentionClicked()"
+				th:text="#{profile.warning.no-intention}"></a> <a
+				class="notification is-warning full-width" th:if="${noGender}" 
+				onclick="onWarningGenderClicked()"
+				th:text="#{profile.warning.no-gender-preference}"></a> <a
 				class="notification is-warning full-width" th:if="${noLocation}"
 				th:text="#{profile.warning.no-location}" href="/search"></a>
 		</div>
+		
+		<script>
+			function onWarningProfileClicked() {
+				$("#profilePictureUpload").click();
+			}
+			function onWarningDescriptionClicked() {
+				document.getElementById('description').scrollIntoView({behavior: 'smooth', block: 'center'});
+			}
+			function onWarningIntentionClicked() {
+				document.getElementById('intention-field').scrollIntoView({behavior: 'smooth', block: 'center'});
+			}
+			function onWarningGenderClicked() {
+				document.getElementById('gender-field').scrollIntoView({behavior: 'smooth', block: 'center'});
+			}
+		</script>
 	</div>
 
 	<div th:fragment="iframe">

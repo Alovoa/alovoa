@@ -200,31 +200,28 @@ input[type=range].slider {
 	padding-right: 0px;
 }
 
-@media screen and (max-width: 510px) {
-	#navbar-text {
-		display: none;
-	}
+#captcha {
+	max-width: 206px;;
 }
 
-@media screen and (max-width: 420px) {
-	#navbar-item-register {
-		display: none;
-	}
+#nav-search {
+	background-color: #ec407a;
 }
-
-@media screen and (max-width: 280px) {
-	#navbar-item-language {
-		display: none;
-	}
+#nav-donate {
+	background-color: #f4511e;
 }
-
-@media screen and (max-width: 400px) {
-	#oauth-div button span {
-		font-size: 16px;
-	}
-	#captcha-image {
-		width: 156px;
-	}
+#nav-alerts {
+	background-color: #e53935;
+}
+#nav-chats {
+	background-color: #43a047;
+}
+#nav-profile {
+	background-color: #00897b;
+}
+.switch[type=checkbox]:checked+label::before,
+.switch[type=checkbox]:checked+label:before {
+ background:#ec407a
 }
 
 .datetimepicker-dummy-input {
@@ -367,15 +364,46 @@ input[type=range].slider {
 	}
 }
 
+
+@media screen and (max-width: 510px) {
+	#navbar-text {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 400px) {
+	#oauth-div button span {
+		font-size: 16px;
+	}
+	#captcha-image {
+		width: 156px;
+	}
+	#captcha {
+		max-width: 100%;
+	}
+}
+
 @media screen and (max-width: 340px) {
 	#oauth-div span {
 		font-size: 0.7em ! important;
 	}
 }
 
+@media screen and (max-width: 420px) {
+	#navbar-item-register {
+		display: none;
+	}
+}
+
 @media screen and (max-width: 290px) {
 	#oauth-div span {
 		font-size: 0.5em ! important;
+	}
+}
+
+@media screen and (max-width: 280px) {
+	#navbar-item-language {
+		display: none;
 	}
 }
 
