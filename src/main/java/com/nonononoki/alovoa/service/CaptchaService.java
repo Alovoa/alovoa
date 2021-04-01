@@ -32,7 +32,8 @@ public class CaptchaService {
 	private final int HEIGHT = 70;
 	
 	private final  Color BG_COLOR = new Color(0, 0, 0, 0);
-	private final  Color FG_COLOR = new Color(41, 182, 246);
+//	private final  Color FG_COLOR = new Color(41, 182, 246);
+	private final  Color FG_COLOR = new Color(236, 65, 122);
 
 	public Captcha generate() throws Exception {
 		OxCaptcha ox = generateCaptchaImage(captchaLength);

@@ -22,9 +22,14 @@ html {
 	width: 0; /* Remove scrollbar space */
 	background: transparent; /* Optional: just make scrollbar invisible */
 }
-
+/*
 h1, h2, h3, h4, h5, h6 {
 	font-family: "Abril_Fatface" !important;
+}
+*/
+
+.swiper-button-next, .swiper-button-prev {
+	color: #4a4a4a;
 }
 
 button {
@@ -69,10 +74,6 @@ button {
 	border-radius: 12px;
 }
 
-svg {
-	color: #209cee;
-}
-
 .card {
 	border-radius: 12px;
 }
@@ -106,7 +107,7 @@ svg {
 
 .navbar {
 	display: flex;
-	background-image: linear-gradient(141deg, #159dc6 0, #3298dc 71%, #4389e5 100%);
+	/*background-image: linear-gradient(141deg, #159dc6 0, #3298dc 71%, #4389e5 100%);*/
 }
 
 .navbar-end {
@@ -308,6 +309,9 @@ input[type=range].slider {
 		background-color: #121212;
 		color: white;
 	}
+	#addImageDiv path, .profile-pic path {
+		color: #121212;
+	}
 	.input {
 		background-color: #121212;
 		color: white;
@@ -318,7 +322,7 @@ input[type=range].slider {
 	.option {
 		color: #121212 !important;
 	}
-	body *, container *, .subtitle, .label, .content h4, .textarea, .select select
+	body *:not(a), container *, .subtitle, .label, .content h4, .textarea, .select select
 		{
 		color: white;
 	}
@@ -328,9 +332,6 @@ input[type=range].slider {
 	}
 	.footer {
 		background-color: #000000;
-	}
-	p a, label a {
-		color: #3273dc;
 	}
 	#logout:hover span {
 		color: #0a0a0a;
@@ -351,12 +352,6 @@ input[type=range].slider {
 	}
 	.datetimepicker-dummy-input {
 		color: white !important;
-	}
-	.datetimepicker-footer-cancel svg {
-		color: #209cee !important;
-	}
-	#addImageDiv path, .profile-pic path {
-		color: #209cee;
 	}
 	#iframe-header {
 		background-color: #121212;;

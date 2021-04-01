@@ -66,8 +66,8 @@
 		height: 60px;
 	}
 	#messages-div {
-		min-height: calc(100vh - 350px);
-		max-height: calc(100vh - 350px);
+		min-height: calc(100vh - 370px);
+		max-height: calc(100vh - 370px);
 	}
 	#first-name {
 		font-size: 1.7em
@@ -83,7 +83,7 @@
 		padding-right: 8px;
 	}
 	#messages-div {
-		min-height: calc(100vh - 300px);
-		max-height: calc(100vh - 300px);
+		min-height: calc(100vh - 320px);
+		max-height: calc(100vh - 320px);
 	}
 }
