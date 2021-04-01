@@ -446,19 +446,16 @@ input[type=range].slider {
 	.profile-bottom.dimmed {
 		background: rgba(0, 0, 0, 0.0) !important;
 	}
-	/*
-	.view-profile-div {
-		padding-top: initial !important;
-	}
-	*/
 	.notification-div {
 		min-width: initial !important;
 	}
 	.notification-card .profile-pic {
 		height: 40px;
+		width: 40px;
 	}
 	.messages-card .profile-pic {
 		height: 40px;
+		width: 40px;
 	}
 	#message-send-button {
 		padding: 0;
