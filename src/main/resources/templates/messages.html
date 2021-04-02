@@ -1,46 +1,43 @@
 <!DOCTYPE html>
 <html th:lang="${lang}">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Alovoa">
-<link rel="manifest" href="/manifest/manifest.json">
 
-<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
-<link rel="stylesheet" href="/css/lib/css-loaders.css" />
-<link rel="stylesheet" href="/css/alovoa.css" />
-<link rel="stylesheet" href="/css/notification.css" />
-<title th:text="#{message.title}"></title>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-title" content="Alovoa">
+	<link rel="manifest" href="/manifest/manifest.json">
+
+	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+	<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
+	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
+	<link rel="stylesheet" href="/css/alovoa.css" />
+	<link rel="stylesheet" href="/css/notification.css" />
+	<title th:text="#{message.title}"></title>
 </head>
+
 <body>
 	<div id="main-logged-in">
 		<header th:insert="fragments.html::header-logged-in"></header>
 		<section class="container" id="main-container">
 			<div class="section">
 				<div class="container" style="width: 100%;">
-					<div class="card is-horizontal messages-card"
-						th:each="convo : ${conversations}"
+					<div class="card is-horizontal messages-card" th:each="convo : ${conversations}"
 						th:onclick="viewMessageDetail(this, [[${convo.id}]])">
 						<div class="card-image">
-							<figure class="image"
-								style="max-width: 200px; max-height: 200px; margin: 0">
+							<figure class="image" style="max-width: 200px; max-height: 200px; margin: 0">
 								<img th:src="${convo.userProfilePicture}" class="profile-pic"
 									th:value="${convo.userIdEncoded}">
 							</figure>
 						</div>
-						<div class="card-content"
-							style="display: flex; justify-items: center; align-items: center;">
+						<div class="card-content" style="display: flex; justify-items: center; align-items: center;">
 							<div class="full-width profile-bottom">
-								<div style="font-size: 1.5em" th:text="${convo.userName}"></div>
-								<span style="overflow-wrap: normal; background-color: initial;"
-									class="message" th:text="${convo.lastMessage}"
-									th:if="${convo.lastMessage != null}"></span> <span
-									style="overflow-wrap: normal;"
-									th:unless="${convo.lastMessage != null}"
-									th:text="#{message.match}"></span>
+								<div style="font-size: 1.2em" th:text="${convo.userName}"></div>
+								<span style="overflow-wrap: normal; background-color: initial;" class="message-preview"
+									th:text="${#strings.abbreviate(convo.lastMessage,60)}" th:if="${convo.lastMessage != null}"></span>
+								<span style="overflow-wrap: normal;" class="message-preview"
+									th:unless="${convo.lastMessage != null}" th:text="#{message.match}"></span>
 							</div>
 						</div>
 					</div>
@@ -63,4 +60,5 @@
 	<script src="/js/tools/iframe.js"></script>
 	<script src="/js/message.js"></script>
 </body>
+
 </html>

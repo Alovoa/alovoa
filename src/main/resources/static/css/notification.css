@@ -94,8 +94,8 @@
 		border-right: none !important;
 		height: 72px;
 	}
-	.card.is-horizontal .card-content {
-		font-size: 0.6em;
+	.message-preview {
+		font-size: 0.9em;
 	}
 }	
 	
