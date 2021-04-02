@@ -26,21 +26,21 @@
 	font-size: 0.9em;
 }
 
-#icon-free {
-	color: #e53935;
+#icon-free path {
+	color: #e53935 !important;
 }
-#icon-open-source {
-	color: #f4511e;
+#icon-open-source path {
+	color: #f4511e !important;
 }
-#icon-private {
-	color: #ec407a;
+#icon-private path {
+	color: #ec407a !important;
 }
-#icon-ad-free {
-	color: #c0ca33;
+#icon-ad-free path {
+	color: #c0ca33 !important;
 }
-#icon-technology {
-	color: #43a047;
+#icon-technology path {
+	color: #43a047 !important;
 }
-#icon-for-you {
-	color: #00897b;
+#icon-for-you path {
+	color: #00897b !important;
 }

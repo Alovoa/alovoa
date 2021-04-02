@@ -34,6 +34,6 @@
   "scope": "/",
   "theme_color": "#ec407a",
   "description" : "Meet amazing people around you, privately!",
-  "orientation" : "any",
+  "orientation" : "portrait",
   "lang" : "English"
 }
