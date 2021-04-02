@@ -29,10 +29,10 @@
     }
   ],
   "start_url": "/",
-  "background_color": "#3298DC",
+  "background_color": "#ec407a",
   "display": "standalone",
   "scope": "/",
-  "theme_color": "#3298DC",
+  "theme_color": "#ec407a",
   "description" : "Meet amazing people around you, privately!",
   "orientation" : "any",
   "lang" : "English"
