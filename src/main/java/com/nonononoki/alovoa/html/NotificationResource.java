@@ -41,7 +41,17 @@ public class NotificationResource {
 		List<UserNotification> nots = user.getNotifications();
 		List<NotificationDto> notifications = new ArrayList<>();
 		for (int i = 0; i < nots.size(); i++) {
-			notifications.add(NotificationDto.notificationToNotificationDto(nots.get(i), user, textEncryptor));
+			UserNotification n = nots.get(i);
+
+			boolean blockedMe = user.getBlockedByUsers().stream()
+					.anyMatch(b -> b.getUserFrom().getId().equals(n.getUserFrom().getId()));
+			boolean blockedYou = user.getBlockedUsers().stream()
+					.anyMatch(b -> b.getUserTo().getId().equals(n.getUserFrom().getId()));
+
+			if(!blockedMe && !blockedYou) {
+				NotificationDto dto = NotificationDto.notificationToNotificationDto(n, user, textEncryptor);
+				notifications.add(dto);
+			}
 		}
 		Collections.sort(notifications, new Comparator<NotificationDto>() {
 			@Override

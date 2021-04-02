@@ -38,6 +38,13 @@
 	min-width: 240px;
 }
 
+.messages-name {
+	font-size: 2em;
+}
+.message-preview {
+	font-size: 1.2em;
+}
+
 /*https://github.com/jgthms/bulma/pull/1596#issuecomment-556416927*/
 .card.is-horizontal {
 	flex-direction: row;
@@ -96,6 +103,9 @@
 	}
 	.message-preview {
 		font-size: 0.9em;
+	}
+	.messages-name {
+		font-size: 1.2em;
 	}
 }	
 	
