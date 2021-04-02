@@ -38,28 +38,6 @@
 	min-width: 240px;
 }
 
-@media screen and (max-width: 500px) {
-	.image img {
-		height: 60px;
-		width: 60px;
-		border-radius: 290486px !important;
-	}
-	.section {
-		padding: 0;
-	}
-	.notification-div {
-		font-size: 1.2em !important; 
-	}
-	.card {
-		border-radius: 0px;
-		padding: 8px;
-		margin-bottom: 0px;
-		border-top: none !important;
-		border-left: none !important;
-		border-right: none !important;
-		height: 112px;
-	}
-}
 /*https://github.com/jgthms/bulma/pull/1596#issuecomment-556416927*/
 .card.is-horizontal {
 	flex-direction: row;
@@ -95,5 +73,29 @@
 	}
 }
 	
-	
+@media screen and (max-width: 500px) {
+	.image img {
+		height: 60px;
+		width: 60px;
+		border-radius: 290486px !important;
+	}
+	.section {
+		padding: 0;
+	}
+	.notification-div {
+		font-size: 1.2em !important; 
+	}
+	.card {
+		border-radius: 0px;
+		padding: 8px;
+		margin-bottom: 0px;
+		border-top: none !important;
+		border-left: none !important;
+		border-right: none !important;
+		height: 72px;
+	}
+	.card.is-horizontal .card-content {
+		font-size: 0.6em;
+	}
+}	
 	
