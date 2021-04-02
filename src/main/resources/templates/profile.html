@@ -232,24 +232,16 @@
 
 				<div class="box">
 					<div class="field">
-						<label class="label" th:text="#{profile.userdata.request}"></label>
-						<div class="field" style="display: flex">
-							<button class="button is-info is-outlined" id="userdata-submit"
-								th:text="#{submit}" style="margin-left: 4px;"></button>
-						</div>
+						<a th:text="#{profile.blocked-users}" href="/blocked-users"></a>
 					</div>
-				</div>
-
-				<div class="box">
 					<div class="field">
-						<label class="label" th:text="#{profile.account.delete}"></label>
-						<div class="field" style="display: flex">
-							<button class="button is-info is-outlined" id="delete-acc-submit"
-								th:text="#{submit}" style="margin-left: 4px;"></button>
-						</div>
+						<a th:text="#{profile.userdata.request}" id="userdata-submit"></a>
+					</div>
+					<div class="field">
+						<a th:text="#{profile.account.delete}" id="delete-acc-submit"></a>
 					</div>
 				</div>
-
+				
 				<div class="box">
 					<div class="field">
 						<form th:action="@{/logout}" method="post">

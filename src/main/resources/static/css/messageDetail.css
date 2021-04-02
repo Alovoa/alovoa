@@ -31,6 +31,7 @@
 #message-send-button {
 	float: left;
 	width: 52px;
+	height: 52px;
 }
 
 #message-send-button svg {
