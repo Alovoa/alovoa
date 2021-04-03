@@ -273,7 +273,7 @@
 			style="scroll-snap-align: end;">
 			<div class="card-image">
 				<figure class="image">
-					<th:block th:if="${user.profilePicture}">
+					<th:block th:if="${donation.user.profilePicture}">
 						<img th:src="${donation.user.profilePicture}" class="profile-pic"
 							th:onclick="viewProfile([[${donation.user.idEncoded}]])">
 					</th:block>

@@ -33,7 +33,7 @@
 						</div>
 						<div class="card-content" style="display: flex; justify-items: center; align-items: center;">
 							<div class="full-width profile-bottom">
-								<div style="font-size: 1.2em" th:text="${convo.userName}"></div>
+								<div class="messages-name" th:text="${convo.userName}"></div>
 								<span style="overflow-wrap: normal; background-color: initial;" class="message-preview"
 									th:text="${#strings.abbreviate(convo.lastMessage,60)}" th:if="${convo.lastMessage != null}"></span>
 								<span style="overflow-wrap: normal;" class="message-preview"
