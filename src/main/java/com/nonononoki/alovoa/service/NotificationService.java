@@ -4,15 +4,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserWebPush;
 import com.nonononoki.alovoa.model.WebPushMessage;
@@ -68,7 +66,7 @@ public class NotificationService {
 		user.getDates().setNotificationDate(new Date());
 		user = userRepo.saveAndFlush(user);
 
-		Locale locale = LocaleContextHolder.getLocale();
+		Locale locale = Tools.getUserLocale(user);
 		String title = messageSource.getMessage("backend.webpush.like.message", null, locale);
 		String msg = messageSource.getMessage("backend.webpush.like.subject", null, locale);
 
@@ -83,7 +81,7 @@ public class NotificationService {
 		user.getDates().setMessageDate(new Date());
 		user = userRepo.save(user);
 
-		Locale locale = LocaleContextHolder.getLocale();
+		Locale locale = Tools.getUserLocale(user);
 		String title = messageSource.getMessage("backend.webpush.match.message", null, locale);
 		String msg = messageSource.getMessage("backend.webpush.match.subject", null, locale);
 
@@ -98,7 +96,7 @@ public class NotificationService {
 		user.getDates().setMessageDate(new Date());
 		user = userRepo.saveAndFlush(user);
 
-		Locale locale = LocaleContextHolder.getLocale();
+		Locale locale = Tools.getUserLocale(user);
 		String title = messageSource.getMessage("backend.webpush.message.message", null, locale);
 		String msg = messageSource.getMessage("backend.webpush.message.subject", null, locale);
 
@@ -117,5 +115,4 @@ public class NotificationService {
 			pushService().send(notification);
 		}
 	}
-
 }

@@ -13,6 +13,9 @@ import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+
+import org.springframework.util.StringUtils;
 
 import com.nonononoki.alovoa.entity.User;
 
@@ -30,6 +33,15 @@ public class Tools {
 	public static final String DEV = "dev";
 	
 	public static final String MAIL_TEST_DOMAIN= "@mailinator.com";
+	
+	public static Locale getUserLocale(User user) {
+		String language = user.getLanguage();
+		if(language != null) {
+			return StringUtils.parseLocale(language);
+		} else {
+			return Locale.ENGLISH;
+		}
+	}
 	
 	public static Date ageToDate(int age) {
 		Calendar calendar = Calendar.getInstance();

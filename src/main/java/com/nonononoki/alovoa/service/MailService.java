@@ -12,7 +12,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
@@ -91,7 +90,7 @@ public class MailService {
 	}
 
 	public void sendRegistrationMail(User user, UserRegisterToken token) throws Exception {
-		Locale locale = getUserLocale(user);
+		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.register.subject", new String[] { appName }, "",
 				locale);
 		String body = messageSource.getMessage("backend.mail.register.body",
@@ -100,7 +99,7 @@ public class MailService {
 	}
 
 	public void sendPasswordResetMail(User user, UserPasswordToken token) throws Exception {
-		Locale locale = getUserLocale(user);
+		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.password-reset.subject", new String[] { appName },
 				locale);
 		String body = messageSource.getMessage("backend.mail.password-reset.body",
@@ -109,7 +108,7 @@ public class MailService {
 	}
 
 	public void sendAccountDeleteRequest(User user, UserDeleteToken token) throws Exception {
-		Locale locale = getUserLocale(user);
+		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.account-delete-request.subject",
 				new String[] { appName }, locale);
 		String body = messageSource.getMessage("backend.mail.account-delete-request.body",
@@ -118,21 +117,11 @@ public class MailService {
 	}
 
 	public void sendAccountDeleteConfirm(User user) throws Exception {
-		Locale locale = getUserLocale(user);
+		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.account-delete-confirm.subject",
 				new String[] { appName }, locale);
 		String body = messageSource.getMessage("backend.mail.account-delete-confirm.body",
 				new String[] { user.getFirstName(), appName }, locale);
 		sendMail(user.getEmail(), defaultFrom, subject, body);
-	}
-	
-	//use this for automatic emails
-	private Locale getUserLocale(User user) {
-		String language = user.getLanguage();
-		if(language != null) {
-			return StringUtils.parseLocale(language);
-		} else {
-			return Locale.ENGLISH;
-		}
 	}
 }
