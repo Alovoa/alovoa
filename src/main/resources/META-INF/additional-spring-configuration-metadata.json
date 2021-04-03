@@ -198,5 +198,30 @@
     "name": "app.media.max-size",
     "type": "java.lang.String",
     "description": "A description for 'app.media.max-size'"
+  },
+  {
+    "name": "app.vapid.private",
+    "type": "java.lang.String",
+    "description": "A description for 'app.vapid.private'"
+  },
+  {
+    "name": "app.text.key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.text.key'"
+  },
+  {
+    "name": "app.text.salt",
+    "type": "java.lang.String",
+    "description": "A description for 'app.text.salt'"
+  },
+  {
+    "name": "app.admin.email",
+    "type": "java.lang.String",
+    "description": "A description for 'app.admin.email'"
+  },
+  {
+    "name": "app.admin.key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.admin.key'"
   }
 ]}
