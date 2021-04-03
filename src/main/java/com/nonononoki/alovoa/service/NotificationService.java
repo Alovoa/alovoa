@@ -17,7 +17,6 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserWebPush;
 import com.nonononoki.alovoa.model.WebPushMessage;
 import com.nonononoki.alovoa.repo.UserRepository;
-import com.nonononoki.alovoa.repo.UserWebPushRepository;
 
 import nl.martijndwars.webpush.Notification;
 import nl.martijndwars.webpush.PushService;
@@ -38,16 +37,13 @@ public class NotificationService {
 	private AuthService authService;
 
 	@Autowired
-	private UserWebPushRepository userWebPushRepo;
-
-	@Autowired
 	private ObjectMapper objectMapper;
-
-	@Autowired
-	private HttpServletRequest request;
 	
 	@Autowired
 	private MessageSource messageSource;
+	
+	@Autowired
+	private UserRepository userRepo;
 
 	private static PushService pushService;
 
@@ -60,15 +56,12 @@ public class NotificationService {
 		return pushService;
 	}
 
-	@Autowired
-	private UserRepository userRepo;
-
 	public void subscribe(UserWebPush webPush) throws Exception {
-		webPush.setUser(authService.getCurrentUser());
-		String ip = request.getRemoteAddr();
-		webPush.setIp(ip);	
-		userWebPushRepo.deleteAll(userWebPushRepo.findAllByIp(ip));
-		userWebPushRepo.save(webPush);
+		User user = authService.getCurrentUser();
+		webPush.setUser(user);
+		webPush.setDate(new Date());
+		user.getWebPush().add(webPush);
+		userRepo.saveAndFlush(user);
 	}
 
 	public void newLike(User user) throws Exception {

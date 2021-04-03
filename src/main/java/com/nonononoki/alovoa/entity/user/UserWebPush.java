@@ -26,8 +26,6 @@ public class UserWebPush {
 	@ManyToOne
 	private User user;
 	
-	private String ip;
-	
 	private Date date;
 	
 	private String publicKey;
