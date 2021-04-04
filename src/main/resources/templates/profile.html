@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html th:lang="${lang}">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Alovoa">
-<link rel="manifest" href="/manifest/manifest.json">
 
-<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-<link rel="stylesheet" href="/css/lib/bulma-switch.min.css" />
-<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
-<link rel="stylesheet" href="/css/lib/swiper.min.css" />
-<link rel="stylesheet" href="/css/alovoa.css" />
-<link rel="stylesheet" href="/css/profile.css" />
-<title th:text="#{profile.title}"></title>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-title" content="Alovoa">
+	<link rel="manifest" href="/manifest/manifest.json">
+
+	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+	<link rel="stylesheet" href="/css/lib/bulma-switch.min.css" />
+	<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
+	<link rel="stylesheet" href="/css/lib/swiper.min.css" />
+	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
+	<link rel="stylesheet" href="/css/alovoa.css" />
+	<link rel="stylesheet" href="/css/profile.css" />
+	<title th:text="#{profile.title}"></title>
 </head>
+
 <body>
 	<div id="main-logged-in">
 		<header th:insert="fragments.html::header-logged-in"></header>
@@ -26,9 +29,8 @@
 				</div>
 
 				<div class="field">
-					<button class="button is-info colored" id="btnPushNotifications"
-						name="btnPushNotifications" style="width: 100%;"
-						th:text="#{profile.webpush}"></button>
+					<button class="button is-info colored" id="btnPushNotifications" name="btnPushNotifications"
+						style="width: 100%;" th:text="#{profile.webpush}"></button>
 				</div>
 
 				<div class="field" id="picture-field">
@@ -37,26 +39,22 @@
 						<div class="swiper-wrapper">
 							<div class="swiper-slide">
 								<div class="center-parent">
-									<div class="center-parent button profile-pic"
-										id="profilePicture"
+									<div class="center-parent button profile-pic" id="profilePicture"
 										style="min-width: 174px; min-height: 200px; border-radius: 12px;"
 										th:unless="${user.profilePicture}" th:value=0>
 										<i class="fa fa-plus fa-4x"></i>
 									</div>
 									<th:block th:if="${user.profilePicture}">
-										<img id="profilePicture" style="cursor: pointer;"
-											class="profile-pic " height=300 width=300
-											th:src="${user.profilePicture}" th:value=1 />
+										<img id="profilePicture" style="cursor: pointer;" class="profile-pic "
+											height=300 width=300 th:src="${user.profilePicture}" th:value=1 />
 									</th:block>
-									<input id="profilePictureUpload" type="file" accept="image/*"
-										style="display: none">
+									<input id="profilePictureUpload" type="file" accept="image/*" style="display: none">
 								</div>
 							</div>
 							<div th:each="img : ${user.images}" class="swiper-slide">
 								<div class="center-parent">
-									<img style="cursor: pointer;" class="profile-pic" height=300
-										width=300 th:src="${img.content}"
-										th:onclick="deleteImage([[${img.id}]])" />
+									<img style="cursor: pointer;" class="profile-pic" height=300 width=300
+										th:src="${img.content}" th:onclick="deleteImage([[${img.id}]])" />
 								</div>
 							</div>
 							<th:block th:if="${#lists.size(user.images) != imageMax}">
@@ -258,6 +256,10 @@
 			</div>
 		</div>
 	</div>
+	
+	<div class="loader-parent">
+		<div class="loader"></div>
+	</div>
 
 	<input type="hidden" th:value="${vapidPublicKey}" id="vapidPublicKey"></input>
 	<input type="hidden" th:value="${mediaMaxSize}" id="mediaMaxSize"></input>
@@ -272,6 +274,7 @@
 	<script src="/js/lib/notification.js"></script>
 	<script src="/js/tools/getNotification.js"></script>
 	<script src="/js/tools/getText.js"></script>
+	<script src="/js/tools/iframe.js"></script>
 	<script src="/js/profile.js"></script>
 </body>
 </html>

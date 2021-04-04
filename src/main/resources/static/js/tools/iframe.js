@@ -2,9 +2,9 @@ function loadIframe(url) {
 	$("#iframe-div").show();
 	$("#iframe-parent").append('<iframe id="iframe"></iframe>');
 	$("#iframe").attr("src", url);
-	$( ".loader-parent" ).css("display", "flex");
-	setTimeout(function(){ 
-		$( ".loader-parent" ).css("display", "none");
+	showLoader();
+	setTimeout(function() {
+		hideLoader();
 	}, 1000);
 }
 
@@ -16,4 +16,12 @@ function deleteIframe() {
 function viewProfile(idEnc) {
 	let url = 'profile/view/' + idEnc + "?showHeader=false";
 	loadIframe(url);
+}
+
+function showLoader() {
+	$(".loader-parent").css("display", "flex");
+}
+
+function hideLoader() {
+	$(".loader-parent").css("display", "none");
 }

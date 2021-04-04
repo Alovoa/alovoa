@@ -26,11 +26,14 @@ $(function() {
 	});
 
 	$("#profilePictureUpload").change(function() {
+		showLoader();
 		let file = document.querySelector('#profilePictureUpload').files[0];
 		if(file.size > mediaMaxSize) {
+			hideLoader();
 			alert(getText("error.media.max-size-exceeded"));
 			return;
 		}
+		
 		getBase64(file, function(b64) {
 			if (b64) {
 				$.ajax({
@@ -42,11 +45,12 @@ $(function() {
 					contentType : "text/plain",
 					data : b64,
 					success : function() {
-						location.reload(true);
+						location.reload();
 					},
 					error : function(e) {
 						console.log(e);
-						alert(getGenericErrorText());
+						hideLoader();
+						alert(getGenericErrorText());			
 					}
 				});
 			}
@@ -56,9 +60,11 @@ $(function() {
 	$("#addImageInput").change(function() {
 		let file = document.querySelector('#addImageInput').files[0];
 		if(file.size > mediaMaxSize) {
+			hideLoader();
 			alert(getText("error.media.max-size-exceeded"));
 			return;
 		}
+		showLoader();
 		getBase64(file, function(b64) {
 			if (b64) {
 				$.ajax({
@@ -70,10 +76,11 @@ $(function() {
 					contentType : "text/plain",
 					data : b64,
 					success : function() {
-						location.reload(true);
+						location.reload();
 					},
 					error : function(e) {
 						console.log(e);
+						hideLoader();
 						alert(getGenericErrorText());
 					}
 				});
@@ -213,7 +220,7 @@ $(function() {
 				headers : {
 					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 				},
-				success : function(e) {
+				success : function() {
 					updateProfileWarning();
 				},
 				error : function(e) {
@@ -235,8 +242,8 @@ $(function() {
 				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 			},
 			type : 'POST',
-			success : function(data) {
-				location.reload(true);
+			success : function() {
+				location.reload();
 			},
 			error : function() {
 				console.log(e);
@@ -248,22 +255,6 @@ $(function() {
 	$("#userdata-submit").click(function(e) {
 		let url = "/user/userdata";
 		window.open(url);
-		/*
-		$.ajax({
-			type : "GET",
-			url : url,
-			headers : {
-				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
-			},
-			success : function(e) {
-				alert(getGenericSubmitSuccessText());
-			},
-			error : function(e) {
-				console.log(e);
-				alert(getGenericErrorText());
-			}
-		});
-		*/
 	});
 
 	$("#delete-acc-submit").click(function(e) {
@@ -291,8 +282,10 @@ $(function() {
 	});
 
 	$("#audio-file").change(function() {
+		showLoader();
 		let file = document.querySelector('#audio-file').files[0];
 		if(file.size > mediaMaxSize) {
+			hideLoader();
 			alert(getText("error.media.max-size-exceeded"));
 			return;
 		}
@@ -310,10 +303,11 @@ $(function() {
 					contentType : "text/plain",
 					data : b64,
 					success : function() {
-						location.reload(true);
+						location.reload();
 					},
 					error : function(e) {
 						console.log(e);
+						hideLoader();
 						alert(getGenericErrorText());
 					}
 				});
@@ -333,7 +327,7 @@ $(function() {
 			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 		},
 		success : function(e) {
-			location.reload(true);
+			location.reload();
 		},
 		error : function(e) {
 			console.log(e);
@@ -369,7 +363,7 @@ function deleteImage(id) {
 				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 			},
 			success : function(e) {
-				location.reload(true);
+				location.reload();
 			},
 			error : function(e) {
 				console.log(e);
