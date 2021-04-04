@@ -483,4 +483,7 @@ input[type=range].slider {
 	.card {
 		box-shadow: none !important;
 	}
+	.search-audio {
+		display: none;
+	}
 }

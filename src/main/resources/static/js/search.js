@@ -119,3 +119,33 @@ function onDonateModalClicked() {
 	//window.open('/donate-list', '_blank');
 	loadIframe("donate-list" +  "?showHeader=false");
 }
+
+function playPauseAudio(userIdEnc) {
+	let audio = document.getElementById("audio");
+	console.log(audio.paused)
+	if(!audio.paused) {
+		audio.pause();
+	} else {
+		//showLoader();
+		$.ajax({
+		type : "GET",
+		url : "/user/get/audio/" + userIdEnc ,
+		headers : {
+			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+		},
+		success : function(res) {
+			if(res) {
+				audio.src = res;
+				audio.load();
+				audio.play();
+				//hideLoader();
+			}
+		},
+		error : function(e) {
+			console.log(e);
+			//hideLoader();
+			alert(getGenericErrorText());
+		}
+	});
+	}
+}
