@@ -104,6 +104,8 @@ public class AdminService {
 		user.setDates(null);
 		user.setDeleteToken(null);
 		user.setDescription(null);
+		user.setLanguage(null);
+		user.setAccentColor(null);
 		user.setDisabled(true);
 		user.getDonations().clear();
 		user.setFirstName(null);

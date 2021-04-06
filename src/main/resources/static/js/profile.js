@@ -373,6 +373,24 @@ function deleteImage(id) {
 	}
 }
 
+function updateAccentColor(color) {
+	$.ajax({
+		type : "POST",
+		url : "/user/accent-color/update/" + color,
+		headers : {
+			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+		},
+		success : function(e) {
+			location.reload();
+		},
+		error : function(e) {
+			console.log(e);
+			alert(getGenericErrorText());
+		}
+	});
+}
+
+
 function updateProfileWarning() {
 	let url = "/profile/warning";
 	$("#profile-warning").load(url);

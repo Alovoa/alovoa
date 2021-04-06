@@ -19,6 +19,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -76,8 +77,8 @@ public class User implements UserDetails {
 	
 	//used for emails
 	private String language;
-
-
+	
+	private String accentColor;
 
 	private int preferedMinAge;
 
@@ -123,8 +124,6 @@ public class User implements UserDetails {
 	@ManyToOne
 	private Gender gender;
 	
-	
-
 	@ManyToMany
 	@JoinTable(name = "user2genders")
 	private Set<Gender> preferedGenders;
@@ -195,6 +194,14 @@ public class User implements UserDetails {
 	long numberSearches;
 	
 	
+	@Transient
+	public static final String ACCENT_COLOR_PINK = "pink";
+	@Transient
+	public static final String ACCENT_COLOR_BLUE = "blue";
+	@Transient
+	public static final String ACCENT_COLOR_ORANGE = "orange";
+	@Transient
+	public static final String ACCENT_COLOR_PURPLE = "purple";
 	
 
 	@Override
@@ -236,4 +243,5 @@ public class User implements UserDetails {
 	public boolean isEnabled() {
 		return !disabled;
 	}
+	
 }

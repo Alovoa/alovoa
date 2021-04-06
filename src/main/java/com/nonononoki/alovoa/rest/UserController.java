@@ -107,6 +107,11 @@ public class UserController {
 		userService.deleteInterest(interestId);
 	}
 	
+	@PostMapping("/accent-color/update/{accentColor}")
+	public void updateAccentColor(@PathVariable String accentColor) throws Exception {
+		userService.updateAccentColor(accentColor);
+	}
+	
 	@PostMapping(value = "/image/add", consumes = "text/plain")
 	public void addImage(@RequestBody String imageB64) throws Exception {
 		if(Tools.getBase64Size(imageB64) > mediaMaxSize) {

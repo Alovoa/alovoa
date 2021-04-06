@@ -33,6 +33,9 @@ public class UserDto {
 
 	private String audio;
 	
+	//private String language;
+	private String accentColor;
+	
 	private int preferedMinAge;
 	private int preferedMaxAge;
 
@@ -85,6 +88,7 @@ public class UserDto {
 		dto.setDescription(user.getDescription());
 		dto.setFirstName(user.getFirstName());
 		dto.setGender(user.getGender());
+		dto.setAccentColor(user.getAccentColor());
 		dto.setPreferedGenders(user.getPreferedGenders());
 		dto.setPreferedMinAge(user.getPreferedMinAge());
 		dto.setPreferedMaxAge(user.getPreferedMaxAge());

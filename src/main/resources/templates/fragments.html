@@ -157,6 +157,17 @@
 			</div>
 		</nav>
 	</div>
+	
+	<th:block th:fragment="bulma" class="user-search-div">
+		<th:block th:if="${user.accentColor != null}">
+			<link th:if="${user.accentColor == 'purple'}"
+				rel="stylesheet" href="/css/lib/bulma.purple.css">
+			<link th:if="${user.accentColor == 'blue'}" 
+				rel="stylesheet" href="/css/lib/bulma.blue.css">
+			<link th:if="${user.accentColor == 'orange'}" 
+				rel="stylesheet" href="/css/lib/bulma.orange.css">
+		</th:block>
+	</th:block>
 
 	<div th:fragment="search-users" class="user-search-div">
 

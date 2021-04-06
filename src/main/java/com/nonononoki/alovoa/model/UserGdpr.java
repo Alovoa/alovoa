@@ -46,6 +46,10 @@ public class UserGdpr {
 	
 	private String audio;
 	
+	private String language;
+	
+	private String accentColor;
+	
 	/*
 	 * Custom classes
 	 */
@@ -93,6 +97,8 @@ public class UserGdpr {
 		u.setEmail(user.getEmail());
 		u.setFirstName(user.getFirstName());
 		u.setDescription(user.getDescription());
+		u.setLanguage(user.getLanguage());
+		u.setAccentColor(user.getAccentColor());
 
 		
 		u.setLocationLatitude(user.getLocationLatitude());

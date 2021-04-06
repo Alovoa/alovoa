@@ -486,6 +486,12 @@ public class UserService {
 		user.getInterests().remove(interest);
 		userRepo.saveAndFlush(user);
 	}
+	
+	public void updateAccentColor(String accentColor) throws Exception {
+		User user = authService.getCurrentUser();
+		user.setAccentColor(accentColor);
+		userRepo.saveAndFlush(user);
+	}
 
 	public void addImage(String imgB64) throws Exception {
 		User user = authService.getCurrentUser();
