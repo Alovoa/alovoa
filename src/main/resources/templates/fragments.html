@@ -169,6 +169,16 @@
 					rel="stylesheet" href="/css/lib/bulma.orange.css">
 			</th:block>
 		</th:block>
+		<th:block th:if="${currUser != null}">
+			<th:block th:if="${currUser.accentColor != null}">
+				<link th:if="${currUser.accentColor == 'purple'}"
+					rel="stylesheet" href="/css/lib/bulma.purple.css">
+				<link th:if="${currUser.accentColor == 'blue'}" 
+					rel="stylesheet" href="/css/lib/bulma.blue.css">
+				<link th:if="${currUser.accentColor == 'orange'}" 
+					rel="stylesheet" href="/css/lib/bulma.orange.css">
+			</th:block>
+		</th:block>
 	</th:block>
 
 	<div th:fragment="search-users" class="user-search-div">
