@@ -4,6 +4,8 @@ const descriptionMaxLength = 255;
 $(function() {
 	
 	$(window).scrollTop(0);
+	bulmaSlider.attach();
+	bulmaCollapsible.attach();
 
 	var mediaMaxSize = $("#mediaMaxSize").val();
 	
@@ -148,9 +150,6 @@ $(function() {
 			});
 		}
 	});
-	
-	
-	bulmaSlider.attach();
 
 	$("#min-age-slider").change(function(e) {
 

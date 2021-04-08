@@ -51,6 +51,10 @@ button {
 	justify-content: center;
 }
 
+.navbar-link:hover {
+	background-color: initial;
+}
+
 #captcha-refresh-button {
 	height: 70px;
 	width: 70px;
