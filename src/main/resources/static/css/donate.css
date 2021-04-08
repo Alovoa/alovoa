@@ -23,12 +23,10 @@
 	flex: 1;
 }
 
-#donate-cards-div {
+#main-container {
 	 scroll-snap-type: y mandatory;
 	 overflow-y: scroll;
-	 scrollbar-width: none;  
-	 scrollbar-height: none;  
- 	 height: calc(100vh - 178px);
+ 	 height: calc(100vh - 182px);
 }
 
 #donate-bottom {
