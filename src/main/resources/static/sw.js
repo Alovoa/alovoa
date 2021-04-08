@@ -20,6 +20,9 @@ const staticAssets = [
   '/js/lib/swiper.all.js',
   
   '/css/lib/bulma.min.css',
+  '/css/lib/bulma.orange.css',
+  '/css/lib/bulma.purple.css',
+  '/css/lib/bulma.blue.css',
   '/css/lib/bulma-calendar.min.css',
   '/css/lib/bulma-slider.min.css',
   '/css/lib/bulma-switch.min.css',

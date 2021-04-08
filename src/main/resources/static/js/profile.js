@@ -17,7 +17,7 @@ $(function() {
 		},
 	});
 
-	updateProfileWarning();
+	updateProfileWarning(true);
 
 	$("#profilePicture").click(function(e) {
 		$("#profilePictureUpload").click();
@@ -343,8 +343,8 @@ function deleteInterest(id) {
 		headers : {
 			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 		},
-		success : function(e) {
-			location.reload(true);
+		success : function() {
+			location.reload();
 		},
 		error : function(e) {
 			console.log(e);
@@ -390,9 +390,18 @@ function updateAccentColor(color) {
 }
 
 
-function updateProfileWarning() {
+function updateProfileWarning(onStart) {
 	let url = "/profile/warning";
-	$("#profile-warning").load(url);
+	let profileWarning = $("#profile-warning");
+	profileWarning.load(url, function() {
+		if(onStart) {
+			profileWarning.hide();
+		  	profileWarning.toggle("fast");
+	  	} else {
+			profileWarning.show();
+		}
+	});
+	
 }
 
 function getBase64(file, callback) {
@@ -401,6 +410,6 @@ function getBase64(file, callback) {
 	reader.onload = function() {
 		callback(reader.result);
 	};
-	reader.onerror = function(error) {
+	reader.onerror = function() {
 	};
 }

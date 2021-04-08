@@ -377,11 +377,13 @@ public class UserService {
 	}
 
 	public void updateDescription(String description) throws Exception {
-		if (description.length() > descriptionSize) {
-			throw new Exception("max_length_exceeded");
-		}
-		if (description.trim().length() == 0) {
-			description = null;
+		if(description != null) {
+			if (description.length() > descriptionSize) {
+				throw new Exception("max_length_exceeded");
+			}
+			if (description.trim().length() == 0) {
+				description = null;
+			}
 		}
 		User user = authService.getCurrentUser();
 		user.setDescription(description);

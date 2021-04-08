@@ -73,7 +73,7 @@ public class UserController {
 	}
 
 	@PostMapping(value = "/update/description", consumes = "text/plain")
-	public void updateDescription(@RequestBody String description) throws Exception {
+	public void updateDescription(@RequestBody (required=false) String description) throws Exception {
 		userService.updateDescription(description);
 	}
 

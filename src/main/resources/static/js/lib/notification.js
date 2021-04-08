@@ -11,7 +11,7 @@ var swRegistration = null;
 $(document).ready(function () {
 	
 	if(isSubscribed) {
-		$('#btnPushNotifications').hide();
+		$('#btnPushNotifications').toggle("fast");
 	} else {
 	    $('#btnPushNotifications').click(function (event) {
 	    	subscribe();
@@ -111,7 +111,7 @@ function sendSubscriptionToServer(endpoint, key, auth) {
 }
 
 function disableAndSetBtnMessage(message) {
-	$('#btnPushNotifications').hide();
+	$('#btnPushNotifications').toggle("fast");
 }
 
 function makeButtonSubscribable(reg) {
@@ -143,7 +143,7 @@ function makeButtonSubscribable(reg) {
 }
 
 function makeButtonUnsubscribable() {
-    $('#btnPushNotifications').hide();
+    $('#btnPushNotifications').toggle("fast");
 }
 
 function urlB64ToUint8Array(base64String) {
