@@ -95,7 +95,7 @@
 							style="word-break: break-all; height: 240px;" readOnly></textarea>
 					</div>
 
-					<div class="field" th:if="${user.audio}"
+					<div class="field" th:if="${user.hasAudio}"
 						style="padding-top: 24px; padding-bottom: 24px;">
 						<label class="label" th:text="#{profile.audio}"></label>
 						<audio id="audio" th:if="${user.audio}" controls hidden></audio>

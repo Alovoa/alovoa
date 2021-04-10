@@ -31,6 +31,7 @@ public class UserDto {
 	private float donationAmount;
 	private Gender gender;
 
+	private boolean hasAudio;
 	private String audio;
 	
 	//private String language;
@@ -108,6 +109,7 @@ public class UserDto {
 		if((mode != NO_AUDIO || mode != PROFILE_PICTURE_ONLY) && user.getAudio() != null) {
 			dto.setAudio(user.getAudio().getData());
 		}
+		dto.setHasAudio(user.getAudio() != null);
 		dto.setNumberProfileViews(user.getNumberProfileViews());
 		dto.setNumberSearches(user.getNumberSearches());
 		

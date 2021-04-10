@@ -246,7 +246,7 @@
 												th:onclick="viewProfile([[${user.idEncoded}]]);" style="margin-right: 4px;">
 												<i class="fa fa-user"></i>
 											</button>
-											<button class="button colored is-rounded is-info search-audio"
+											<button class="button colored is-rounded is-info search-audio" th:if="${user.hasAudio}"
 												th:onclick="playPauseAudio([[${user.idEncoded}]]);">
 												<i class="fa fa-headphones"></i>
 											</button>

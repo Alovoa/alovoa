@@ -3,7 +3,7 @@ const descriptionMaxLength = 255;
 
 $(function() {
 	
-	$(window).scrollTop(0);
+	//$(window).scrollTop(0);
 	bulmaSlider.attach();
 	bulmaCollapsible.attach();
 
