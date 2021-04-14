@@ -44,7 +44,7 @@ public class Message{
 	@Column(columnDefinition="mediumtext")
 	private String content;
 	
-	private Date creationDate;
+	private Date date;
 	
 	private boolean allowedFormatting = false;
 	

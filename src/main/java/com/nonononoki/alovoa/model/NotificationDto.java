@@ -20,7 +20,7 @@ public class NotificationDto {
 	public static NotificationDto notificationToNotificationDto(UserNotification n, User currentUser, TextEncryptorConverter textEncryptor)
 			throws Exception {
 		NotificationDto dto = new NotificationDto();
-		dto.setDate(n.getCreationDate());
+		dto.setDate(n.getDate());
 		dto.setId(n.getId());
 		dto.setUserFromDto(UserDto.userToUserDto(n.getUserFrom(), currentUser, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
 		return dto;

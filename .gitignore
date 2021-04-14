@@ -38,6 +38,7 @@ attach_pid**
 .metadata/
 *.log
 logs/*
+alovoa.txt
 
 ### Keys Properties ###
 application-dev.properties

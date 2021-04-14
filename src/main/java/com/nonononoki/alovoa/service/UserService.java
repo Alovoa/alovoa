@@ -635,7 +635,7 @@ public class UserService {
 
 			UserNotification not = new UserNotification();
 			not.setContent(not.getUSER_LIKE());
-			not.setCreationDate(new Date());
+			not.setDate(new Date());
 			not.setUserFrom(currUser);
 			not.setUserTo(user);
 			currUser.getNotifications().add(not);
@@ -643,7 +643,7 @@ public class UserService {
 
 			if (user.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
 				Conversation convo = new Conversation();
-				convo.setCreationDate(new Date());
+				convo.setDate(new Date());
 				convo.setUserFrom(currUser);
 				convo.setUserTo(user);
 				convo.setLastUpdated(new Date());

@@ -76,7 +76,7 @@ public class MessageResource {
 	@GetMapping("/chats/{id}")
 	public ModelAndView chatsDetail(@PathVariable long id) throws Exception {
 
-		ModelAndView mav = new ModelAndView("messageDetail");
+		ModelAndView mav = new ModelAndView("message-detail");
 		User user = authService.getCurrentUser();
 		Conversation c = conversationRepo.findById(id).orElse(null);
 		if(!c.containsUser(user)) {
@@ -89,7 +89,7 @@ public class MessageResource {
 		Collections.sort(messages, new Comparator<Message>() {
 			@Override
 			public int compare(Message a, Message b) {
-				return b.getCreationDate().compareTo(a.getCreationDate());
+				return b.getDate().compareTo(a.getDate());
 			}
 		});
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));

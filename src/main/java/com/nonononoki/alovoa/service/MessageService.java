@@ -68,7 +68,7 @@ public class MessageService {
 		Message m = new Message();
 		m.setContent(message);
 		m.setConversation(c);
-		m.setCreationDate(new Date());
+		m.setDate(new Date());
 		m.setUserFrom(user);
 		m.setUserTo(c.getPartner(user));
 		m.setAllowedFormatting(allowedFormatting);

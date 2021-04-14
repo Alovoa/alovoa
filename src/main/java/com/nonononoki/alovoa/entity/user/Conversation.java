@@ -39,7 +39,7 @@ public class Conversation {
 	@OneToMany(cascade= CascadeType.ALL, orphanRemoval = true, mappedBy = "conversation")
 	private List<Message> messages;
 	
-	private Date creationDate;
+	private Date date;
 	
 	private Date lastUpdated;
 	

@@ -33,6 +33,6 @@ public class UserNotification{
 	private User userTo;
 	
 	private String content;
-	private Date creationDate;
+	private Date date;
 	
 }

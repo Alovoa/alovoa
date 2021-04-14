@@ -21,7 +21,7 @@ public class MessageDto {
 		MessageDto dto = new MessageDto();
 		dto.setId(message.getId());
 		dto.setContent(message.getContent());
-		dto.setDate(message.getCreationDate());
+		dto.setDate(message.getDate());
 		dto.setFrom(message.getUserFrom().equals(user));
 		dto.setAllowedFormatting(message.isAllowedFormatting());
 		return dto;
