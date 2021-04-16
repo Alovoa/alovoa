@@ -76,7 +76,7 @@ public class MessageService {
 		
 		c.setLastMessage(lastMessage);
 		c.setLastUpdated(new Date());
-		conversationRepo.saveAndFlush(c);
+		c = conversationRepo.saveAndFlush(c);
 		
 		notificationService.newMessage(user);
 	}
