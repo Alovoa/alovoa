@@ -4,7 +4,7 @@
 <img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/src/main/resources/static/img/android-chrome-192x192.png">
 </p>
 
-Demo: https://alovoa.herokuapp.com/. Database WILL be deleted after each update. A public MySQL update is used, do NOT post your personal information on the demo page, even though most of your info is encrypted. Profile picture size limit had to be lowered to 5KB for money reasons.
+Demo: https://alovoa.herokuapp.com/. Database WILL be deleted after each update.
 
 Alovoa aims to be the first widespread open-source dating web application on the web. What differs this from other platform?
 - No ads
@@ -12,8 +12,8 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - No paid features (no "pay super-likes", "pay to swipe", "pay to view profile" or "pay to start a chat")
 - No unsecure servers
 - No closed-source libraries
-- No seeing people you don't want to see
-- Encrypting your most private data
+- No seeing people you don't want to see with advanced filters
+- Your most private data is securely encrypted
 
 ### How to build:
 - Install a JDK (OpenJDK 11 is officially supported)
@@ -21,24 +21,14 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Setup a database (MariaDB is officially supported)
 - Setup an email server or use an existing one (any provider with IMAP support should work)
 - Enter credentials for database server, email server and encryption keys in application.properties
-- Execute "mvn install" in the folder where the pom.xml resides.
-- Spring Tool Suite is recommended for debugging.
+- Execute "mvn install" in the folder where the pom.xml resides
 
-### Emoji support (not available on the test server)
-1. Edit my.conf
-2. Add following lines to the bottom <br>
-`character-set-server = utf8mb4` <br>
-`collation-server = utf8mb4_general_ci` <br>
-`skip-character-set-client-handshake`
-3. Restart mariadb
-
-Example (Fedora):
-- sudo nano /etc/my.cnf
-- sudo systemctl restart mysqld
+### Debugging
+- Spring Tool Suite is recommended for debugging
+- Find the lombok.jar (should be in the ~/.m2) and execute it with "java -jar"
 
 ### Documentation:
 - Please read the DOCUMENTATION.md
-
 
 ### Licenses:
 - All code not otherwise stated is licensed under the AGPLv3 license. 
