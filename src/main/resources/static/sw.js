@@ -29,7 +29,7 @@ const staticAssets = [
 	'/css/lib/css-loaders.css',
 	'/css/lib/swiper.min.css',
 
-	'/img/search-cover.svg',
+	'/img/search-cover.webp',
 	'/img/android-chrome-192x192.png',
 	'/img/android-chrome-512x512.png',
 	'/img/apple-touch-icon.png',
