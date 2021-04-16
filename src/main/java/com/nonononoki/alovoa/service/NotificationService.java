@@ -17,6 +17,7 @@ import com.nonononoki.alovoa.model.WebPushMessage;
 import com.nonononoki.alovoa.repo.UserRepository;
 
 import nl.martijndwars.webpush.Notification;
+import nl.martijndwars.webpush.PushAsyncService;
 import nl.martijndwars.webpush.PushService;
 
 @Service
@@ -43,11 +44,11 @@ public class NotificationService {
 	@Autowired
 	private UserRepository userRepo;
 
-	private static PushService pushService;
+	private static PushAsyncService pushService;
 
-	public PushService pushService() throws Exception {
+	public PushAsyncService pushService() throws Exception {
 		if (pushService == null) {
-			pushService = new PushService();
+			pushService = new PushAsyncService();
 			pushService.setPrivateKey(vapidPrivateKey);
 			pushService.setPublicKey(vapidPublicKey);
 		}

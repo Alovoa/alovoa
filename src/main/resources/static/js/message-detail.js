@@ -27,35 +27,30 @@ $(document).ready(function() {
 });
 
 function sendMessage() {
-	$.ajax({
-		type : "POST",
-		url : "/message/send/" + getConvoId(),
-		headers : {
-			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
-		},
-		contentType : "text/plain",
-		data : $("#message-send-input").val(),
-		success : function() {
-			$("#message-send-input").val("");
-			reloadMessages(0);
-		},
-		error : function(e) {
-			console.log(e);
-			reloadMessages(true);
-		}
-	});
+	
+	let data = $("#message-send-input").val();
+	
+	if(data) {
+		$("#message-send-input").val("");
+		$.ajax({
+			type : "POST",
+			url : "/message/send/" + getConvoId(),
+			headers : {
+				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+			},
+			contentType : "text/plain",
+			data : data,
+			success : function() {
+				reloadMessages(0);
+			},
+			error : function(e) {
+				console.log(e);
+			}
+		});
+	}
 }
 
 function reloadMessages(first) {
-	/*
-	$("#messages-div").load(
-			"/message/get-messages/" + getConvoId() + "/" + first,
-			function() {
-					$("#messages-div").scrollTop(
-							$("#messages-div")[0].scrollHeight);
-			});
-	*/
-	
 	$.ajax({
 		type : "GET",
 		url : "/message/get-messages/" + getConvoId() + "/" + first,
@@ -73,7 +68,6 @@ function reloadMessages(first) {
 			console.log(e);
 		}
 	});
-
 }
 
 function getConvoId() {
