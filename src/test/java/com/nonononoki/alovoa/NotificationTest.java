@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa;
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -34,6 +35,9 @@ public class NotificationTest {
 	@Autowired
 	private CaptchaService captchaService;
 
+	@Value("${app.vapid.max}")
+	private int vapidMax;
+	
 	@Value("${app.age.min}")
 	private int minAge;
 
@@ -65,11 +69,25 @@ public class NotificationTest {
 		User user1 = testUsers.get(1);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		
+		Date oldDate = new Date();
 
 		UserWebPush wp = new UserWebPush();
+		wp.setDate(oldDate);
+		for(int i = 0; i < vapidMax; i++) {
+			notificationService.subscribe(wp);
+		}
+		Assert.assertEquals(userWebPushRepository.count(), vapidMax);
+		
+		
+		Date newDate = new Date();
+		wp.setDate(newDate);
 		notificationService.subscribe(wp);
-
-		Assert.assertEquals(userWebPushRepository.count(), 1);
+		Assert.assertEquals(userWebPushRepository.count(), vapidMax);
+		
+		user1 = userRepo.findByEmail(user1.getEmail());
+		UserWebPush newWebPush = user1.getWebPush().get(vapidMax-1);
+		Assert.assertEquals(newWebPush.getDate(), newDate);
 
 		UserTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 

@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -18,7 +20,6 @@ import com.nonononoki.alovoa.repo.UserRepository;
 
 import nl.martijndwars.webpush.Notification;
 import nl.martijndwars.webpush.PushAsyncService;
-import nl.martijndwars.webpush.PushService;
 
 @Service
 public class NotificationService {
@@ -28,7 +29,10 @@ public class NotificationService {
 
 	@Value("${app.vapid.private}")
 	private String vapidPrivateKey;
-	
+
+	@Value("${app.vapid.max}")
+	private int vapidMax;
+
 	@Value("${app.domain}")
 	private String appDomain;
 
@@ -37,10 +41,10 @@ public class NotificationService {
 
 	@Autowired
 	private ObjectMapper objectMapper;
-	
+
 	@Autowired
 	private MessageSource messageSource;
-	
+
 	@Autowired
 	private UserRepository userRepo;
 
@@ -58,8 +62,14 @@ public class NotificationService {
 	public void subscribe(UserWebPush webPush) throws Exception {
 		User user = authService.getCurrentUser();
 		webPush.setUser(user);
-		webPush.setDate(new Date());
+		if(webPush.getDate() == null) {
+			webPush.setDate(new Date());
+		}
 		user.getWebPush().add(webPush);
+		if (user.getWebPush().size() > vapidMax) {
+			UserWebPush wp = Collections.min(user.getWebPush(), Comparator.comparing(w -> w.getDate()));
+			user.getWebPush().remove(wp);
+		}
 		userRepo.saveAndFlush(user);
 	}
 

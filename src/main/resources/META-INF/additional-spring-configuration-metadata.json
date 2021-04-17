@@ -223,5 +223,10 @@
     "name": "app.admin.key",
     "type": "java.lang.String",
     "description": "A description for 'app.admin.key'"
+  },
+  {
+    "name": "app.vapid.max",
+    "type": "java.lang.String",
+    "description": "A description for 'app.vapid.max'"
   }
 ]}
