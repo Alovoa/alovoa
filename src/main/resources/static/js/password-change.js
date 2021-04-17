@@ -1,12 +1,11 @@
 $(function() {
-	let url = window.location.href;
-
-	if (url.includes("?error")) {
-		alert(getGenericErrorText());
-	}
-
 	$("#form").submit(function(e) {
 		e.preventDefault();
+
+		if (!checkPassword()) {
+			return;
+		}
+
 		let email = $("#email").val();
 		let password = $("#password").val();
 		let token = $("#token").val();
@@ -16,18 +15,18 @@ $(function() {
 		data.token = token;
 
 		$.ajax({
-			type : "POST",
-			url : "/password/change/",
-			headers : {
-				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+			type: "POST",
+			url: "/password/change/",
+			headers: {
+				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
 			},
-			data : JSON.stringify(data),
-			contentType : "application/json",
-			success : function(e) {
+			data: JSON.stringify(data),
+			contentType: "application/json",
+			success: function(e) {
 				location.href = "/?password-change-success";
 			},
-			error : function(e) {
-				location.href = "/password/change?error";
+			error: function(e) {
+				alert(getGenericErrorText());
 			}
 		});
 
