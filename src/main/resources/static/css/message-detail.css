@@ -38,7 +38,7 @@
 	color: white;
 }
 
-.message {
+.chat-message {
 	padding: 8px;
 	margin-right: 4px;
 	margin-left: 4px;
@@ -59,7 +59,7 @@
 
 @media only screen and (max-width: 500px) {
 	.profile-pic {
-		border-radius: 290486px !important;
+		border-radius: 290486px;
 	}
 }
 

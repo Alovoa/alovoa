@@ -81,10 +81,14 @@
 }
 	
 @media screen and (max-width: 500px) {
+	
+	.card-image:first-child img {
+	    border-radius: 290486px;
+	}
 	.image img {
 		height: 60px;
 		width: 60px;
-		border-radius: 290486px !important;
+		border-radius: 290486px;
 	}
 	.section {
 		padding: 0;

@@ -2,6 +2,11 @@
 	width: 300px;
 }
 
+.profile-bottom .button {
+	height: 56px;
+	width: 56px;
+}
+
 @media screen and (max-width: 338px) {
 	#audio-play-button {
 		width: 100%;

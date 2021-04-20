@@ -158,7 +158,7 @@
 		</nav>
 	</div>
 	
-	<th:block th:fragment="bulma" class="user-search-div">
+	<th:block th:fragment="bulma">
 		<th:block th:if="${user != null}">
 			<th:block th:if="${user.accentColor != null}">
 				<link th:if="${user.accentColor == 'purple'}"
@@ -177,6 +177,21 @@
 					rel="stylesheet" href="/css/lib/bulma.blue.css">
 				<link th:if="${currUser.accentColor == 'orange'}" 
 					rel="stylesheet" href="/css/lib/bulma.orange.css">
+			</th:block>
+		</th:block>
+	</th:block>
+	
+	<th:block th:fragment="ui-design">
+		<th:block th:if="${user != null}">
+			<th:block th:if="${user.uiDesign != null}">
+				<link th:if="${user.uiDesign == 'angular'}"
+					rel="stylesheet" href="/css/snips/ui-angular.css">
+			</th:block>
+		</th:block>
+		<th:block th:if="${currUser != null}">
+			<th:block th:if="${currUser.uiDesign != null}">
+				<link th:if="${currUser.uiDesign == 'angular'}"
+					rel="stylesheet" href="/css/snips/ui-angular.css">
 			</th:block>
 		</th:block>
 	</th:block>
@@ -281,17 +296,17 @@
 			style="display: inline-block; width: 100%;">
 
 			<div th:if="${message.from && message.allowedFormatting}"
-				class="message left" th:utext="${message.content}"
+				class="chat-message left" th:utext="${message.content}"
 				style="word-break: break-all;"></div>
 			<div th:if="${message.from && !message.allowedFormatting}"
-				class="message left" th:text="${message.content}"
+				class="chat-message left" th:text="${message.content}"
 				style="word-break: break-all;"></div>
 
 			<div th:if="${!message.from  && message.allowedFormatting}"
-				class="message right" th:utext="${message.content}"
+				class="chat-message right notification is-primary" th:utext="${message.content}"
 				style="word-break: break-all;"></div>
 			<div th:if="${!message.from  && !message.allowedFormatting}"
-				class="message right" th:text="${message.content}"
+				class="chat-message right notification is-primary" th:text="${message.content}"
 				style="word-break: break-all;"></div>
 
 		</div>

@@ -494,6 +494,12 @@ public class UserService {
 		user.setAccentColor(accentColor);
 		userRepo.saveAndFlush(user);
 	}
+	
+	public void updateUiDesign(String uiDesign) throws Exception {
+		User user = authService.getCurrentUser();
+		user.setUiDesign(uiDesign);	
+		userRepo.saveAndFlush(user);
+	}
 
 	public void addImage(String imgB64) throws Exception {
 		User user = authService.getCurrentUser();

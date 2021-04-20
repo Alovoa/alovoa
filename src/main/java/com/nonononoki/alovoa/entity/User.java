@@ -79,6 +79,8 @@ public class User implements UserDetails {
 	private String language;
 	
 	private String accentColor;
+	
+	private String uiDesign;
 
 	private int preferedMinAge;
 
@@ -201,8 +203,7 @@ public class User implements UserDetails {
 	@Transient
 	public static final String ACCENT_COLOR_ORANGE = "orange";
 	@Transient
-	public static final String ACCENT_COLOR_PURPLE = "purple";
-	
+	public static final String ACCENT_COLOR_PURPLE = "purple";	
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -112,6 +112,11 @@ public class UserController {
 		userService.updateAccentColor(accentColor);
 	}
 	
+	@PostMapping("/ui-design/update/{uiDesign}")
+	public void updateUiDesign(@PathVariable String uiDesign) throws Exception {
+		userService.updateUiDesign(uiDesign);
+	}
+	
 	@PostMapping(value = "/image/add", consumes = "text/plain")
 	public void addImage(@RequestBody String imageB64) throws Exception {
 		if(Tools.getBase64Size(imageB64) > mediaMaxSize) {

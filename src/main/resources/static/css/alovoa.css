@@ -28,16 +28,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 */
 
+.table {
+    background-color: transparent;
+}
+
 .swiper-button-next, .swiper-button-prev {
 	color: #4a4a4a;
 }
 
 button {
 	cursor: pointer;
-	border-radius: 290486px;
 }
 
-.button, .input, .select, select {
+button, .button, .input, .select, select {
 	border-radius: 290486px;
 }
 
@@ -303,7 +306,7 @@ input[type=range].slider {
 
 /* DARK THEME */
 @media ( prefers-color-scheme : dark) {
-	body, .card, .box, .textarea, .footer, .table, .select select, select option
+	body, .card, .box, .textarea, .footer, .select select, select option
 		{
 		background-color: #121212;
 	}

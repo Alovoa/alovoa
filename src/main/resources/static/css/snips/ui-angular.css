@@ -1,0 +1,3 @@
+*:not(.loader) {
+	border-radius: 0px !important;
+}

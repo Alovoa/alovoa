@@ -389,6 +389,26 @@ function updateAccentColor(color) {
 	});
 }
 
+function updateUiDesign() {
+	
+	let des = $("#ui-design-select").val();
+	console.log(des)
+	$.ajax({
+		type : "POST",
+		url : "/user/ui-design/update/" + des,
+		headers : {
+			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
+		},
+		success : function(e) {
+			location.reload();
+		},
+		error : function(e) {
+			console.log(e);
+			alert(getGenericErrorText());
+		}
+	});
+}
+
 
 function updateProfileWarning(onStart) {
 	let url = "/profile/warning";
