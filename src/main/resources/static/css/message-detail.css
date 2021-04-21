@@ -42,9 +42,13 @@
 	padding: 8px;
 	margin-right: 4px;
 	margin-left: 4px;
-	word-break: break-all;
 	max-width: 80%;
 	font-size: 1.3rem;
+}
+
+.chat-message.left {
+	border-radius: 4px;
+	background-color: rgba(127,127,127,0.1);
 }
 
 .profile-pic {
