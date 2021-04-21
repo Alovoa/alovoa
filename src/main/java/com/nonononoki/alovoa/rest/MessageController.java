@@ -35,12 +35,7 @@ public class MessageController {
 	@ResponseBody
 	@PostMapping(value = "/send/{convoId}", consumes = "text/plain")
 	public void send(@RequestBody String msg, @PathVariable long convoId) throws Exception {
-		User user = authService.getCurrentUser();
-		Conversation c = conversationRepo.findById(convoId).orElse(null);
-		if (!c.containsUser(user)) {
-			throw new Exception("user_not_in_conversation");
-		}
-		messageService.send(c, msg);
+		messageService.send(convoId, msg);
 	}
 
 	@GetMapping(value = "/get-messages/{convoId}/{first}")

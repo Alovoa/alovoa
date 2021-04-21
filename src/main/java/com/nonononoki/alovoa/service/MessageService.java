@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
@@ -13,7 +15,6 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
 import com.nonononoki.alovoa.entity.user.Message;
 import com.nonononoki.alovoa.repo.ConversationRepository;
-import com.nonononoki.alovoa.repo.MessageRepository;
 
 @Service
 public class MessageService {
@@ -21,11 +22,11 @@ public class MessageService {
 	@Value("${app.message.size}")
 	private int maxMessageSize;
 	
-	@Autowired
-	private AuthService authService;
+	@Value("${app.conversation.messages-max}")
+	private int maxConvoMessages;
 	
 	@Autowired
-	private MessageRepository messageRepo;
+	private AuthService authService;
 	
 	@Autowired
 	private ConversationRepository conversationRepo;
@@ -40,13 +41,19 @@ public class MessageService {
 	
 	private final String URL_JITSI = "https://meet.jit.si";
 	
-	public void send(Conversation c, String message) throws Exception {
+	public void send(Long convoId, String message) throws Exception {
+		
+		User currUser = authService.getCurrentUser();
+		
+		Conversation c = conversationRepo.findById(convoId).get();
+		if (!c.containsUser(currUser)) {
+			throw new Exception("user_not_in_conversation");
+		}
 		
 		if(message.length() > maxMessageSize) {
 			throw new Exception("message_length_too_long");	
 		}
 		
-		User currUser = authService.getCurrentUser();
 		User user = c.getPartner(currUser);
 		
 		if(user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
@@ -72,7 +79,14 @@ public class MessageService {
 		m.setUserFrom(user);
 		m.setUserTo(c.getPartner(user));
 		m.setAllowedFormatting(allowedFormatting);
-		messageRepo.save(m);
+		//messageRepo.saveAndFlush(m);
+		c.getMessages().add(m);
+		
+		int numMessages = c.getMessages().size();
+		if (numMessages > maxConvoMessages) {
+			Message msg = Collections.min(c.getMessages(), Comparator.comparing(o -> o.getDate()));
+			c.getMessages().remove(msg);
+		}
 		
 		c.setLastMessage(lastMessage);
 		c.setLastUpdated(new Date());

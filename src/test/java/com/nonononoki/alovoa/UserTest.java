@@ -107,6 +107,9 @@ public class UserTest {
 	
 	@Value("${app.message.size}")
 	private int maxMessageSize;
+	
+	@Value("${app.conversation.messages-max}")
+	private int maxConvoMessages;
 
 
 	@MockBean
@@ -321,6 +324,11 @@ public class UserTest {
 		UserTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 
 		Assert.assertEquals(conversationRepo.count(), 0);
+		Assert.assertEquals(messageRepo.count(), 0);
+		Assert.assertEquals(userHideRepo.count(), 0);
+		Assert.assertEquals(userReportRepo.count(), 0);
+		Assert.assertEquals(userLikeRepo.count(), 0);
+		Assert.assertEquals(userBlockRepo.count(), 0);
 		Assert.assertEquals(userRepo.count(), 1);
 
 	}
@@ -450,16 +458,16 @@ public class UserTest {
 		Assert.assertEquals(conversationRepo.count(), 1);
 		Assert.assertEquals(user1.getConversations().size(), 1);
 
-		messageService.send(user1.getConversations().get(0), "Hello");
+		messageService.send(user1.getConversations().get(0).getId(), "Hello");
 		Assert.assertEquals(messageRepo.count(), 1);
 
 		String verylongString = StringUtils.repeat("*", maxMessageSize);
-		messageService.send(user1.getConversations().get(0), verylongString);
+		messageService.send(user1.getConversations().get(0).getId(), verylongString);
 
 		Assert.assertEquals(messageRepo.count(), 2);
 
 		Assert.assertThrows(Exception.class, () -> {
-			messageService.send(user1.getConversations().get(0), verylongString + "a");
+			messageService.send(user1.getConversations().get(0).getId(), verylongString + "a");
 		});
 
 		Assert.assertEquals(messageRepo.count(), 2);
@@ -468,14 +476,14 @@ public class UserTest {
 		userService.blockUser(UserDto.encodeId(user3.getId(), textEncryptor));
 		Assert.assertEquals(userBlockRepo.count(), 1);
 		Assert.assertThrows(Exception.class, () -> {
-			messageService.send(user3.getConversations().get(0), "Hello");
+			messageService.send(user3.getConversations().get(0).getId(),"Hello");
 		});
 
 		Assert.assertEquals(messageRepo.count(), 2);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		Assert.assertThrows(Exception.class, () -> {
-			messageService.send(user1.getConversations().get(0), "Hello");
+			messageService.send(user1.getConversations().get(0).getId(), "Hello");
 		});
 
 		Assert.assertEquals(messageRepo.count(), 2);
@@ -484,8 +492,13 @@ public class UserTest {
 		userService.unblockUser(UserDto.encodeId(user3.getId(), textEncryptor));
 		Assert.assertEquals(userBlockRepo.count(), 0);
 
-		messageService.send(user1.getConversations().get(0), verylongString);
+		messageService.send(user1.getConversations().get(0).getId(), verylongString);
 		Assert.assertEquals(messageRepo.count(), 3);
+		
+		for(int i = 0; i < maxConvoMessages; i++) {
+			messageService.send(user1.getConversations().get(0).getId(), verylongString);
+		}
+		Assert.assertEquals(messageRepo.count(), maxConvoMessages);
 
 		Assert.assertEquals(userReportRepo.count(), 0);
 		Captcha captchaReport = captchaService.generate();
