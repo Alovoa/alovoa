@@ -8,7 +8,6 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -91,8 +90,7 @@ public class MailService {
 	}
 
 	public void sendRegistrationMail(User user, UserRegisterToken token) throws Exception {
-		//Locale locale = Tools.getUserLocale(user);
-		Locale locale = LocaleContextHolder.getLocale();
+		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.register.subject", new String[] { appName }, "",
 				locale);
 		String body = messageSource.getMessage("backend.mail.register.body",
@@ -101,8 +99,7 @@ public class MailService {
 	}
 
 	public void sendPasswordResetMail(User user, UserPasswordToken token) throws Exception {
-		//Locale locale = Tools.getUserLocale(user);
-		Locale locale = LocaleContextHolder.getLocale();
+		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.password-reset.subject", new String[] { appName },
 				locale);
 		String body = messageSource.getMessage("backend.mail.password-reset.body",
@@ -129,8 +126,7 @@ public class MailService {
 	}
 	
 	public void sendAccountConfirmed(User user) throws Exception {
-		//Locale locale = Tools.getUserLocale(user);
-		Locale locale = LocaleContextHolder.getLocale();
+		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.account-confirmed.subject",
 				new String[] { appName }, locale);
 		String body = messageSource.getMessage("backend.mail.account-confirmed.body",

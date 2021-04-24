@@ -139,6 +139,8 @@ public class RegisterService {
 		user.setConfirmed(true);
 		userRepo.saveAndFlush(user);
 		
+		userService.updateUserInfo(user);
+		
 		mailService.sendAccountConfirmed(user);
 	}
 

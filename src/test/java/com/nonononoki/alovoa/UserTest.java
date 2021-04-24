@@ -125,8 +125,6 @@ public class UserTest {
 	private static int user2Age = 20;
 	private static int user3Age = 30;
 	
-	
-
 
 	public static List<User> getTestUsers(CaptchaService captchaService, RegisterService registerService)
 			throws Exception {
@@ -238,6 +236,29 @@ public class UserTest {
 		userService.updateMaxAge(100);
 		userService.updateMinAge(16);
 		userService.updatePreferedGender(2, true);
+		
+		//check for urls
+		{
+			Assert.assertThrows(Exception.class, () -> {
+				userService.updateDescription("hidden url example.com");
+			});
+			
+			Assert.assertThrows(Exception.class, () -> {
+				userService.updateDescription("hidden url test.example.com");
+			});
+			
+			Assert.assertThrows(Exception.class, () -> {
+				userService.updateDescription("hidden url test.bit.ly/fdsfasdgadrsfgafgfdsaf13");
+			});
+			
+			Assert.assertThrows(Exception.class, () -> {
+				userService.updateDescription("hidden email test.test@test.com");
+			});
+			
+			Assert.assertThrows(Exception.class, () -> {
+				userService.updateDescription("hidden email test.test+1234@test.net");
+			});
+		}
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		String img2 = Tools.imageToB64("img/profile2.png", imgMimePng);

@@ -151,6 +151,12 @@
 			<artifactId>webp-imageio</artifactId>
 			<version>0.1.6</version>
 		</dependency>
+		<dependency>
+			<groupId>io.github.url-detector</groupId>
+			<artifactId>url-detector</artifactId>
+			<version>0.1.23</version>
+		</dependency>
+
 	</dependencies>
 
 

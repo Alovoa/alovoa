@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -36,6 +37,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.linkedin.urls.Url;
+import com.linkedin.urls.detection.UrlDetector;
+import com.linkedin.urls.detection.UrlDetectorOptions;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
@@ -380,6 +384,12 @@ public class UserService {
 			}
 			if (description.trim().length() == 0) {
 				description = null;
+			} else {
+				UrlDetector parser = new UrlDetector(description, UrlDetectorOptions.Default);
+				List<Url> urls = parser.detect();
+				if(!urls.isEmpty()) {
+					throw new Exception("url_detected");
+				}
 			}
 		}
 		User user = authService.getCurrentUser();
