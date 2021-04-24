@@ -129,11 +129,31 @@ public class UserTest {
 	public static List<User> getTestUsers(CaptchaService captchaService, RegisterService registerService)
 			throws Exception {
 		if (testUsers == null) {
+			
+			String user1Email = "nonononoki@gmail.com";
 			// register and confirm test users
 			Captcha c1 = captchaService.generate();
-			RegisterDto user1Dto = createTestUserDto(1, c1, "test1", user1Age);
+			RegisterDto user1Dto = createTestUserDto(1, c1, user1Email, user1Age);
 			String tokenContent1 = registerService.register(user1Dto);
 			User user1 = registerService.registerConfirm(tokenContent1);
+			
+			//test multiple email copies with slight variations
+			{
+				user1Dto.setEmail("nono.nono.ki@gmail.com");
+				Assert.assertThrows(Exception.class, () -> {
+					registerService.register(user1Dto);
+				});
+					
+				user1Dto.setEmail("nonononoki+test@gmail.com");
+				Assert.assertThrows(Exception.class, () -> {
+					registerService.register(user1Dto);
+				});
+				
+				user1Dto.setEmail("nono.nono.ki+test@gmail.com");
+				Assert.assertThrows(Exception.class, () -> {
+					registerService.register(user1Dto);
+				});
+			}
 
 			Captcha c2 = captchaService.generate();
 			RegisterDto user2Dto = createTestUserDto(2, c2, "test2", user2Age);
@@ -181,7 +201,12 @@ public class UserTest {
 
 	private static RegisterDto createTestUserDto(long gender, Captcha c, String email, int age) throws IOException {
 		RegisterDto dto = new RegisterDto();
-		dto.setEmail(email + Tools.MAIL_TEST_DOMAIN);
+		
+		if(!email.contains("@")) {
+			dto.setEmail(email + Tools.MAIL_TEST_DOMAIN);
+		} else {
+			dto.setEmail(email);		
+		}
 		dto.setDateOfBirth(Tools.ageToDate(age));
 		dto.setPassword("test123");
 		dto.setFirstName("test");

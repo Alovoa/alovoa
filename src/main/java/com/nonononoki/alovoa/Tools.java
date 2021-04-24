@@ -32,6 +32,7 @@ public class Tools {
 	public static final String DEV = "dev";
 
 	public static final String MAIL_TEST_DOMAIN = "@mailinator.com";
+	public static final String MAIL_GMAIL_DOMAIN = "@gmail.com";
 
 	public static Locale getUserLocale(User user) {
 		String language = user.getLanguage();

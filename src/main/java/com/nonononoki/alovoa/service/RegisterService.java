@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,6 +87,8 @@ public class RegisterService {
 
 	@Autowired
 	private UserService userService;
+	
+	private static final String GMAIL_EMAIL = "@gmail";
 
 	// @Autowired
 	// private TextEncryptorConverter textEncryptor;
@@ -97,25 +102,39 @@ public class RegisterService {
 		if (!isValid) {
 			throw new Exception(publicService.text("backend.error.captcha.invalid"));
 		}
+		
+		if(!isValidEmailAddress(dto.getEmail())) {
+			throw new Exception(publicService.text("backend.error.captcha.invalid"));
+		}
 
 		User user = userRepo.findByEmail(dto.getEmail().toLowerCase());
 		if (user != null) {
-			throw new Exception(publicService.text("backend.error.register.email-exists"));
+			throw new Exception("email_invalid");
 		}
-
-		BaseRegisterDto baseRegisterDto = registerBase(dto);
-		user = baseRegisterDto.getUser();
+		
+		if(dto.getEmail().contains(GMAIL_EMAIL)) {
+			String[] parts = dto.getEmail().split("@");
+			String cleanEmail = parts[0].replace(".", "") + "@" + parts[1];
+			dto.setEmail(cleanEmail);
+		} 
+		if(dto.getEmail().contains("+")) {
+			dto.setEmail(dto.getEmail().split("+")[0] + "@" + dto.getEmail().split("@")[1]);
+		}
 
 		// check if email is in spam mail list
 		if (profile.equals(Tools.PROD)) {
 			try {
-				if (Tools.isTextContainingLineFromFile(TEMP_EMAIL_FILE_NAME, user.getEmail())) {
+				//check spam domains
+				if (Tools.isTextContainingLineFromFile(TEMP_EMAIL_FILE_NAME, dto.getEmail())) {
 					throw new Exception(publicService.text("backend.error.register.email-spam"));
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+		
+		BaseRegisterDto baseRegisterDto = registerBase(dto);
+		user = baseRegisterDto.getUser();
 
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 		user = userRepo.saveAndFlush(user);
@@ -254,5 +273,15 @@ public class RegisterService {
 		baseRegisterDto.setRegisterDto(dto);
 		baseRegisterDto.setUser(user);
 		return baseRegisterDto;
+	}
+	
+	private static boolean isValidEmailAddress(String email) {
+	   try {
+	      InternetAddress a = new InternetAddress(email);
+	      a.validate();
+	      return true;
+	   } catch (AddressException ex) {
+	      return false;
+	   }
 	}
 }
