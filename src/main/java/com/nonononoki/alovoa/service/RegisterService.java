@@ -138,6 +138,8 @@ public class RegisterService {
 		user = baseRegisterDto.getUser();
 		user.setConfirmed(true);
 		userRepo.saveAndFlush(user);
+		
+		mailService.sendAccountConfirmed(user);
 	}
 
 	public UserRegisterToken createUserToken(User user) throws Exception {
@@ -175,7 +177,11 @@ public class RegisterService {
 
 		user.setConfirmed(true);
 		user.setRegisterToken(null);
-		return userRepo.saveAndFlush(user);
+		user = userRepo.saveAndFlush(user);
+		
+		mailService.sendAccountConfirmed(user);
+		
+		return user;
 	}
 
 	private BaseRegisterDto registerBase(RegisterDto dto) throws Exception {

@@ -1,5 +1,5 @@
 //TODO
-var messageMaxLength = 255;
+var messageMaxLength = 200;
 var reloadInterval = 10000;
 
 $(document).ready(function() {

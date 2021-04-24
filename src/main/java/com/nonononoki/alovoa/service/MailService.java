@@ -124,4 +124,13 @@ public class MailService {
 				new String[] { user.getFirstName(), appName }, locale);
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
+	
+	public void sendAccountConfirmed(User user) throws Exception {
+		Locale locale = Tools.getUserLocale(user);
+		String subject = messageSource.getMessage("backend.mail.account-confirmed.subject",
+				new String[] { appName }, locale);
+		String body = messageSource.getMessage("backend.mail.account-confirmed.body",
+				new String[] { user.getFirstName(), appName, appDomain}, "", locale);
+		sendMail(user.getEmail(), defaultFrom, subject, body);
+	}
 }

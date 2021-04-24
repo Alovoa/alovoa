@@ -1,5 +1,5 @@
 //TODO
-const descriptionMaxLength = 255;
+const descriptionMaxLength = 200;
 
 $(function() {
 	
