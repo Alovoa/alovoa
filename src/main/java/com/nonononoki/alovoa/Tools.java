@@ -93,8 +93,8 @@ public class Tools {
 
 		String content = getResourceText(path);
 		String[] lines = content.split(System.getProperty("line.separator"));
-		
-		for(int i = 0; i < lines.length; i++) {
+
+		for (int i = 0; i < lines.length; i++) {
 			if (text.contains(lines[i])) {
 				return true;
 			}
@@ -127,7 +127,7 @@ public class Tools {
 				if (base64String.endsWith("="))
 					padding = 1;
 			}
-			result = (Math.ceil(base64String.length() / 4) * 3) - padding;
+			result = Math.ceil(base64String.length() / 4) * 3 - padding;
 		}
 		return result;
 	}

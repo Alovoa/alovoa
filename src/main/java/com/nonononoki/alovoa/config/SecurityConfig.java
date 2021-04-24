@@ -22,9 +22,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Value("${app.text.key}")
 	private String key;
 
-	@Value("${spring.profiles.active}")
-	private String profile;
-
 	@Autowired
 	private AuthProvider authProvider;
 

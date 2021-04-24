@@ -48,12 +48,6 @@ public class SearchService {
 	@Value("${app.age.legal}")
 	private int ageLegal;
 
-	@Value("${app.age.min}")
-	private int minAge;
-
-	@Value("${app.age.max}")
-	private int maxAge;
-
 	private static final double LATITUDE = 111.1;
 	private static final double LONGITUDE = 111.320;
 

@@ -541,8 +541,8 @@ public class OxCaptcha {
         // rectangle...
         double ddx = -scale * dY;
         double ddy = scale * dX;
-        ddx += (ddx > 0) ? 0.5 : -0.5;
-        ddy += (ddy > 0) ? 0.5 : -0.5;
+        ddx += ddx > 0 ? 0.5 : -0.5;
+        ddy += ddy > 0 ? 0.5 : -0.5;
         int dx = (int) ddx;
         int dy = (int) ddy;
 
@@ -599,7 +599,7 @@ public class OxCaptcha {
         {
             for (int x = 0; x < _width; x++)
             {
-                int p = (_img.getRGB(x, y) & 0xFF);
+                int p = _img.getRGB(x, y) & 0xFF;
                 p = (int)(((double)p) + sigma * RAND.nextGaussian());
                 p = Math.max(0, Math.min(255, p));
                 _img.setRGB(x, y, new Color(p, p, p).getRGB());
@@ -613,7 +613,7 @@ public class OxCaptcha {
         {
             for (int x = 0; x < _width; x++)
             {
-                int p = (_img.getRGB(x, y) & 0xFF);
+                int p = _img.getRGB(x, y) & 0xFF;
                 p = (int)(((double)p) + RAND.nextInt(256));
                 p = Math.max(0, Math.min(255, p));
                 _img.setRGB(x, y, new Color(p, p, p).getRGB());
@@ -752,7 +752,7 @@ public class OxCaptcha {
                 
                 double sx = (double)x + dx;
                 double sy = (double)y + dy;
-                if ((sx < 0) || (sx > _width - 2) || (sy < 0) || (sy > _height - 2))
+                if (sx < 0 || sx > _width - 2 || sy < 0 || sy > _height - 2)
                 {
                     _img.setRGB(x, y, _bg_color.getRGB());
                 }
@@ -889,7 +889,7 @@ public class OxCaptcha {
                 
                 double sx = (double)x + dx;
                 double sy = (double)y + dy;
-                if ((sx < 0) || (sx > _width - 2) || (sy < 0) || (sy > _height - 2))
+                if (sx < 0 || sx > _width - 2 || sy < 0 || sy > _height - 2)
                 {
                     _img.setRGB(x, y, _bg_color.getRGB());
                 }
@@ -973,7 +973,7 @@ public class OxCaptcha {
         int w = xmax - xmin + 1;
         int h = ymax - ymin + 1;
         
-        if ((w > 0) && (h > 0)) {
+        if (w > 0 && h > 0) {
             int xt = (_width - w) / 2;
             int yt = (_height - h) / 2;
             BufferedImage b = _img.getSubimage(xmin, ymin, w, h);
@@ -995,7 +995,7 @@ public class OxCaptcha {
         {
             for (int x = 0; x < width; x++)
             {
-                ret[y][x] = (i.getRGB(x, y) & 0xFF);
+                ret[y][x] = i.getRGB(x, y) & 0xFF;
             }
         }
         return ret;

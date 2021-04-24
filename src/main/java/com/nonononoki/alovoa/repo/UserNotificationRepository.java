@@ -8,10 +8,8 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserNotification;
 
 public interface UserNotificationRepository extends JpaRepository<UserNotification, Long> {
-	public UserNotification findByUserFromAndUserTo(User userFrom, User userTo);
-	
-	public List<UserNotification> findByUserFrom(User userFrom);
-	
-	public List<UserNotification> findByUserTo(User userTo);
+	UserNotification findByUserFromAndUserTo(User userFrom, User userTo);
+	List<UserNotification> findByUserFrom(User userFrom);
+	List<UserNotification> findByUserTo(User userTo);
 }
 

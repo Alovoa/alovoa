@@ -8,8 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.nonononoki.alovoa.entity.user.UserPasswordToken;
 
 public interface UserPasswordTokenRepository extends JpaRepository<UserPasswordToken, Long> {
-	public UserPasswordToken findByContent(String content);
-
-	public List<UserPasswordToken> findByDateBefore(Date date);
+	UserPasswordToken findByContent(String content);
+	List<UserPasswordToken> findByDateBefore(Date date);
 }
 

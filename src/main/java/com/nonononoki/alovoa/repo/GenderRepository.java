@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.nonononoki.alovoa.entity.user.Gender;
 
 public interface GenderRepository extends JpaRepository<Gender, Long> {
-	
-	public Gender findByText(String text);
+	Gender findByText(String text);
 }
 

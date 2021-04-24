@@ -37,7 +37,7 @@ public class CaptchaService {
 	private final Color FG_COLOR = new Color(130, 130, 130);
 
 	public Captcha generate() throws Exception {
-		OxCaptcha ox = generateCaptchaImage(captchaLength);
+		OxCaptcha ox = generateCaptchaImage();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ImageIO.write(ox.getImage(), "webp", baos);
 		byte[] ba = baos.toByteArray();
@@ -51,7 +51,7 @@ public class CaptchaService {
 		return captcha;
 	}
 	
-	private OxCaptcha generateCaptchaImage(int length) {
+	private OxCaptcha generateCaptchaImage() {
 		OxCaptcha c = new OxCaptcha(WIDTH, HEIGHT);
 		c.foreground(FG_COLOR);
 		c.background(BG_COLOR);

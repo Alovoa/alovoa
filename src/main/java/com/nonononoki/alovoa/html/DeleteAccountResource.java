@@ -3,7 +3,6 @@ package com.nonononoki.alovoa.html;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,10 +23,7 @@ public class DeleteAccountResource {
 	private AuthService authService;
 	
 	@Autowired
-	private TextEncryptorConverter textEncryptor;
-	
-	@Value("${app.user.delete.delay}")
-	private long userDeleteDelay;  
+	private TextEncryptorConverter textEncryptor; 
 	
 	@GetMapping("/delete-account/{tokenString}")
 	public ModelAndView deleteAccount(@PathVariable String tokenString) throws Exception {

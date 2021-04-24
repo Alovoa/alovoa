@@ -128,9 +128,6 @@ public class AdminService {
 		user.getWebPush().clear();
 
 		userRepo.saveAndFlush(user);
-		 
-		return;
-		
 	}
 
 
