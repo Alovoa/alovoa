@@ -21,8 +21,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -147,18 +145,14 @@ public class User implements UserDetails {
 	
 	//Tables with multiple users
 	
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
+	@OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true, mappedBy = "userFrom")
 	private List<Message> messageSent;
 
 	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
 	private List<Message> messageReceived;
 	
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	@OneToMany(cascade = CascadeType.ALL,  orphanRemoval = true, mappedBy = "userFrom")
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, mappedBy = "users")
 	private List<Conversation> conversations;
-
-	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
-	private List<Conversation> conversationsBy;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<UserLike> likes;

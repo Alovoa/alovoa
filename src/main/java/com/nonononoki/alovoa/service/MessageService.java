@@ -81,6 +81,7 @@ public class MessageService {
 		m.setAllowedFormatting(allowedFormatting);
 		//messageRepo.saveAndFlush(m);
 		c.getMessages().add(m);
+		conversationRepo.save(c);
 		
 		int numMessages = c.getMessages().size();
 		if (numMessages > maxConvoMessages) {
@@ -90,7 +91,7 @@ public class MessageService {
 		
 		c.setLastMessage(lastMessage);
 		c.setLastUpdated(new Date());
-		c = conversationRepo.saveAndFlush(c);
+		conversationRepo.saveAndFlush(c);
 		
 		notificationService.newMessage(user);
 	}

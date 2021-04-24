@@ -31,7 +31,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jetty</artifactId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -141,20 +141,11 @@
 			<artifactId>bucket4j-spring-boot-starter</artifactId>
 			<version>0.3.3</version>
 		</dependency>
-		<!-- <dependency> <groupId>javax.media</groupId> <artifactId>jmf</artifactId> 
-			<version>2.1.1e</version> </dependency> -->
-
-
-		<!-- <dependency> <groupId>com.googlecode.soundlibs</groupId> <artifactId>mp3spi</artifactId> 
-			<version>1.9.5.4</version> </dependency> <dependency> <groupId>com.googlecode.soundlibs</groupId> 
-			<artifactId>vorbisspi</artifactId> <version>1.0.3.3</version> </dependency> -->
-
 		<dependency>
 			<groupId>com.sipgate</groupId>
 			<artifactId>mp3-wav</artifactId>
 			<version>1.0.3</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.sejda.imageio</groupId>
 			<artifactId>webp-imageio</artifactId>

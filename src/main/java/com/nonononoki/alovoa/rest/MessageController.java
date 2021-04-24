@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
+import com.nonononoki.alovoa.entity.user.ConversationCheckedDate;
 import com.nonononoki.alovoa.model.MessageDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.service.AuthService;
@@ -47,14 +48,19 @@ public class MessageController {
 		}
 
 		Date now = new Date();
-
-		Date lastCheckedDate;
-		if (user.equals(c.getUserFrom())) {
-			lastCheckedDate = c.getLastCheckedFrom();
-			c.setLastCheckedFrom(now);
+		Date lastCheckedDate = null;
+		ConversationCheckedDate convoCheckedDate = c.getCheckedDates().stream().filter(d -> d.getUserId().equals(user.getId())).findAny().orElse(null);
+		if(convoCheckedDate == null) {
+			ConversationCheckedDate ccd = new ConversationCheckedDate();
+			ccd.setConversation(c);
+			ccd.setLastCheckedDate(now);
+			ccd.setUserId(user.getId());
+			c.getCheckedDates().add(ccd);
 		} else {
-			lastCheckedDate = c.getLastCheckedTo();
-			c.setLastCheckedTo(now);
+			c.getCheckedDates().remove(convoCheckedDate);
+			lastCheckedDate = convoCheckedDate.getLastCheckedDate();
+			convoCheckedDate.setLastCheckedDate(now);
+			c.getCheckedDates().add(convoCheckedDate);
 		}
 
 		conversationRepo.saveAndFlush(c);

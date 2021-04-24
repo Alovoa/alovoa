@@ -248,28 +248,6 @@ public class UserService {
 			userLikeRepo.flush();
 		}
 
-		// DELETE USER CONVERSATION
-		{
-			for (Conversation conversation : conversationRepo.findByUserFrom(user)) {
-				User u = conversation.getUserTo();
-				u.getConversationsBy().remove(conversation);
-				userRepo.save(u);
-
-				conversation.setUserTo(null);
-				conversationRepo.save(conversation);
-			}
-			for (Conversation conversation : conversationRepo.findByUserTo(user)) {
-				User u = conversation.getUserFrom();
-				u.getConversations().remove(conversation);
-				userRepo.save(u);
-
-				conversation.setUserFrom(null);
-				conversationRepo.save(conversation);
-			}
-			userRepo.flush();
-			conversationRepo.flush();
-		}
-
 		// DELETE USER NOTIFICATION
 		{
 			for (UserNotification notification : userNotificationRepo.findByUserFrom(user)) {
@@ -358,6 +336,25 @@ public class UserService {
 			userReportRepo.flush();
 		}
 
+		// DELETE USER CONVERSATION
+		{
+			for (Conversation c : conversationRepo.findByUsers_Id(user.getId())) {
+
+				for (User u : c.getUsers()) {
+					u.getConversations().remove(c);
+					userRepo.save(u);
+				}
+				
+//				c.getMessages().clear();			
+//				c.getUsers().clear();
+				
+				conversationRepo.delete(c);	
+			}
+			
+			userRepo.flush();
+			conversationRepo.flush();
+		}
+
 		return user;
 	}
 
@@ -377,7 +374,7 @@ public class UserService {
 	}
 
 	public void updateDescription(String description) throws Exception {
-		if(description != null) {
+		if (description != null) {
 			if (description.length() > descriptionSize) {
 				throw new Exception("max_length_exceeded");
 			}
@@ -488,16 +485,16 @@ public class UserService {
 		user.getInterests().remove(interest);
 		userRepo.saveAndFlush(user);
 	}
-	
+
 	public void updateAccentColor(String accentColor) throws Exception {
 		User user = authService.getCurrentUser();
 		user.setAccentColor(accentColor);
 		userRepo.saveAndFlush(user);
 	}
-	
+
 	public void updateUiDesign(String uiDesign) throws Exception {
 		User user = authService.getCurrentUser();
-		user.setUiDesign(uiDesign);	
+		user.setUiDesign(uiDesign);
 		userRepo.saveAndFlush(user);
 	}
 
@@ -647,22 +644,29 @@ public class UserService {
 			currUser.getNotifications().add(not);
 			notificationService.newLike(user);
 
+			user.getDates().setNotificationDate(new Date());
+			userRepo.saveAndFlush(currUser);
+			userRepo.saveAndFlush(user);
+
 			if (user.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
 				Conversation convo = new Conversation();
+				convo.setUsers(new ArrayList<>());
 				convo.setDate(new Date());
-				convo.setUserFrom(currUser);
-				convo.setUserTo(user);
+				convo.getUsers().add(currUser);
+				convo.getUsers().add(user);
 				convo.setLastUpdated(new Date());
 				convo.setMessages(new ArrayList<>());
-				currUser.getConversations().add(convo);
+				conversationRepo.saveAndFlush(convo);
 
 				notificationService.newMatch(user);
 				notificationService.newMatch(currUser);
-			}
-			userRepo.saveAndFlush(currUser);
 
-			user.getDates().setNotificationDate(new Date());
-			userRepo.saveAndFlush(user);
+				user.getConversations().add(convo);
+				currUser.getConversations().add(convo);
+
+//				userRepo.saveAndFlush(currUser);
+//				userRepo.saveAndFlush(user);
+			}
 
 		}
 	}
@@ -790,7 +794,7 @@ public class UserService {
 	}
 
 	public void updateAudio(String audioB64, String mimeType) throws Exception {
-		User user = authService.getCurrentUser();		
+		User user = authService.getCurrentUser();
 		String newAudioB64 = adjustAudio(audioB64, mimeType);
 
 		if (user.getAudio() == null) {

@@ -27,10 +27,7 @@ public class ConversationDto {
 		dto.setId(c.getId());
 		dto.setLastUpdated(c.getLastUpdated());
 		dto.setLastMessage(c.getLastMessage());
-		User u = c.getUserFrom();
-		if (u.equals(currentUser)) {
-			u = c.getUserTo();
-		}
+		User u = c.getPartner(currentUser);
 		dto.setUserName(u.getFirstName());
 		if(u.getProfilePicture() != null) {
 			dto.setUserProfilePicture(u.getProfilePicture().getData());

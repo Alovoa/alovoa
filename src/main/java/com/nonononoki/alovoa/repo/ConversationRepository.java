@@ -4,11 +4,9 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
 
 public interface ConversationRepository extends JpaRepository<Conversation, Long> {
-	public List<Conversation> findByUserTo(User u);
-	public List<Conversation> findByUserFrom(User u);
+	public List<Conversation> findByUsers_Id(long userId);
 }
 

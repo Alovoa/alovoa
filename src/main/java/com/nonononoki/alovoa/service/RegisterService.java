@@ -64,8 +64,8 @@ public class RegisterService {
 	@Autowired
 	private UserRepository userRepo;
 
-	//@Autowired
-	//private UserDatesRepository userDatesRepo;
+	// @Autowired
+	// private UserDatesRepository userDatesRepo;
 
 	@Autowired
 	private GenderRepository genderRepo;
@@ -75,24 +75,24 @@ public class RegisterService {
 
 	@Autowired
 	private UserRegisterTokenRepository registerTokenRepo;
-	
+
 	@Autowired
 	private AuthService authService;
 
 	@Autowired
 	protected CaptchaService captchaService;
-	
+
 	@Autowired
 	private UserService userService;
 
-	//@Autowired
-	//private TextEncryptorConverter textEncryptor;
+	// @Autowired
+	// private TextEncryptorConverter textEncryptor;
 
-	//@Autowired
-	//private HttpServletRequest request;
+	// @Autowired
+	// private HttpServletRequest request;
 
 	public String register(RegisterDto dto) throws Exception {
-		
+
 		boolean isValid = captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText());
 		if (!isValid) {
 			throw new Exception(publicService.text("backend.error.captcha.invalid"));
@@ -109,8 +109,7 @@ public class RegisterService {
 		// check if email is in spam mail list
 		if (profile.equals(Tools.PROD)) {
 			try {
-				if (Tools.isTextContainingLineFromFile(Tools.getFileFromResources(TEMP_EMAIL_FILE_NAME),
-						user.getEmail())) {
+				if (Tools.isTextContainingLineFromFile(TEMP_EMAIL_FILE_NAME, user.getEmail())) {
 					throw new Exception(publicService.text("backend.error.register.email-spam"));
 				}
 			} catch (IOException e) {
@@ -133,7 +132,7 @@ public class RegisterService {
 		if (user != null) {
 			throw new Exception(publicService.text("backend.error.register.email-exists"));
 		}
-		
+
 		dto.setEmail(email);
 		BaseRegisterDto baseRegisterDto = registerBase(dto);
 		user = baseRegisterDto.getUser();
@@ -197,7 +196,7 @@ public class RegisterService {
 		if (userMaxAge > maxAge) {
 			userMaxAge = maxAge;
 		}
-		
+
 		user.setPreferedMinAge(userMinAge);
 		user.setPreferedMaxAge(userMaxAge);
 		user.setGender(genderRepo.findById(dto.getGender()).orElse(null));
@@ -224,7 +223,6 @@ public class RegisterService {
 		user.setLikes(new ArrayList<UserLike>());
 		user.setLikedBy(new ArrayList<UserLike>());
 		user.setConversations(new ArrayList<Conversation>());
-		user.setConversationsBy(new ArrayList<Conversation>());
 		user.setMessageReceived(new ArrayList<Message>());
 		user.setMessageSent(new ArrayList<Message>());
 		user.setNotifications(new ArrayList<UserNotification>());
@@ -236,12 +234,12 @@ public class RegisterService {
 		user.setReported(new ArrayList<UserReport>());
 		user.setReportedByUsers(new ArrayList<UserReport>());
 		user.setWebPush(new ArrayList<UserWebPush>());
-		
+
 		user.setNumberProfileViews(0);
 		user.setNumberSearches(0);
-		
+
 		user = userRepo.saveAndFlush(user);
-		
+
 		userService.updateUserInfo(user);
 
 		BaseRegisterDto baseRegisterDto = new BaseRegisterDto();

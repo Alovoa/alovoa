@@ -49,14 +49,8 @@ public class MessageResource {
 		user.getDates().setMessageCheckedDate(new Date());
 		userRepo.saveAndFlush(user);
 		List<ConversationDto> convos = new ArrayList<>();
-		for (int i = 0; i < user.getConversations().size(); i++) {
-			Conversation c = user.getConversations().get(i);
-			if(!c.isBlocked(userBlockRepo)) {
-				convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
-			}
-		}
-		for (int i = 0; i < user.getConversationsBy().size(); i++) {
-			Conversation c = user.getConversationsBy().get(i);
+		List<Conversation> conversations = conversationRepo.findByUsers_Id(user.getId());
+		for (Conversation c : conversations) {
 			if(!c.isBlocked(userBlockRepo)) {
 				convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
 			}

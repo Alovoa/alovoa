@@ -3,6 +3,8 @@ var messageMaxLength = 255;
 var reloadInterval = 10000;
 
 $(document).ready(function() {
+	
+	showLoader();
 	reloadMessages(1);
 
 	setInterval(reloadMessages, reloadInterval, 0);
@@ -63,9 +65,15 @@ function reloadMessages(first) {
 				$("#messages-div").html(res);
 				$("#messages-div").scrollTop($("#messages-div")[0].scrollHeight);
 			}
+			if(first) {
+				hideLoader();
+			}
 		},
 		error : function(e) {
 			console.log(e);
+			if(first) {
+				hideLoader();
+			}
 		}
 	});
 }
