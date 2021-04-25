@@ -36,6 +36,7 @@ public class BlockedUsersResource {
 			users.add(UserDto.userToUserDto(u, user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
 		}
 		mav.addObject("users", users);
+		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;	
 	}
 }

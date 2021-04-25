@@ -9,10 +9,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Contact;
+import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserReport;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.ContactRepository;
 import com.nonononoki.alovoa.repo.UserReportRepository;
+import com.nonononoki.alovoa.service.AuthService;
 
 @Controller
 public class AdminResource {
@@ -25,6 +27,9 @@ public class AdminResource {
 	
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
+	
+	@Autowired
+	private AuthService authService;
 
 	@GetMapping("/admin")
 	public ModelAndView admin() throws Exception {
@@ -41,6 +46,8 @@ public class AdminResource {
 
 		mav.addObject("reports", reports);
 		mav.addObject("contacts", contacts);
+		User user = authService.getCurrentUser();
+		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		
 		return mav;
 	}

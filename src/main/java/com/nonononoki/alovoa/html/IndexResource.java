@@ -5,7 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.service.AuthService;
 
 @Controller
@@ -16,6 +18,9 @@ public class IndexResource {
 
 	@Autowired
 	private ProfileResource profileResource;
+	
+	@Autowired
+	private TextEncryptorConverter textEncryptor;
 
 	@GetMapping("/")
 	public ModelAndView index() throws Exception {
@@ -26,6 +31,7 @@ public class IndexResource {
 		}
 
 		ModelAndView mav = new ModelAndView("index");
+		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;
 	}
 }
