@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+oc<!DOCTYPE html>
 <html>
 
 <body>
@@ -47,7 +47,9 @@
 
 		<script>
 			function onLanguageButtonClicked() {
-				document.getElementById('locale').scrollIntoView({behavior: 'smooth', block: 'center'});
+				let locale = document.getElementById('locale');
+				locale.scrollIntoView({behavior: 'smooth', block: 'center'});
+				setTimeout(function(){ locale.focus() }, 600);
 			}
 		</script>
 

@@ -82,6 +82,10 @@ public class UserDto {
 
 	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor, int mode)
 			throws Exception {
+		
+		if(user == null) {
+			return null;
+		}
 		UserDto dto = new UserDto();
 		dto.setId(user.getId());
 		dto.setIdEncoded(encodeId(user.getId(), textEncryptor));
