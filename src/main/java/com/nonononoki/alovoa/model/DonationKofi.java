@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class DonationKofi {
+	String email;
 	String message_id;
 	String message;
 	String timestamp;
@@ -11,4 +12,6 @@ public class DonationKofi {
 	String from_name;
 	String amount;
 	String url;
+	boolean is_public;
+	String kofi_transaction_id;
 }

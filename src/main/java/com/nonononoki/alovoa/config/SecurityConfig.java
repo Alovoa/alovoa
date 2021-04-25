@@ -45,15 +45,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/imprint/*").permitAll().antMatchers("/privacy").permitAll().antMatchers("/faq")
 				.permitAll().antMatchers("/tos").permitAll().antMatchers("/register").permitAll()
 				.antMatchers("/register/**").permitAll().antMatchers("/captcha/**").permitAll()
-				.antMatchers("/donate-list").permitAll().antMatchers("/password/**").permitAll()
-				.antMatchers("/favicon.ico").permitAll().antMatchers("/sw.js").permitAll().antMatchers("/text/*")
-				.permitAll().antMatchers("/manifest/**").permitAll().antMatchers("/fonts/**").permitAll()
+				.antMatchers("/donate-list").permitAll().antMatchers("/donate/received/**").permitAll()
+				.antMatchers("/password/**").permitAll().antMatchers("/favicon.ico").permitAll().antMatchers("/sw.js")
+				.permitAll().antMatchers("/text/*").permitAll().antMatchers("/manifest/**").permitAll()
+				.antMatchers("/fonts/**").permitAll()
 
 				.anyRequest().authenticated().and().formLogin().loginPage("/login").and().logout()
 				.deleteCookies("JSESSIONID").logoutUrl("/logout").logoutSuccessUrl("/?logout").and().oauth2Login()
 				.loginPage("/login").defaultSuccessUrl("/login/oauth2/success").and()
 				.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class).rememberMe()
 				.key(key);
+
+		http.csrf().ignoringAntMatchers("/donate/received/**");
 
 		http.headers().frameOptions().sameOrigin();
 		http.requiresChannel().anyRequest().requiresSecure();

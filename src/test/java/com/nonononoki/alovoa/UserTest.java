@@ -130,6 +130,11 @@ public class UserTest {
 			throws Exception {
 		if (testUsers == null) {
 			
+			Captcha c2 = captchaService.generate();
+			RegisterDto user2Dto = createTestUserDto(2, c2, "test2", user2Age);
+			String tokenContent2 = registerService.register(user2Dto);
+			User user2 = registerService.registerConfirm(tokenContent2);
+			
 			String user1Email = "nonononoki@gmail.com";
 			// register and confirm test users
 			Captcha c1 = captchaService.generate();
@@ -154,11 +159,6 @@ public class UserTest {
 					registerService.register(user1Dto);
 				});
 			}
-
-			Captcha c2 = captchaService.generate();
-			RegisterDto user2Dto = createTestUserDto(2, c2, "test2", user2Age);
-			String tokenContent2 = registerService.register(user2Dto);
-			User user2 = registerService.registerConfirm(tokenContent2);
 
 			Captcha c3 = captchaService.generate();
 			RegisterDto user3Dto = createTestUserDto(2, c3, "test3", user3Age);

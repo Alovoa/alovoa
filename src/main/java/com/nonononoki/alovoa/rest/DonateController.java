@@ -2,17 +2,20 @@ package com.nonononoki.alovoa.rest;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.model.DonationDto;
 import com.nonononoki.alovoa.model.DonationKofi;
 import com.nonononoki.alovoa.service.DonateService;
@@ -22,7 +25,12 @@ import com.nonononoki.alovoa.service.DonateService;
 public class DonateController {
 	
 	@Autowired
-	private DonateService donateService; 	
+	private DonateService donateService;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	private static final Logger logger = LoggerFactory.getLogger(DonateService.class);
 
 	@GetMapping("/search/{filter}")
     public String filterRecent(Model model, @PathVariable int filter) throws Exception{
@@ -32,8 +40,10 @@ public class DonateController {
 		return "fragments :: donate-filter";
     }
 	
-	@PostMapping(value="/received/kofi", consumes = "application/x-www-form-urlencoded")
-    public void receivedKofi(@RequestBody DonationKofi d, HttpServletRequest request) throws Exception{
-		donateService.donationReceivedKofi(d);
+	@PostMapping(value="/received/kofi", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<String> receivedKofi(String data) throws Exception {
+		donateService.donationReceivedKofi(objectMapper.readValue(data, DonationKofi.class));
+		logger.info(data);
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 }

@@ -48,6 +48,9 @@ public class DonateService {
 	private String profile;
 	
 	private final String KOFI_URL = "https://ko-fi.com/";
+	private final String KOFI_TEST_TRANSACTION_ID= " 1234-1234-1234-1234";
+	private final String KOFI_TEST_EMAIL = "john@example.com";
+	
 
 	public List<DonationDto> filter(int filter) throws Exception {
 		List<DonationDto> donationsToDtos = null;
@@ -71,7 +74,23 @@ public class DonateService {
 		String kofiIp = InetAddress.getByName(new URL(KOFI_URL).getHost()).getHostAddress().trim();
 		String ip = request.getRemoteAddr().trim();
 		
+		Date now = new Date();
+
 		if (kofiIp.equals(ip) || !profile.equals(Tools.PROD)) {
+			
+			if(profile.equals(Tools.PROD)) {
+				if(KOFI_TEST_TRANSACTION_ID.equals(donation.getKofi_transaction_id())) {
+					return;
+				}
+				if(KOFI_TEST_EMAIL.equals(donation.getEmail())) {
+					return;
+				}
+				if(!donation.is_public()) {
+					//respect the choice of the user to make donation anonymous
+					return;
+				}
+			}
+			
 			User u = null;
 			
 			if(donation.getFrom_name() != null) {
@@ -82,11 +101,16 @@ public class DonateService {
 				u = userRepo.findByEmail(donation.getMessage().toLowerCase());
 			}
 			
+			//in case user forgot, check their Ko-fi email address just in case
+			if (u == null && donation.getEmail() != null) {
+				u = userRepo.findByEmail(donation.getMessage().toLowerCase());
+			}
+			
 			if (u != null) {
 				double amount = Double.parseDouble(donation.getAmount());
 				UserDonation userDonation = new UserDonation();
 				userDonation.setAmount(amount);
-				userDonation.setDate(new Date());
+				userDonation.setDate(now);
 				userDonation.setUser(u);
 				u.getDonations().add(userDonation);
 				u.setTotalDonations(u.getTotalDonations() + amount);

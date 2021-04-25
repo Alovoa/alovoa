@@ -348,13 +348,13 @@ public class UserService {
 					u.getConversations().remove(c);
 					userRepo.save(u);
 				}
-				
+
 //				c.getMessages().clear();			
 //				c.getUsers().clear();
-				
-				conversationRepo.delete(c);	
+
+				conversationRepo.delete(c);
 			}
-			
+
 			userRepo.flush();
 			conversationRepo.flush();
 		}
@@ -387,7 +387,7 @@ public class UserService {
 			} else {
 				UrlDetector parser = new UrlDetector(description, UrlDetectorOptions.Default);
 				List<Url> urls = parser.detect();
-				if(!urls.isEmpty()) {
+				if (!urls.isEmpty()) {
 					throw new Exception("url_detected");
 				}
 			}
@@ -750,23 +750,30 @@ public class UserService {
 	}
 
 	public boolean hasNewAlert() throws Exception {
-		User currUser = authService.getCurrentUser();
+		User user = authService.getCurrentUser();
 		// user always check their alerts periodically in the background, so just update
 		// it here
-		updateUserInfo(currUser);
-		return currUser.getDates().getNotificationDate().after(currUser.getDates().getNotificationCheckedDate());
+		updateUserInfo(user);
+		return user.getDates().getNotificationDate().after(user.getDates().getNotificationCheckedDate());
 	}
 
 	public boolean hasNewMessage() throws Exception {
-		User currUser = authService.getCurrentUser();
-		return currUser.getDates().getMessageDate().after(currUser.getDates().getMessageCheckedDate());
+		User user = authService.getCurrentUser();
+		if (user != null && user.getDates().getMessageDate() != null
+				&& user.getDates().getMessageCheckedDate() != null) {
+			return user.getDates().getMessageDate().after(user.getDates().getMessageCheckedDate());
+		} else {
+			return false;
+		}
 	}
 
 	public void updateUserInfo(User user) {
-		user.getDates().setActiveDate(new Date());
-		Locale locale = LocaleContextHolder.getLocale();
-		user.setLanguage(locale.getLanguage());
-		userRepo.saveAndFlush(user);
+		if(user != null && user.getDates() != null) {
+			user.getDates().setActiveDate(new Date());
+			Locale locale = LocaleContextHolder.getLocale();
+			user.setLanguage(locale.getLanguage());
+			userRepo.saveAndFlush(user);
+		}
 	}
 
 	public ResponseEntity<Resource> getUserdata() throws Exception {

@@ -38,7 +38,7 @@ $(function() {
 					type : 'POST',
 					data : JSON.stringify(formdata),
 					contentType : "application/json",
-					success : function(data) {
+					success : function() {
 						window.location = "/?confirm-registration";
 					},
 					error : function(e) {
