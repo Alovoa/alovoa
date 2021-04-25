@@ -242,7 +242,7 @@ input[type=range].slider {
 
 .datepicker-nav .button.is-text:active, .datepicker-nav .button.is-text:focus
 	{
-	background: #00d1b2;
+	background: #ec417a;
 }
 
 .datepicker-year span, .datepicker-month, .date-item {
