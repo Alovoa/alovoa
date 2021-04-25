@@ -46,6 +46,16 @@ public class MessageController {
 		if (!c.containsUser(user)) {
 			throw new Exception("user_not_in_conversation");
 		}
+		
+		User partner = c.getPartner(user);
+		
+		if(user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(partner.getId()))) {
+			throw new Exception("user_blocked");
+		}
+		
+		if(partner.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
+			throw new Exception("user_blocked");
+		}
 
 		Date now = new Date();
 		Date lastCheckedDate = null;

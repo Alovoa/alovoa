@@ -94,7 +94,7 @@ function blockUser(idEnc) {
 
 function unblockUser(idEnc) {
 
-	var r = confirm(getText("userprofile.js.block-user"));
+	var r = confirm(getText("userprofile.js.unblock-user"));
 	if (r == true) {
 		$.ajax({
 			type : "POST",
