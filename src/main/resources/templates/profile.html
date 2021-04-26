@@ -80,6 +80,11 @@
 					</div>
 
 				</div>
+				
+				<div class="box" onclick="window.open('/donate-list', '_blank');">
+					<label class="label" th:text="#{donated}"></label>
+					<label th:text=" ${#numbers.formatDecimal(user.totalDonations, 1, 2, 'POINT') + ' €'}"></td>></label>
+				</div>
 
 
 				<div class="box"  id="description-field">
