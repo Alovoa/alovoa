@@ -12,6 +12,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.DonationBmac;
+import com.nonononoki.alovoa.model.DonationBmac.DonationBmacResponse;
 import com.nonononoki.alovoa.model.DonationKofi;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserDonationRepository;
@@ -78,6 +80,18 @@ public class DonateTest {
 		
 		Assert.assertEquals(user1.getTotalDonations(), donationAmount, doubleDelta);
 		Assert.assertEquals(userDonationRepository.count(), 1);
+		
+		double donationAmount2 = 15;
+
+		DonationBmac donationBmac= new DonationBmac();
+		DonationBmacResponse bmacResponse = new DonationBmacResponse();
+		bmacResponse.setSupporter_email(user1.getEmail());
+		bmacResponse.setTotal_amount(donationAmount2);
+		donationBmac.setResponse(bmacResponse);
+		donateService.donationReceivedBmac(donationBmac);
+		
+		Assert.assertTrue(user1.getTotalDonations() < donationAmount + donationAmount2 && user1.getTotalDonations() > donationAmount);
+		Assert.assertEquals(userDonationRepository.count(), 2);
 		
 		UserTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 		

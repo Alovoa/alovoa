@@ -4,14 +4,14 @@ import lombok.Data;
 
 @Data
 public class DonationKofi {
-	String email;
-	String message_id;
-	String message;
-	String timestamp;
-	String type;
-	String from_name;
-	String amount;
-	String url;
-	boolean is_public;
-	String kofi_transaction_id;
+	private String email;
+	private String message_id;
+	private String message;
+	private String timestamp;
+	private String type;
+	private String from_name;
+	private String amount;
+	private String url;
+	private boolean is_public;
+	private String kofi_transaction_id;
 }

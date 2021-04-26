@@ -13,9 +13,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nonononoki.alovoa.model.DonationBmac;
 import com.nonononoki.alovoa.model.DonationDto;
 import com.nonononoki.alovoa.model.DonationKofi;
 import com.nonononoki.alovoa.service.DonateService;
@@ -42,8 +44,15 @@ public class DonateController {
 	
 	@PostMapping(value="/received/kofi", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<String> receivedKofi(String data) throws Exception {
-		donateService.donationReceivedKofi(objectMapper.readValue(data, DonationKofi.class));
 		logger.info(data);
+		donateService.donationReceivedKofi(objectMapper.readValue(data, DonationKofi.class));
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
+	@PostMapping(value="/received/bmac")
+    public ResponseEntity<String> receivedBmac(@RequestBody DonationBmac data) throws Exception {
+		logger.info(objectMapper.writeValueAsString(data));
+		donateService.donationReceivedBmac(data);
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 }

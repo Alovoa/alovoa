@@ -15,6 +15,7 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserDonation;
+import com.nonononoki.alovoa.model.DonationBmac;
 import com.nonononoki.alovoa.model.DonationDto;
 import com.nonononoki.alovoa.model.DonationKofi;
 import com.nonononoki.alovoa.repo.UserDonationRepository;
@@ -48,8 +49,12 @@ public class DonateService {
 	private String profile;
 	
 	private final String KOFI_URL = "https://ko-fi.com/";
-	private final String KOFI_TEST_TRANSACTION_ID= " 1234-1234-1234-1234";
+	private final String KOFI_TEST_TRANSACTION_ID= "1234-1234-1234-1234";
 	private final String KOFI_TEST_EMAIL = "john@example.com";
+	
+	private final String BMAC_URL = "https://www.buymeacoffee.com/";
+	private final String BMAC_TEST_EMAIL = "test@example.com";
+	private final double BMAC_AMOUNT_FACTOR = 0.95;
 	
 
 	public List<DonationDto> filter(int filter) throws Exception {
@@ -73,16 +78,16 @@ public class DonateService {
 	public void donationReceivedKofi(DonationKofi donation) throws Exception {
 		String kofiIp = InetAddress.getByName(new URL(KOFI_URL).getHost()).getHostAddress().trim();
 		String ip = request.getRemoteAddr().trim();
-		
-		Date now = new Date();
 
 		if (kofiIp.equals(ip) || !profile.equals(Tools.PROD)) {
+			
+			Date now = new Date();
 			
 			if(profile.equals(Tools.PROD)) {
 				if(KOFI_TEST_TRANSACTION_ID.equals(donation.getKofi_transaction_id())) {
 					return;
 				}
-				if(KOFI_TEST_EMAIL.equals(donation.getEmail())) {
+				if(donation.getEmail() != null && KOFI_TEST_EMAIL.equals(donation.getEmail().toLowerCase())) {
 					return;
 				}
 				if(!donation.is_public()) {
@@ -103,12 +108,55 @@ public class DonateService {
 			
 			//in case user forgot, check their Ko-fi email address just in case
 			if (u == null && donation.getEmail() != null) {
-				u = userRepo.findByEmail(donation.getMessage().toLowerCase());
+				u = userRepo.findByEmail(donation.getEmail().toLowerCase());
 			}
 			
 			if (u != null) {
 				double amount = Double.parseDouble(donation.getAmount());
 				UserDonation userDonation = new UserDonation();
+				userDonation.setAmount(amount);
+				userDonation.setDate(now);
+				userDonation.setUser(u);
+				u.getDonations().add(userDonation);
+				u.setTotalDonations(u.getTotalDonations() + amount);
+				userRepo.save(u);
+			}
+		}
+	}
+
+	public void donationReceivedBmac(DonationBmac data) throws Exception {
+		String bmacIp = InetAddress.getByName(new URL(BMAC_URL).getHost()).getHostAddress().trim();
+		String ip = request.getRemoteAddr().trim();
+		
+		if (bmacIp.equals(ip) || !profile.equals(Tools.PROD)) {
+			
+			Date now = new Date();
+			DonationBmac.DonationBmacResponse donation = data.getResponse();
+			
+			if(profile.equals(Tools.PROD)) {
+				if(BMAC_TEST_EMAIL.equals(donation.getSupporter_email().toLowerCase())) {
+					return;
+				}
+			}
+			
+			User u = null;
+			
+			if(donation.getSupporter_name() != null) {
+				u = userRepo.findByEmail(donation.getSupporter_name().toLowerCase());
+			}
+			
+			if (u == null && donation.getSupporter_message() != null) {
+				u = userRepo.findByEmail(donation.getSupporter_message().toLowerCase());
+			}
+			
+			if (u == null && donation.getSupporter_email() != null) {
+				u = userRepo.findByEmail(donation.getSupporter_email().toLowerCase());
+			}
+			
+			if (u != null) {
+				UserDonation userDonation = new UserDonation();
+				double amount = donation.getTotal_amount() * BMAC_AMOUNT_FACTOR;
+				amount = (double) Math.round(amount * 100) / 100;
 				userDonation.setAmount(amount);
 				userDonation.setDate(now);
 				userDonation.setUser(u);

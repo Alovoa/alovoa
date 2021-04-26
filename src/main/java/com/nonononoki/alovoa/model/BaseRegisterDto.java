@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class BaseRegisterDto {
 	
-	User user;
-	RegisterDto registerDto;
+	private User user;
+	private RegisterDto registerDto;
 	
 }

@@ -9,15 +9,15 @@ import lombok.Data;
 @Builder
 @Data
 public class UserSearchRequest {
-	double minLat;
-	double maxLat ;
-	double minLong;
-	double maxLong;
-	Date minDate;
-	Date maxDate;
-	String intentionText;
-	Collection<Long> likeIds;
-	Collection<Long> hideIds;
-	Collection<Long> blockIds;
-	Collection<String> genderTexts;
+	private double minLat;
+	private double maxLat ;
+	private double minLong;
+	private double maxLong;
+	private Date minDate;
+	private Date maxDate;
+	private String intentionText;
+	private Collection<Long> likeIds;
+	private Collection<Long> hideIds;
+	private Collection<Long> blockIds;
+	private Collection<String> genderTexts;
 }
