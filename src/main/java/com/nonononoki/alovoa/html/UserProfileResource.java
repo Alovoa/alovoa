@@ -1,10 +1,10 @@
 package com.nonononoki.alovoa.html;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
@@ -28,7 +28,9 @@ public class UserProfileResource {
 	@Autowired
 	private ProfileResource profileResource;
 	
-	
+	@Value("${app.age.legal}")
+	private int ageLegal;
+		
 	@GetMapping("/profile/view/{idEncoded}")
 	public ModelAndView profileView(@PathVariable String idEncoded) throws NumberFormatException, Exception {
 		long id =  UserDto.decodeId(idEncoded, textEncryptor);
@@ -48,9 +50,15 @@ public class UserProfileResource {
 			userView = userRepo.saveAndFlush(userView);
 			
 			ModelAndView mav = new ModelAndView("userProfile");
-			mav.addObject("user", UserDto.userToUserDto(userView, user, textEncryptor, UserDto.NO_AUDIO));
-			mav.addObject("currUser", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
-
+			UserDto userDto = UserDto.userToUserDto(userView, user, textEncryptor, UserDto.NO_AUDIO);
+			UserDto currUserDto = UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA);
+			
+			mav.addObject("user", userDto);
+			mav.addObject("currUser", currUserDto);
+			
+			boolean isAgeCompatible = (userDto.getAge() < ageLegal == currUserDto.getAge() < ageLegal);
+			mav.addObject("isAgeCompatible", isAgeCompatible);
+			
 			return mav;
 			
 		} else {

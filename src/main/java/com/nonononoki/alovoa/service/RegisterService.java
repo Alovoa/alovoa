@@ -104,21 +104,18 @@ public class RegisterService {
 		}
 		
 		if(!isValidEmailAddress(dto.getEmail())) {
-			throw new Exception(publicService.text("backend.error.captcha.invalid"));
-		}
-
-		User user = userRepo.findByEmail(dto.getEmail().toLowerCase());
-		if (user != null) {
 			throw new Exception("email_invalid");
 		}
 		
-		if(dto.getEmail().contains(GMAIL_EMAIL)) {
-			String[] parts = dto.getEmail().split("@");
-			String cleanEmail = parts[0].replace(".", "") + "@" + parts[1];
-			dto.setEmail(cleanEmail);
-		} 
-		if(dto.getEmail().contains("+")) {
-			dto.setEmail(dto.getEmail().split("+")[0] + "@" + dto.getEmail().split("@")[1]);
+		if (!profile.equals(Tools.DEV)) {
+			if(dto.getEmail().contains(GMAIL_EMAIL)) {
+				String[] parts = dto.getEmail().split("@");
+				String cleanEmail = parts[0].replace(".", "") + "@" + parts[1];
+				dto.setEmail(cleanEmail);
+			} 
+			if(dto.getEmail().contains("+")) {
+				dto.setEmail(dto.getEmail().split("+")[0] + "@" + dto.getEmail().split("@")[1]);
+			}
 		}
 
 		// check if email is in spam mail list
@@ -131,6 +128,11 @@ public class RegisterService {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+		
+		User user = userRepo.findByEmail(dto.getEmail().toLowerCase());
+		if (user != null) {
+			throw new Exception(publicService.text("backend.error.register.email-exists"));
 		}
 		
 		BaseRegisterDto baseRegisterDto = registerBase(dto);
