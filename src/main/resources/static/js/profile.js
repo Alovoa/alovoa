@@ -424,6 +424,11 @@ function updateProfileWarning(onStart) {
 	
 }
 
+function viewProfile(idEnc) {
+	let url = 'profile/view/' + idEnc;
+	window.open(url, '_blank').focus();
+}
+
 function getBase64(file, callback) {
 	var reader = new FileReader();
 	reader.readAsDataURL(file);

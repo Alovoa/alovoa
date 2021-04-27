@@ -21,7 +21,7 @@ oc<!DOCTYPE html>
 		<div style="padding-top: 4px;"></div>
 	</div>
 
-	<div th:fragment="header" id="header" th:unless="${hideHeader}">
+	<div th:fragment="header" id="header">
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
 				<a class="navbar-item" href="/"> <img src="/img/icon.png" width="40" height="40">
@@ -55,7 +55,7 @@ oc<!DOCTYPE html>
 
 	</div>
 
-	<div th:fragment="header-logged-in" id="header-logged-in" th:unless="${hideHeader}">
+	<div th:fragment="header-logged-in" id="header-logged-in">
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
 				<a class="navbar-item"> <img src="/img/icon.png" width="40" height="40">
@@ -381,19 +381,6 @@ oc<!DOCTYPE html>
 			}
 		</script>
 	</div>
-
-	<div th:fragment="iframe">
-		<div id="iframe-div">
-			<div id="iframe-header">
-				<i id="iframe-close-icon" class="fa fa-times"
-					onclick="deleteIframe()"></i>
-			</div>
-			<div id="iframe-parent">
-				<iframe id="iframe"></iframe>
-			</div>
-		</div>
-	</div>
-
 
 </body>
 </html>

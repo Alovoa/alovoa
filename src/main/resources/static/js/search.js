@@ -119,8 +119,7 @@ function getUserDivFromButton(btn) {
 
 function onDonateModalClicked() {
 	$('#donate-modal').removeClass('is-active'); 
-	//window.open('/donate-list', '_blank');
-	loadIframe("donate-list" +  "?showHeader=false");
+	window.open('/donate-list', '_blank');
 }
 
 function playPauseAudio(userIdEnc) {
@@ -151,4 +150,9 @@ function playPauseAudio(userIdEnc) {
 		}
 	});
 	}
+}
+
+function viewProfile(idEnc) {
+	let url = 'profile/view/' + idEnc;
+	window.open(url, '_blank').focus();
 }

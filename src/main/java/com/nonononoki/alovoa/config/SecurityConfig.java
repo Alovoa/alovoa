@@ -57,8 +57,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.key(key);
 
 		http.csrf().ignoringAntMatchers("/donate/received/**");
-
-		http.headers().frameOptions().sameOrigin();
 		http.requiresChannel().anyRequest().requiresSecure();
 	}
 

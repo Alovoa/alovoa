@@ -30,7 +30,7 @@ public class UserProfileResource {
 	
 	
 	@GetMapping("/profile/view/{idEncoded}")
-	public ModelAndView profileView(@PathVariable String idEncoded, @RequestParam(required = false) String showHeader) throws NumberFormatException, Exception {
+	public ModelAndView profileView(@PathVariable String idEncoded) throws NumberFormatException, Exception {
 		long id =  UserDto.decodeId(idEncoded, textEncryptor);
 		User userView = userRepo.findById(id).orElse(null);
 		User user = authService.getCurrentUser();
@@ -50,11 +50,6 @@ public class UserProfileResource {
 			ModelAndView mav = new ModelAndView("userProfile");
 			mav.addObject("user", UserDto.userToUserDto(userView, user, textEncryptor, UserDto.NO_AUDIO));
 			mav.addObject("currUser", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
-			boolean hideHeader = false;
-			if(showHeader != null && showHeader.equals("false")) {
-				hideHeader = true;
-			}
-			mav.addObject("hideHeader",  hideHeader );
 
 			return mav;
 			

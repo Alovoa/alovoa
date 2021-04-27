@@ -1,35 +1,36 @@
 <!DOCTYPE html>
 <html th:lang="${lang}">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Alovoa">
-<link rel="manifest" href="/manifest/manifest.json">
 
-<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-<th:block th:replace="fragments.html::bulma"></th:block>
-<th:block th:replace="fragments.html::ui-design"></th:block>
-<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
-<link rel="stylesheet" href="/css/lib/css-loaders.css" />
-<link rel="stylesheet" href="/css/alovoa.css" />
-<link rel="stylesheet" href="/css/notification.css" />
-<title th:text="#{notification.title}"></title>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-title" content="Alovoa">
+	<link rel="manifest" href="/manifest/manifest.json">
+
+	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+	<th:block th:replace="fragments.html::bulma"></th:block>
+	<th:block th:replace="fragments.html::ui-design"></th:block>
+	<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
+	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
+	<link rel="stylesheet" href="/css/alovoa.css" />
+	<link rel="stylesheet" href="/css/notification.css" />
+	<title th:text="#{notification.title}"></title>
 </head>
+
 <body>
 	<div id="main-logged-in">
 		<header th:insert="fragments.html::header-logged-in"></header>
 		<section class="container" id="main-container">
 			<div class="section">
 				<div class="container" style="width: 100%;">
-					<div class="card is-horizontal notification-card"
-						th:each="notification : ${notifications}" style="width: 100%;"
-						th:onclick="viewProfile([[${notification.userFromDto.idEncoded}]])">
+					<div class="card is-horizontal notification-card" th:each="notification : ${notifications}"
+						style="width: 100%;" th:onclick="viewProfile([[${notification.userFromDto.idEncoded}]])">
 						<div class="card-image">
 							<figure class="image">
-								<img th:src="${notification.userFromDto.profilePicture}"
-									class="profile-pic" style="margin: 0;">
+								<img th:src="${notification.userFromDto.profilePicture}" class="profile-pic"
+									style="margin: 0;">
 							</figure>
 						</div>
 						<div class="card-content">
@@ -47,11 +48,10 @@
 			</div>
 		</section>
 	</div>
-	
+
 	<div class="loader-parent">
 		<div class="loader"></div>
 	</div>
-	<div th:replace="fragments.html::iframe"></div>
 
 	<footer th:replace="fragments.html::navigation"></footer>
 
@@ -59,6 +59,13 @@
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/tools/getNotification.js"></script>
 	<script src="/js/tools/getText.js"></script>
-	<script src="/js/tools/iframe.js"></script>
+	<script src="/js/tools/loader.js"></script>
+	<script>
+		function viewProfile(idEnc) {
+			let url = 'profile/view/' + idEnc;
+			window.open(url, '_blank').focus();
+		}
+	</script>
 </body>
+
 </html>

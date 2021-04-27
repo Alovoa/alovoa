@@ -3,7 +3,6 @@ package com.nonononoki.alovoa.html;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
@@ -21,13 +20,8 @@ public class DonateListResource {
 	private TextEncryptorConverter textEncryptor;
 
 	@GetMapping("/donate-list")
-	public ModelAndView donate(@RequestParam(required = false) String showHeader) throws Exception {
+	public ModelAndView donate() throws Exception {
 		ModelAndView mav = new ModelAndView("donate-list");
-		boolean hideHeader = false;
-		if (showHeader != null && showHeader.equals("false")) {
-			hideHeader = true;
-		}
-		mav.addObject("hideHeader", hideHeader);
 		User user = authService.getCurrentUser();
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;

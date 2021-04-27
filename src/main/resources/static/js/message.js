@@ -14,3 +14,8 @@ $('.profile-pic').click(function(event){
 	let val = $(event.target).attr("value");
 	viewProfile(val);
 });
+
+function viewProfile(idEnc) {
+	let url = 'profile/view/' + idEnc;
+	window.open(url, '_blank').focus();
+}
