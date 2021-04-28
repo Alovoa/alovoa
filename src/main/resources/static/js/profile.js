@@ -141,7 +141,8 @@ $(function() {
 					"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
 				},
 				success : function(e) {
-					updateProfileWarning();
+					//updateProfileWarning();
+					location.reload();
 				},
 				error : function(e) {
 					console.log(e);

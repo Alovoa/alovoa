@@ -94,24 +94,39 @@
 							th:text="${user.description}"></textarea>
 					</div>
 
-					<div class="field"   id="intention-field">
+					<div class="field" id="intention-field">
 						<label class="label" th:text="#{profile.intention}"></label>
 						<div class="select">
 							<select id="intention">
-								<option th:unless="${user.intention}"></option>
-								<th:block th:each="intention : ${intentions}">
-									<option th:value="${intention.id}"
-										th:selected="${user.intention != null && user.intention.id == intention.id}"
-										th:if="${intention.text == 'meet'}"
-										th:text="#{profile.intention.meet}"></option>
-									<option th:value="${intention.id}"
-										th:selected="${user.intention != null && user.intention.id == intention.id}"
-										th:if="${intention.text == 'date'}"
-										th:text="#{profile.intention.date}"></option>
-									<option th:value="${intention.id}"
-										th:selected="${user.intention != null && user.intention.id == intention.id}"
-										th:if="${intention.text == 'sex' &&  isLegal}"
-										th:text="#{profile.intention.sex}"></option>
+								<th:block th:if="${showIntention}">
+									<option th:unless="${user.intention}"></option>
+									<th:block th:each="intention : ${intentions}">
+										<option th:value="${intention.id}"
+											th:selected="${user.intention != null && user.intention.id == intention.id}"
+											th:if="${intention.text == 'meet'}"
+											th:text="#{profile.intention.meet}"></option>
+										<option th:value="${intention.id}"
+											th:selected="${user.intention != null && user.intention.id == intention.id}"
+											th:if="${intention.text == 'date'}"
+											th:text="#{profile.intention.date}"></option>
+										<option th:value="${intention.id}"
+											th:selected="${user.intention != null && user.intention.id == intention.id}"
+											th:if="${intention.text == 'sex' &&  isLegal}"
+											th:text="#{profile.intention.sex}"></option>
+									</th:block>
+								</th:block>
+								<th:block th:if="${user.intention != null}">
+									<th:block th:unless="${showIntention}" th:each="intention : ${intentions}">
+										<option
+											th:if="${user.intention.id == intention.id && intention.text == 'meet'}"
+											th:text="#{profile.intention.meet}"></option>
+										<option
+											th:if="${user.intention.id == intention.id && intention.text == 'date'}"
+											th:text="#{profile.intention.date}"></option>
+										<option
+											th:if="${user.intention.id == intention.id && intention.text == 'sex'}"
+											th:text="#{profile.intention.sex}"></option>
+									</th:block>
 								</th:block>
 							</select>
 						</div>

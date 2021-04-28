@@ -156,6 +156,9 @@ public class UserService {
 
 	@Value("${app.user.delete.delay}")
 	private long userDeleteDelay;
+	
+	@Value("${app.intention.delay}")
+	private long intentionDelay;
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
@@ -399,14 +402,19 @@ public class UserService {
 
 	public void updateIntention(long intention) throws Exception {
 		User user = authService.getCurrentUser();
-		boolean isLegal = Tools.calcUserAge(user) >= ageLegal;
-		if (!isLegal && intention == UserIntention.SEX) {
-			throw new Exception("not_supported");
+		
+		Date now = new Date();
+		if(user.getDates().getIntentionChangeDate() == null || 
+				now.getTime() >= user.getDates().getIntentionChangeDate().getTime() + intentionDelay ) {
+			boolean isLegal = Tools.calcUserAge(user) >= ageLegal;
+			if (!isLegal && intention == UserIntention.SEX) {
+				throw new Exception("not_supported");
+			}
+			UserIntention i = userIntentionRepo.findById(intention).orElse(null);
+			user.setIntention(i);
+			user.getDates().setIntentionChangeDate(now);
+			userRepo.saveAndFlush(user);
 		}
-		UserIntention i = userIntentionRepo.findById(intention).orElse(null);
-		user.setIntention(i);
-		user.getDates().setIntentionChangeDate(new Date());
-		userRepo.saveAndFlush(user);
 	}
 
 	public void updateMinAge(int userMinAge) throws Exception {

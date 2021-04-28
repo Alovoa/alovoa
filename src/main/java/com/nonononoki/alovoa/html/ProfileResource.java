@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.html;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -44,6 +46,9 @@ public class ProfileResource {
 	
 	@Value("${app.media.max-size}")
 	private int mediaMaxSize;
+	
+	@Value("${app.intention.delay}")
+	private long intentionDelay;
 
 	@GetMapping("/profile")
 	public ModelAndView profile() throws Exception {
@@ -62,6 +67,15 @@ public class ProfileResource {
 			mav.addObject("vapidPublicKey", vapidPublicKey);
 			mav.addObject("isLegal", isLegal);
 			mav.addObject("mediaMaxSize", mediaMaxSize);
+			
+			boolean showIntention = false;
+			Date now = new Date();
+			if(user.getDates().getIntentionChangeDate() == null || 
+					now.getTime() >= user.getDates().getIntentionChangeDate().getTime() + intentionDelay ) {
+				showIntention = true;
+			}
+			mav.addObject("showIntention", showIntention);
+			
 			return mav;
 		}
 	}
