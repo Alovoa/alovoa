@@ -147,39 +147,39 @@
 				<div class="profile-bottom full-width"
 					style="display: inline-block;">
 					<div class="left">
-						<button class="button colored is-rounded is-danger"
+						<button class="button colored is-danger"
 							th:unless="${user.blockedByCurrentUser}"
 							th:onclick="blockUser([[${user.idEncoded}]])">
 							<i class="fa fa-ban"></i>
 						</button>
-						<button class="button colored is-rounded is-success"
+						<button class="button colored is-success"
 							th:if="${user.blockedByCurrentUser}"
 							th:onclick="unblockUser([[${user.idEncoded}]])">
 							<i class="fa fa-ban"></i>
 						</button>
-						<button class="button colored is-rounded is-info"
+						<button class="button colored is-info"
 							th:unless="${user.reportedByCurrentUser}"
 							th:onclick="reportUser()">
 							<i class="fa fa-flag"></i>
 						</button>
 					</div>
 					<div class="right" th:if="${isAgeCompatible}">
-						<button class="button colored is-rounded is-danger"
+						<button class="button colored is-danger"
 							th:unless="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
 							th:onclick="hideUser([[${user.idEncoded}]])">
 							<i class="fa fa-thumbs-down"></i>
 						</button>
-						<button class="button colored is-rounded is-danger"
+						<button class="button colored is-danger"
 							th:if="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
 							th:onclick="hideUser([[${user.idEncoded}]])" disabled>
 							<i class="fa fa-thumbs-down"></i>
 						</button>
-						<button class="button colored is-rounded is-success"
+						<button class="button colored is-success"
 							th:unless="${user.likedByCurrentUser}"
 							th:onclick="likeUser([[${user.idEncoded}]])">
 							<i class="fa fa-thumbs-up"></i>
 						</button>
-						<button class="button colored is-rounded is-success"
+						<button class="button colored is-success"
 							th:if="${user.likedByCurrentUser}"
 							th:onclick="likeUser([[${user.idEncoded}]])" disabled>
 							<i class="fa fa-thumbs-up"></i>

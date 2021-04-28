@@ -251,22 +251,22 @@ oc<!DOCTYPE html>
 									<div class="profile-bottom full-width dimmed"
 										style="display: inline-block;">
 										<div class="left">
-											<button class="button colored is-rounded is-info"
+											<button class="button colored is-info"
 												th:onclick="viewProfile([[${user.idEncoded}]]);" style="margin-right: 4px;">
 												<i class="fa fa-user"></i>
 											</button>
-											<button class="button colored is-rounded is-info search-audio" th:if="${user.hasAudio}"
+											<button class="button colored is-info search-audio" th:if="${user.hasAudio}"
 												th:onclick="playPauseAudio([[${user.idEncoded}]]);">
 												<i class="fa fa-headphones"></i>
 											</button>
 										</div>
 										<div class="right">
-											<button class="button colored is-rounded is-danger"
+											<button class="button colored is-danger"
 												style="margin-right: 4px;"
 												th:onclick="hideUser([[${user.idEncoded}]])">
 												<i class="fa fa-thumbs-down"></i>
 											</button>
-											<button class="button colored is-rounded is-success"
+											<button class="button colored is-success"
 												th:onclick="likeUser([[${user.idEncoded}]])">
 												<i class="fa fa-thumbs-up"></i>
 											</button>
