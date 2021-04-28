@@ -241,12 +241,24 @@ input[type=range].slider {
 }
 
 .datepicker-nav .button.is-text:active, .datepicker-nav .button.is-text:focus
-	{
+{
 	background: #ec417a;
 }
 
 .datepicker-year span, .datepicker-month, .date-item {
 	color: #4a4a4a !important;
+}
+
+.datepicker-nav-year {
+	border: white 1px solid;
+	border-radius: 4px;
+	padding: 2px;
+	padding-right: 4px;
+	padding-left: 4px;
+}
+
+.datepicker-nav-month {
+	line-height: 1.8;
 }
 
 .loader-parent {
