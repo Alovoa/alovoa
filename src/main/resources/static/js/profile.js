@@ -1,6 +1,7 @@
 //TODO
 const descriptionMaxLength = 200;
 const maxImageSize = 600;
+const maxAudioSeconds = 10;
 
 $(function() {
 
@@ -31,14 +32,20 @@ $(function() {
 	$("#profilePictureUpload").change(function() {
 		showLoader();
 		let file = document.querySelector('#profilePictureUpload').files[0];
-		if (file.size > mediaMaxSize) {
-			hideLoader();
-			alert(getText("error.media.max-size-exceeded"));
-			return;
-		}
+//		if (file.size > mediaMaxSize) {
+//			hideLoader();
+//			alert(getText("error.media.max-size-exceeded"));
+//			return;
+//		}
 
 		resizeImage(file, function(b64) {
 			if (b64) {
+				if (getBase64InMB(b64) > mediaMaxSize) {
+					hideLoader();
+					alert(getText("error.media.max-size-exceeded"));
+					return;
+				}
+
 				$.ajax({
 					type: "POST",
 					url: "/user/update/profile-picture",
@@ -62,14 +69,14 @@ $(function() {
 
 	$("#addImageInput").change(function() {
 		let file = document.querySelector('#addImageInput').files[0];
-		if (file.size > mediaMaxSize) {
-			hideLoader();
-			alert(getText("error.media.max-size-exceeded"));
-			return;
-		}
 		showLoader();
 		resizeImage(file, function(b64) {
 			if (b64) {
+				if (getBase64InMB(b64) > mediaMaxSize) {
+					hideLoader();
+					alert(getText("error.media.max-size-exceeded"));
+					return;
+				}
 				$.ajax({
 					type: "POST",
 					url: "/user/image/add",
@@ -285,14 +292,14 @@ $(function() {
 	$("#audio-file").change(function() {
 		showLoader();
 		let file = document.querySelector('#audio-file').files[0];
-		if (file.size > mediaMaxSize) {
-			hideLoader();
-			alert(getText("error.media.max-size-exceeded"));
-			return;
-		}
-		getBase64(file, function(b64) {
+		resizeAudio(file, function(b64) {
 			if (b64) {
-
+				if (getBase64InMB(b64) > mediaMaxSize) {
+					hideLoader();
+					alert(getText("error.media.max-size-exceeded"));
+					return;
+				}
+				
 				var type = file.type.split('/')[1];
 
 				$.ajax({
@@ -315,8 +322,6 @@ $(function() {
 			}
 		});
 	});
-
-
 });
 
 function deleteAudio() {
@@ -392,9 +397,7 @@ function updateAccentColor(color) {
 }
 
 function updateUiDesign() {
-
 	let des = $("#ui-design-select").val();
-	console.log(des)
 	$.ajax({
 		type: "POST",
 		url: "/user/ui-design/update/" + des,
@@ -431,6 +434,17 @@ function viewProfile(idEnc) {
 	window.open(url, '_blank').focus();
 }
 
+function resizeAudio(file, callback) {
+	if(file.type="audio/mpeg") {
+		let cutter = new mp3cutter();
+		cutter.cut(file, 0, maxAudioSeconds, function(cut) {
+			getBase64(cut, callback);
+		});
+	} else {
+		getBase64(file, callback);
+	}
+}
+
 function resizeImage(file, callback) {
 	var reader = new FileReader();
 	reader.onload = function(readerEvent) {
@@ -459,6 +473,10 @@ function resizeImage(file, callback) {
 		img.src = readerEvent.target.result;
 	}
 	reader.readAsDataURL(file);
+}
+
+function getBase64InMB(base64) {
+	return (base64.length * (3/4) - 1) / 1000000;
 }
 
 function getBase64(file, callback) {
