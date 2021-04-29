@@ -55,6 +55,9 @@ public class RegisterService {
 	@Value("${spring.profiles.active}")
 	private String profile;
 
+	@Value("${app.intention.delay}")
+	private long intentionDelay;
+	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -236,7 +239,7 @@ public class RegisterService {
 		dates.setActiveDate(today);
 		dates.setCreationDate(today);
 		dates.setDateOfBirth(dto.getDateOfBirth());
-		dates.setIntentionChangeDate(today);
+		dates.setIntentionChangeDate(new Date(today.getTime() - intentionDelay)) ;
 		dates.setMessageCheckedDate(today);
 		dates.setMessageDate(today);
 		dates.setNotificationCheckedDate(today);
