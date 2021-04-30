@@ -435,13 +435,16 @@ function viewProfile(idEnc) {
 }
 
 function resizeAudio(file, callback) {
-	if(file.type="audio/mpeg") {
+	if(file.type == "audio/mpeg") {
 		let cutter = new mp3cutter();
 		cutter.cut(file, 0, maxAudioSeconds, function(cut) {
 			getBase64(cut, callback);
 		});
-	} else {
+	} else if(file.type == "audio/x-wav"){
 		getBase64(file, callback);
+	} else {
+		hideLoader();
+		alert(getText("error.format-not-supported"));
 	}
 }
 
