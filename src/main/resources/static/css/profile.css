@@ -20,12 +20,3 @@
 		padding: 0.5rem 1rem;
 	}
 }
-
-@media screen and (min-width: 1024px) {
-	.is-collapsible {
-		height: initial !important;
-	}
-	.collapsible-header {
-		display: none;
-	}
-}

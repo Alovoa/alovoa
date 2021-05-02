@@ -280,6 +280,25 @@ input[type=range].slider {
 	width: 270px;
 }
 
+.collapsible-desktop {
+	display: none;
+}
+
+@media screen and (min-width: 1024px) {
+	.is-collapsible {
+		height: initial !important;
+	}
+	.collapsible-header {
+		display: none;
+	}
+	.collapsible-desktop {
+		display: flex;
+	}
+	.collapsible-mobile {
+		display: none;
+	}
+}
+
 @media screen and (max-width: 700px) {
 	.navigation-item span {
 		display: none;
@@ -358,6 +377,12 @@ input[type=range].slider {
 	}
 }
 
+@media screen and (max-width: 420px) {
+	#navbar-item-register {
+		display: none;
+	}
+}
+
 @media screen and (max-width: 400px) {
 	#oauth-div button span {
 		font-size: 16px;
@@ -373,12 +398,6 @@ input[type=range].slider {
 @media screen and (max-width: 340px) {
 	#oauth-div span {
 		font-size: 0.7em ! important;
-	}
-}
-
-@media screen and (max-width: 420px) {
-	#navbar-item-register {
-		display: none;
 	}
 }
 
