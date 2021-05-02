@@ -133,10 +133,8 @@ public class DonateService {
 			Date now = new Date();
 			DonationBmac.DonationBmacResponse donation = data.getResponse();
 			
-			if(profile.equals(Tools.PROD)) {
-				if(BMAC_TEST_EMAIL.equals(donation.getSupporter_email().toLowerCase())) {
-					return;
-				}
+			if(profile.equals(Tools.PROD) && BMAC_TEST_EMAIL.equals(donation.getSupporter_email().toLowerCase())) {
+				return;
 			}
 			
 			User u = null;
