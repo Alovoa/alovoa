@@ -436,10 +436,15 @@ function viewProfile(idEnc) {
 
 function resizeAudio(file, callback) {
 	if(file.type == "audio/mpeg") {
+		try {
 		let cutter = new mp3cutter();
 		cutter.cut(file, 0, maxAudioSeconds, function(cut) {
 			getBase64(cut, callback);
 		});
+		} catch(e) {
+			console.log(e);
+			getBase64(file, callback);
+		}
 	} else if(file.type == "audio/x-wav"){
 		getBase64(file, callback);
 	} else {

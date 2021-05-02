@@ -11,6 +11,14 @@
 	border-radius: 12px;
 }
 
+#donate-box {
+	margin-top: 24px;
+}
+
+#donate-box:hover, #donate-box *:hover {
+	cursor: pointer;
+}
+
 @media screen and (max-width: 460px) {
 	.box {
 		padding: 0px;

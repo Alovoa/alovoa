@@ -5,3 +5,7 @@
 .button svg {
 	color: white; 
 }
+
+.notification.is-success {
+    opacity: 0.7;
+}

@@ -81,7 +81,7 @@
 
 				</div>
 				
-				<div class="box" onclick="window.open('/donate-list', '_blank');">
+				<div class="box" onclick="window.open('/donate-list', '_blank');" id="donate-box">
 					<label class="label" th:text="#{donated}"></label>
 					<label th:text=" ${#numbers.formatDecimal(user.totalDonations, 1, 2, 'POINT') + ' €'}"></td>></label>
 				</div>
@@ -209,13 +209,14 @@
 							<div class="colored button is-info" id="audio-upload-button">
 								<i class="fa fa-microphone"></i>
 							</div>
-							<input type="file" accept=".mp3, audio/mpeg, .wav, audio/x-wav" id="audio-file"
+							<input type="file" accept="audio/*" id="audio-file"
 								style="display: none">
 							<div style="padding-left: 4px;" th:if="${user.audio}"></div>
 							<div class="colored button is-danger" onclick="deleteAudio()"
 								th:if="${user.audio}">
 								<i class="fa fa-trash"></i>
 							</div>
+							<div class="notification is-info" style="height: 40px; margin-left: 4px; opacity: 0.5;">.mp3 .wav</div>
 						</div>
 					</div>
 					<div class="notification is-info" th:text="#{profile.audio.info}"
