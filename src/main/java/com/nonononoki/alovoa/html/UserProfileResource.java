@@ -49,7 +49,7 @@ public class UserProfileResource {
 			userView.setNumberProfileViews(userView.getNumberProfileViews()+1);
 			userView = userRepo.saveAndFlush(userView);
 			
-			ModelAndView mav = new ModelAndView("userProfile");
+			ModelAndView mav = new ModelAndView("user-profile");
 			UserDto userDto = UserDto.userToUserDto(userView, user, textEncryptor, UserDto.NO_AUDIO);
 			UserDto currUserDto = UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA);
 			
