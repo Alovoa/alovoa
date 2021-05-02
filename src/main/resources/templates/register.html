@@ -35,10 +35,10 @@
 					</a>
 				</header>
 				<div id="collapsible-card" class="is-collapsible">
-					<div style="margin-bottom: 48px;">
-						<div style="padding-top: 32px;" class="collapsible-mobile"></div>
+					<div style="margin: 8px; margin-bottom: 48px;" class="box">
+						<div style="padding-top: 4px;" class="collapsible-mobile"></div>
 						<h3 style="font-size: 1.3em; font-weight: 600; margin-bottom: 12px;"
-							th:text="#{register.email.sign-up}"></h3>
+							th:text="#{register.email.sign-up}" class="collapsible-desktop"></h3>
 						<form th:action="@{/register}" method="POST" id="register-form">
 							<div class="field">
 								<label class="label" th:text="#{first-name}" style="float: left;"></label><span
