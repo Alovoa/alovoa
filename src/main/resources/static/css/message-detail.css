@@ -89,7 +89,7 @@
 		padding-right: 8px;
 	}
 	#messages-div {
-		min-height: calc(100vh - 320px);
-		max-height: calc(100vh - 320px);
+		min-height: calc(100vh - 290px);
+		max-height: calc(100vh - 290px);
 	}
 }
