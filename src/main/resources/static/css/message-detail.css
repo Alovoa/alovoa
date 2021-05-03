@@ -8,8 +8,8 @@
 }
 
 #messages-div {
-	min-height: calc(100vh - 400px);
-	max-height: calc(100vh - 400px);
+	min-height: calc(100vh - 370px);
+	max-height: calc(100vh - 370px);
 	overflow: auto;
 }
 

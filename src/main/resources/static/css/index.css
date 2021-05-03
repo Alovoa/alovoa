@@ -7,8 +7,8 @@
 }
 .card-image {
 	font-size: 8rem;
-	padding-top: 2rem;
-	padding-bottom: 2rem;
+	/*padding-top: 2rem;*/
+	/*padding-bottom: 2rem;*/
 	color: #209cee;
 }
 
@@ -43,4 +43,10 @@
 }
 #icon-for-you path {
 	color: #00897b !important;
+}
+
+@media screen and (max-width: 600px) {
+	#banner {
+		 height: 300px;
+	}
 }

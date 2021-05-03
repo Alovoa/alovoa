@@ -200,13 +200,12 @@
 					<div class="field" style="display: inline-block;">
 
 						<div style="display: flex; float: left; margin-bottom: 4px;">
-							<audio id="audio" th:src="${user.audio}" th:if="${user.audio}"
+							<audio id="audio" th:src="${user.audio}" th:if="${user.audio}" style="height: 40px;"
 								controls></audio>
-							<div style="padding-left: 4px;" th:if="${user.audio}"></div>
 						</div>
 						<div style="display: flex; float: left;">
-
-							<div class="colored button is-info" id="audio-upload-button">
+							<div class="notification is-info" style="height: 40px; margin-left: 4px; opacity: 0.5;">.mp3 .wav</div>
+							<div class="colored button is-info" id="audio-upload-button" style="margin-left: 4px;">
 								<i class="fa fa-microphone"></i>
 							</div>
 							<input type="file" accept="audio/*" id="audio-file"
@@ -216,7 +215,6 @@
 								th:if="${user.audio}">
 								<i class="fa fa-trash"></i>
 							</div>
-							<div class="notification is-info" style="height: 40px; margin-left: 4px; opacity: 0.5;">.mp3 .wav</div>
 						</div>
 					</div>
 					<div class="notification is-info" th:text="#{profile.audio.info}"
