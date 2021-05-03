@@ -26,48 +26,51 @@
 				<div>
 					<h3 class="title" th:text="#{login.title}"></h3>
 					<p class="subtitle" th:text="#{login.subtitle}"></p>
-					<header class="card-header collapsible-header">
-						<a href="#collapsible-card" data-action="collapse"
-							class="card-header-icon is-hidden-fullscreen full-width" aria-label="more options"
-							style="padding: 1.25rem; display: flex; justify-content: space-between;">
-							<span class="label" style="margin-bottom: initial;" th:text="#{login.email.sign-in}"></span>
-							<div class="navbar-link"></div>
-						</a>
-					</header>
-					<div id="collapsible-card" class="is-collapsible">
-						<div style="margin: 8px;margin-bottom: 48px;" class="box">
-							<div style="padding-top: 4px;" class="collapsible-mobile"></div>
-							<h3 th:text="#{login.email.sign-in}" class="collapsible-desktop"
-								style="font-size: 1.3em; font-weight: 600; margin-bottom: 12px;"></h3>
-							<form th:action="@{/login}" method="POST">
-								<div class="field">
-									<div class="control">
-										<input class="input" type="email" th:placeholder="#{email}" autofocus=""
-											name="username">
+					<div class="box no-shadow" style="padding: 0px;">
+						<header class="card-header collapsible-header no-shadow"
+							style="margin-left: 10px; margin-right: 10px;">
+							<a href="#collapsible-card" data-action="collapse"
+								class="card-header-icon is-hidden-fullscreen full-width box colored is-rounded"
+								style="display: flex; justify-content: center;">
+								<span class="label" style="margin-bottom: initial;"
+									th:text="#{login.email.sign-in}"></span>
+							</a>
+						</header>
+						<div id="collapsible-card" class="is-collapsible">
+							<div style="margin: 8px; margin-bottom: 48px;" class="box">
+								<div style="padding-top: 4px;" class="collapsible-mobile"></div>
+								<h3 th:text="#{login.email.sign-in}" class="collapsible-desktop"
+									style="font-size: 1.3em; font-weight: 600; margin-bottom: 12px;"></h3>
+								<form th:action="@{/login}" method="POST">
+									<div class="field">
+										<div class="control">
+											<input class="input" type="email" th:placeholder="#{email}" autofocus=""
+												name="username">
+										</div>
 									</div>
-								</div>
 
-								<div class="field">
-									<div class="control">
-										<input class="input" type="password" th:placeholder="#{password}"
-											name="password">
+									<div class="field">
+										<div class="control">
+											<input class="input" type="password" th:placeholder="#{password}"
+												name="password">
+										</div>
 									</div>
-								</div>
-								<div th:replace="fragments.html::captcha"></div>
-								<!-- TODO: Causes exception 
+									<div th:replace="fragments.html::captcha"></div>
+									<!-- TODO: Causes exception 
 							<div class="field">
 								<label class="checkbox"> <input type="checkbox"
 									name="remember-me"> Remember me
 								</label>
 							</div>
 							-->
-								<button class="button is-link" th:text="#{submit}"></button>
-							</form>
+									<button class="button is-link" th:text="#{submit}"></button>
+								</form>
+							</div>
 						</div>
 					</div>
 
 					<div class="container" style="margin-bottom: 24px; margin-top: 24px;" id="oauth-div">
-						<div class="box">
+						<div class="box no-shadow">
 							<div class="columns">
 								<button class="button colored"
 									style="background-color: #4285F4; width: 100%; margin-right: 4px;margin-bottom: 4px;"

@@ -26,106 +26,112 @@
 			<div class="container">
 				<h3 class="title" th:text="#{register.title}"></h3>
 				<p class="subtitle" th:text="#{register.subtitle}"></p>
-				<header class="card-header collapsible-header">
-					<a href="#collapsible-card" data-action="collapse"
-						class="card-header-icon is-hidden-fullscreen full-width" aria-label="more options"
-						style="padding: 1.25rem; display: flex; justify-content: space-between;">
-						<span class="label" style="margin-bottom: initial;" th:text="#{register.email.sign-up}"></span>
-						<div class="navbar-link"></div>
-					</a>
-				</header>
-				<div id="collapsible-card" class="is-collapsible">
-					<div style="margin: 8px; margin-bottom: 48px;" class="box">
-						<div style="padding-top: 4px;" class="collapsible-mobile"></div>
-						<h3 style="font-size: 1.3em; font-weight: 600; margin-bottom: 12px;"
-							th:text="#{register.email.sign-up}" class="collapsible-desktop"></h3>
-						<form th:action="@{/register}" method="POST" id="register-form">
-							<div class="field">
-								<label class="label" th:text="#{first-name}" style="float: left;"></label><span
-									class="asterisk">*</span>
-								<div class="control">
-									<input class="input" type="text" name="firstName" maxlength="12" required>
-								</div>
-							</div>
-							<div class="field">
-								<label class="label" th:text="#{email}" style="float: left;"></label><span
-									class="asterisk">*</span>
-								<div class="control">
-									<input class="input" type="email" name="email" required>
-								</div>
-							</div>
-							<div class="field">
-								<label class="label" th:text="#{dob}" style="float: left;"></label><span
-									class="asterisk">*</span>
-								<div class="control">
-									<input type="date" name="dateOfBirth" style="width: 100%;" required>
-								</div>
-							</div>
-
-							<div class="field">
-								<label class="label" th:text="#{password}"></label>
-								<div class="control">
-									<input class="input" type="password" name="password" id="password" required>
-								</div>
-							</div>
-							<div class="field">
-								<label class="label" th:text="#{password-repeat}"></label>
-								<div class="control">
-									<input class="input" type="password" id="password-repeat" required>
-								</div>
-							</div>
-
-							<div class="notification is-danger" id="password-info" th:text="#{password-change.warning}">
-							</div>
-
-							<div class="field">
-								<label class="label" th:text="#{gender}" style="float: left;"></label><span
-									class="asterisk">*</span>
-								<div class="select">
-									<select name="gender" required>
-										<option value=""></option>
-										<th:block th:each="gender : ${genders}">
-											<option th:value="${gender.id}" th:if="${gender.text == 'male'}"
-												th:text="#{profile.gender.male}"></option>
-											<option th:value="${gender.id}" th:if="${gender.text == 'female'}"
-												th:text="#{profile.gender.female}"></option>
-											<option th:value="${gender.id}" th:if="${gender.text == 'other'}"
-												th:text="#{profile.gender.other}"></option>
-										</th:block>
-									</select>
-								</div>
-							</div>
-							<div th:replace="fragments.html::captcha"></div>
-
-							<div style="height: 24px"></div>
-
-							<div class="field">
+				<div class="box no-shadow" style="padding: 0px;">
+					<header class="card-header collapsible-header no-shadow"
+						style="margin-left: 10px; margin-right: 10px;">
+						<a href="#collapsible-card" data-action="collapse"
+							class="card-header-icon is-hidden-fullscreen full-width box is-colored is-rounded"
+							aria-label="more options" style="display: flex; justify-content: center;">
+							<span class="label" style="margin-bottom: initial;"
+								th:text="#{register.email.sign-up}"></span>
+						</a>
+					</header>
+					<div id="collapsible-card" class="is-collapsible">
+						<div style="margin: 8px; margin-bottom: 48px;" class="box">
+							<div style="padding-top: 4px;" class="collapsible-mobile"></div>
+							<h3 style="font-size: 1.3em; font-weight: 600; margin-bottom: 12px;"
+								th:text="#{register.email.sign-up}" class="collapsible-desktop"></h3>
+							<form th:action="@{/register}" method="POST" id="register-form">
 								<div class="field">
-									<input id="tos" type="checkbox" name="tos" class="switch" style="position: absolute"
-										required> <label for="tos" th:utext="#{register.tos-agree}"> </label>
+									<label class="label" th:text="#{first-name}" style="float: left;"></label><span
+										class="asterisk">*</span>
+									<div class="control">
+										<input class="input" type="text" name="firstName" maxlength="12" required>
+									</div>
 								</div>
 								<div class="field">
-									<input id="pp" type="checkbox" name="pp" class="switch" style="position: absolute"
-										required> <label for="pp" th:utext="#{register.privacy-agree}"> </label>
+									<label class="label" th:text="#{email}" style="float: left;"></label><span
+										class="asterisk">*</span>
+									<div class="control">
+										<input class="input" type="email" name="email" required>
+									</div>
 								</div>
-							</div>
+								<div class="field">
+									<label class="label" th:text="#{dob}" style="float: left;"></label><span
+										class="asterisk">*</span>
+									<div class="control">
+										<input type="date" name="dateOfBirth" style="width: 100%;" required>
+									</div>
+								</div>
 
-							<div class="register-warning" th:text="#{register.asterisk-warning}"></div>
+								<div class="field">
+									<label class="label" th:text="#{password}"></label>
+									<div class="control">
+										<input class="input" type="password" name="password" id="password" required>
+									</div>
+								</div>
+								<div class="field">
+									<label class="label" th:text="#{password-repeat}"></label>
+									<div class="control">
+										<input class="input" type="password" id="password-repeat" required>
+									</div>
+								</div>
 
-							<div class="field is-grouped" style="display: flex; justify-content: flex-start;">
-								<div class="control">
-									<button class="button is-link" type="submit" th:text="#{submit}"></button>
+								<div class="notification is-danger" id="password-info"
+									th:text="#{password-change.warning}">
 								</div>
-								<div class="control">
-									<button class="button is-danger is-outlined" type="button"
-										onclick="window.location = '/'" th:text="#{cancel}"></button>
+
+								<div class="field">
+									<label class="label" th:text="#{gender}" style="float: left;"></label><span
+										class="asterisk">*</span>
+									<div class="select">
+										<select name="gender" required>
+											<option value=""></option>
+											<th:block th:each="gender : ${genders}">
+												<option th:value="${gender.id}" th:if="${gender.text == 'male'}"
+													th:text="#{profile.gender.male}"></option>
+												<option th:value="${gender.id}" th:if="${gender.text == 'female'}"
+													th:text="#{profile.gender.female}"></option>
+												<option th:value="${gender.id}" th:if="${gender.text == 'other'}"
+													th:text="#{profile.gender.other}"></option>
+											</th:block>
+										</select>
+									</div>
 								</div>
-							</div>
-						</form>
+								<div th:replace="fragments.html::captcha"></div>
+
+								<div style="height: 24px"></div>
+
+								<div class="field">
+									<div class="field">
+										<input id="tos" type="checkbox" name="tos" class="switch"
+											style="position: absolute" required> <label for="tos"
+											th:utext="#{register.tos-agree}"> </label>
+									</div>
+									<div class="field">
+										<input id="pp" type="checkbox" name="pp" class="switch"
+											style="position: absolute" required> <label for="pp"
+											th:utext="#{register.privacy-agree}"> </label>
+									</div>
+								</div>
+
+								<div class="register-warning" th:text="#{register.asterisk-warning}"></div>
+
+								<div class="field is-grouped" style="display: flex; justify-content: flex-start;">
+									<div class="control">
+										<button class="button is-link" type="submit" th:text="#{submit}"></button>
+									</div>
+									<div class="control">
+										<button class="button is-danger is-outlined" type="button"
+											onclick="window.location = '/'" th:text="#{cancel}"></button>
+									</div>
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 				<div class="container" style="margin-bottom: 24px; margin-top: 24px;" id="oauth-div">
-					<div class="box">
+					<div class="box no-shadow">
 						<div class="columns">
 							<button class="button colored"
 								style="background-color: #4285F4; width: 100%; margin-right: 4px; margin-bottom: 4px;"

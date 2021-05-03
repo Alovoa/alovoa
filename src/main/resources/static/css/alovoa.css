@@ -110,6 +110,13 @@ button, .button, .input, .select, select {
 	color: white;
 }
 
+.is-rounded {
+	border-radius: 290486px !important;
+}
+
+.no-shadow {
+	box-shadow: initial !important;
+}
 .register-warning {
 	color: red;
 	padding-bottom: 8px;
