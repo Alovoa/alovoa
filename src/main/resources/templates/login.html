@@ -26,13 +26,14 @@
 				<div>
 					<h3 class="title" th:text="#{login.title}"></h3>
 					<p class="subtitle" th:text="#{login.subtitle}"></p>
-					<div class="box no-shadow" style="padding: 0px;">
+					<div class="box no-shadow" style="padding: 0px; margin-bottom: 0px;">
 						<header class="card-header collapsible-header no-shadow"
 							style="margin-left: 10px; margin-right: 10px;">
-							<a href="#collapsible-card" data-action="collapse"
-								class="card-header-icon is-hidden-fullscreen full-width box colored is-rounded"
-								style="display: flex; justify-content: center;">
-								<span class="label" style="margin-bottom: initial;"
+							<a href="#collapsible-card" data-action="collapse" id="email-auth"
+								class="card-header-icon is-hidden-fullscreen full-width button is-rounded"
+								style="display: flex; justify-content: center; background-color: initial;">
+								<i class="fa fa-envelope fa-lg"></i>
+								<span class="label" style="margin-bottom: initial; padding-left: 6px;"
 									th:text="#{login.email.sign-in}"></span>
 							</a>
 						</header>
@@ -69,20 +70,19 @@
 						</div>
 					</div>
 
-					<div class="container" style="margin-bottom: 24px; margin-top: 24px;" id="oauth-div">
+					<div class="container" style="margin-bottom: 24px;" id="oauth-div">
 						<div class="box no-shadow">
 							<div class="columns">
 								<button class="button colored"
-									style="background-color: #4285F4; width: 100%; margin-right: 4px;margin-bottom: 4px;"
+									style="background-color: #4285F4; width: 100%; margin-right: 4px;margin-bottom: 8px;"
 									onclick="window.location='/oauth2/authorization/google'">
 									<img src="/img/google-icon.svg" style="height: 32px;"><span
-										style="padding-left: 12px; color: white;"
-										th:text="#{login.oauth.google}"></span>
+										style="padding-left: 6px; color: white;" th:text="#{login.oauth.google}"></span>
 								</button>
 								<button class="button colored" style="background-color: #4267b2; width: 100%;"
 									onclick="window.location='/oauth2/authorization/facebook'">
 									<img src="/img/facebook-icon.svg" style="height: 32px;"><span
-										style="padding-left: 12px; color: white;"
+										style="padding-left: 6px; color: white;"
 										th:text="#{login.oauth.facebook}"></span>
 								</button>
 							</div>

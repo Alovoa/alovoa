@@ -403,13 +403,13 @@ input[type=range].slider {
 }
 
 @media screen and (max-width: 340px) {
-	#oauth-div span {
+	#oauth-div span, #email-auth span {
 		font-size: 0.7em ! important;
 	}
 }
 
 @media screen and (max-width: 290px) {
-	#oauth-div span {
+	#oauth-div span, #email-auth span {
 		font-size: 0.5em ! important;
 	}
 }
