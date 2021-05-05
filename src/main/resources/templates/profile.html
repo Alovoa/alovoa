@@ -27,7 +27,7 @@
 		<header th:insert="fragments.html::header-logged-in"></header>
 		<div class="section">
 			<div class="container">
-				<div class="field" style="margin-bottom: 48px;">
+				<div class="field">
 					<div id="profile-warning"></div>
 				</div>
 
@@ -35,6 +35,8 @@
 					<button class="button is-info colored" id="btnPushNotifications" name="btnPushNotifications"
 						style="width: 100%;" th:text="#{profile.webpush}"></button>
 				</div>
+				
+				<div style="padding-bottom: 48px;"></div>
 
 				<div class="field" id="picture-field">
 
