@@ -1,5 +1,4 @@
 var locationFound = false;
-var mobileWidth = 600;
 
 $(function() {
 	bulmaSlider.attach();
@@ -19,13 +18,11 @@ function search() {
 
 				var sliders = [];
 
-				let isMobile = $(window).width() <= mobileWidth;
-
 				$('.swiper-container').each(function(index, element) {
 					$(this).addClass('s' + index);
 					let slider = new Swiper('.s' + index, {
 						initialSlide: 1,
-						shortSwipes: isMobile
+						shortSwipes: false
 					});
 
 

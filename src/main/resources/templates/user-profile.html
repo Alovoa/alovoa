@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html th:lang="${lang}">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Alovoa">
-<meta th:name="_csrf" th:content="${_csrf.token}" />
-<link rel="manifest" href="/manifest/manifest.json">
 
-<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-<th:block th:replace="fragments.html::bulma"></th:block>
-<th:block th:replace="fragments.html::ui-design"></th:block>
-<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
-<link rel="stylesheet" href="/css/lib/swiper.min.css" />
-<link rel="stylesheet" href="/css/alovoa.css" />
-<link rel="stylesheet" href="/css/user-profile.css" />
-<title th:value="${user.firstName}"></title>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-title" content="Alovoa">
+	<meta th:name="_csrf" th:content="${_csrf.token}" />
+	<link rel="manifest" href="/manifest/manifest.json">
+
+	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+	<th:block th:replace="fragments.html::bulma"></th:block>
+	<th:block th:replace="fragments.html::ui-design"></th:block>
+	<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
+	<link rel="stylesheet" href="/css/lib/swiper.min.css" />
+	<link rel="stylesheet" href="/css/alovoa.css" />
+	<link rel="stylesheet" href="/css/user-profile.css" />
+	<title th:value="${user.firstName}"></title>
 </head>
+
 <body>
 	<div id="main-logged-in">
 		<header th:insert="fragments.html::header-logged-in"></header>
@@ -28,16 +30,15 @@
 						<div class="swiper-wrapper">
 							<div class="swiper-slide">
 								<div class="center-parent">
-									<img id="profilePicture" style="cursor: pointer;" height=400
-										width="400" th:if="${user.profilePicture}"
-										th:src="${user.profilePicture}" class="profile-pic" />
+									<img id="profilePicture" style="cursor: pointer;" height=400 width="400"
+										th:if="${user.profilePicture}" th:src="${user.profilePicture}"
+										class="profile-pic" />
 								</div>
 							</div>
 							<div th:each="img : ${user.images}" class="swiper-slide">
 								<div class="center-parent">
-									<img style="cursor: pointer;" height=400 width="400"
-										class="profile-pic" th:src="${img.content}"
-										th:onclick="deleteImage([[${img.id}]])" />
+									<img style="cursor: pointer;" height=400 width="400" class="profile-pic"
+										th:src="${img.content}" th:onclick="deleteImage([[${img.id}]])" />
 								</div>
 							</div>
 						</div>
@@ -48,23 +49,21 @@
 					</div>
 				</div>
 			</div>
+			<div style="padding-top: 24px;"></div>
 			<div class="container">
 				<div class="content">
 					<div class="media">
 						<div class="full-width">
-							<div class="left" style="font-size: 2em"
-								th:text="${user.firstName}"></div>
+							<div class="left" style="font-size: 2em" th:text="${user.firstName}"></div>
 							<div class="right" style="font-size: 1.5em">
-								<span th:text="#{age}"></span><span>: </span><span
-									th:text="${user.age}"></span>
+								<span th:text="#{age}"></span><span>: </span><span th:text="${user.age}"></span>
 							</div>
 						</div>
 					</div>
 					<div class="media">
 						<div class="full-width">
 							<div class="left" style="font-size: 1.2em">
-								<span th:text="#{last-active}"></span><span>: </span><span
-									th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
+								<span th:text="#{last-active}"></span><span>: </span><span th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
 							</div>
 						</div>
 					</div>
@@ -78,13 +77,15 @@
 						</div>
 					</div>
 
-					<div style="padding-top: 24px;" th:if="${user.interests}"></div>
-					<div class="field" th:if="${user.interests}">
-						<label class="label" th:text="#{interests}"></label>
-						<div th:each="interest : ${user.interests}">
-							<div th:text="${interest.text}"></div>
+					<th:block th:if="${#lists.size(user.interests) > 0}">
+						<div style="padding-top: 24px;" th:if="${user.interests}"></div>
+						<div class="field">
+							<label class="label" th:text="#{interests}"></label>
+							<div th:each="interest : ${user.interests}">
+								<div th:text="${interest.text}"></div>
+							</div>
 						</div>
-					</div>
+					</th:block>
 
 					<div style="padding-top: 24px;"></div>
 
@@ -124,6 +125,20 @@
 									th:text="#{profile.intention.date}"></td>
 								<td th:if="${user.intention.text == 'sex'}"
 									th:text="#{profile.intention.sex}"></td>
+							</tr>
+							<tr>
+								<th th:text="#{profile.gender}">
+									<td>
+										<th:block th:each="gender : ${user.preferedGenders}">
+											<span th:if="${gender.text == 'male'}" style="padding-right: 4px;"
+												th:text="#{profile.gender.male}"></span>
+											<span th:if="${gender.text == 'female'}" style="padding-right: 4px;"
+												th:text="#{profile.gender.female}"></span>
+											<span th:if="${gender.text == 'other'}" style="padding-right: 4px;"
+												th:text="#{profile.gender.other}"></span>
+										</th:block>
+									</td>
+								</th>
 							</tr>
 							<tr>
 								<th th:text="#{donated}"></th>
@@ -222,8 +237,6 @@
 	</div>
 
 	<input id="user-id-enc" th:value="${user.idEncoded}" hidden>
-
-	<footer th:replace="fragments.html::footer"></footer>
 
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
