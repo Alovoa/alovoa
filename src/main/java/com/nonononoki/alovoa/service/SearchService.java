@@ -130,13 +130,13 @@ public class SearchService {
 				break;
 			}
 		}
-		
-		if(filteredUsers.size() < maxResults) {
+
+		if (filteredUsers.size() < maxResults) {
 			List<User> allUsers = userRepo.usersSearchAll(request);
-			if(allUsers.size() != users.size()) {
-				
+			if (allUsers.size() != users.size()) {
+
 				filteredUsers.clear();
-				
+
 				// filter users
 				for (User u : allUsers) {
 
@@ -157,7 +157,7 @@ public class SearchService {
 						break;
 					}
 				}
-				
+
 			}
 		}
 
@@ -168,39 +168,23 @@ public class SearchService {
 		}
 
 		if (sort == SORT_DISTANCE) {
-			Collections.sort(userDtos, new Comparator<UserDto>() {
-				@Override
-				public int compare(UserDto a, UserDto b) {
-					return a.getDistanceToUser() < b.getDistanceToUser() ? -1
-							: a.getDistanceToUser() > b.getDistanceToUser() ? 1 : 0;
-				}
-			});
+			userDtos = userDtos.stream().sorted(Comparator.comparing(UserDto::getDistanceToUser))
+					.sorted(Collections.reverseOrder()).collect(Collectors.toList());
 		} else if (sort == SORT_ACTIVE_DATE) {
-			Collections.sort(userDtos, new Comparator<UserDto>() {
-				@Override
-				public int compare(UserDto a, UserDto b) {
-					return b.getActiveDate().compareTo(a.getActiveDate());
-				}
-			});
-			Collections.reverse(userDtos);
+			userDtos = userDtos.stream()
+					.sorted(Comparator.comparing(UserDto::getActiveDate).reversed()
+							.thenComparing(Comparator.comparing(UserDto::getDistanceToUser).reversed()))
+					.collect(Collectors.toList());
 		} else if (sort == SORT_INTEREST) {
-			userDtos.removeIf(f -> f.getSameInterests() == 0);
-			Collections.sort(userDtos, new Comparator<UserDto>() {
-				@Override
-				public int compare(UserDto a, UserDto b) {
-					return a.getSameInterests() < b.getSameInterests() ? -1
-							: a.getSameInterests() > b.getSameInterests() ? 1 : 0;
-				}
-			});
+			userDtos = userDtos.stream().filter(f -> f.getSameInterests() > 0)
+					.sorted(Comparator.comparing(UserDto::getSameInterests).reversed()
+							.thenComparing(Comparator.comparing(UserDto::getDistanceToUser).reversed()))
+					.collect(Collectors.toList());
 		} else if (sort == SORT_DONATION) {
-			//userDtos.removeIf(f -> f.getTotalDonations() == 0);
-			Collections.sort(userDtos, new Comparator<UserDto>() {
-				@Override
-				public int compare(UserDto a, UserDto b) {
-					return a.getTotalDonations() < b.getTotalDonations() ? -1
-							: a.getTotalDonations() > b.getTotalDonations() ? 1 : 0;
-				}
-			});
+			userDtos = userDtos.stream()
+					.sorted(Comparator.comparing(UserDto::getTotalDonations).reversed()
+							.thenComparing(Comparator.comparing(UserDto::getDistanceToUser).reversed()))
+					.collect(Collectors.toList());
 		}
 
 		return userDtos;
