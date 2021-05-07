@@ -150,6 +150,7 @@ $(function() {
 				},
 				success: function(e) {
 					//updateProfileWarning();
+					alert(getText("profile.warning.intention.limit"))
 					location.reload();
 				},
 				error: function(e) {
