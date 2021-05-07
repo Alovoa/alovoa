@@ -49,8 +49,14 @@ public class ProfileResource {
 	
 	@Value("${app.intention.delay}")
 	private long intentionDelay;
+	
+	public static final String url = "/profile";
+	
+	public static String getUrl() {
+		return url;
+	}
 
-	@GetMapping("/profile")
+	@GetMapping(url)
 	public ModelAndView profile() throws Exception {
 
 		User user = authService.getCurrentUser();

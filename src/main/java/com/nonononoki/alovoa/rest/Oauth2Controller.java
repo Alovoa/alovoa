@@ -28,9 +28,6 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @RequestMapping("/")
 public class Oauth2Controller {
 
-	//@Autowired
-	//private HttpServletRequest request;
-
 	@Autowired
 	private UserRepository userRepo;
 
@@ -39,9 +36,6 @@ public class Oauth2Controller {
 	
 	@Autowired
 	private RegisterResource registerResource;
-	
-	@Autowired
-	private ProfileResource profileResource;
 	
 	@Autowired
 	private LoginResource loginResource;
@@ -88,7 +82,7 @@ public class Oauth2Controller {
 				if (!user.isConfirmed()) {
 					return registerResource.registerOauth(user);				
 				} else {
-					return profileResource.profile();	
+					return new ModelAndView("redirect:" + ProfileResource.getUrl());
 				}
 			}
 	

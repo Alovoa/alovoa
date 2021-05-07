@@ -25,9 +25,6 @@ public class RegisterResource {
 	private UserIntentionRepository userIntentionRepo;
 	
 	@Autowired
-	private ProfileResource profileResource;
-	
-	@Autowired
 	private AuthService authService;
 	
 	@GetMapping("/register")
@@ -35,7 +32,7 @@ public class RegisterResource {
 		
 		User user = authService.getCurrentUser();
 		if (user != null) {
-			return profileResource.profile();
+			return new ModelAndView("redirect:" + ProfileResource.getUrl());
 		}
 		ModelAndView mav = new ModelAndView("register");
 		mav.addObject("genders", genderRepo.findAll());

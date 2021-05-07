@@ -15,9 +15,6 @@ public class IndexResource {
 
 	@Autowired
 	private AuthService authService;
-
-	@Autowired
-	private ProfileResource profileResource;
 	
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
@@ -27,7 +24,7 @@ public class IndexResource {
 
 		User user = authService.getCurrentUser();
 		if (user != null) {
-			return profileResource.profile();
+			return new ModelAndView("redirect:" + ProfileResource.getUrl());
 		}
 
 		ModelAndView mav = new ModelAndView("index");
