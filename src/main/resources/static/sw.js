@@ -22,7 +22,6 @@ const staticAssets = [
 	'/js/lib/fontawesome.all.js',
 	'/js/lib/jquery.min.js',
 	'/js/lib/Mp3LameEncoder.min.js',
-	'/js/lib/Mp3LameEncoder.min.js.mem',
 	'/js/lib/notification.js',
 	'/js/lib/swiper.all.js',
 	
