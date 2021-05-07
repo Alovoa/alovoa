@@ -57,7 +57,13 @@ public class RegisterService {
 
 	@Value("${app.intention.delay}")
 	private long intentionDelay;
-	
+
+	@Value("${app.first-name.length-max}")
+	private long firstNameLengthMax;
+
+	@Value("${app.first-name.length-min}")
+	private long firstNameLengthMin;
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -90,7 +96,7 @@ public class RegisterService {
 
 	@Autowired
 	private UserService userService;
-	
+
 	private static final String GMAIL_EMAIL = "@gmail";
 
 	// @Autowired
@@ -105,18 +111,18 @@ public class RegisterService {
 		if (!isValid) {
 			throw new Exception(publicService.text("backend.error.captcha.invalid"));
 		}
-		
-		if(!isValidEmailAddress(dto.getEmail())) {
+
+		if (!isValidEmailAddress(dto.getEmail())) {
 			throw new Exception("email_invalid");
 		}
-		
+
 		if (!profile.equals(Tools.DEV)) {
-			if(dto.getEmail().contains(GMAIL_EMAIL)) {
+			if (dto.getEmail().contains(GMAIL_EMAIL)) {
 				String[] parts = dto.getEmail().split("@");
 				String cleanEmail = parts[0].replace(".", "") + "@" + parts[1];
 				dto.setEmail(cleanEmail);
-			} 
-			if(dto.getEmail().contains("+")) {
+			}
+			if (dto.getEmail().contains("+")) {
 				dto.setEmail(dto.getEmail().split("+")[0] + "@" + dto.getEmail().split("@")[1]);
 			}
 		}
@@ -124,7 +130,7 @@ public class RegisterService {
 		// check if email is in spam mail list
 		if (profile.equals(Tools.PROD)) {
 			try {
-				//check spam domains
+				// check spam domains
 				if (Tools.isTextContainingLineFromFile(TEMP_EMAIL_FILE_NAME, dto.getEmail())) {
 					throw new Exception(publicService.text("backend.error.register.email-spam"));
 				}
@@ -132,12 +138,12 @@ public class RegisterService {
 				e.printStackTrace();
 			}
 		}
-		
+
 		User user = userRepo.findByEmail(dto.getEmail().toLowerCase());
 		if (user != null) {
 			throw new Exception(publicService.text("backend.error.register.email-exists"));
 		}
-		
+
 		BaseRegisterDto baseRegisterDto = registerBase(dto);
 		user = baseRegisterDto.getUser();
 
@@ -162,9 +168,9 @@ public class RegisterService {
 		user = baseRegisterDto.getUser();
 		user.setConfirmed(true);
 		userRepo.saveAndFlush(user);
-		
+
 		userService.updateUserInfo(user);
-		
+
 		mailService.sendAccountConfirmed(user);
 	}
 
@@ -204,13 +210,19 @@ public class RegisterService {
 		user.setConfirmed(true);
 		user.setRegisterToken(null);
 		user = userRepo.saveAndFlush(user);
-		
+
 		mailService.sendAccountConfirmed(user);
-		
+
 		return user;
 	}
 
 	private BaseRegisterDto registerBase(RegisterDto dto) throws Exception {
+
+		if (dto.getFirstName().length() > firstNameLengthMax || 
+				dto.getFirstName().length() < firstNameLengthMin) {
+			throw new Exception("name_invalid");
+		}
+
 		// check minimum age
 		int userAge = Tools.calcUserAge(dto.getDateOfBirth());
 		if (userAge < minAge) {
@@ -239,7 +251,7 @@ public class RegisterService {
 		dates.setActiveDate(today);
 		dates.setCreationDate(today);
 		dates.setDateOfBirth(dto.getDateOfBirth());
-		dates.setIntentionChangeDate(new Date(today.getTime() - intentionDelay)) ;
+		dates.setIntentionChangeDate(new Date(today.getTime() - intentionDelay));
 		dates.setMessageCheckedDate(today);
 		dates.setMessageDate(today);
 		dates.setNotificationCheckedDate(today);
@@ -279,14 +291,14 @@ public class RegisterService {
 		baseRegisterDto.setUser(user);
 		return baseRegisterDto;
 	}
-	
+
 	private static boolean isValidEmailAddress(String email) {
-	   try {
-	      InternetAddress a = new InternetAddress(email);
-	      a.validate();
-	      return true;
-	   } catch (AddressException ex) {
-	      return false;
-	   }
+		try {
+			InternetAddress a = new InternetAddress(email);
+			a.validate();
+			return true;
+		} catch (AddressException ex) {
+			return false;
+		}
 	}
 }

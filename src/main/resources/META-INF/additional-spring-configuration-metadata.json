@@ -145,11 +145,6 @@
     "description": "A description for 'app.audio.max-time'"
   },
   {
-    "name": "app.ip.kofi",
-    "type": "java.lang.String",
-    "description": "A description for 'app.ip.kofi'"
-  },
-  {
     "name": "app.domain",
     "type": "java.lang.String",
     "description": "A description for 'app.domain'"
@@ -238,5 +233,15 @@
     "name": "app.intention.delay",
     "type": "java.lang.String",
     "description": "A description for 'app.intention.delay'"
+  },
+  {
+    "name": "app.first-name.length-min",
+    "type": "java.lang.String",
+    "description": "A description for 'app.first-name.length-min'"
+  },
+  {
+    "name": "app.first-name.length-max",
+    "type": "java.lang.String",
+    "description": "A description for 'app.first-name.length-max'"
   }
 ]}
