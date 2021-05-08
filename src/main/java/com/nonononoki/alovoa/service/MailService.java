@@ -56,7 +56,6 @@ public class MailService {
 	}
 	
 	public void sendAdminMailAll(String subject, String body, List<User> users) throws Exception {
-		body = getEmailText(body);
 		for(User u : users) {
 			sendMail(u.getEmail(), defaultFrom, subject, body);
 		}	

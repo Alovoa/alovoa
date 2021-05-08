@@ -93,13 +93,15 @@ public class AdminTest {
 		Mockito.when(authService.getCurrentUser()).thenReturn(adminUser);
 		
 		MailDto mailDto = new MailDto();
-		String mailBody = "mailBody";
+		String mailBodyAll = "mailBodyAll";
+		String mailBodySingle = "mailBodySingle";
 		String mailSubject = "mailSubject";
-		mailDto.setBody(mailBody);
+		mailDto.setBody(mailBodyAll);
 		mailDto.setSubject(mailSubject);
 		
 		adminService.sendMailAll(mailDto);
 		mailDto.setEmail(user1.getEmail());
+		mailDto.setBody(mailBodySingle);
 		adminService.sendMailSingle(mailDto);
 			
 		adminService.hideContact(contactTest().getId());
