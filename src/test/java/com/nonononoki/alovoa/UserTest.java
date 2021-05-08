@@ -110,6 +110,12 @@ public class UserTest {
 	
 	@Value("${app.conversation.messages-max}")
 	private int maxConvoMessages;
+	
+	@Value("${app.first-name.length-max}")
+	private int firstNameLengthMax;
+
+	@Value("${app.first-name.length-min}")
+	private int firstNameLengthMin;
 
 
 	@MockBean
@@ -126,7 +132,7 @@ public class UserTest {
 	private static int user3Age = 30;
 	
 
-	public static List<User> getTestUsers(CaptchaService captchaService, RegisterService registerService)
+	public static List<User> getTestUsers(CaptchaService captchaService, RegisterService registerService, int firstNameLengthMin, int firstNameLengthMax)
 			throws Exception {
 		if (testUsers == null) {
 			
@@ -144,6 +150,18 @@ public class UserTest {
 			
 			//test multiple email copies with slight variations
 			{
+				user1Dto.setFirstName(StringUtils.repeat("*", firstNameLengthMin -1));	
+				Assert.assertThrows(Exception.class, () -> {
+					registerService.register(user1Dto);
+				});
+				
+				user1Dto.setFirstName(StringUtils.repeat("*", firstNameLengthMax +1));	
+				Assert.assertThrows(Exception.class, () -> {
+					registerService.register(user1Dto);
+				});
+				
+				user1Dto.setFirstName("test");
+				
 				user1Dto.setEmail("nono.nono.ki@gmail.com");
 				Assert.assertThrows(Exception.class, () -> {
 					registerService.register(user1Dto);
@@ -228,8 +246,8 @@ public class UserTest {
 
 		// one default admin user
 		Assert.assertEquals(userRepo.count(), 1);
-
-		List<User> testUsers = getTestUsers(captchaService, registerService);
+		
+		List<User> testUsers = getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 		User user1 = testUsers.get(0);
 		User user2 = testUsers.get(1);
 		User user3 = testUsers.get(2);

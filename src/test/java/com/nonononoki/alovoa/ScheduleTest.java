@@ -14,12 +14,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nonononoki.alovoa.entity.Captcha;
+import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserDeleteToken;
 import com.nonononoki.alovoa.entity.user.UserHide;
 import com.nonononoki.alovoa.entity.user.UserPasswordToken;
 import com.nonononoki.alovoa.model.PasswordResetDto;
 import com.nonononoki.alovoa.repo.CaptchaRepository;
+import com.nonononoki.alovoa.repo.ContactRepository;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserDeleteTokenRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
@@ -39,6 +41,9 @@ public class ScheduleTest {
 
 	@Autowired
 	private CaptchaRepository captchaRepo;
+	
+	@Autowired
+	private ContactRepository contactRepo;
 
 	@Autowired
 	private UserHideRepository userHideRepo;
@@ -76,6 +81,15 @@ public class ScheduleTest {
 
 	@Value("${app.schedule.delay.delete-account}")
 	private long deleteAccountDelay;
+	
+	@Value("${app.schedule.delay.contact}")
+	private long contactDelay;
+	
+	@Value("${app.first-name.length-max}")
+	private int firstNameLengthMax;
+
+	@Value("${app.first-name.length-min}")
+	private int firstNameLengthMin;
 
 	@Autowired
 	private CaptchaRepository catchaRepo;
@@ -100,7 +114,7 @@ public class ScheduleTest {
 		//UserTest userTest = new UserTest();
 		//List<User> testUsers = userTest.getTestUsers();
 		Assert.assertEquals(userRepo.count(), 1);
-		List<User> testUsers = UserTest.getTestUsers(captchaService, registerService);
+		List<User> testUsers = UserTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 		Assert.assertEquals(userRepo.count(), 4);
 		
 		Date currentDate = new Date();
@@ -118,10 +132,28 @@ public class ScheduleTest {
 		Assert.assertEquals(catchaRepo.count(), 2);
 		scheduleService.cleanCaptcha(currentDate);
 		Assert.assertEquals(catchaRepo.count(), 1);
+		
+		//CONTACT 
+		Contact contactOld = new Contact();
+		contactOld.setEmail("test" + Tools.MAIL_TEST_DOMAIN);
+		contactOld.setHidden(false);
+		contactOld.setMessage("test message");
+		contactOld.setDate(new Date(currentDateTime - contactDelay - 1 ));
+		contactRepo.saveAndFlush(contactOld);
+
+		Contact contactNew = new Contact();
+		contactNew.setEmail("test" + Tools.MAIL_TEST_DOMAIN);
+		contactNew.setHidden(false);
+		contactNew.setMessage("test message");
+		contactNew.setDate(new Date(currentDateTime - contactDelay));
+		contactRepo.saveAndFlush(contactNew);
+
+		Assert.assertEquals(contactRepo.count(), 2);
+		scheduleService.cleanContact(currentDate);
+		Assert.assertEquals(contactRepo.count(), 1);
 
 		
 		//USERHIDE
-		
 		User user1 = testUsers.get(1);
 		User user2 = testUsers.get(2);
 		

@@ -35,6 +35,12 @@ public class MailTest {
 	
 	@Value("${app.message.size}")
 	private int maxMessageSize;
+	
+	@Value("${app.first-name.length-max}")
+	private int firstNameLengthMax;
+
+	@Value("${app.first-name.length-min}")
+	private int firstNameLengthMin;
 
 	@MockBean
 	private AuthService authService;
@@ -54,7 +60,7 @@ public class MailTest {
 	@Test
 	public void test() throws Exception {
 		
-		List<User> testUsers = UserTest.getTestUsers(captchaService, registerService);
+		List<User> testUsers = UserTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 		User user1 = testUsers.get(1);
 		String subject = "test";
 		String body = "test body";

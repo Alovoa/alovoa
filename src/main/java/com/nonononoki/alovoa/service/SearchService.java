@@ -3,7 +3,6 @@ package com.nonononoki.alovoa.service;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -168,8 +167,8 @@ public class SearchService {
 		}
 
 		if (sort == SORT_DISTANCE) {
-			userDtos = userDtos.stream().sorted(Comparator.comparing(UserDto::getDistanceToUser))
-					.sorted(Collections.reverseOrder()).collect(Collectors.toList());
+			userDtos = userDtos.stream().sorted(Comparator.comparing(UserDto::getDistanceToUser).reversed())
+					.collect(Collectors.toList());
 		} else if (sort == SORT_ACTIVE_DATE) {
 			userDtos = userDtos.stream()
 					.sorted(Comparator.comparing(UserDto::getActiveDate).reversed()

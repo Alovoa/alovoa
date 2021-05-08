@@ -11,11 +11,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.entity.Captcha;
+import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserDeleteToken;
 import com.nonononoki.alovoa.entity.user.UserHide;
 import com.nonononoki.alovoa.entity.user.UserPasswordToken;
 import com.nonononoki.alovoa.repo.CaptchaRepository;
+import com.nonononoki.alovoa.repo.ContactRepository;
 import com.nonononoki.alovoa.repo.UserDeleteTokenRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
 import com.nonononoki.alovoa.repo.UserPasswordTokenRepository;
@@ -26,6 +28,9 @@ public class ScheduleService {
 	
 	@Autowired
 	private CaptchaRepository captchaRepo;
+	
+	@Autowired
+	private ContactRepository contactRepo;
 	
 	@Autowired
 	private UserHideRepository userHideRepo;
@@ -51,6 +56,10 @@ public class ScheduleService {
 	@Value("${app.schedule.delay.delete-account}")
 	private long deleteAccountDelay;
 	
+	@Value("${app.schedule.delay.contact}")
+	private long contactDelay;
+	
+	
 	@Scheduled( fixedDelayString = "${app.schedule.short}")
 	@ConditionalOnProperty(value = "app.schedule.enabled", matchIfMissing = true, havingValue = "true")
 	public void scheduleShort() {
@@ -65,6 +74,7 @@ public class ScheduleService {
 		Date date = new Date();
 		cleanUserHide(date);
 		cleanUserDeleteToken(date);
+		cleanContact(date);
 	}
 	
 	public void cleanCaptcha(Date date) {
@@ -74,6 +84,15 @@ public class ScheduleService {
 		
 		List<Captcha> captchas = captchaRepo.findByDateBefore(d);
 		captchaRepo.deleteAll(captchas);
+	}
+	
+	public void cleanContact(Date date) {
+		long ms = date.getTime();
+		ms -= contactDelay;
+		Date d = new Date(ms);
+		
+		List<Contact> contacts = contactRepo.findByDateBefore(d);
+		contactRepo.deleteAll(contacts);
 	}
 	
 	public void cleanUserHide(Date date) {

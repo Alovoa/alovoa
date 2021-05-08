@@ -243,5 +243,10 @@
     "name": "app.first-name.length-max",
     "type": "java.lang.String",
     "description": "A description for 'app.first-name.length-max'"
+  },
+  {
+    "name": "app.schedule.delay.contact",
+    "type": "java.lang.String",
+    "description": "A description for 'app.schedule.delay.contact'"
   }
 ]}

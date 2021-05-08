@@ -24,6 +24,7 @@ public class Contact {
 	@Convert(converter = TextEncryptorConverter.class)
 	private String email;
 	
+	@Convert(converter = TextEncryptorConverter.class)
 	@Column(columnDefinition="mediumtext")
 	private String message;
 	
