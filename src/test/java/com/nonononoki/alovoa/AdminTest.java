@@ -86,8 +86,9 @@ public class AdminTest {
 
 		List<User> testUsers = UserTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 		
-		User adminUser = testUsers.get(0);
-		User user1 = testUsers.get(1);
+		List<User> allUsers = userRepo.findAll();
+		User adminUser = allUsers.get(0);
+		User user1 = testUsers.get(0);
 		
 		Mockito.when(authService.getCurrentUser()).thenReturn(adminUser);
 		
@@ -100,10 +101,9 @@ public class AdminTest {
 		adminService.sendMailAll(mailDto);
 		mailDto.setEmail(user1.getEmail());
 		adminService.sendMailSingle(mailDto);
-		
-		
+			
 		adminService.hideContact(contactTest().getId());
-		adminService.deleteReport(reportTest(testUsers).getId()); 
+		adminService.deleteReport(reportTest(testUsers, adminUser).getId()); 
 		
 		adminService.banUser(UserDto.encodeId(user1.getId(), textEncryptor));
 		User bannedUser = userRepo.findById(user1.getId()).get();
@@ -126,11 +126,10 @@ public class AdminTest {
 		return c;
 	}
 	
-	private UserReport reportTest(List<User> testUsers) throws Exception {
+	private UserReport reportTest(List<User> testUsers, User adminUser) throws Exception {
 		
-		User adminUser = testUsers.get(0);
-		User user1 = testUsers.get(1);
-		User user2 = testUsers.get(2);
+		User user1 = testUsers.get(0);
+		User user2 = testUsers.get(1);
 		
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		
