@@ -10,7 +10,7 @@ var swRegistration = null;
 
 $(document).ready(function () {
 	
-	if(isSubscribed) {
+	if(isSubscribed || !isPushApiSupported()) {
 		$('#btnPushNotifications').toggle();
 	} else {
 	    $('#btnPushNotifications').click(function (event) {
@@ -159,4 +159,8 @@ function urlB64ToUint8Array(base64String) {
         outputArray[i] = rawData.charCodeAt(i);
     }
     return outputArray;
+}
+
+function isPushApiSupported() {
+  return 'PushManager' in window;
 }
