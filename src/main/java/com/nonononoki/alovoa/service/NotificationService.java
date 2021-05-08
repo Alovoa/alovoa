@@ -62,15 +62,17 @@ public class NotificationService {
 	public void subscribe(UserWebPush webPush) throws Exception {
 		User user = authService.getCurrentUser();
 		webPush.setUser(user);
-		if(webPush.getDate() == null) {
+		if (webPush.getDate() == null) {
 			webPush.setDate(new Date());
 		}
 		user.getWebPush().add(webPush);
+		user = userRepo.saveAndFlush(user);
+
 		if (user.getWebPush().size() > vapidMax) {
 			UserWebPush wp = Collections.min(user.getWebPush(), Comparator.comparing(w -> w.getDate()));
 			user.getWebPush().remove(wp);
+			userRepo.saveAndFlush(user);
 		}
-		userRepo.saveAndFlush(user);
 	}
 
 	public void newLike(User user) throws Exception {
