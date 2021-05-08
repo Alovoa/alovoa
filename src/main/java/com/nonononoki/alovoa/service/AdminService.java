@@ -25,6 +25,9 @@ import com.nonononoki.alovoa.repo.UserRepository;
 public class AdminService {
 
 	@Autowired
+	private AuthService authService;
+	
+	@Autowired
 	private MailService mailService;
 
 	@Autowired
@@ -59,21 +62,33 @@ public class AdminService {
 	
 	
 	public void hideContact(long id) throws Exception {	
+		
+		checkRights();
+		
 		Contact contact = contactRepository.findById(id).orElse(null);
 		contact.setHidden(true);
 		contactRepository.saveAndFlush(contact);
 	}	
 	
 	public void sendMailSingle(MailDto dto) throws Exception {
+		
+		checkRights();
+		
 		mailService.sendAdminMail(dto.getEmail(), dto.getSubject(), dto.getBody());
 	}
 	
 	public void sendMailAll(MailDto dto) throws Exception {		
+		
+		checkRights();
+		
 		List<User> users = userRepo.findByDisabledFalseAndAdminFalseAndConfirmedTrue();	
 		mailService.sendAdminMailAll(dto.getSubject(), dto.getBody(), users);
 	}
 
-	public void deleteReport(long id) {
+	public void deleteReport(long id) throws Exception {
+		
+		checkRights();
+		
 		UserReport report = userReportRepository.findById(id).get();
 		User u = report.getUserFrom();
 		u.getReported().remove(report);
@@ -82,6 +97,8 @@ public class AdminService {
 
 	public void banUser(String id) throws NumberFormatException, Exception {
 		
+		checkRights();
+		 
 		User user = userRepo.findById(UserDto.decodeId(id, textEncryptor)).get();
 		
 		if(user == null) {
@@ -128,6 +145,12 @@ public class AdminService {
 		user.getWebPush().clear();
 
 		userRepo.saveAndFlush(user);
+	}
+	
+	private void checkRights() throws Exception {
+		if (!authService.getCurrentUser().isAdmin()) {
+			throw new Exception("not_admin");
+		}
 	}
 
 

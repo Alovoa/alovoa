@@ -35,8 +35,8 @@
 					<button class="button is-info colored" id="btnPushNotifications" name="btnPushNotifications"
 						style="width: 100%;" th:text="#{profile.webpush}"></button>
 				</div>
-				
-				<div style="padding-bottom: 48px;"></div>
+
+				<div style="padding-bottom: 24px;"></div>
 
 				<div class="field" id="picture-field">
 
@@ -201,18 +201,17 @@
 					<label class="label" th:text="#{profile.audio}"></label>
 					<div class="field" style="display: inline-block;">
 
-						<div style="display: flex; float: left; margin-bottom: 4px;">
-							<audio id="audio" th:src="${user.audio}" th:if="${user.audio}" style="height: 40px;"
+						<div style="display: flex; float: left; margin-right: 4px;">
+							<audio id="audio" th:src="${user.audio}" th:if="${user.audio}" style="height: 40px; margin-bottom: 4px;"
 								controls></audio>
 						</div>
 						<div style="display: flex; float: left;">
-							<div class="notification is-info" style="height: 40px; margin-left: 4px; opacity: 0.5;">.mp3 .wav</div>
-							<div class="colored button is-info" id="audio-upload-button" style="margin-left: 4px;">
+							<div class="notification is-info" style="height: 40px; margin-right: 4px; opacity: 0.5;">.mp3 .wav</div>
+							<div class="colored button is-info" id="audio-upload-button" style="margin-right: 4px;">
 								<i class="fa fa-microphone"></i>
 							</div>
 							<input type="file" accept="audio/*" id="audio-file"
 								style="display: none">
-							<div style="padding-left: 4px;" th:if="${user.audio}"></div>
 							<div class="colored button is-danger" onclick="deleteAudio()"
 								th:if="${user.audio}">
 								<i class="fa fa-trash"></i>
