@@ -15,6 +15,7 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserDonation;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.DonationBmac;
 import com.nonononoki.alovoa.model.DonationDto;
 import com.nonononoki.alovoa.model.DonationKofi;
@@ -69,7 +70,7 @@ public class DonateService {
 			donationsToDtos = DonationDto.usersToDtos(userRepo.usersDonate(),
 					currentUser, textEncryptor, maxEntries);
 		} else {
-			throw new Exception("filter_not_found");
+			throw new AlovoaException("filter_not_found");
 		}
 
 		return donationsToDtos;

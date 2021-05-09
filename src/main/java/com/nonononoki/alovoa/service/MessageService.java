@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
 import com.nonononoki.alovoa.entity.user.Message;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 
 @Service
@@ -48,25 +49,25 @@ public class MessageService {
 		Conversation c = conversationRepo.findById(convoId).orElse(null);
 		
 		if(c == null) {
-			throw new Exception("conversation_not_found");
+			throw new AlovoaException("conversation_not_found");
 		}
 		
 		if (!c.containsUser(currUser)) {
-			throw new Exception("user_not_in_conversation");
+			throw new AlovoaException("user_not_in_conversation");
 		}
 		
 		if(message.length() > maxMessageSize) {
-			throw new Exception("message_length_too_long");	
+			throw new AlovoaException("message_length_too_long");	
 		}
 		
 		User user = c.getPartner(currUser);
 		
 		if(user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
-			throw new Exception();
+			throw new AlovoaException("user_blocked");
 		}
 		
 		if(currUser.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
-			throw new Exception();
+			throw new AlovoaException("user_blocked");
 		}
 		
 		String lastMessage = message;

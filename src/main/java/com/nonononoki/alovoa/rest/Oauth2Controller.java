@@ -22,6 +22,7 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.html.LoginResource;
 import com.nonononoki.alovoa.html.ProfileResource;
 import com.nonononoki.alovoa.html.RegisterResource;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.repo.UserRepository;
 
 @RestController
@@ -67,7 +68,7 @@ public class Oauth2Controller {
 				Map attributes = response.getBody();
 				
 				if(attributes == null) {
-					throw new Exception("oauth_attributes_not_found");
+					throw new AlovoaException("oauth_attributes_not_found");
 				}
 				
 				String email = (String) attributes.get("email");
@@ -81,7 +82,7 @@ public class Oauth2Controller {
 				
 				//administrator cannot use oauth for security reason e.g. password breach on oath provider
 				if (user.isAdmin()) {
-					throw new Exception("not_supported_for_admin");
+					throw new AlovoaException("not_supported_for_admin");
 				} 
 	
 				if (!user.isConfirmed()) {

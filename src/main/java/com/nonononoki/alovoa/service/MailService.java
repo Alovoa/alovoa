@@ -1,8 +1,10 @@
 package com.nonononoki.alovoa.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +43,7 @@ public class MailService {
 	private String companyName;
 	
 	
-	public void sendMail(String to, String from, String subject, String body) throws Exception {
+	public void sendMail(String to, String from, String subject, String body) throws Exception, MessagingException, IOException {
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
 		helper.setFrom(from);
@@ -51,18 +53,18 @@ public class MailService {
 		mailSender.send(mimeMessage);
 	}
 	
-	public void sendAdminMail(String to, String subject, String body) throws Exception {
+	public void sendAdminMail(String to, String subject, String body) throws Exception, MessagingException, IOException {
 		sendMail(to, defaultFrom, subject, body);
 	}
 	
-	public void sendAdminMailAll(String subject, String body, List<User> users) throws Exception {
+	public void sendAdminMailAll(String subject, String body, List<User> users) throws Exception, MessagingException, IOException {
 		for(User u : users) {
 			sendMail(u.getEmail(), defaultFrom, subject, body);
 		}	
 	}
 
 	public void sendMailWithAttachment(String to, String from, String subject, String body, String attachmentName,
-			ByteArrayResource attachmentRes) throws Exception {
+			ByteArrayResource attachmentRes) throws Exception, MessagingException, IOException {
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
 		helper.setFrom(from);
@@ -73,7 +75,7 @@ public class MailService {
 		mailSender.send(mimeMessage);
 	}
 	
-	private String getEmailText(String body) throws Exception {
+	private String getEmailText(String body) throws Exception, IOException {
 		String template = Tools.getResourceText("static/templates/email.html");
 		String text = new String();
 		String hrefWebsite = appDomain + "/"; 
@@ -88,7 +90,7 @@ public class MailService {
 		return text;
 	}
 
-	public void sendRegistrationMail(User user, UserRegisterToken token) throws Exception {
+	public void sendRegistrationMail(User user, UserRegisterToken token) throws Exception, MessagingException, IOException {
 		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.register.subject", new String[] { appName }, "",
 				locale);
@@ -97,7 +99,7 @@ public class MailService {
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 
-	public void sendPasswordResetMail(User user, UserPasswordToken token) throws Exception {
+	public void sendPasswordResetMail(User user, UserPasswordToken token) throws Exception, MessagingException, IOException {
 		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.password-reset.subject", new String[] { appName },
 				locale);
@@ -106,7 +108,7 @@ public class MailService {
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 
-	public void sendAccountDeleteRequest(User user, UserDeleteToken token) throws Exception {
+	public void sendAccountDeleteRequest(User user, UserDeleteToken token) throws Exception, MessagingException, IOException {
 		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.account-delete-request.subject",
 				new String[] { appName }, locale);
@@ -115,7 +117,7 @@ public class MailService {
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 
-	public void sendAccountDeleteConfirm(User user) throws Exception {
+	public void sendAccountDeleteConfirm(User user) throws Exception, MessagingException, IOException {
 		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.account-delete-confirm.subject",
 				new String[] { appName }, locale);
@@ -124,7 +126,7 @@ public class MailService {
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 	
-	public void sendAccountConfirmed(User user) throws Exception {
+	public void sendAccountConfirmed(User user) throws Exception, MessagingException, IOException {
 		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.account-confirmed.subject",
 				new String[] { appName }, locale);

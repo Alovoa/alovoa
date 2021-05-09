@@ -9,6 +9,7 @@ import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserReport;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.MailDto;
 import com.nonononoki.alovoa.model.UserDeleteParams;
 import com.nonononoki.alovoa.model.UserDto;
@@ -68,7 +69,7 @@ public class AdminService {
 		Contact contact = contactRepository.findById(id).orElse(null);
 		
 		if(contact == null) {
-			throw new Exception("contact_not_found");
+			throw new AlovoaException("contact_not_found");
 		}
 		contact.setHidden(true);
 		contactRepository.saveAndFlush(contact);
@@ -96,7 +97,7 @@ public class AdminService {
 		UserReport report = userReportRepository.findById(id).orElse(null);
 		
 		if(report == null) {
-			throw new Exception("report_not_found");
+			throw new AlovoaException("report_not_found");
 		}
 		
 		User u = report.getUserFrom();
@@ -111,7 +112,7 @@ public class AdminService {
 		User user = userRepo.findById(UserDto.decodeId(id, textEncryptor)).orElse(null);
 		
 		if(user == null) {
-			throw new Exception("user_not_found");
+			throw new AlovoaException("user_not_found");
 		}
 		
 		UserDeleteParams userDeleteParam = UserDeleteParams.builder()
@@ -158,7 +159,7 @@ public class AdminService {
 	
 	private void checkRights() throws Exception {
 		if (!authService.getCurrentUser().isAdmin()) {
-			throw new Exception("not_admin");
+			throw new AlovoaException("not_admin");
 		}
 	}
 

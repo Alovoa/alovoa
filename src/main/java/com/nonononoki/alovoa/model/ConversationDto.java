@@ -1,6 +1,14 @@
 package com.nonononoki.alovoa.model;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
@@ -22,7 +30,7 @@ public class ConversationDto {
 	private boolean read;
 
 	public static ConversationDto conversationToDto(Conversation c, User currentUser,
-			TextEncryptorConverter textEncryptor) throws Exception {
+			TextEncryptorConverter textEncryptor) throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		ConversationDto dto = new ConversationDto();
 		dto.setId(c.getId());
 		dto.setLastUpdated(c.getLastUpdated());

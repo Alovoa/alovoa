@@ -1,8 +1,16 @@
 package com.nonononoki.alovoa.model;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
@@ -19,7 +27,7 @@ public class DonationDto {
 	private double amount;
 
 	public static DonationDto donationToDto(UserDonation d, User currentUser, TextEncryptorConverter textEncryptor)
-			throws Exception {
+			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		DonationDto dto = new DonationDto();
 		dto.setId(d.getId());
 		dto.setDate(d.getDate());
@@ -29,7 +37,7 @@ public class DonationDto {
 	}
 
 	public static DonationDto donationToDto(UserDonation d, User currentUser, TextEncryptorConverter textEncryptor,
-			int mode) throws Exception {
+			int mode) throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		DonationDto dto = new DonationDto();
 		dto.setId(d.getId());
 		dto.setDate(d.getDate());
@@ -39,7 +47,7 @@ public class DonationDto {
 	}
 
 	public static DonationDto userToDto(User user, User currentUser, TextEncryptorConverter textEncryptor)
-			throws Exception {
+			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		DonationDto dto = new DonationDto();
 		dto.setId(user.getId());
 		dto.setAmount(user.getTotalDonations());
@@ -48,7 +56,7 @@ public class DonationDto {
 	}
 
 	public static DonationDto userToDto(User user, User currentUser, TextEncryptorConverter textEncryptor, int mode)
-			throws Exception {
+			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		DonationDto dto = new DonationDto();
 		dto.setId(user.getId());
 		dto.setAmount(user.getTotalDonations());
@@ -57,7 +65,7 @@ public class DonationDto {
 	}
 
 	public static List<DonationDto> donationsToDtos(List<UserDonation> donations, User currentUser,
-			TextEncryptorConverter textEncryptor, int maxEntries) throws Exception {
+			TextEncryptorConverter textEncryptor, int maxEntries) throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		List<DonationDto> dtos = new ArrayList<>();
 		for (UserDonation donation : donations) {
 			if (!donation.getUser().getId().equals(currentUser.getId())) {
@@ -72,7 +80,7 @@ public class DonationDto {
 	}
 
 	public static List<DonationDto> usersToDtos(List<User> users, User currentUser,
-			TextEncryptorConverter textEncryptor, int maxEntries) throws Exception {
+			TextEncryptorConverter textEncryptor, int maxEntries) throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		List<DonationDto> dtos = new ArrayList<>();
 		for (User user : users) {
 			if (!user.getId().equals(currentUser.getId())) {

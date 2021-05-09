@@ -1015,7 +1015,6 @@ public class OxCaptcha {
 	}
 
 	private int ranInt(int i, int j) {
-		
 		double d = RAND.nextDouble();
 		return (int) (i + ((j - i) + 1) * d);
 	}

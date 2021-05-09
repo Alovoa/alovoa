@@ -4,14 +4,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
@@ -28,6 +32,7 @@ import com.nonononoki.alovoa.entity.user.UserNotification;
 import com.nonononoki.alovoa.entity.user.UserRegisterToken;
 import com.nonononoki.alovoa.entity.user.UserReport;
 import com.nonononoki.alovoa.entity.user.UserWebPush;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.BaseRegisterDto;
 import com.nonononoki.alovoa.model.RegisterDto;
 import com.nonononoki.alovoa.repo.GenderRepository;
@@ -104,16 +109,18 @@ public class RegisterService {
 
 	// @Autowired
 	// private HttpServletRequest request;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ResponseEntityExceptionHandler.class);
 
-	public String register(RegisterDto dto) throws Exception {
+	public String register(RegisterDto dto) throws Exception, MessagingException {
 
 		boolean isValid = captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText());
 		if (!isValid) {
-			throw new Exception(publicService.text("backend.error.captcha.invalid"));
+			throw new AlovoaException(publicService.text("backend.error.captcha.invalid"));
 		}
 
 		if (!isValidEmailAddress(dto.getEmail())) {
-			throw new Exception("email_invalid");
+			throw new AlovoaException("email_invalid");
 		}
 
 		if (!profile.equals(Tools.DEV)) {
@@ -132,16 +139,16 @@ public class RegisterService {
 			try {
 				// check spam domains
 				if (Tools.isTextContainingLineFromFile(TEMP_EMAIL_FILE_NAME, dto.getEmail())) {
-					throw new Exception(publicService.text("backend.error.register.email-spam"));
+					throw new AlovoaException(publicService.text("backend.error.register.email-spam"));
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}
 
 		User user = userRepo.findByEmail(dto.getEmail().toLowerCase());
 		if (user != null) {
-			throw new Exception(publicService.text("backend.error.register.email-exists"));
+			throw new AlovoaException(publicService.text("backend.error.register.email-exists"));
 		}
 
 		BaseRegisterDto baseRegisterDto = registerBase(dto);
@@ -154,13 +161,13 @@ public class RegisterService {
 		return token.getContent();
 	}
 
-	public void registerOauth(RegisterDto dto) throws Exception {
+	public void registerOauth(RegisterDto dto) throws Exception, MessagingException, IOException {
 
 		String email = authService.getOauth2Email();
 
 		User user = userRepo.findByEmail(email);
 		if (user != null) {
-			throw new Exception(publicService.text("backend.error.register.email-exists"));
+			throw new AlovoaException(publicService.text("backend.error.register.email-exists"));
 		}
 
 		dto.setEmail(email);
@@ -174,7 +181,7 @@ public class RegisterService {
 		mailService.sendAccountConfirmed(user);
 	}
 
-	public UserRegisterToken createUserToken(User user) throws Exception {
+	public UserRegisterToken createUserToken(User user) throws Exception, MessagingException, IOException {
 		UserRegisterToken token = generateToken(user);
 		user.setRegisterToken(token);
 		user = userRepo.saveAndFlush(user);
@@ -190,21 +197,21 @@ public class RegisterService {
 		return registerTokenRepo.saveAndFlush(token);
 	}
 
-	public User registerConfirm(String tokenString) throws Exception {
+	public User registerConfirm(String tokenString) throws Exception, MessagingException, IOException {
 		UserRegisterToken token = registerTokenRepo.findByContent(tokenString);
 
 		if (token == null) {
-			throw new Exception();
+			throw new AlovoaException("token_not_found");
 		}
 
 		User user = token.getUser();
 
 		if (user == null) {
-			throw new Exception();
+			throw new AlovoaException("user_not_found");
 		}
 
 		if (user.isConfirmed()) {
-			throw new Exception();
+			throw new AlovoaException("user_not_confirmed");
 		}
 
 		user.setConfirmed(true);
@@ -220,13 +227,13 @@ public class RegisterService {
 
 		if (dto.getFirstName().length() > firstNameLengthMax || 
 				dto.getFirstName().length() < firstNameLengthMin) {
-			throw new Exception("name_invalid");
+			throw new AlovoaException("name_invalid");
 		}
 
 		// check minimum age
 		int userAge = Tools.calcUserAge(dto.getDateOfBirth());
 		if (userAge < minAge) {
-			throw new Exception(publicService.text("backend.error.register.min-age"));
+			throw new AlovoaException(publicService.text("backend.error.register.min-age"));
 		}
 
 		User user = new User();

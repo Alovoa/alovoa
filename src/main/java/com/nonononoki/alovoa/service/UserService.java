@@ -56,6 +56,7 @@ import com.nonononoki.alovoa.entity.user.UserLike;
 import com.nonononoki.alovoa.entity.user.UserNotification;
 import com.nonononoki.alovoa.entity.user.UserProfilePicture;
 import com.nonononoki.alovoa.entity.user.UserReport;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.model.UserDeleteParams;
 import com.nonononoki.alovoa.model.UserDto;
@@ -190,24 +191,24 @@ public class UserService {
 		String userTokenString = deleteToken.getContent();
 
 		if (!dto.isConfirm()) {
-			throw new Exception("deletion_not_confirmed");
+			throw new AlovoaException("deletion_not_confirmed");
 		}
 
 		long ms = new Date().getTime();
 		if (ms < user.getDeleteToken().getActiveDate().getTime()) {
-			throw new Exception("deletion_not_active_yet");
+			throw new AlovoaException("deletion_not_active_yet");
 		}
 
 		if (!dto.getTokenString().equals(userTokenString)) {
-			throw new Exception("deletion_wrong_token");
+			throw new AlovoaException("deletion_wrong_token");
 		}
 
 		if (!dto.getEmail().equals(user.getEmail())) {
-			throw new Exception("deletion_wrong_email");
+			throw new AlovoaException("deletion_wrong_email");
 		}
 
 		if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
-			throw new Exception("captcha_invalid");
+			throw new AlovoaException("captcha_invalid");
 		}
 
 		UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
@@ -383,7 +384,7 @@ public class UserService {
 	public void updateDescription(String description) throws Exception {
 		if (description != null) {
 			if (description.length() > descriptionSize) {
-				throw new Exception("max_length_exceeded");
+				throw new AlovoaException("max_length_exceeded");
 			}
 			if (description.trim().length() == 0) {
 				description = null;
@@ -391,7 +392,7 @@ public class UserService {
 				UrlDetector parser = new UrlDetector(description, UrlDetectorOptions.Default);
 				List<Url> urls = parser.detect();
 				if (!urls.isEmpty()) {
-					throw new Exception("url_detected");
+					throw new AlovoaException("url_detected");
 				}
 			}
 		}
@@ -408,7 +409,7 @@ public class UserService {
 				now.getTime() >= user.getDates().getIntentionChangeDate().getTime() + intentionDelay ) {
 			boolean isLegal = Tools.calcUserAge(user) >= ageLegal;
 			if (!isLegal && intention == UserIntention.SEX) {
-				throw new Exception("not_supported");
+				throw new AlovoaException("not_supported");
 			}
 			UserIntention i = userIntentionRepo.findById(intention).orElse(null);
 			user.setIntention(i);
@@ -461,13 +462,13 @@ public class UserService {
 
 		if (value.length() < interestMinCharSize || value.length() > interestMaxCharSize
 				|| user.getInterests().size() >= interestSize) {
-			throw new Exception("interest_invalid_size");
+			throw new AlovoaException("interest_invalid_size");
 		}
 
 		Pattern pattern = Pattern.compile("[a-zA-Z0-9-]+");
 		Matcher matcher = pattern.matcher(value);
 		if (!matcher.matches()) {
-			throw new Exception("interest_unsupported_characters");
+			throw new AlovoaException("interest_unsupported_characters");
 		}
 
 		UserInterest interest = new UserInterest();
@@ -475,7 +476,7 @@ public class UserService {
 		interest.setUser(user);
 
 		if (user.getInterests().contains(interest)) {
-			throw new Exception("interest_already_exists");
+			throw new AlovoaException("interest_already_exists");
 		}
 
 		if (user.getInterests() == null) {
@@ -492,11 +493,11 @@ public class UserService {
 		UserInterest interest = userInterestRepo.findById(interestId).orElse(null);
 
 		if (interest == null) {
-			throw new Exception("interest_is_null");
+			throw new AlovoaException("interest_is_null");
 		}
 
 		if (!user.getInterests().contains(interest)) {
-			throw new Exception("interest_does_not_exists");
+			throw new AlovoaException("interest_does_not_exists");
 		}
 
 		// userInterestRepo.delete(interest);
@@ -527,7 +528,7 @@ public class UserService {
 			user.getImages().add(img);
 			userRepo.saveAndFlush(user);
 		} else {
-			throw new Exception("max_image_amount_exceeded");
+			throw new AlovoaException("max_image_amount_exceeded");
 		}
 	}
 
@@ -627,15 +628,15 @@ public class UserService {
 		User currUser = authService.getCurrentUser();
 
 		if (user.equals(currUser)) {
-			throw new Exception("user_is_same_user");
+			throw new AlovoaException("user_is_same_user");
 		}
 
 		if (user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
-			throw new Exception("is_blocked");
+			throw new AlovoaException("is_blocked");
 		}
 
 		if (currUser.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
-			throw new Exception("is_blocked");
+			throw new AlovoaException("is_blocked");
 		}
 
 		int userAge = Tools.calcUserAge(user);
@@ -643,7 +644,7 @@ public class UserService {
 		boolean isUserLegalAge = userAge >= ageLegal;
 		boolean isCurrentUserLegalAge = currentUserAge >= ageLegal;
 		if (isUserLegalAge != isCurrentUserLegalAge) {
-			throw new Exception("one_user_is_minor");
+			throw new AlovoaException("one_user_is_minor");
 		}
 
 		if (userLikeRepo.findByUserFromAndUserTo(currUser, user) == null) {
@@ -735,7 +736,7 @@ public class UserService {
 
 			boolean isValid = captchaService.isValid(captchaId, captchaText);
 			if (!isValid) {
-				throw new Exception("captcha_invalid");
+				throw new AlovoaException("captcha_invalid");
 			}
 			UserReport report = new UserReport();
 			report.setDate(new Date());

@@ -1,6 +1,14 @@
 package com.nonononoki.alovoa.model;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
@@ -18,7 +26,7 @@ public class NotificationDto {
 	private UserDto userFromDto;
 
 	public static NotificationDto notificationToNotificationDto(UserNotification n, User currentUser, TextEncryptorConverter textEncryptor)
-			throws Exception {
+			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		NotificationDto dto = new NotificationDto();
 		dto.setDate(n.getDate());
 		dto.setId(n.getId());

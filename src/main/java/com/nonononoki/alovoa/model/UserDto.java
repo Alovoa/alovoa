@@ -1,9 +1,17 @@
 package com.nonononoki.alovoa.model;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.Tools;
@@ -76,12 +84,12 @@ public class UserDto {
 	public static int NO_MEDIA = 3;
 
 	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor)
-			throws Exception {
+			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		return userToUserDto(user, currentUser, textEncryptor, NO_AUDIO);
 	}
 
 	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor, int mode)
-			throws Exception {
+			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		
 		if(user == null) {
 			return null;
@@ -147,7 +155,7 @@ public class UserDto {
 		return dto;
 	}
 
-	public static String encodeId(long id, TextEncryptorConverter textEncryptor) throws Exception {
+	public static String encodeId(long id, TextEncryptorConverter textEncryptor) throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		String en = textEncryptor.encode(Long.toString(id));
 		en = Base64.getEncoder().encodeToString(en.getBytes());
 		return en;

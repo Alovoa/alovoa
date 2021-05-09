@@ -9,6 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.AuthService;
@@ -43,7 +44,7 @@ public class UserProfileResource {
 		
 		if(userView != null) {		
 			if(userView.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
-				throw new Exception("blocked");
+				throw new AlovoaException("blocked");
 			}	
 			
 			userView.setNumberProfileViews(userView.getNumberProfileViews()+1);
@@ -62,7 +63,7 @@ public class UserProfileResource {
 			return mav;
 			
 		} else {
-			throw new Exception("user_not_found");
+			throw new AlovoaException("user_not_found");
 		}		
 	}
 }

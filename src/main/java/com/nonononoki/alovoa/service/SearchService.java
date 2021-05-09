@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserSearchRequest;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -54,7 +55,7 @@ public class SearchService {
 	public List<UserDto> search(Double latitude, Double longitude, int distance, int sort) throws Exception {
 
 		if (distance > maxDistance) {
-			throw new Exception("max_distance_exceeded");
+			throw new AlovoaException("max_distance_exceeded");
 		}
 
 		User user = authService.getCurrentUser();

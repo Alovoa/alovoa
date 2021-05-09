@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
 import com.nonononoki.alovoa.entity.user.ConversationCheckedDate;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.MessageDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.service.AuthService;
@@ -45,21 +46,21 @@ public class MessageController {
 		Conversation c = conversationRepo.findById(convoId).orElse(null);
 		
 		if (c == null) {
-			throw new Exception("conversation_not_found");
+			throw new AlovoaException("conversation_not_found");
 		}
 		
 		if (!c.containsUser(user)) {
-			throw new Exception("user_not_in_conversation");
+			throw new AlovoaException("user_not_in_conversation");
 		}
 		
 		User partner = c.getPartner(user);
 		
 		if(user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(partner.getId()))) {
-			throw new Exception("user_blocked");
+			throw new AlovoaException("user_blocked");
 		}
 		
 		if(partner.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
-			throw new Exception("user_blocked");
+			throw new AlovoaException("user_blocked");
 		}
 
 		Date now = new Date();

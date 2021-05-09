@@ -16,6 +16,7 @@ import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
 import com.nonononoki.alovoa.entity.user.Message;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.ConversationDto;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
@@ -75,11 +76,11 @@ public class MessageResource {
 		Conversation c = conversationRepo.findById(id).orElse(null);
 		
 		if(c == null) {
-			throw new Exception("conversation_not_found");
+			throw new AlovoaException("conversation_not_found");
 		}
 		
 		if(!c.containsUser(user)) {
-			throw new Exception("user_not_in_conversation");
+			throw new AlovoaException("user_not_in_conversation");
 		}
 		
 		User u = c.getPartner(user);

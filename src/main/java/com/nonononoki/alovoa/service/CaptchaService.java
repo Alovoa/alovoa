@@ -2,6 +2,7 @@ package com.nonononoki.alovoa.service;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.Date;
 
@@ -36,7 +37,7 @@ public class CaptchaService {
 //	private final Color FG_COLOR = new Color(236, 65, 122);
 	private final Color FG_COLOR = new Color(130, 130, 130);
 
-	public Captcha generate() throws Exception {
+	public Captcha generate() throws Exception, IOException {
 		OxCaptcha ox = generateCaptchaImage();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ImageIO.write(ox.getImage(), "webp", baos);

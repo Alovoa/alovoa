@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.repo.UserRepository;
 
 @Service
@@ -34,7 +35,7 @@ public class AuthService {
 		
 		User user = userRepo.findByEmail(email);
 		if(user != null && user.isDisabled()) {
-			throw new Exception("user_not_found");
+			throw new AlovoaException("user_not_found");
 		}
 		
 		return user;

@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.component;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -32,6 +34,8 @@ public class AuthProvider implements AuthenticationProvider {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	private static final Logger logger = LoggerFactory.getLogger(AuthProvider.class);
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -74,7 +78,7 @@ public class AuthProvider implements AuthenticationProvider {
 			try {
 				registerService.createUserToken(user);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 
 			throw new InsufficientAuthenticationException("");

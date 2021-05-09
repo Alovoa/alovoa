@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.entity.Contact;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.ContactDto;
 import com.nonononoki.alovoa.repo.ContactRepository;
 
@@ -24,7 +25,7 @@ public class ImprintService {
 	public Contact contact(ContactDto dto) throws Exception {
 		boolean isValid = captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText());
 		if (!isValid) {
-			throw new Exception(publicService.text("backend.error.captcha.invalid"));
+			throw new AlovoaException(publicService.text("backend.error.captcha.invalid"));
 		}
 		
 		Contact c = new Contact();
