@@ -45,7 +45,12 @@ public class MessageService {
 		
 		User currUser = authService.getCurrentUser();
 		
-		Conversation c = conversationRepo.findById(convoId).get();
+		Conversation c = conversationRepo.findById(convoId).orElse(null);
+		
+		if(c == null) {
+			throw new Exception("conversation_not_found");
+		}
+		
 		if (!c.containsUser(currUser)) {
 			throw new Exception("user_not_in_conversation");
 		}

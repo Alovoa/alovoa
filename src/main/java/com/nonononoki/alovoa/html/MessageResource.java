@@ -73,6 +73,11 @@ public class MessageResource {
 		ModelAndView mav = new ModelAndView("message-detail");
 		User user = authService.getCurrentUser();
 		Conversation c = conversationRepo.findById(id).orElse(null);
+		
+		if(c == null) {
+			throw new Exception("conversation_not_found");
+		}
+		
 		if(!c.containsUser(user)) {
 			throw new Exception("user_not_in_conversation");
 		}

@@ -65,6 +65,11 @@ public class Oauth2Controller {
 				ResponseEntity<Map> response = template.exchange(endpoint, HttpMethod.GET, entity,
 						Map.class);
 				Map attributes = response.getBody();
+				
+				if(attributes == null) {
+					throw new Exception("oauth_attributes_not_found");
+				}
+				
 				String email = (String) attributes.get("email");
 				email = email.toLowerCase();
 	

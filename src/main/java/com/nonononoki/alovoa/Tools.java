@@ -127,7 +127,7 @@ public class Tools {
 				if (base64String.endsWith("="))
 					padding = 1;
 			}
-			result = Math.ceil(base64String.length() / 4) * 3 - padding;
+			result = Math.ceil( (double) base64String.length() / 4) * 3 - padding;
 		}
 		return result;
 	}

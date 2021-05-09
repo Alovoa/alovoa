@@ -66,6 +66,10 @@ public class AdminService {
 		checkRights();
 		
 		Contact contact = contactRepository.findById(id).orElse(null);
+		
+		if(contact == null) {
+			throw new Exception("contact_not_found");
+		}
 		contact.setHidden(true);
 		contactRepository.saveAndFlush(contact);
 	}	
@@ -89,7 +93,12 @@ public class AdminService {
 		
 		checkRights();
 		
-		UserReport report = userReportRepository.findById(id).get();
+		UserReport report = userReportRepository.findById(id).orElse(null);
+		
+		if(report == null) {
+			throw new Exception("report_not_found");
+		}
+		
 		User u = report.getUserFrom();
 		u.getReported().remove(report);
 		userRepo.saveAndFlush(u);
@@ -99,7 +108,7 @@ public class AdminService {
 		
 		checkRights();
 		 
-		User user = userRepo.findById(UserDto.decodeId(id, textEncryptor)).get();
+		User user = userRepo.findById(UserDto.decodeId(id, textEncryptor)).orElse(null);
 		
 		if(user == null) {
 			throw new Exception("user_not_found");

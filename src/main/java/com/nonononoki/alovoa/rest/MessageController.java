@@ -43,6 +43,11 @@ public class MessageController {
 	public String getMessages(Model model, @PathVariable long convoId, @PathVariable int first) throws Exception {
 		User user = authService.getCurrentUser();
 		Conversation c = conversationRepo.findById(convoId).orElse(null);
+		
+		if (c == null) {
+			throw new Exception("conversation_not_found");
+		}
+		
 		if (!c.containsUser(user)) {
 			throw new Exception("user_not_in_conversation");
 		}

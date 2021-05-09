@@ -60,7 +60,7 @@ public class DonationDto {
 			TextEncryptorConverter textEncryptor, int maxEntries) throws Exception {
 		List<DonationDto> dtos = new ArrayList<>();
 		for (UserDonation donation : donations) {
-			if (donation.getUser().getId() != currentUser.getId()) {
+			if (!donation.getUser().getId().equals(currentUser.getId())) {
 				dtos.add(DonationDto.donationToDto(donation, currentUser, textEncryptor));
 				
 				if(dtos.size() >= maxEntries) {
@@ -75,7 +75,7 @@ public class DonationDto {
 			TextEncryptorConverter textEncryptor, int maxEntries) throws Exception {
 		List<DonationDto> dtos = new ArrayList<>();
 		for (User user : users) {
-			if (user.getId() != currentUser.getId()) {
+			if (!user.getId().equals(currentUser.getId())) {
 				dtos.add(DonationDto.userToDto(user, currentUser, textEncryptor));
 				
 				if(dtos.size() >= maxEntries) {

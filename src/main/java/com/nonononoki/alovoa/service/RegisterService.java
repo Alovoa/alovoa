@@ -123,7 +123,7 @@ public class RegisterService {
 				dto.setEmail(cleanEmail);
 			}
 			if (dto.getEmail().contains("+")) {
-				dto.setEmail(dto.getEmail().split("+")[0] + "@" + dto.getEmail().split("@")[1]);
+				dto.setEmail(dto.getEmail().split("[+]")[0] + "@" + dto.getEmail().split("@")[1]);
 			}
 		}
 

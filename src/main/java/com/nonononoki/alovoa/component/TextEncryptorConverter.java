@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.component;
 
+import java.security.SecureRandom;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
@@ -16,8 +17,8 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 	@Value("${app.text.key}")
 	private String key;
 
-	@Value("${app.text.salt}")
-	private String salt;
+//	@Value("${app.text.salt}")
+//	private String salt;
 
 	private final String TRANSFORMATION = "AES/CBC/PKCS5PADDING";
 
@@ -25,10 +26,15 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 	private static SecretKeySpec keySpec;
 	private static Cipher enCipher;
 	private static Cipher deCipher;
+	
+	SecureRandom random = new SecureRandom();
 
 	private IvParameterSpec getIvSpec() throws Exception {
 		if (ivSpec == null) {
-			ivSpec = new IvParameterSpec(salt.getBytes("UTF-8"));
+//			ivSpec = new IvParameterSpec(salt.getBytes("UTF-8"));
+			byte[] bytesIV = new byte[16];
+		    random.nextBytes(bytesIV);
+			ivSpec = new IvParameterSpec(bytesIV);
 		}
 		return ivSpec;
 	}

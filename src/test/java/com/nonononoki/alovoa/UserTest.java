@@ -95,7 +95,7 @@ public class UserTest {
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -104,74 +104,72 @@ public class UserTest {
 
 	@Value("${app.age.max}")
 	private int maxAge;
-	
+
 	@Value("${app.message.size}")
 	private int maxMessageSize;
-	
+
 	@Value("${app.conversation.messages-max}")
 	private int maxConvoMessages;
-	
+
 	@Value("${app.first-name.length-max}")
 	private int firstNameLengthMax;
 
 	@Value("${app.first-name.length-min}")
 	private int firstNameLengthMin;
 
-
 	@MockBean
 	private AuthService authService;
 
 	private final int INTENTION_TEST = 1;
-	
+
 	private final String INTEREST = "interest";
 
 	private static List<User> testUsers = null;
-	
+
 	private static int user1Age = 18;
 	private static int user2Age = 20;
 	private static int user3Age = 30;
-	
 
-	public static List<User> getTestUsers(CaptchaService captchaService, RegisterService registerService, int firstNameLengthMin, int firstNameLengthMax)
-			throws Exception {
+	public static List<User> getTestUsers(CaptchaService captchaService, RegisterService registerService,
+			int firstNameLengthMin, int firstNameLengthMax) throws Exception {
 		if (testUsers == null) {
-			
+
 			Captcha c2 = captchaService.generate();
 			RegisterDto user2Dto = createTestUserDto(2, c2, "test2", user2Age);
 			String tokenContent2 = registerService.register(user2Dto);
 			User user2 = registerService.registerConfirm(tokenContent2);
-			
+
 			String user1Email = "nonononoki@gmail.com";
 			// register and confirm test users
 			Captcha c1 = captchaService.generate();
 			RegisterDto user1Dto = createTestUserDto(1, c1, user1Email, user1Age);
 			String tokenContent1 = registerService.register(user1Dto);
 			User user1 = registerService.registerConfirm(tokenContent1);
-			
-			//test multiple email copies with slight variations
+
+			// test multiple email copies with slight variations
 			{
-				user1Dto.setFirstName(StringUtils.repeat("*", firstNameLengthMin -1));	
+				user1Dto.setFirstName(StringUtils.repeat("*", firstNameLengthMin - 1));
 				Assert.assertThrows(Exception.class, () -> {
 					registerService.register(user1Dto);
 				});
-				
-				user1Dto.setFirstName(StringUtils.repeat("*", firstNameLengthMax +1));	
+
+				user1Dto.setFirstName(StringUtils.repeat("*", firstNameLengthMax + 1));
 				Assert.assertThrows(Exception.class, () -> {
 					registerService.register(user1Dto);
 				});
-				
+
 				user1Dto.setFirstName("test");
-				
+
 				user1Dto.setEmail("nono.nono.ki@gmail.com");
 				Assert.assertThrows(Exception.class, () -> {
 					registerService.register(user1Dto);
 				});
-					
+
 				user1Dto.setEmail("nonononoki+test@gmail.com");
 				Assert.assertThrows(Exception.class, () -> {
 					registerService.register(user1Dto);
 				});
-				
+
 				user1Dto.setEmail("nono.nono.ki+test@gmail.com");
 				Assert.assertThrows(Exception.class, () -> {
 					registerService.register(user1Dto);
@@ -219,11 +217,11 @@ public class UserTest {
 
 	private static RegisterDto createTestUserDto(long gender, Captcha c, String email, int age) throws IOException {
 		RegisterDto dto = new RegisterDto();
-		
-		if(!email.contains("@")) {
+
+		if (!email.contains("@")) {
 			dto.setEmail(email + Tools.MAIL_TEST_DOMAIN);
 		} else {
-			dto.setEmail(email);		
+			dto.setEmail(email);
 		}
 		dto.setDateOfBirth(Tools.ageToDate(age));
 		dto.setPassword("test123");
@@ -246,7 +244,7 @@ public class UserTest {
 
 		// one default admin user
 		Assert.assertEquals(userRepo.count(), 1);
-		
+
 		List<User> testUsers = getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 		User user1 = testUsers.get(0);
 		User user2 = testUsers.get(1);
@@ -279,25 +277,25 @@ public class UserTest {
 		userService.updateMaxAge(100);
 		userService.updateMinAge(16);
 		userService.updatePreferedGender(2, true);
-		
-		//check for urls
+
+		// check for urls
 		{
 			Assert.assertThrows(Exception.class, () -> {
 				userService.updateDescription("hidden url example.com");
 			});
-			
+
 			Assert.assertThrows(Exception.class, () -> {
 				userService.updateDescription("hidden url test.example.com");
 			});
-			
+
 			Assert.assertThrows(Exception.class, () -> {
 				userService.updateDescription("hidden url test.bit.ly/fdsfasdgadrsfgafgfdsaf13");
 			});
-			
+
 			Assert.assertThrows(Exception.class, () -> {
 				userService.updateDescription("hidden email test.test@test.com");
 			});
-			
+
 			Assert.assertThrows(Exception.class, () -> {
 				userService.updateDescription("hidden email test.test+1234@test.net");
 			});
@@ -335,8 +333,7 @@ public class UserTest {
 		Assert.assertTrue(user3.getPreferedGenders().size() == 2);
 		userService.updatePreferedGender(2, false);
 		Assert.assertTrue(user3.getPreferedGenders().size() == 1);
-		
-		
+
 		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getId());
 		Assert.assertTrue("interest", authService.getCurrentUser().getInterests().size() == 0);
 		userService.addInterest(INTEREST);
@@ -358,33 +355,31 @@ public class UserTest {
 		Assert.assertThrows(Exception.class, () -> {
 			deleteTest(user1);
 		});
-		
-		//USERDATA 
+
+		// USERDATA
 		ResponseEntity<Resource> userData = userService.getUserdata();
 		InputStream inputStream = ((ByteArrayResource) userData.getBody()).getInputStream();
-		String userDataString = new BufferedReader(
-			      new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-			        .lines()
-			        .collect(Collectors.joining("\n"));
+		String userDataString = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines()
+				.collect(Collectors.joining("\n"));
 		UserGdpr gdpr = objectMapper.readValue(userDataString, UserGdpr.class);
 		Assert.assertTrue(gdpr.getDescription().equals(authService.getCurrentUser().getDescription()));
 		Assert.assertTrue(gdpr.getEmail().equals(authService.getCurrentUser().getEmail()));
 		Assert.assertTrue(gdpr.getFirstName().equals(authService.getCurrentUser().getFirstName()));
-		//Assert.assertTrue(gdpr.getDates().equals(authService.getCurrentUser().getDates()));
+		// Assert.assertTrue(gdpr.getDates().equals(authService.getCurrentUser().getDates()));
 		Assert.assertTrue(gdpr.getDonations().equals(authService.getCurrentUser().getDonations()));
-		//Assert.assertTrue(gdpr.getGender().equals(authService.getCurrentUser().getGender()));
-		//Assert.assertTrue(gdpr.getIntention().equals(authService.getCurrentUser().getIntention()));
+		// Assert.assertTrue(gdpr.getGender().equals(authService.getCurrentUser().getGender()));
+		// Assert.assertTrue(gdpr.getIntention().equals(authService.getCurrentUser().getIntention()));
 		Assert.assertTrue(gdpr.getInterests().equals(authService.getCurrentUser().getInterests()));
 		Assert.assertTrue(gdpr.getLocationLatitude().equals(authService.getCurrentUser().getLocationLatitude()));
 		Assert.assertTrue(gdpr.getLocationLongitude().equals(authService.getCurrentUser().getLocationLongitude()));
 		Assert.assertTrue(gdpr.getMessageSent().equals(authService.getCurrentUser().getMessageSent()));
 		Assert.assertTrue(gdpr.getNumberProfileViews() == authService.getCurrentUser().getNumberProfileViews());
 		Assert.assertTrue(gdpr.getNumberSearches() == authService.getCurrentUser().getNumberSearches());
-		//Assert.assertTrue(gdpr.getPreferedGenders().equals(authService.getCurrentUser().getPreferedGenders()));
+		// Assert.assertTrue(gdpr.getPreferedGenders().equals(authService.getCurrentUser().getPreferedGenders()));
 		Assert.assertTrue(gdpr.getPreferedMaxAge() == (authService.getCurrentUser().getPreferedMaxAge()));
 		Assert.assertTrue(gdpr.getTotalDonations() == (authService.getCurrentUser().getTotalDonations()));
 		Assert.assertTrue(gdpr.getWebPush().equals(authService.getCurrentUser().getWebPush()));
-		
+
 		UserTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 
 		Assert.assertEquals(conversationRepo.count(), 0);
@@ -396,7 +391,7 @@ public class UserTest {
 		Assert.assertEquals(userRepo.count(), 1);
 
 	}
-	
+
 	private void deleteTest(User user) throws Exception {
 		UserDeleteToken token = userService.deleteAccountRequest();
 		UserDeleteAccountDto dto = new UserDeleteAccountDto();
@@ -447,25 +442,25 @@ public class UserTest {
 
 		List<UserDto> searchDtos6 = searchService.search(0.46, 0.0, 50, 1);
 		Assert.assertEquals(searchDtos6.size(), 0);
-		
-		//search filtered by interest
+
+		// search filtered by interest
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		userService.deleteInterest(user1.getInterests().get(0).getId());
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		List<UserDto> interestSearchDto1 = searchService.search(0.0, 0.0, 50, SearchService.SORT_INTEREST);
 		Assert.assertEquals(interestSearchDto1.size(), 1);
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		userService.addInterest(INTEREST);		
-		
-		//test preferedAge
+		userService.addInterest(INTEREST);
+
+		// test preferedAge
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
-		userService.updateMinAge(user1Age+1);
+		userService.updateMinAge(user1Age + 1);
 		List<UserDto> ageSearchDto1 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(ageSearchDto1.size(), 1);
-		userService.updateMaxAge(user3Age-1);
+		userService.updateMaxAge(user3Age - 1);
 		List<UserDto> ageSearchDto2 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(ageSearchDto2.size(), 0);
-		
+
 		user2.getDates().setDateOfBirth(Tools.localDateToDate(LocalDateTime.now().minusYears(minAge).toLocalDate()));
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		userService.updateMinAge(minAge);
@@ -476,7 +471,7 @@ public class UserTest {
 		List<UserDto> ageSearchDto4 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(ageSearchDto4.size(), 1);
 		user2.getDates().setDateOfBirth(Tools.ageToDate(user2Age));
-		
+
 		// likeUser
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		userService.likeUser(UserDto.encodeId(user1.getId(), textEncryptor));
@@ -501,17 +496,20 @@ public class UserTest {
 		userService.blockUser(UserDto.encodeId(user2.getId(), textEncryptor));
 		Assert.assertEquals(userBlockRepo.count(), 1);
 		Assert.assertEquals(user3.getBlockedUsers().size(), 1);
+		
+		String user2IdEnc = UserDto.encodeId(user2.getId(), textEncryptor);
 		Assert.assertThrows(Exception.class, () -> {
 			// cannot like user when blocked
-			userService.likeUser(UserDto.encodeId(user2.getId(), textEncryptor));
+			userService.likeUser(user2IdEnc);
 		});
 
 		userService.unblockUser(UserDto.encodeId(user2.getId(), textEncryptor));
 		Assert.assertEquals(userBlockRepo.count(), 0);
 
 		// like back
+		String user3IdEnc = UserDto.encodeId(user3.getId(), textEncryptor);
 		Assert.assertThrows(Exception.class, () -> {
-			userService.likeUser(UserDto.encodeId(user3.getId(), textEncryptor));
+			userService.likeUser(user3IdEnc);
 		});
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
@@ -540,7 +538,7 @@ public class UserTest {
 		userService.blockUser(UserDto.encodeId(user3.getId(), textEncryptor));
 		Assert.assertEquals(userBlockRepo.count(), 1);
 		Assert.assertThrows(Exception.class, () -> {
-			messageService.send(user3.getConversations().get(0).getId(),"Hello");
+			messageService.send(user3.getConversations().get(0).getId(), "Hello");
 		});
 
 		Assert.assertEquals(messageRepo.count(), 2);
@@ -558,8 +556,8 @@ public class UserTest {
 
 		messageService.send(user1.getConversations().get(0).getId(), verylongString);
 		Assert.assertEquals(messageRepo.count(), 3);
-		
-		for(int i = 0; i < maxConvoMessages; i++) {
+
+		for (int i = 0; i < maxConvoMessages; i++) {
 			messageService.send(user1.getConversations().get(0).getId(), verylongString);
 		}
 		Assert.assertEquals(messageRepo.count(), maxConvoMessages);
