@@ -5,6 +5,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -102,7 +103,8 @@ public class SearchService {
 
 		List<User> users = userRepo.usersSearch(request);
 
-		Set<Long> ignoreIds = user.getLikedBy().stream().map(o -> o.getUserFrom().getId()).collect(Collectors.toSet());
+		Set<Long> ignoreIds = new HashSet<>();
+		//user.getLikedBy().stream().map(o -> o.getUserFrom().getId()).collect(Collectors.toSet());
 		ignoreIds.addAll(
 				user.getBlockedByUsers().stream().map(o -> o.getUserFrom().getId()).collect(Collectors.toSet()));
 		ignoreIds.add(user.getId());
