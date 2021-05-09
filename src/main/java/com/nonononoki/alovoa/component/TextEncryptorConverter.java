@@ -24,8 +24,8 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 	@Value("${app.text.key}")
 	private String key;
 
-//	@Value("${app.text.salt}")
-//	private String salt;
+	@Value("${app.text.salt}")
+	private String salt;
 
 	private final String TRANSFORMATION = "AES/CBC/PKCS5PADDING";
 
@@ -38,10 +38,7 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 
 	private IvParameterSpec getIvSpec() throws Exception {
 		if (ivSpec == null) {
-//			ivSpec = new IvParameterSpec(salt.getBytes("UTF-8"));
-			byte[] bytesIV = new byte[16];
-		    random.nextBytes(bytesIV);
-			ivSpec = new IvParameterSpec(bytesIV);
+			ivSpec = new IvParameterSpec(salt.getBytes("UTF-8"));
 		}
 		return ivSpec;
 	}
