@@ -18,8 +18,6 @@ import javax.persistence.AttributeConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.nonononoki.alovoa.model.AlovoaException;
-
 @Component
 public class TextEncryptorConverter implements AttributeConverter<String, String> {
 

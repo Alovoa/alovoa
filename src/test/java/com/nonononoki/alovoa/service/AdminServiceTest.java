@@ -1,8 +1,10 @@
-package com.nonononoki.alovoa;
+package com.nonononoki.alovoa.service;
 
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.Contact;
@@ -24,17 +27,11 @@ import com.nonononoki.alovoa.repo.ContactRepository;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
-import com.nonononoki.alovoa.service.AdminService;
-import com.nonononoki.alovoa.service.AuthService;
-import com.nonononoki.alovoa.service.CaptchaService;
-import com.nonononoki.alovoa.service.ImprintService;
-import com.nonononoki.alovoa.service.RegisterService;
-import com.nonononoki.alovoa.service.UserService;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class AdminTest {
+public class AdminServiceTest {
 
 	@Autowired
 	private RegisterService registerService;
@@ -80,11 +77,21 @@ public class AdminTest {
 	
 	@Autowired
 	private ContactRepository contactRepo;
+	
+	private List<User> testUsers;
+	
+	@BeforeEach
+	public void before() throws Exception {
+		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
+	}
+	
+	@AfterEach
+	public void after() throws Exception {
+		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+	}
 
 	@Test
 	public void test() throws Exception {
-
-		List<User> testUsers = UserTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 		
 		List<User> allUsers = userRepo.findAll();
 		User adminUser = allUsers.get(0);
@@ -111,7 +118,6 @@ public class AdminTest {
 		User bannedUser = userRepo.findById(user1.getId()).get();
 		Assert.assertEquals(bannedUser.isDisabled(), true);
 		
-		UserTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 	
 	private Contact contactTest() throws Exception {

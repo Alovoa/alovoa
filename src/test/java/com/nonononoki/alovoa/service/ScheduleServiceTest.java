@@ -1,9 +1,11 @@
-package com.nonononoki.alovoa;
+package com.nonononoki.alovoa.service;
 
 import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
@@ -27,17 +30,11 @@ import com.nonononoki.alovoa.repo.UserDeleteTokenRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
 import com.nonononoki.alovoa.repo.UserPasswordTokenRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
-import com.nonononoki.alovoa.service.AuthService;
-import com.nonononoki.alovoa.service.CaptchaService;
-import com.nonononoki.alovoa.service.PasswordService;
-import com.nonononoki.alovoa.service.RegisterService;
-import com.nonononoki.alovoa.service.ScheduleService;
-import com.nonononoki.alovoa.service.UserService;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class ScheduleTest {
+public class ScheduleServiceTest {
 
 	@Autowired
 	private CaptchaRepository captchaRepo;
@@ -103,19 +100,22 @@ public class ScheduleTest {
 	@Autowired
 	private UserService userService;
 	
+	
+	private List<User> testUsers;
+	
+	@BeforeEach
+	public void before() throws Exception {
+		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
+	}
+	
+	@AfterEach
+	public void after() throws Exception {
+		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+	}
+	
+	
 	@Test
 	public void test() throws Exception {
-		
-		//always valid on tests
-		//Mockito.when(
-		//		captchaService.isValid(Mockito.anyLong(), Mockito.nullable(String.class)))			
-		//.thenReturn(true);
-		
-		//UserTest userTest = new UserTest();
-		//List<User> testUsers = userTest.getTestUsers();
-		Assert.assertEquals(userRepo.count(), 1);
-		List<User> testUsers = UserTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
-		Assert.assertEquals(userRepo.count(), 4);
 		
 		Date currentDate = new Date();
 		long currentDateTime = currentDate.getTime();
@@ -218,7 +218,7 @@ public class ScheduleTest {
 		scheduleService.cleanUserDeleteToken(currentDate);
 		Assert.assertEquals(userDeleteTokenRepository.count(), 1);
 		
-		UserTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 	
 	private Captcha generateCaptcha() {

@@ -1,8 +1,10 @@
-package com.nonononoki.alovoa;
+package com.nonononoki.alovoa.service;
 
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +24,11 @@ import com.nonononoki.alovoa.model.PasswordResetDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserPasswordTokenRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
-import com.nonononoki.alovoa.service.AuthService;
-import com.nonononoki.alovoa.service.CaptchaService;
-import com.nonononoki.alovoa.service.PasswordService;
-import com.nonononoki.alovoa.service.RegisterService;
-import com.nonononoki.alovoa.service.UserService;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class PasswordTest {
+public class PasswordServiceTest {
 
 	@Autowired
 	private RegisterService registerService;
@@ -72,10 +69,20 @@ public class PasswordTest {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	private List<User> testUsers;
+	
+	@BeforeEach
+	public void before() throws Exception {
+		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
+	}
+	
+	@AfterEach
+	public void after() throws Exception {
+		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+	}
+	
 	@Test
-	public void test() throws Exception {
-		
-		List<User> testUsers = UserTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
+	public void test() throws Exception {		
 		User user1 = testUsers.get(1);
 		
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
@@ -105,8 +112,6 @@ public class PasswordTest {
 		}
 		
 		Assert.assertEquals(userPasswordTokenRepository.count(), 0);
-		
-		UserTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 	
  }

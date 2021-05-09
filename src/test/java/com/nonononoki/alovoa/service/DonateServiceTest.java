@@ -1,8 +1,10 @@
-package com.nonononoki.alovoa;
+package com.nonononoki.alovoa.service;
 
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,16 +20,11 @@ import com.nonononoki.alovoa.model.DonationKofi;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserDonationRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
-import com.nonononoki.alovoa.service.AuthService;
-import com.nonononoki.alovoa.service.CaptchaService;
-import com.nonononoki.alovoa.service.DonateService;
-import com.nonononoki.alovoa.service.RegisterService;
-import com.nonononoki.alovoa.service.UserService;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class DonateTest {
+public class DonateServiceTest {
 
 	@Autowired
 	private RegisterService registerService;
@@ -64,11 +61,22 @@ public class DonateTest {
 
 	@Autowired
 	private ConversationRepository conversationRepo;
+	
+	private List<User> testUsers;
+	
+	@BeforeEach
+	public void before() throws Exception {
+		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
+	}
+	
+	@AfterEach
+	public void after() throws Exception {
+		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+	}
 
 	@Test
 	public void test() throws Exception {
 		
-		List<User> testUsers = UserTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 		User user1 = testUsers.get(1);
 		
 		double doubleDelta = 0.001;
@@ -98,8 +106,6 @@ public class DonateTest {
 		
 		Assert.assertTrue(user1.getTotalDonations() < donationAmount + donationAmount2 && user1.getTotalDonations() > donationAmount);
 		Assert.assertEquals(userDonationRepository.count(), 2);
-		
-		UserTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 		
 	}
 	
