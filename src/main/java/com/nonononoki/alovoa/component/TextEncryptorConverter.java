@@ -67,7 +67,7 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 	}
 
 	public String encode(String attribute) throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
-		byte[] ba = getEnCipher().doFinal(attribute.getBytes());
+		byte[] ba = getEnCipher().doFinal(attribute.getBytes("UTF-8"));
 		String e = Base64.getUrlEncoder().encodeToString(ba);
 		return e;
 	}

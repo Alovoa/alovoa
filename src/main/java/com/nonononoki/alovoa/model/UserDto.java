@@ -157,7 +157,7 @@ public class UserDto {
 
 	public static String encodeId(long id, TextEncryptorConverter textEncryptor) throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		String en = textEncryptor.encode(Long.toString(id));
-		en = Base64.getEncoder().encodeToString(en.getBytes());
+		en = Base64.getEncoder().encodeToString(en.getBytes("UTF-8"));
 		return en;
 	}
 

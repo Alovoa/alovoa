@@ -30,5 +30,6 @@ public class Captcha {
 	private Date date;
 	
 	@JsonIgnore
-	private String ip;
+	@Column(unique=true, nullable=false)
+	private String hashCode;
 }

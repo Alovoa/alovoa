@@ -35,7 +35,7 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @ActiveProfiles("test")
 @Transactional
 public class ScheduleServiceTest {
-
+	
 	@Autowired
 	private CaptchaRepository captchaRepo;
 	
@@ -121,11 +121,11 @@ public class ScheduleServiceTest {
 		long currentDateTime = currentDate.getTime();
 		
 		//CAPTCHA 
-		Captcha captchaOld = generateCaptcha();
+		Captcha captchaOld = generateCaptcha("hash1");
 		captchaOld.setDate(new Date(currentDateTime - captchaDelay - 1 ));
 		catchaRepo.saveAndFlush(captchaOld);
 
-		Captcha captchaNew = generateCaptcha();
+		Captcha captchaNew = generateCaptcha("hash2");
 		captchaNew.setDate(new Date(currentDateTime - captchaDelay));
 		catchaRepo.saveAndFlush(captchaNew);
 
@@ -221,12 +221,12 @@ public class ScheduleServiceTest {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 	
-	private Captcha generateCaptcha() {
+	private Captcha generateCaptcha(String hashCode) {
 		Captcha captcha = new Captcha();
 		captcha.setDate(new Date());
 		captcha.setImage(null);
 		captcha.setText("test");
-		captcha.setIp(null);
+		captcha.setHashCode(hashCode);
 		captcha = captchaRepo.saveAndFlush(captcha);
 		return captcha;
 	}

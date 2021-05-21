@@ -9,5 +9,6 @@ import com.nonononoki.alovoa.entity.Captcha;
 
 public interface CaptchaRepository extends JpaRepository<Captcha, Long> {
 	List<Captcha> findByDateBefore(Date date);
+	Captcha findByHashCode(String hashCode); 
 }
 

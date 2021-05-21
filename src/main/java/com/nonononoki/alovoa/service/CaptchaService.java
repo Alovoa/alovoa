@@ -3,6 +3,7 @@ package com.nonononoki.alovoa.service;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.MessageDigest;
 import java.util.Base64;
 import java.util.Date;
 
@@ -29,6 +30,9 @@ public class CaptchaService {
 	@Value("${app.captcha.length}")
 	private int captchaLength;
 	
+	@Value("${app.text.salt}")
+	private String salt;
+	
 	private final int WIDTH = 120;
 	private final int HEIGHT = 70;
 	
@@ -38,6 +42,13 @@ public class CaptchaService {
 	private final Color FG_COLOR = new Color(130, 130, 130);
 
 	public Captcha generate() throws Exception, IOException {
+		
+		Captcha oldCaptcha = captchaRepo.findByHashCode(getIpHash(request.getRemoteAddr()));
+		if(oldCaptcha != null) {
+			captchaRepo.delete(oldCaptcha);
+			captchaRepo.flush();
+		}
+		
 		OxCaptcha ox = generateCaptchaImage();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ImageIO.write(ox.getImage(), "webp", baos);
@@ -47,7 +58,7 @@ public class CaptchaService {
 		captcha.setDate(new Date());
 		captcha.setImage(encoded);
 		captcha.setText(ox.getText());
-		captcha.setIp(request.getRemoteAddr());
+		captcha.setHashCode(getIpHash(request.getRemoteAddr()));
 		captcha = captchaRepo.saveAndFlush(captcha);
 		return captcha;
 	}
@@ -66,7 +77,7 @@ public class CaptchaService {
 		return c;	
 	}
 
-	public boolean isValid(long id, String text) {
+	public boolean isValid(long id, String text) throws Exception {
 		
 		Captcha captcha = captchaRepo.findById(id).orElse(null);
 		if (captcha == null) {
@@ -75,12 +86,21 @@ public class CaptchaService {
 		
 		captchaRepo.delete(captcha);	
 		
-		if(!captcha.getIp().equals(request.getRemoteAddr())) {
+		if(!captcha.getHashCode().equals(getIpHash(request.getRemoteAddr()))) {
 			return false;
 		}		
 		if (!captcha.getText().toLowerCase().equals(text.toLowerCase())) {
 			return false;
 		}		
 		return true;
+	}
+	
+	private String getIpHash(String ip) throws Exception {
+		//don't need slow hashing algorithm because
+		MessageDigest md = MessageDigest.getInstance("MD5");
+		md.update(salt.getBytes()); //salting to prevent rainbow tables
+	    md.update(ip.getBytes("UTF-8"));
+	    byte[] bytes = md.digest();
+	    return Base64.getEncoder().encodeToString(bytes);
 	}
 }

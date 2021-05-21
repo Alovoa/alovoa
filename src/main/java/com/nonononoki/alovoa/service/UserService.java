@@ -790,7 +790,7 @@ public class UserService {
 		User user = authService.getCurrentUser();
 		UserGdpr ug = UserGdpr.userToUserGdpr(user);
 		String json = objectMapper.writeValueAsString(ug);
-		ByteArrayResource resource = new ByteArrayResource(json.getBytes());
+		ByteArrayResource resource = new ByteArrayResource(json.getBytes("UTF-8"));
 
 		MediaType mediaType = MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM);
 		HttpHeaders headers = new HttpHeaders();
@@ -853,7 +853,7 @@ public class UserService {
 	}
 
 	private static String convertAudioMp3Wav(String audioB64, String mimeType) throws Exception {
-		byte[] bytes = Base64.getDecoder().decode(stripB64Type(audioB64).getBytes());
+		byte[] bytes = Base64.getDecoder().decode(stripB64Type(audioB64).getBytes("UTF-8"));
 		InputStream inputStream = new ByteArrayInputStream(bytes);
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final AudioFormat audioFormat = new AudioFormat(16000, 8, 1, false, false);
