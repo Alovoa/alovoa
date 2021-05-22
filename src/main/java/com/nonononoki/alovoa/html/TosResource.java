@@ -38,7 +38,7 @@ public class TosResource {
 	private final String MIN_AGE = "MIN_AGE";
 	
 	@GetMapping("/tos")
-	public ModelAndView termsConditions() throws Exception {
+	public ModelAndView tosConditions() throws Exception {
 		ModelAndView mav = new ModelAndView("tos");
 		String content = publicService.text("backend.tos");
 		content = content.replaceAll(COMPANY_NAME, companyName);

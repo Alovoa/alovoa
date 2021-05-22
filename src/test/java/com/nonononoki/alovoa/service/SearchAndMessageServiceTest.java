@@ -33,7 +33,7 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class SearchServiceTest {
+public class SearchAndMessageServiceTest {
 
 	@Autowired
 	private RegisterService registerService;

@@ -30,6 +30,9 @@ public class AuthService {
 			DefaultOAuth2User principal = (DefaultOAuth2User) auth.getPrincipal();
 			email = principal.getAttribute("email");
 		} else {
+			if(auth == null) {
+				return null;
+			}
 			email = (String) auth.getPrincipal();
 		}
 		

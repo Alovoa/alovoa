@@ -34,7 +34,7 @@ public class PrivacyResource {
 	private final String PRIVACY_UPDATE_DATE = "PRIVACY_UPDATE_DATE";
 	
 	@GetMapping("/privacy")
-	public ModelAndView termsConditions() throws Exception {
+	public ModelAndView privacy() throws Exception {
 		ModelAndView mav = new ModelAndView("privacy");
 		String content = publicService.text("backend.privacy");
 		content = content.replaceAll(COMPANY_NAME, companyName);

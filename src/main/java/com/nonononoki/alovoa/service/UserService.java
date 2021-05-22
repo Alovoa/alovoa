@@ -683,8 +683,8 @@ public class UserService {
 				user.getConversations().add(convo);
 				currUser.getConversations().add(convo);
 
-//				userRepo.saveAndFlush(currUser);
-//				userRepo.saveAndFlush(user);
+				userRepo.saveAndFlush(currUser);
+				userRepo.saveAndFlush(user);
 			}
 
 		}

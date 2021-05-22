@@ -97,8 +97,10 @@ public class UserDto {
 		UserDto dto = new UserDto();
 		dto.setId(user.getId());
 		dto.setIdEncoded(encodeId(user.getId(), textEncryptor));
-		dto.setActiveDate(user.getDates().getActiveDate());
-		dto.setAge(Tools.calcUserAge(user));
+		if(user.getDates() != null) {
+			dto.setActiveDate(user.getDates().getActiveDate());
+			dto.setAge(Tools.calcUserAge(user));
+		}
 		dto.setDescription(user.getDescription());
 		dto.setFirstName(user.getFirstName());
 		dto.setGender(user.getGender());

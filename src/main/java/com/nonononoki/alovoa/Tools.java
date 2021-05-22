@@ -111,9 +111,13 @@ public class Tools {
 	}
 
 	public static int getDistanceToUser(User user, User currUser) {
-		int dist = calcDistance(user.getLocationLatitude(), user.getLocationLongitude(), currUser.getLocationLatitude(),
-				currUser.getLocationLongitude());
-		return dist;
+		try {
+			int dist = calcDistance(user.getLocationLatitude(), user.getLocationLongitude(),
+					currUser.getLocationLatitude(), currUser.getLocationLongitude());
+			return dist;
+		} catch (Exception e) {
+			return 99999;
+		}
 	}
 
 	// https://stackoverflow.com/a/45732035
@@ -127,7 +131,7 @@ public class Tools {
 				if (base64String.endsWith("="))
 					padding = 1;
 			}
-			result = Math.ceil( (double) base64String.length() / 4) * 3 - padding;
+			result = Math.ceil((double) base64String.length() / 4) * 3 - padding;
 		}
 		return result;
 	}

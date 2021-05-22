@@ -25,7 +25,7 @@ public class BlockedUsersResource {
 	private TextEncryptorConverter textEncryptor;
 	
 	@GetMapping("/blocked-users")
-	public ModelAndView profileView() throws NumberFormatException, Exception {
+	public ModelAndView blockedUsers() throws NumberFormatException, Exception {
 		
 		User user = authService.getCurrentUser();
 		ModelAndView mav = new ModelAndView("blocked-users");
