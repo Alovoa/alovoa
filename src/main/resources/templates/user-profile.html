@@ -161,7 +161,7 @@
 			<div class="container">
 				<div class="profile-bottom full-width"
 					style="display: inline-block;">
-					<div class="left">
+					<div class="left" style="margin-bottom: 12px;">
 						<button class="button colored is-danger"
 							th:unless="${user.blockedByCurrentUser}"
 							th:onclick="blockUser([[${user.idEncoded}]])">
@@ -178,7 +178,7 @@
 							<i class="fa fa-flag"></i>
 						</button>
 					</div>
-					<div class="right" th:if="${isAgeCompatible}">
+					<div class="right" th:if="${isAgeCompatible}" style="margin-bottom: 12px;">
 						<button class="button colored is-danger"
 							th:unless="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
 							th:onclick="hideUser([[${user.idEncoded}]])">

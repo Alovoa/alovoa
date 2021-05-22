@@ -404,14 +404,12 @@ input[type=range].slider {
 
 @media screen and (max-width: 340px) {
 	#oauth-div span, #email-auth span {
-		font-size: 0.7em ! important;
+		font-size: 0.8em ! important;
 	}
 }
 
 @media screen and (max-width: 290px) {
-	#oauth-div span, #email-auth span {
-		font-size: 0.5em ! important;
-	}
+
 }
 
 @media screen and (max-width: 280px) {
@@ -497,6 +495,9 @@ input[type=range].slider {
 		box-shadow: none !important;
 	}
 	.search-audio {
+		display: none;
+	}
+	#oauth-div span, #email-auth span {
 		display: none;
 	}
 }

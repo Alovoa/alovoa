@@ -62,3 +62,10 @@
 		display: none;
 	}
 }
+
+/* KAIOS Screns are very small */
+@media screen and (max-width: 302px) {
+	#main-container {
+	    height: calc(100vh - 120px);
+	}
+}
