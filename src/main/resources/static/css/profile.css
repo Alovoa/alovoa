@@ -31,6 +31,14 @@
     border-color: white !important;
 }
 
+#profile-warning-collapsible.disabled {
+	background-color:#757575;
+}
+
+.notification.is-warning.disabled {
+	background-color: #9e9e9e;
+}
+
 @media screen and (max-width: 460px) {
 	.box {
 		padding: 0px;

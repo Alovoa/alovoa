@@ -360,18 +360,18 @@ oc
 			<div id="collapsible-card-warning" class="is-collapsible always-collapse">
 				<div class="card-content">
 					<a class="notification is-warning full-width" th:if="${noProfilePicture}"
-						th:text="#{profile.warning.no-profile-picture}"
+						th:text="#{profile.warning.no-profile-picture}" id="no-profile-picture"
 						onclick="onWarningProfileClicked()"></a> <a
 						class="notification is-warning full-width" th:if="${noDescription}"
-						th:text="#{profile.warning.no-description}" 
+						th:text="#{profile.warning.no-description}" id="no-description"
 						onclick="onWarningDescriptionClicked()"></a> <a
 						class="notification is-warning full-width" th:if="${noIntention}" 
-						onclick="onWarningIntentionClicked()"
+						onclick="onWarningIntentionClicked()" id="no-intention"
 						th:text="#{profile.warning.no-intention}"></a> <a
 						class="notification is-warning full-width" th:if="${noGender}" 
-						onclick="onWarningGenderClicked()"
+						onclick="onWarningGenderClicked()" id="no-gender"
 						th:text="#{profile.warning.no-gender-preference}"></a> <a
-						class="notification is-warning full-width" th:if="${noLocation}"
+						class="notification is-warning full-width" th:if="${noLocation}" id="no-location"
 						th:text="#{profile.warning.no-location}" href="/search"></a>
 				</div>
 			</div>

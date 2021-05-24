@@ -151,7 +151,7 @@ $(function() {
 				success: function(e) {
 					//updateProfileWarning();
 					alert(getText("profile.warning.intention.limit"))
-					location.reload();
+					//location.reload();
 				},
 				error: function(e) {
 					console.log(e);
@@ -418,11 +418,55 @@ function updateUiDesign() {
 
 function updateProfileWarning() {
 	let url = "/profile/warning";
-	let profileWarning = $("#profile-warning");
-	profileWarning.load(url, function(text) {
-		console.log(text)
-		profileWarning.show();
-		bulmaCollapsible.attach();
+	
+	$.ajax({
+		type: "GET",
+		url: url,
+		success: function(res) {
+			console.log(res)
+			let warning = "profile-warning-collapsible";
+			if(!res.includes(warning)) {
+				$("#" + warning).addClass("disabled");
+			} else {
+				$("#" + warning).removeClass("disabled");
+			}
+			warning = "no-profile-picture";
+			if(!res.includes(warning)) {
+				$("#" + warning).addClass("disabled");
+			} else {
+				$("#" + warning).removeClass("disabled");
+			}
+			warning = "no-description";
+			if(!res.includes(warning)) {
+				$("#" + warning).addClass("disabled");
+			} else {
+				$("#" + warning).removeClass("disabled");
+			}
+			warning = "no-intention";
+			if(!res.includes(warning)) {
+				$("#" + warning).addClass("disabled");
+			} else {
+				$("#" + warning).removeClass("disabled");
+			}
+			warning = "no-gender";
+			if(!res.includes(`${warning}`)) {
+				console.log("gender")
+				$("#" + warning).addClass("disabled");
+			} else {
+				console.log("no-gender")
+				$("#" + warning).removeClass("disabled");
+			}
+			warning = "no-location";
+			if(!res.includes(warning)) {
+				$("#" + warning).addClass("disabled");
+			} else {
+				$("#" + warning).removeClass("disabled");
+			}
+		},
+		error: function(e) {
+			console.log(e);
+			alert(getGenericErrorText());
+		}
 	});
 
 }
