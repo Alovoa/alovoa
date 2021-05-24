@@ -19,6 +19,18 @@
 	cursor: pointer;
 }
 
+#profile-warning-collapsible {
+	padding: 1.25rem; 
+	display: flex; 
+	justify-content: space-between; 
+	border-radius: 4px;
+	margin-top: 12px;
+}
+
+#navbar-link-profile-warning::after {
+    border-color: white !important;
+}
+
 @media screen and (max-width: 460px) {
 	.box {
 		padding: 0px;

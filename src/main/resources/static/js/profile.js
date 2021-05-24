@@ -19,7 +19,7 @@ $(function() {
 		},
 	});
 
-	updateProfileWarning(true);
+	//updateProfileWarning();
 
 	$("#profilePicture").click(function(e) {
 		$("#profilePictureUpload").click();
@@ -416,16 +416,13 @@ function updateUiDesign() {
 }
 
 
-function updateProfileWarning(onStart) {
+function updateProfileWarning() {
 	let url = "/profile/warning";
 	let profileWarning = $("#profile-warning");
-	profileWarning.load(url, function() {
-		if (onStart) {
-			profileWarning.hide();
-			profileWarning.toggle("fast");
-		} else {
-			profileWarning.show();
-		}
+	profileWarning.load(url, function(text) {
+		console.log(text)
+		profileWarning.show();
+		bulmaCollapsible.attach();
 	});
 
 }

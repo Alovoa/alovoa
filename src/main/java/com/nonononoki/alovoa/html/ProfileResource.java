@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.ProfileWarningDto;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
@@ -31,27 +32,27 @@ public class ProfileResource {
 
 	@Autowired
 	private AdminResource adminResource;
-	
+
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
 	@Value("${app.profile.image.max}")
 	private int imageMax;
-	
+
 	@Value("${app.vapid.public}")
 	private String vapidPublicKey;
-	
+
 	@Value("${app.age.legal}")
 	private int ageLegal;
-	
+
 	@Value("${app.media.max-size}")
 	private int mediaMaxSize;
-	
+
 	@Value("${app.intention.delay}")
 	private long intentionDelay;
-	
+
 	public static final String url = "/profile";
-	
+
 	public static String getUrl() {
 		return url;
 	}
@@ -73,21 +74,45 @@ public class ProfileResource {
 			mav.addObject("vapidPublicKey", vapidPublicKey);
 			mav.addObject("isLegal", isLegal);
 			mav.addObject("mediaMaxSize", mediaMaxSize);
-			
+
 			boolean showIntention = false;
 			Date now = new Date();
-			if(user.getDates().getIntentionChangeDate() == null || 
-					now.getTime() >= user.getDates().getIntentionChangeDate().getTime() + intentionDelay ) {
+			if (user.getDates().getIntentionChangeDate() == null
+					|| now.getTime() >= user.getDates().getIntentionChangeDate().getTime() + intentionDelay) {
 				showIntention = true;
 			}
 			mav.addObject("showIntention", showIntention);
-			
+
+			ProfileWarningDto warning = getWarnings(user);
+
+			mav.addObject("hasWarning", warning.isHasWarning());
+			mav.addObject("noProfilePicture", warning.isNoProfilePicture());
+			mav.addObject("noDescription", warning.isNoDescription());
+			mav.addObject("noIntention", warning.isNoIntention());
+			mav.addObject("noGender", warning.isNoGender());
+			mav.addObject("noLocation", warning.isNoLocation());
+
 			return mav;
 		}
 	}
 
 	@GetMapping("/profile/warning")
 	public String warning(Model model) throws Exception {
+
+		User user = authService.getCurrentUser();
+		ProfileWarningDto warning = getWarnings(user);
+
+		model.addAttribute("hasWarning", warning.isHasWarning());
+		model.addAttribute("noProfilePicture", warning.isNoProfilePicture());
+		model.addAttribute("noDescription", warning.isNoDescription());
+		model.addAttribute("noIntention", warning.isNoIntention());
+		model.addAttribute("noGender", warning.isNoGender());
+		model.addAttribute("noLocation", warning.isNoLocation());
+
+		return "fragments::profile-warning";
+	}
+
+	private ProfileWarningDto getWarnings(User user) {
 
 		boolean hasWarning = false;
 		boolean noProfilePicture = false;
@@ -96,7 +121,6 @@ public class ProfileResource {
 		boolean noGender = false;
 		boolean noLocation = false;
 
-		User user = authService.getCurrentUser();
 		if (user.getProfilePicture() == null) {
 			noProfilePicture = true;
 			hasWarning = true;
@@ -124,13 +148,7 @@ public class ProfileResource {
 			hasWarning = true;
 		}
 
-		model.addAttribute("hasWarning", hasWarning);
-		model.addAttribute("noProfilePicture", noProfilePicture);
-		model.addAttribute("noDescription", noDescription);
-		model.addAttribute("noIntention", noIntention);
-		model.addAttribute("noGender", noGender);
-		model.addAttribute("noLocation", noLocation);
-		
-		return "fragments :: profile-warning";
+		return ProfileWarningDto.builder().hasWarning(hasWarning).noDescription(noDescription).noGender(noGender)
+				.noIntention(noIntention).noLocation(noLocation).noProfilePicture(noProfilePicture).build();
 	}
 }

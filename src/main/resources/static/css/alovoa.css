@@ -292,7 +292,7 @@ input[type=range].slider {
 }
 
 @media screen and (min-width: 1024px) {
-	.is-collapsible {
+	.is-collapsible:not(.always-collapse) {
 		height: initial !important;
 	}
 	.collapsible-header {

@@ -1,4 +1,5 @@
-oc<!DOCTYPE html>
+oc
+<!DOCTYPE html>
 <html>
 
 <body>
@@ -21,7 +22,7 @@ oc<!DOCTYPE html>
 		<div style="padding-top: 4px;"></div>
 	</div>
 
-	<div th:fragment="header" id="header">
+	<div th:fragment="header-logged-out" id="header">
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
 				<a class="navbar-item" href="/"> <img src="/img/icon.png" width="40" height="40">
@@ -49,13 +50,13 @@ oc<!DOCTYPE html>
 			function onLanguageButtonClicked() {
 				let locale = document.getElementById('locale');
 				locale.scrollIntoView({behavior: 'smooth', block: 'center'});
-				setTimeout(function(){ locale.focus() }, 700);
+				setTimeout(function () {locale.focus()}, 700);
 			}
 		</script>
 
 	</div>
 
-	<div th:fragment="header-logged-in" id="header-logged-in">
+	<div th:fragment="header-logged-in" id="header">
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
 				<a class="navbar-item"> <img src="/img/icon.png" width="40" height="40">
@@ -348,38 +349,48 @@ oc<!DOCTYPE html>
 
 	<div th:fragment="profile-warning">
 		<div th:if="${hasWarning}">
-			<div class="notification is-danger"
-				th:text="#{profile.warning.incomplete}"></div>
-			<a class="notification is-warning full-width" th:if="${noProfilePicture}"
-				th:text="#{profile.warning.no-profile-picture}"
-				onclick="onWarningProfileClicked()"></a> <a
-				class="notification is-warning full-width" th:if="${noDescription}"
-				th:text="#{profile.warning.no-description}" 
-				onclick="onWarningDescriptionClicked()"></a> <a
-				class="notification is-warning full-width" th:if="${noIntention}" 
-				onclick="onWarningIntentionClicked()"
-				th:text="#{profile.warning.no-intention}"></a> <a
-				class="notification is-warning full-width" th:if="${noGender}" 
-				onclick="onWarningGenderClicked()"
-				th:text="#{profile.warning.no-gender-preference}"></a> <a
-				class="notification is-warning full-width" th:if="${noLocation}"
-				th:text="#{profile.warning.no-location}" href="/search"></a>
+			
+			<header class="card-header collapsible-header" style="display: flex;">
+				<a href="#collapsible-card-warning" data-action="collapse" class="card-header-icon is-hidden-fullscreen full-width navbar is-danger" 
+				id="profile-warning-collapsible" aria-label="more options">
+					<span class="label" style="margin-bottom: initial; color: white;" th:text="#{profile.warning.incomplete}"></span>
+					<div class="navbar-link" id="navbar-link-profile-warning" style="overflow-wrap: anywhere;"></div>
+				</a>
+			</header>
+			<div id="collapsible-card-warning" class="is-collapsible always-collapse">
+				<div class="card-content">
+					<a class="notification is-warning full-width" th:if="${noProfilePicture}"
+						th:text="#{profile.warning.no-profile-picture}"
+						onclick="onWarningProfileClicked()"></a> <a
+						class="notification is-warning full-width" th:if="${noDescription}"
+						th:text="#{profile.warning.no-description}" 
+						onclick="onWarningDescriptionClicked()"></a> <a
+						class="notification is-warning full-width" th:if="${noIntention}" 
+						onclick="onWarningIntentionClicked()"
+						th:text="#{profile.warning.no-intention}"></a> <a
+						class="notification is-warning full-width" th:if="${noGender}" 
+						onclick="onWarningGenderClicked()"
+						th:text="#{profile.warning.no-gender-preference}"></a> <a
+						class="notification is-warning full-width" th:if="${noLocation}"
+						th:text="#{profile.warning.no-location}" href="/search"></a>
+				</div>
+			</div>
+			
+			<script>
+				function onWarningProfileClicked() {
+					$("#profilePictureUpload").click();
+				}
+				function onWarningDescriptionClicked() {
+					document.getElementById('description').scrollIntoView({behavior: 'smooth', block: 'center'});
+				}
+				function onWarningIntentionClicked() {
+					document.getElementById('intention-field').scrollIntoView({behavior: 'smooth', block: 'center'});
+				}
+				function onWarningGenderClicked() {
+					document.getElementById('gender-field').scrollIntoView({behavior: 'smooth', block: 'center'});
+				}
+			</script>
 		</div>
-		
-		<script>
-			function onWarningProfileClicked() {
-				$("#profilePictureUpload").click();
-			}
-			function onWarningDescriptionClicked() {
-				document.getElementById('description').scrollIntoView({behavior: 'smooth', block: 'center'});
-			}
-			function onWarningIntentionClicked() {
-				document.getElementById('intention-field').scrollIntoView({behavior: 'smooth', block: 'center'});
-			}
-			function onWarningGenderClicked() {
-				document.getElementById('gender-field').scrollIntoView({behavior: 'smooth', block: 'center'});
-			}
-		</script>
 	</div>
 
 </body>
