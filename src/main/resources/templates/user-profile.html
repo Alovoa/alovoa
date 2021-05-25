@@ -81,8 +81,8 @@
 						<div style="padding-top: 24px;" th:if="${user.interests}"></div>
 						<div class="field">
 							<label class="label" th:text="#{interests}"></label>
-							<div th:each="interest : ${user.interests}">
-								<div th:text="${interest.text}"></div>
+							<div th:each="interest : ${user.interests}" 
+								class="notification is-info" th:text="${interest.text}" style=" display: inline-block; margin-bottom: 4px;">
 							</div>
 						</div>
 					</th:block>

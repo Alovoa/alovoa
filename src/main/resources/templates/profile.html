@@ -28,7 +28,9 @@
 		<div class="section">
 			<div class="container">
 				<div class="field">
-					<div id="profile-warning"><div th:replace="fragments.html::profile-warning"></div></div>
+					<div id="profile-warning">
+						<div th:replace="fragments.html::profile-warning"></div>
+					</div>
 				</div>
 
 				<div class="field">
@@ -206,7 +208,7 @@
 								controls></audio>
 						</div>
 						<div style="display: flex; float: left;">
-							<div class="notification is-info" style="height: 40px; margin-right: 4px; opacity: 0.5; font-size: 0.9em;">.mp3 .wav</div>
+							<div class="notification is-info" style="height: 40px; margin-right: 4px; opacity: 0.75; font-size: 0.9em;">.mp3 .wav</div>
 							<div class="colored button is-info" id="audio-upload-button" style="margin-right: 4px;">
 								<i class="fa fa-microphone"></i>
 							</div>
@@ -226,9 +228,9 @@
 					<div class="field" th:fragment="interests">
 						<label class="label" th:text="#{interests}"></label>
 						<th:block th:each="interest : ${user.interests}">
-							<div style="padding: 4px; display: inline-block;">
+							<div class="notification is-info" style="display: inline-block; margin-bottom: 0px;">
 								<div class="field" th:text="${interest.text}"
-									style="float: left; font-size: 1.1em;"></div>
+									style="float: left; font-size: 1.1em; margin-bottom: 0px;"></div>
 								<i class="fa fa-times"
 									style="float: left; margin-top: 4px; margin-left: 4px; font-size: 1.2em; cursor: pointer;"
 									th:onclick="deleteInterest([[${interest.id}]])"></i>
@@ -236,7 +238,8 @@
 						</th:block>
 					</div>
 
-					<div class="field">
+					<th:block th:if="${#lists.size(user.interests) != interestMaxSize}">
+					<div class="field" >
 						<form id="interest-form" th:action="@{/}" method="POST">
 							<div style="display: flex">
 								<input class="input" pattern="[a-zA-Z0-9-]{3,30}" name="value"
@@ -250,6 +253,7 @@
 					</div>
 					<div class="notification is-info"
 						th:text="#{profile.interest.info}"></div>
+					</th:block>
 				</div>
 				
 				<div class="box">

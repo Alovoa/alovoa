@@ -51,6 +51,13 @@
 		<div class="loader"></div>
 	</div>
 
+	<script>
+		function viewProfile(idEnc) {
+			let url = 'profile/view/' + idEnc;
+			window.open(url, '_blank').focus();
+		}
+	</script>
+
 	<footer th:replace="fragments.html::navigation"></footer>
 
 	<script src="/js/lib/fontawesome.all.js"></script>

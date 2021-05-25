@@ -47,6 +47,9 @@ public class ProfileResource {
 
 	@Value("${app.media.max-size}")
 	private int mediaMaxSize;
+	
+	@Value("${app.interest.max}")
+	private int interestMaxSize;
 
 	@Value("${app.intention.delay}")
 	private long intentionDelay;
@@ -74,6 +77,7 @@ public class ProfileResource {
 			mav.addObject("vapidPublicKey", vapidPublicKey);
 			mav.addObject("isLegal", isLegal);
 			mav.addObject("mediaMaxSize", mediaMaxSize);
+			mav.addObject("interestMaxSize", interestMaxSize);
 
 			boolean showIntention = false;
 			Date now = new Date();

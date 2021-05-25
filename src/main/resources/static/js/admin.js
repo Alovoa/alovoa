@@ -15,8 +15,9 @@ function hideContact(id) {
 		});
 }
 
-function viewProfile(id) {
-	window.open('/profile/view/' + id);
+function viewProfile(idEnc) {
+	let url = '/profile/view/' + idEnc;
+	window.open(url, '_blank').focus();
 }
 
 function deleteReport(id) {
