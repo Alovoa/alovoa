@@ -22,7 +22,7 @@ oc
 		<div style="padding-top: 4px;"></div>
 	</div>
 
-	<div th:fragment="header-logged-out" id="header">
+	<div th:fragment="header-logged-out" id="header-logged-out" class="header">
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
 				<a class="navbar-item" href="/"> <img src="/img/icon.png" width="40" height="40">
@@ -56,11 +56,11 @@ oc
 
 	</div>
 
-	<div th:fragment="header-logged-in" id="header">
+	<div th:fragment="header-logged-in" id="header-logged-in" class="header">
 		<nav class="navbar is-info">
 			<div class="navbar-brand">
 				<a class="navbar-item"> <img src="/img/icon.png" width="40" height="40">
-				</a> <a id="header-app-name" class="navbar-item" th:text="#{app.name}"></a>
+				</a> <a id="navbar-text" class="navbar-item" th:text="#{app.name}"></a>
 			</div>
 
 			<div style="width: 100%; display: flex;">
