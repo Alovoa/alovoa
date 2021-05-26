@@ -13,6 +13,7 @@ html {
 }
 
 * {
+	overflow-wrap: anywhere;
 	scrollbar-width: none;
 	font-family: "Montserrat" !important;
 }
@@ -26,10 +27,6 @@ h1, h2, h3, h4, h5, h6 {
 	font-family: "Abril_Fatface" !important;
 }
 */
-
-.description, .chat-message {
-	overflow-wrap: anywhere;
-}
 
 .table {
     background-color: transparent;
