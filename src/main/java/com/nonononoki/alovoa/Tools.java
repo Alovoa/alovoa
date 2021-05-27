@@ -19,7 +19,9 @@ import org.springframework.util.StringUtils;
 import com.nonononoki.alovoa.entity.User;
 
 public class Tools {
-
+	
+	private Tools() {};
+	
 	public static final float BASE64FACTOR = 0.75f;
 	public static final int MILLION = 1000000;
 	public static final int THOUSAND = 1000;
@@ -46,8 +48,7 @@ public class Tools {
 	public static Date ageToDate(int age) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.YEAR, age * (-1));
-		Date dobDate = calendar.getTime();
-		return dobDate;
+		return calendar.getTime();
 	}
 
 	public static Date localDateToDate(LocalDate localDate) {
@@ -74,8 +75,7 @@ public class Tools {
 
 	public static String getResourceText(String path) throws IOException {
 		Resource resource = new ClassPathResource(path);
-		String content = inputStreamToString(resource.getInputStream());
-		return content;
+		return inputStreamToString(resource.getInputStream());
 	}
 
 	public static String resourceToB64(String path) throws IOException {
@@ -103,18 +103,13 @@ public class Tools {
 	}
 
 	public static boolean binaryStringToBoolean(String b) {
-		if (b.equals("0")) {
-			return false;
-		} else {
-			return true;
-		}
+		return !"0".equals(b);
 	}
 
 	public static int getDistanceToUser(User user, User currUser) {
 		try {
-			int dist = calcDistance(user.getLocationLatitude(), user.getLocationLongitude(),
+			return calcDistance(user.getLocationLatitude(), user.getLocationLongitude(),
 					currUser.getLocationLatitude(), currUser.getLocationLongitude());
-			return dist;
 		} catch (Exception e) {
 			return 99999;
 		}
