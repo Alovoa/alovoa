@@ -9,9 +9,9 @@
 		<version>2.3.9.RELEASE</version>
 		<relativePath />
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>com.alovoa</groupId>
 	<artifactId>alovoa</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>alovoa</name>
 	<description>Alovoa</description>
 
