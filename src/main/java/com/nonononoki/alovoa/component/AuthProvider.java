@@ -53,7 +53,7 @@ public class AuthProvider implements AuthenticationProvider {
 
 		captchaRepo.delete(c);
 
-		if (!c.getText().toLowerCase().equals(captchaText.toLowerCase())) {
+		if (!c.getText().equalsIgnoreCase(captchaText)) {
 			throw new BadCredentialsException("");
 		}
 
