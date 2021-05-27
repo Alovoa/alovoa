@@ -12,10 +12,10 @@ import com.nonononoki.alovoa.model.AuthToken;
 
 public class AuthFilter extends UsernamePasswordAuthenticationFilter {
 
-	private final String USERNAME = "username";
-	private final String PASSWORD = "password";
-	private final String CAPTCHA_ID = "captchaId";
-	private final String CAPTCHA_TEXT = "captchaText";
+	private static final String USERNAME = "username";
+	private static final String PASSWORD = "password";
+	private static final String CAPTCHA_ID = "captchaId";
+	private static final String CAPTCHA_TEXT = "captchaText";
 	
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -28,7 +28,6 @@ public class AuthFilter extends UsernamePasswordAuthenticationFilter {
 		
 		AuthToken auth = new AuthToken(username, password, captchaId, captchaText);
 		AuthenticationManager am = this.getAuthenticationManager();
-		Authentication a = am.authenticate(auth);
-		return a;	
+		return am.authenticate(auth);
 	}
 }
