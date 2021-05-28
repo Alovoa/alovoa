@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.config;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 import org.springframework.context.MessageSource;
@@ -38,7 +39,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public MessageSource getMessageResource()  {
         ReloadableResourceBundleMessageSource messageResource= new ReloadableResourceBundleMessageSource();
         messageResource.setBasename("classpath:i18n/messages");
-        messageResource.setDefaultEncoding("UTF-8");
+        messageResource.setDefaultEncoding(StandardCharsets.UTF_8.name());
         return messageResource;
     }
     @Override

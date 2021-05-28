@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.service;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,7 +46,7 @@ public class MailService {
 	
 	public void sendMail(String to, String from, String subject, String body) throws Exception, MessagingException, IOException {
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, StandardCharsets.UTF_8.name());
 		helper.setFrom(from);
 		helper.setTo(to);
 		helper.setSubject(subject);
@@ -66,7 +67,7 @@ public class MailService {
 	public void sendMailWithAttachment(String to, String from, String subject, String body, String attachmentName,
 			ByteArrayResource attachmentRes) throws Exception, MessagingException, IOException {
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
 		helper.setFrom(from);
 		helper.setTo(to);
 		helper.setSubject(subject);

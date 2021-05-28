@@ -3,6 +3,7 @@ package com.nonononoki.alovoa.service;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Base64;
 import java.util.Date;
@@ -99,7 +100,7 @@ public class CaptchaService {
 		//don't need slow hashing algorithm because
 		MessageDigest md = MessageDigest.getInstance("MD5");
 		md.update(salt.getBytes()); //salting to prevent rainbow tables
-	    md.update(ip.getBytes("UTF-8"));
+	    md.update(ip.getBytes(StandardCharsets.UTF_8.name()));
 	    byte[] bytes = md.digest();
 	    return Base64.getEncoder().encodeToString(bytes);
 	}

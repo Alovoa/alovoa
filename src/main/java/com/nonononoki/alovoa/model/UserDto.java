@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.model;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -159,7 +160,7 @@ public class UserDto {
 
 	public static String encodeId(long id, TextEncryptorConverter textEncryptor) throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		String en = textEncryptor.encode(Long.toString(id));
-		en = Base64.getEncoder().encodeToString(en.getBytes("UTF-8"));
+		en = Base64.getEncoder().encodeToString(en.getBytes(StandardCharsets.UTF_8.name()));
 		return en;
 	}
 
