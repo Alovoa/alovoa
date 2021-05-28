@@ -1,5 +1,8 @@
 package com.nonononoki.alovoa.entity;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -66,10 +69,7 @@ public class User implements UserDetails {
 
 	private String password;
 
-	// private String oauthProvider;
-
 	@Column(length = 12)
-	// @Convert(converter = TextEncryptorConverter.class)
 	private String firstName;
 
 	private String description;
@@ -87,8 +87,6 @@ public class User implements UserDetails {
 
 	private Double locationLatitude;
 	private Double locationLongitude;
-
-	// private int age;
 
 	private double totalDonations;
 
@@ -201,7 +199,7 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		List<GrantedAuthority> authorities = new ArrayList<>();
 		final String ROLE_PREFIX = "ROLE_";
 		String role;
 		if (admin) {
@@ -237,6 +235,14 @@ public class User implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return !disabled;
+	}
+
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		throw new IOException();
+	}
+
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		throw new IOException();
 	}
 
 }
