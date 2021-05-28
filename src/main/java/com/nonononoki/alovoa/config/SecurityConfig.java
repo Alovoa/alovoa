@@ -31,8 +31,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private FailureHandler failureHandler;
 
-	public static String ROLE_USER = "ROLE_USER";
-	public static String ROLE_ADMIN = "ROLE_ADMIN";
+	private static final String ROLE_USER = "ROLE_USER";
+	private static final String ROLE_ADMIN = "ROLE_ADMIN";
+	
+	public static String getRoleUser() {
+		return ROLE_USER;
+	}
+	
+	public static String getRoleAdmin() {
+		return ROLE_ADMIN;
+	}
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {

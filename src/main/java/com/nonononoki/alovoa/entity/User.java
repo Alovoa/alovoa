@@ -63,35 +63,35 @@ public class User implements UserDetails {
 	@Column(nullable = false, unique = true)
 	@Convert(converter = TextEncryptorConverter.class)
 	private String email;
-	
+
 	private String password;
 
 	// private String oauthProvider;
 
 	@Column(length = 12)
-	//@Convert(converter = TextEncryptorConverter.class)
+	// @Convert(converter = TextEncryptorConverter.class)
 	private String firstName;
 
 	private String description;
-	
-	//used for emails
+
+	// used for emails
 	private String language;
-	
+
 	private String accentColor;
-	
+
 	private String uiDesign;
 
 	private int preferedMinAge;
 
 	private int preferedMaxAge;
-	
+
 	private Double locationLatitude;
 	private Double locationLongitude;
 
 	// private int age;
 
 	private double totalDonations;
-	
+
 	private boolean admin;
 
 	private boolean confirmed;
@@ -113,18 +113,18 @@ public class User implements UserDetails {
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn
 	private UserDates dates;
-	
+
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn
 	private UserAudio audio;
-	
+
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn
 	private UserProfilePicture profilePicture;
 
 	@ManyToOne
 	private Gender gender;
-	
+
 	@ManyToMany
 	@JoinTable(name = "user2genders")
 	private Set<Gender> preferedGenders;
@@ -140,18 +140,18 @@ public class User implements UserDetails {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	private List<UserDonation> donations;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	private List<UserWebPush> webPush;
-	
-	//Tables with multiple users
-	
+
+	// Tables with multiple users
+
 	@OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true, mappedBy = "userFrom")
 	private List<Message> messageSent;
 
 	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
 	private List<Message> messageReceived;
-	
+
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, mappedBy = "users")
 	private List<Conversation> conversations;
 
@@ -163,7 +163,7 @@ public class User implements UserDetails {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
 	private List<UserNotification> notifications;
-	
+
 	@OneToMany(orphanRemoval = true, mappedBy = "userFrom")
 	private List<UserNotification> notificationsFrom;
 
@@ -184,13 +184,12 @@ public class User implements UserDetails {
 
 	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
 	private List<UserReport> reportedByUsers;
-	
-	//some more data
+
+	// some more data
 	long numberProfileViews;
-	
+
 	long numberSearches;
-	
-	
+
 	@Transient
 	public static final String ACCENT_COLOR_PINK = "pink";
 	@Transient
@@ -198,7 +197,7 @@ public class User implements UserDetails {
 	@Transient
 	public static final String ACCENT_COLOR_ORANGE = "orange";
 	@Transient
-	public static final String ACCENT_COLOR_PURPLE = "purple";	
+	public static final String ACCENT_COLOR_PURPLE = "purple";
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -206,9 +205,9 @@ public class User implements UserDetails {
 		final String ROLE_PREFIX = "ROLE_";
 		String role;
 		if (admin) {
-			role = ROLE_PREFIX + SecurityConfig.ROLE_ADMIN;
+			role = ROLE_PREFIX + SecurityConfig.getRoleAdmin();
 		} else {
-			role = ROLE_PREFIX + SecurityConfig.ROLE_USER;
+			role = ROLE_PREFIX + SecurityConfig.getRoleUser();
 		}
 		authorities.add(new SimpleGrantedAuthority(role));
 
@@ -239,5 +238,5 @@ public class User implements UserDetails {
 	public boolean isEnabled() {
 		return !disabled;
 	}
-	
+
 }
