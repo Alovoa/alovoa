@@ -33,17 +33,17 @@ public class TosResource {
 	@Value("${app.age.min}")
 	private String minAge;
 	
-	private final String COMPANY_NAME = "COMPANY_NAME";
-	private final String TOS_UPDATE_DATE = "TOS_UPDATE_DATE";
-	private final String MIN_AGE = "MIN_AGE";
+	private static final String COMPANY_NAME = "COMPANY_NAME";
+	private static final String TOS_UPDATE_DATE = "TOS_UPDATE_DATE";
+	private static final String MIN_AGE = "MIN_AGE";
 	
 	@GetMapping("/tos")
 	public ModelAndView tosConditions() throws Exception {
 		ModelAndView mav = new ModelAndView("tos");
 		String content = publicService.text("backend.tos");
-		content = content.replaceAll(COMPANY_NAME, companyName);
-		content = content.replaceAll(TOS_UPDATE_DATE, tosUpdateDate);
-		content = content.replaceAll(MIN_AGE, minAge);
+		content = content.replace(COMPANY_NAME, companyName);
+		content = content.replace(TOS_UPDATE_DATE, tosUpdateDate);
+		content = content.replace(MIN_AGE, minAge);
 		mav.addObject("content", content);
 		User user = authService.getCurrentUser();
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
