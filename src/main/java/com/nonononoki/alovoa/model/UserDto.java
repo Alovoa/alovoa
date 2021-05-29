@@ -42,11 +42,10 @@ public class UserDto {
 
 	private boolean hasAudio;
 	private String audio;
-	
-	//private String language;
+
 	private String accentColor;
 	private String uiDesign;
-	
+
 	private int preferedMinAge;
 	private int preferedMaxAge;
 
@@ -75,7 +74,7 @@ public class UserDto {
 	private boolean reportedByCurrentUser;
 	private boolean likedByCurrentUser;
 	private boolean hiddenByCurrentUser;
-	
+
 	long numberProfileViews;
 	long numberSearches;
 
@@ -85,20 +84,21 @@ public class UserDto {
 	public static int NO_MEDIA = 3;
 
 	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor)
-			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		return userToUserDto(user, currentUser, textEncryptor, NO_AUDIO);
 	}
 
 	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor, int mode)
-			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
-		
-		if(user == null) {
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+		if (user == null) {
 			return null;
 		}
 		UserDto dto = new UserDto();
 		dto.setId(user.getId());
 		dto.setIdEncoded(encodeId(user.getId(), textEncryptor));
-		if(user.getDates() != null) {
+		if (user.getDates() != null) {
 			dto.setActiveDate(user.getDates().getActiveDate());
 			dto.setAge(Tools.calcUserAge(user));
 		}
@@ -110,12 +110,12 @@ public class UserDto {
 		dto.setPreferedGenders(user.getPreferedGenders());
 		dto.setPreferedMinAge(user.getPreferedMinAge());
 		dto.setPreferedMaxAge(user.getPreferedMaxAge());
-		if(mode != PROFILE_PICTURE_ONLY) {
+		if (mode != PROFILE_PICTURE_ONLY) {
 			dto.setImages(user.getImages());
 		}
 		dto.setGender(user.getGender());
 		dto.setIntention(user.getIntention());
-		if(user.getProfilePicture() != null) {
+		if (user.getProfilePicture() != null) {
 			dto.setProfilePicture(user.getProfilePicture().getData());
 		}
 		dto.setBlockedUsers(user.getBlockedUsers());
@@ -123,14 +123,14 @@ public class UserDto {
 		dto.setBlockedByUsers(user.getBlockedByUsers());
 		dto.setReportedByUsers(user.getReportedByUsers());
 		dto.setInterests(user.getInterests());
-		if((mode != NO_AUDIO || mode != PROFILE_PICTURE_ONLY) && user.getAudio() != null) {
+		if ((mode != NO_AUDIO || mode != PROFILE_PICTURE_ONLY) && user.getAudio() != null) {
 			dto.setAudio(user.getAudio().getData());
 		}
 		dto.setHasAudio(user.getAudio() != null);
 		dto.setNumberProfileViews(user.getNumberProfileViews());
 		dto.setNumberSearches(user.getNumberSearches());
-		
-		if(!user.equals(currentUser)) {
+
+		if (!user.equals(currentUser)) {
 			dto.blockedByCurrentUser = currentUser.getBlockedUsers().stream()
 					.anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
 			dto.reportedByCurrentUser = currentUser.getReported().stream()
@@ -139,7 +139,7 @@ public class UserDto {
 					.anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
 			dto.hiddenByCurrentUser = currentUser.getHiddenUsers().stream()
 					.anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
-	
+
 			int sameInterests = 0;
 			for (int i = 0; i < currentUser.getInterests().size(); i++) {
 				UserInterest interest = currentUser.getInterests().get(i);
@@ -148,7 +148,7 @@ public class UserDto {
 				}
 			}
 			dto.setSameInterests(sameInterests);
-	
+
 			int dist = 0;
 			if (!currentUser.isAdmin()) {
 				dist = Tools.getDistanceToUser(user, currentUser);
@@ -158,14 +158,17 @@ public class UserDto {
 		return dto;
 	}
 
-	public static String encodeId(long id, TextEncryptorConverter textEncryptor) throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+	public static String encodeId(long id, TextEncryptorConverter textEncryptor)
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		String en = textEncryptor.encode(Long.toString(id));
 		en = Base64.getEncoder().encodeToString(en.getBytes(StandardCharsets.UTF_8.name()));
 		return en;
 	}
 
-	public static long decodeId(String id, TextEncryptorConverter textEncryptor)
-			throws NumberFormatException, Exception {
+	public static long decodeId(String id, TextEncryptorConverter textEncryptor) throws NumberFormatException,
+			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		String en = new String(Base64.getDecoder().decode(id));
 		long l = Long.parseLong(textEncryptor.decode(en));
 		return l;

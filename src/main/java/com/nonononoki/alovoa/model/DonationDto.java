@@ -26,8 +26,7 @@ public class DonationDto {
 	private UserDto user;
 	private double amount;
 
-	public static DonationDto donationToDto(UserDonation d, User currentUser, TextEncryptorConverter textEncryptor)
-			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+	public static DonationDto donationToDto(UserDonation d, User currentUser, TextEncryptorConverter textEncryptor) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, Exception {
 		DonationDto dto = new DonationDto();
 		dto.setId(d.getId());
 		dto.setDate(d.getDate());
@@ -37,7 +36,7 @@ public class DonationDto {
 	}
 
 	public static DonationDto donationToDto(UserDonation d, User currentUser, TextEncryptorConverter textEncryptor,
-			int mode) throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+			int mode) {
 		DonationDto dto = new DonationDto();
 		dto.setId(d.getId());
 		dto.setDate(d.getDate());
@@ -47,7 +46,9 @@ public class DonationDto {
 	}
 
 	public static DonationDto userToDto(User user, User currentUser, TextEncryptorConverter textEncryptor)
-			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+			UnsupportedEncodingException {
 		DonationDto dto = new DonationDto();
 		dto.setId(user.getId());
 		dto.setAmount(user.getTotalDonations());
@@ -56,7 +57,9 @@ public class DonationDto {
 	}
 
 	public static DonationDto userToDto(User user, User currentUser, TextEncryptorConverter textEncryptor, int mode)
-			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+			UnsupportedEncodingException {
 		DonationDto dto = new DonationDto();
 		dto.setId(user.getId());
 		dto.setAmount(user.getTotalDonations());
@@ -65,13 +68,15 @@ public class DonationDto {
 	}
 
 	public static List<DonationDto> donationsToDtos(List<UserDonation> donations, User currentUser,
-			TextEncryptorConverter textEncryptor, int maxEntries) throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+			TextEncryptorConverter textEncryptor, int maxEntries) throws Exception, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		List<DonationDto> dtos = new ArrayList<>();
 		for (UserDonation donation : donations) {
 			if (!donation.getUser().getId().equals(currentUser.getId())) {
 				dtos.add(DonationDto.donationToDto(donation, currentUser, textEncryptor));
-				
-				if(dtos.size() >= maxEntries) {
+
+				if (dtos.size() >= maxEntries) {
 					break;
 				}
 			}
@@ -80,13 +85,15 @@ public class DonationDto {
 	}
 
 	public static List<DonationDto> usersToDtos(List<User> users, User currentUser,
-			TextEncryptorConverter textEncryptor, int maxEntries) throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+			TextEncryptorConverter textEncryptor, int maxEntries) throws Exception, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		List<DonationDto> dtos = new ArrayList<>();
 		for (User user : users) {
 			if (!user.getId().equals(currentUser.getId())) {
 				dtos.add(DonationDto.userToDto(user, currentUser, textEncryptor));
-				
-				if(dtos.size() >= maxEntries) {
+
+				if (dtos.size() >= maxEntries) {
 					break;
 				}
 			}
