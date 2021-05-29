@@ -60,7 +60,7 @@ public class Oauth2Controller {
 				RestTemplate template = new RestTemplate();
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + client.getAccessToken().getTokenValue());
-				HttpEntity<String> entity = new HttpEntity<String>("", headers);
+				HttpEntity<String> entity = new HttpEntity<>("", headers);
 	
 				// get user data via URL from the oauth2 provider
 				ResponseEntity<Map> response = template.exchange(endpoint, HttpMethod.GET, entity,
