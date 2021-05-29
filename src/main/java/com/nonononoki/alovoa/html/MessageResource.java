@@ -1,8 +1,6 @@
 package com.nonononoki.alovoa.html;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +33,7 @@ public class MessageResource {
 
 	@Autowired
 	private ConversationRepository conversationRepo;
-	
+
 	@Autowired
 	private UserBlockRepository userBlockRepo;
 
@@ -52,17 +50,13 @@ public class MessageResource {
 		List<ConversationDto> convos = new ArrayList<>();
 		List<Conversation> conversations = conversationRepo.findByUsers_Id(user.getId());
 		for (Conversation c : conversations) {
-			if(!c.isBlocked(userBlockRepo)) {
+			if (!c.isBlocked(userBlockRepo)) {
 				convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
 			}
 		}
 
-		Collections.sort(convos, new Comparator<ConversationDto>() {
-			@Override
-			public int compare(ConversationDto a, ConversationDto b) {
-				return b.getLastUpdated().compareTo(a.getLastUpdated());
-			}
-		});
+		convos.sort((ConversationDto a, ConversationDto b) -> b.getLastUpdated().compareTo(a.getLastUpdated()));
+
 		mav.addObject("conversations", convos);
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;
@@ -74,29 +68,26 @@ public class MessageResource {
 		ModelAndView mav = new ModelAndView("message-detail");
 		User user = authService.getCurrentUser();
 		Conversation c = conversationRepo.findById(id).orElse(null);
-		
-		if(c == null) {
+
+		if (c == null) {
 			throw new AlovoaException("conversation_not_found");
 		}
-		
-		if(!c.containsUser(user)) {
+
+		if (!c.containsUser(user)) {
 			throw new AlovoaException("user_not_in_conversation");
 		}
-		
+
 		User u = c.getPartner(user);
-		
+
 		List<Message> messages = c.getMessages();
-		Collections.sort(messages, new Comparator<Message>() {
-			@Override
-			public int compare(Message a, Message b) {
-				return b.getDate().compareTo(a.getDate());
-			}
-		});
+		
+		messages.sort((Message a, Message b) -> b.getDate().compareTo(a.getDate()));
+		
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		mav.addObject("messages", messages);
 		mav.addObject("convoId", id);
 		mav.addObject("partner", UserDto.userToUserDto(u, user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
-		
+
 		c.setLastOpened(new Date());
 		conversationRepo.saveAndFlush(c);
 		return mav;
