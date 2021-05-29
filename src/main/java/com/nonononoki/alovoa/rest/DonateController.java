@@ -32,7 +32,7 @@ public class DonateController {
 	@Autowired
 	private ObjectMapper objectMapper;
 	
-	private static final Logger logger = LoggerFactory.getLogger(DonateService.class);
+	private static final Logger logger = LoggerFactory.getLogger(DonateController.class);
 
 	@GetMapping("/search/{filter}")
     public String filterRecent(Model model, @PathVariable int filter) throws Exception{
@@ -46,13 +46,14 @@ public class DonateController {
     public ResponseEntity<String> receivedKofi(String data) throws Exception {
 		logger.info(data);
 		donateService.donationReceivedKofi(objectMapper.readValue(data, DonationKofi.class));
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	@PostMapping(value="/received/bmac")
     public ResponseEntity<String> receivedBmac(@RequestBody DonationBmac data) throws Exception {
-		logger.info(objectMapper.writeValueAsString(data));
+		String logInfo = objectMapper.writeValueAsString(data);
+		logger.info(logInfo);
 		donateService.donationReceivedBmac(data);
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
