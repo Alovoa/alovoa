@@ -36,7 +36,7 @@ public class DonateService {
 
 	private static final int FILTER_RECENT = 1;
 	private static final int FILTER_AMOUNT = 2;
-	
+
 	@Autowired
 	private UserDonationRepository userDonationRepo;
 
@@ -54,20 +54,21 @@ public class DonateService {
 
 	@Value("${app.donate.users.max}")
 	private int maxEntries;
-	
+
 	@Value("${spring.profiles.active}")
 	private String profile;
-	
+
 	private static final String KOFI_URL = "https://ko-fi.com/";
-	private static final String KOFI_TEST_TRANSACTION_ID= "1234-1234-1234-1234";
+	private static final String KOFI_TEST_TRANSACTION_ID = "1234-1234-1234-1234";
 	private static final String KOFI_TEST_EMAIL = "john@example.com";
-	
+
 	private static final String BMAC_URL = "https://www.buymeacoffee.com/";
 	private static final String BMAC_TEST_EMAIL = "test@example.com";
 	private static final double BMAC_AMOUNT_FACTOR = 0.95;
-	
 
-	public List<DonationDto> filter(int filter) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, Exception  {
+	public List<DonationDto> filter(int filter)
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, Exception {
 		List<DonationDto> donationsToDtos = null;
 
 		User currentUser = authService.getCurrentUser();
@@ -76,8 +77,7 @@ public class DonateService {
 			donationsToDtos = DonationDto.donationsToDtos(userDonationRepo.findAllByOrderByDateDesc(), currentUser,
 					textEncryptor, maxEntries);
 		} else if (filter == FILTER_AMOUNT) {
-			donationsToDtos = DonationDto.usersToDtos(userRepo.usersDonate(),
-					currentUser, textEncryptor, maxEntries);
+			donationsToDtos = DonationDto.usersToDtos(userRepo.usersDonate(), currentUser, textEncryptor, maxEntries);
 		} else {
 			throw new AlovoaException("filter_not_found");
 		}
@@ -90,37 +90,32 @@ public class DonateService {
 		String ip = request.getRemoteAddr().trim();
 
 		if (kofiIp.equals(ip) || !profile.equals(Tools.PROD)) {
-			
+
 			Date now = new Date();
-			
-			if(profile.equals(Tools.PROD)) {
-				if(KOFI_TEST_TRANSACTION_ID.equals(donation.getKofi_transaction_id())) {
-					return;
-				}
-				if(donation.getEmail() != null && KOFI_TEST_EMAIL.equals(donation.getEmail().toLowerCase())) {
-					return;
-				}
-				if(!donation.is_public()) {
-					//respect the choice of the user to make donation anonymous
+
+			if (profile.equals(Tools.PROD)) {
+				if (KOFI_TEST_TRANSACTION_ID.equals(donation.getKofi_transaction_id())
+						|| donation.getEmail() != null && KOFI_TEST_EMAIL.equals(donation.getEmail().toLowerCase())
+						|| !donation.is_public()) {
 					return;
 				}
 			}
-			
+
 			User u = null;
-			
-			if(donation.getFrom_name() != null) {
+
+			if (donation.getFrom_name() != null) {
 				u = userRepo.findByEmail(donation.getFrom_name().toLowerCase());
 			}
-			
+
 			if (u == null && donation.getMessage() != null) {
 				u = userRepo.findByEmail(donation.getMessage().toLowerCase());
 			}
-			
-			//in case user forgot, check their Ko-fi email address just in case
+
+			// in case user forgot, check their Ko-fi email address just in case
 			if (u == null && donation.getEmail() != null) {
 				u = userRepo.findByEmail(donation.getEmail().toLowerCase());
 			}
-			
+
 			if (u != null) {
 				double amount = Double.parseDouble(donation.getAmount());
 				UserDonation userDonation = new UserDonation();
@@ -137,30 +132,30 @@ public class DonateService {
 	public void donationReceivedBmac(DonationBmac data) throws UnknownHostException, MalformedURLException {
 		String bmacIp = InetAddress.getByName(new URL(BMAC_URL).getHost()).getHostAddress().trim();
 		String ip = request.getRemoteAddr().trim();
-		
+
 		if (bmacIp.equals(ip) || !profile.equals(Tools.PROD)) {
-			
+
 			Date now = new Date();
 			DonationBmac.DonationBmacResponse donation = data.getResponse();
-			
-			if(profile.equals(Tools.PROD) && BMAC_TEST_EMAIL.equals(donation.getSupporter_email().toLowerCase())) {
+
+			if (profile.equals(Tools.PROD) && BMAC_TEST_EMAIL.equals(donation.getSupporter_email().toLowerCase())) {
 				return;
 			}
-			
+
 			User u = null;
-			
-			if(donation.getSupporter_name() != null) {
+
+			if (donation.getSupporter_name() != null) {
 				u = userRepo.findByEmail(donation.getSupporter_name().toLowerCase());
 			}
-			
+
 			if (u == null && donation.getSupporter_message() != null) {
 				u = userRepo.findByEmail(donation.getSupporter_message().toLowerCase());
 			}
-			
+
 			if (u == null && donation.getSupporter_email() != null) {
 				u = userRepo.findByEmail(donation.getSupporter_email().toLowerCase());
 			}
-			
+
 			if (u != null) {
 				UserDonation userDonation = new UserDonation();
 				double amount = donation.getTotal_amount() * BMAC_AMOUNT_FACTOR;
