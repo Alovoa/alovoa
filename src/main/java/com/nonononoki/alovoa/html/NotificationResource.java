@@ -1,8 +1,6 @@
 package com.nonononoki.alovoa.html;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -53,12 +51,9 @@ public class NotificationResource {
 				notifications.add(dto);
 			}
 		}
-		Collections.sort(notifications, new Comparator<NotificationDto>() {
-			@Override
-			public int compare(NotificationDto a, NotificationDto b) {
-				return b.getDate().compareTo(a.getDate());
-			}
-		});
+		
+		notifications.sort((NotificationDto a, NotificationDto b) -> b.getDate().compareTo(a.getDate()));
+		
 		mav.addObject("notifications", notifications);
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;
