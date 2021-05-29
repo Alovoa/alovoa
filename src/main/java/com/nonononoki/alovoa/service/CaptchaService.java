@@ -32,24 +32,24 @@ public class CaptchaService {
 
 	@Value("${app.captcha.length}")
 	private int captchaLength;
-	
+
 	@Value("${app.text.salt}")
 	private String salt;
-	
+
 	private static final int WIDTH = 120;
 	private static final int HEIGHT = 70;
-	
+
 	private static final Color BG_COLOR = new Color(0, 0, 0, 0);
 	private static final Color FG_COLOR = new Color(130, 130, 130);
 
 	public Captcha generate() throws NoSuchAlgorithmException, IOException {
-		
+
 		Captcha oldCaptcha = captchaRepo.findByHashCode(getIpHash(request.getRemoteAddr()));
-		if(oldCaptcha != null) {
+		if (oldCaptcha != null) {
 			captchaRepo.delete(oldCaptcha);
 			captchaRepo.flush();
 		}
-		
+
 		OxCaptcha ox = generateCaptchaImage();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ImageIO.write(ox.getImage(), "webp", baos);
@@ -63,45 +63,43 @@ public class CaptchaService {
 		captcha = captchaRepo.saveAndFlush(captcha);
 		return captcha;
 	}
-	
+
 	private OxCaptcha generateCaptchaImage() {
 		OxCaptcha c = new OxCaptcha(WIDTH, HEIGHT);
 		c.foreground(FG_COLOR);
 		c.background(BG_COLOR);
 		c.text(captchaLength);
-		
+
 		c.distortion();
 		c.noiseStraightLine();
 		c.noiseStraightLine();
 		c.noiseStraightLine();
-		
-		return c;	
+
+		return c;
 	}
 
 	public boolean isValid(long id, String text) throws Exception {
-		
+
 		Captcha captcha = captchaRepo.findById(id).orElse(null);
 		if (captcha == null) {
 			return false;
-		}		
-		
-		captchaRepo.delete(captcha);	
-		
-		if(!captcha.getHashCode().equals(getIpHash(request.getRemoteAddr()))) {
+		}
+
+		captchaRepo.delete(captcha);
+
+		if (!captcha.getHashCode().equals(getIpHash(request.getRemoteAddr()))
+				|| !captcha.getText().toLowerCase().equals(text.toLowerCase())) {
 			return false;
-		}		
-		if (!captcha.getText().toLowerCase().equals(text.toLowerCase())) {
-			return false;
-		}		
+		}
 		return true;
 	}
-	
+
 	private String getIpHash(String ip) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-		//don't need slow hashing algorithm because
+		// don't need slow hashing algorithm because
 		MessageDigest md = MessageDigest.getInstance("MD5");
-		md.update(salt.getBytes()); //salting to prevent rainbow tables
-	    md.update(ip.getBytes(StandardCharsets.UTF_8.name()));
-	    byte[] bytes = md.digest();
-	    return Base64.getEncoder().encodeToString(bytes);
+		md.update(salt.getBytes()); // salting to prevent rainbow tables
+		md.update(ip.getBytes(StandardCharsets.UTF_8.name()));
+		byte[] bytes = md.digest();
+		return Base64.getEncoder().encodeToString(bytes);
 	}
 }
