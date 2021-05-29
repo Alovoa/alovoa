@@ -26,7 +26,6 @@ public class AuthService {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String email;
 		if (auth instanceof OAuth2AuthenticationToken) {
-			auth = (OAuth2AuthenticationToken) auth;
 			DefaultOAuth2User principal = (DefaultOAuth2User) auth.getPrincipal();
 			email = principal.getAttribute("email");
 		} else {
@@ -48,7 +47,6 @@ public class AuthService {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String email = null;
 		if (auth instanceof OAuth2AuthenticationToken) {
-			auth = (OAuth2AuthenticationToken) auth;
 			DefaultOAuth2User principal = (DefaultOAuth2User) auth.getPrincipal();
 			email = principal.getAttribute("email");
 		} 
