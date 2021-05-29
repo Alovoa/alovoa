@@ -3,8 +3,10 @@ package com.nonononoki.alovoa.service;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
 
@@ -34,15 +36,13 @@ public class CaptchaService {
 	@Value("${app.text.salt}")
 	private String salt;
 	
-	private final int WIDTH = 120;
-	private final int HEIGHT = 70;
+	private static final int WIDTH = 120;
+	private static final int HEIGHT = 70;
 	
-	private final Color BG_COLOR = new Color(0, 0, 0, 0);
-//	private final Color FG_COLOR = new Color(41, 182, 246);
-//	private final Color FG_COLOR = new Color(236, 65, 122);
-	private final Color FG_COLOR = new Color(130, 130, 130);
+	private static final Color BG_COLOR = new Color(0, 0, 0, 0);
+	private static final Color FG_COLOR = new Color(130, 130, 130);
 
-	public Captcha generate() throws Exception, IOException {
+	public Captcha generate() throws NoSuchAlgorithmException, IOException {
 		
 		Captcha oldCaptcha = captchaRepo.findByHashCode(getIpHash(request.getRemoteAddr()));
 		if(oldCaptcha != null) {
@@ -96,7 +96,7 @@ public class CaptchaService {
 		return true;
 	}
 	
-	private String getIpHash(String ip) throws Exception {
+	private String getIpHash(String ip) throws UnsupportedEncodingException, NoSuchAlgorithmException {
 		//don't need slow hashing algorithm because
 		MessageDigest md = MessageDigest.getInstance("MD5");
 		md.update(salt.getBytes()); //salting to prevent rainbow tables
