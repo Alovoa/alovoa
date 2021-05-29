@@ -38,9 +38,9 @@ public class MessageService {
 	@Autowired
 	private MessageSource messageSource;
 	
-	private final String URL_PREFIX = "<a href=\"";
+	private static final String URL_PREFIX = "<a href=\"";
 	
-	private final String URL_JITSI = "https://meet.jit.si";
+	private static final String URL_JITSI = "https://meet.jit.si";
 	
 	public void send(Long convoId, String message) throws Exception {
 		
@@ -85,7 +85,6 @@ public class MessageService {
 		m.setUserFrom(user);
 		m.setUserTo(c.getPartner(user));
 		m.setAllowedFormatting(allowedFormatting);
-		//messageRepo.saveAndFlush(m);
 		c.getMessages().add(m);
 		conversationRepo.save(c);
 		
