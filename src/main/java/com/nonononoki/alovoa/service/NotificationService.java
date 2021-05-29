@@ -1,5 +1,8 @@
 package com.nonononoki.alovoa.service;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -15,6 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserWebPush;
+import com.nonononoki.alovoa.html.NotificationResource;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.WebPushMessage;
 import com.nonononoki.alovoa.repo.UserRepository;
 
@@ -50,7 +55,7 @@ public class NotificationService {
 
 	private static PushAsyncService pushService;
 
-	public PushAsyncService pushService() throws Exception {
+	public PushAsyncService pushService() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
 		if (pushService == null) {
 			pushService = new PushAsyncService();
 			pushService.setPrivateKey(vapidPrivateKey);
@@ -59,7 +64,7 @@ public class NotificationService {
 		return pushService;
 	}
 
-	public void subscribe(UserWebPush webPush) throws Exception {
+	public void subscribe(UserWebPush webPush) throws AlovoaException {
 		User user = authService.getCurrentUser();
 		webPush.setUser(user);
 		if (webPush.getDate() == null) {
@@ -69,7 +74,7 @@ public class NotificationService {
 		user = userRepo.saveAndFlush(user);
 
 		if (user.getWebPush().size() > vapidMax) {
-			UserWebPush wp = Collections.min(user.getWebPush(), Comparator.comparing(w -> w.getDate()));
+			UserWebPush wp = Collections.min(user.getWebPush(), Comparator.comparing(UserWebPush::getDate));
 			user.getWebPush().remove(wp);
 			userRepo.saveAndFlush(user);
 		}
@@ -84,7 +89,7 @@ public class NotificationService {
 		String msg = messageSource.getMessage("backend.webpush.like.subject", null, locale);
 
 		WebPushMessage message = new WebPushMessage();
-		message.setClickTarget(appDomain + "/alerts");
+		message.setClickTarget(appDomain + NotificationResource.URL);
 		message.setTitle(title);
 		message.setMessage(msg);
 		send(user, message);
@@ -99,7 +104,7 @@ public class NotificationService {
 		String msg = messageSource.getMessage("backend.webpush.match.subject", null, locale);
 
 		WebPushMessage message = new WebPushMessage();
-		message.setClickTarget(appDomain + "/alerts");
+		message.setClickTarget(appDomain + NotificationResource.URL);
 		message.setTitle(title);
 		message.setMessage(msg);
 		send(user, message);
@@ -114,7 +119,7 @@ public class NotificationService {
 		String msg = messageSource.getMessage("backend.webpush.message.subject", null, locale);
 
 		WebPushMessage message = new WebPushMessage();
-		message.setClickTarget(appDomain + "/alerts");
+		message.setClickTarget(appDomain + NotificationResource.URL);
 		message.setTitle(title);
 		message.setMessage(msg);
 		send(user, message);

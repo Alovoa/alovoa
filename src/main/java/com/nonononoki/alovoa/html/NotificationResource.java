@@ -28,8 +28,10 @@ public class NotificationResource {
 
 	@Autowired
 	private UserRepository userRepo;
+	
+	public static final String URL = "/alerts";
 
-	@GetMapping("/alerts")
+	@GetMapping(URL)
 	public ModelAndView notification() throws Exception {
 
 		ModelAndView mav = new ModelAndView("notification");
