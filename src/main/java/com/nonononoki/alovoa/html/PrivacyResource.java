@@ -30,15 +30,15 @@ public class PrivacyResource {
 	@Value("${app.privacy.update-date}")
 	private String privacyUpdateDate;
 	
-	private final String COMPANY_NAME = "COMPANY_NAME";
-	private final String PRIVACY_UPDATE_DATE = "PRIVACY_UPDATE_DATE";
+	private static final String COMPANY_NAME = "COMPANY_NAME";
+	private static final String PRIVACY_UPDATE_DATE = "PRIVACY_UPDATE_DATE";
 	
 	@GetMapping("/privacy")
 	public ModelAndView privacy() throws Exception {
 		ModelAndView mav = new ModelAndView("privacy");
 		String content = publicService.text("backend.privacy");
-		content = content.replaceAll(COMPANY_NAME, companyName);
-		content = content.replaceAll(PRIVACY_UPDATE_DATE, privacyUpdateDate);
+		content = content.replace(COMPANY_NAME, companyName);
+		content = content.replace(PRIVACY_UPDATE_DATE, privacyUpdateDate);
 		mav.addObject("content", content);
 		User user = authService.getCurrentUser();
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
