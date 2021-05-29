@@ -39,12 +39,11 @@ public class MailService {
 
 	@Value("${app.domain}")
 	private String appDomain;
-	
+
 	@Value("${app.company.name}")
 	private String companyName;
-	
-	
-	public void sendMail(String to, String from, String subject, String body) throws Exception, MessagingException, IOException {
+
+	public void sendMail(String to, String from, String subject, String body) throws MessagingException, IOException {
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, StandardCharsets.UTF_8.name());
 		helper.setFrom(from);
@@ -53,19 +52,19 @@ public class MailService {
 		helper.setText(getEmailText(body), true);
 		mailSender.send(mimeMessage);
 	}
-	
-	public void sendAdminMail(String to, String subject, String body) throws Exception, MessagingException, IOException {
+
+	public void sendAdminMail(String to, String subject, String body) throws MessagingException, IOException {
 		sendMail(to, defaultFrom, subject, body);
 	}
-	
-	public void sendAdminMailAll(String subject, String body, List<User> users) throws Exception, MessagingException, IOException {
-		for(User u : users) {
+
+	public void sendAdminMailAll(String subject, String body, List<User> users) throws MessagingException, IOException {
+		for (User u : users) {
 			sendMail(u.getEmail(), defaultFrom, subject, body);
-		}	
+		}
 	}
 
 	public void sendMailWithAttachment(String to, String from, String subject, String body, String attachmentName,
-			ByteArrayResource attachmentRes) throws Exception, MessagingException, IOException {
+			ByteArrayResource attachmentRes) throws MessagingException, IOException {
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
 		helper.setFrom(from);
@@ -75,23 +74,22 @@ public class MailService {
 		helper.addAttachment(attachmentName, attachmentRes);
 		mailSender.send(mimeMessage);
 	}
-	
-	private String getEmailText(String body) throws Exception, IOException {
+
+	private String getEmailText(String body) throws IOException {
 		String template = Tools.getResourceText("static/templates/email.html");
-		String text = new String();
-		String hrefWebsite = appDomain + "/"; 
-		String hrefDonate = appDomain + "/donate-list"; 
+		String hrefWebsite = appDomain + "/";
+		String hrefDonate = appDomain + "/donate-list";
 		String imgSrc = Tools.imageToB64("static/img/mail_icon.jpg", "jpeg");
-		text = template.replaceAll("MAIL_BODY", body);
-		text = text.replaceAll("COMPANY_NAME", companyName);
-		text = text.replaceAll("SRC_IMAGE", imgSrc);
-		text = text.replaceAll("HREF_WEBSITE", hrefWebsite);
-		text = text.replaceAll("HREF_DONATE", hrefDonate);
+		String text = template.replace("MAIL_BODY", body);
+		text = text.replace("COMPANY_NAME", companyName);
+		text = text.replace("SRC_IMAGE", imgSrc);
+		text = text.replace("HREF_WEBSITE", hrefWebsite);
+		text = text.replace("HREF_DONATE", hrefDonate);
 
 		return text;
 	}
 
-	public void sendRegistrationMail(User user, UserRegisterToken token) throws Exception, MessagingException, IOException {
+	public void sendRegistrationMail(User user, UserRegisterToken token) throws MessagingException, IOException {
 		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.register.subject", new String[] { appName }, "",
 				locale);
@@ -100,7 +98,7 @@ public class MailService {
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 
-	public void sendPasswordResetMail(User user, UserPasswordToken token) throws Exception, MessagingException, IOException {
+	public void sendPasswordResetMail(User user, UserPasswordToken token) throws MessagingException, IOException {
 		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.password-reset.subject", new String[] { appName },
 				locale);
@@ -109,7 +107,7 @@ public class MailService {
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 
-	public void sendAccountDeleteRequest(User user, UserDeleteToken token) throws Exception, MessagingException, IOException {
+	public void sendAccountDeleteRequest(User user, UserDeleteToken token) throws MessagingException, IOException {
 		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.account-delete-request.subject",
 				new String[] { appName }, locale);
@@ -118,7 +116,7 @@ public class MailService {
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 
-	public void sendAccountDeleteConfirm(User user) throws Exception, MessagingException, IOException {
+	public void sendAccountDeleteConfirm(User user) throws MessagingException, IOException {
 		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.account-delete-confirm.subject",
 				new String[] { appName }, locale);
@@ -126,13 +124,13 @@ public class MailService {
 				new String[] { user.getFirstName(), appName }, locale);
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
-	
-	public void sendAccountConfirmed(User user) throws Exception, MessagingException, IOException {
+
+	public void sendAccountConfirmed(User user) throws MessagingException, IOException {
 		Locale locale = Tools.getUserLocale(user);
-		String subject = messageSource.getMessage("backend.mail.account-confirmed.subject",
-				new String[] { appName }, locale);
+		String subject = messageSource.getMessage("backend.mail.account-confirmed.subject", new String[] { appName },
+				locale);
 		String body = messageSource.getMessage("backend.mail.account-confirmed.body",
-				new String[] { user.getFirstName(), appName, appDomain}, "", locale);
+				new String[] { user.getFirstName(), appName, appDomain }, "", locale);
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 }
