@@ -38,11 +38,7 @@ public class UserInterest {
 		}
 
 		UserInterest i = (UserInterest) o;
-		if (i.getText().equals(text)) {
-			return true;
-		} else {
-			return false;
-		}
+		return i.getText().equals(text);
 	}
 
 	@Override
