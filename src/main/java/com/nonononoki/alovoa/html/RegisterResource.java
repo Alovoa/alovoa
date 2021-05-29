@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.service.AuthService;
@@ -28,7 +29,7 @@ public class RegisterResource {
 	private AuthService authService;
 	
 	@GetMapping("/register")
-	public ModelAndView register() throws Exception {
+	public ModelAndView register() throws AlovoaException {
 		
 		User user = authService.getCurrentUser();
 		if (user != null) {
@@ -40,7 +41,7 @@ public class RegisterResource {
 		return mav;
 	}
 	
-	public ModelAndView registerOauth(User user) throws Exception {
+	public ModelAndView registerOauth() {
 		ModelAndView mav = new ModelAndView("register-oauth");
 		mav.addObject("genders", genderRepo.findAll());
 		mav.addObject("intentions", userIntentionRepo.findAll());

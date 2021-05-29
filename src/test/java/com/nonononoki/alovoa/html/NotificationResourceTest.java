@@ -76,7 +76,7 @@ public class NotificationResourceTest {
 		User currUser = testUsers.get(1);
 		
 		UserNotification not = new UserNotification();
-		not.setContent(not.getUSER_LIKE());
+		not.setContent(UserNotification.USER_LIKE);
 		not.setDate(new Date());
 		not.setUserFrom(currUser);
 		not.setUserTo(user);

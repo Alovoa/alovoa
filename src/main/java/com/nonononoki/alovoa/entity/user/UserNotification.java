@@ -19,7 +19,7 @@ import lombok.Data;
 public class UserNotification {
 	
 	@Transient
-	private static final String USER_LIKE = "USER_LIKE";
+	public static final String USER_LIKE = "USER_LIKE";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
