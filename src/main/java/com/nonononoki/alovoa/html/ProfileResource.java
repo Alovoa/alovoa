@@ -54,13 +54,13 @@ public class ProfileResource {
 	@Value("${app.intention.delay}")
 	private long intentionDelay;
 
-	public static final String url = "/profile";
+	public static final String URL = "/profile";
 
 	public static String getUrl() {
-		return url;
+		return URL;
 	}
 
-	@GetMapping(url)
+	@GetMapping(URL)
 	public ModelAndView profile() throws Exception {
 
 		User user = authService.getCurrentUser();
@@ -129,10 +129,7 @@ public class ProfileResource {
 			noProfilePicture = true;
 			hasWarning = true;
 		}
-		if (user.getDescription() == null) {
-			noDescription = true;
-			hasWarning = true;
-		} else if (user.getDescription().isEmpty()) {
+		if (user.getDescription() == null || user.getDescription().isEmpty()) {
 			noDescription = true;
 			hasWarning = true;
 		}
@@ -140,10 +137,7 @@ public class ProfileResource {
 			noIntention = true;
 			hasWarning = true;
 		}
-		if (user.getPreferedGenders() == null) {
-			noGender = true;
-			hasWarning = true;
-		} else if (user.getPreferedGenders().size() == 0) {
+		if (user.getPreferedGenders() == null || user.getPreferedGenders().size() == 0) {
 			noGender = true;
 			hasWarning = true;
 		}
