@@ -16,10 +16,10 @@ import lombok.Data;
 
 @Data
 @Entity
-public class UserNotification{
+public class UserNotification {
 	
 	@Transient
-	private final String USER_LIKE = "USER_LIKE";
+	private static final String USER_LIKE = "USER_LIKE";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
