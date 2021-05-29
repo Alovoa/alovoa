@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.rest;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +19,7 @@ public class PublicController {
 	private PublicService publicService;	
 
 	@GetMapping("/text/{value:.+}")
-    public String text(Model model, @PathVariable String value) throws Exception{
+    public String text(Model model, @PathVariable String value) throws MessagingException {
 		return publicService.text(value);
     }
 }
