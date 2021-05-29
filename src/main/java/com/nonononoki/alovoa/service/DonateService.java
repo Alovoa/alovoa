@@ -1,10 +1,19 @@
 package com.nonononoki.alovoa.service;
 
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +34,8 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @Service
 public class DonateService {
 
-	private final int FILTER_RECENT = 1;
-	private final int FILTER_AMOUNT = 2;
+	private static final int FILTER_RECENT = 1;
+	private static final int FILTER_AMOUNT = 2;
 	
 	@Autowired
 	private UserDonationRepository userDonationRepo;
@@ -49,16 +58,16 @@ public class DonateService {
 	@Value("${spring.profiles.active}")
 	private String profile;
 	
-	private final String KOFI_URL = "https://ko-fi.com/";
-	private final String KOFI_TEST_TRANSACTION_ID= "1234-1234-1234-1234";
-	private final String KOFI_TEST_EMAIL = "john@example.com";
+	private static final String KOFI_URL = "https://ko-fi.com/";
+	private static final String KOFI_TEST_TRANSACTION_ID= "1234-1234-1234-1234";
+	private static final String KOFI_TEST_EMAIL = "john@example.com";
 	
-	private final String BMAC_URL = "https://www.buymeacoffee.com/";
-	private final String BMAC_TEST_EMAIL = "test@example.com";
-	private final double BMAC_AMOUNT_FACTOR = 0.95;
+	private static final String BMAC_URL = "https://www.buymeacoffee.com/";
+	private static final String BMAC_TEST_EMAIL = "test@example.com";
+	private static final double BMAC_AMOUNT_FACTOR = 0.95;
 	
 
-	public List<DonationDto> filter(int filter) throws Exception {
+	public List<DonationDto> filter(int filter) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, Exception  {
 		List<DonationDto> donationsToDtos = null;
 
 		User currentUser = authService.getCurrentUser();
@@ -76,7 +85,7 @@ public class DonateService {
 		return donationsToDtos;
 	}
 
-	public void donationReceivedKofi(DonationKofi donation) throws Exception {
+	public void donationReceivedKofi(DonationKofi donation) throws UnknownHostException, MalformedURLException {
 		String kofiIp = InetAddress.getByName(new URL(KOFI_URL).getHost()).getHostAddress().trim();
 		String ip = request.getRemoteAddr().trim();
 
@@ -125,7 +134,7 @@ public class DonateService {
 		}
 	}
 
-	public void donationReceivedBmac(DonationBmac data) throws Exception {
+	public void donationReceivedBmac(DonationBmac data) throws UnknownHostException, MalformedURLException {
 		String bmacIp = InetAddress.getByName(new URL(BMAC_URL).getHost()).getHostAddress().trim();
 		String ip = request.getRemoteAddr().trim();
 		
