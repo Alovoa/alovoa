@@ -25,7 +25,6 @@ public class LoginResource {
 			return profileResource.profile();
 		}
 
-		ModelAndView mav = new ModelAndView("login");
-		return mav;
+		return new ModelAndView("login");
 	}
 }
