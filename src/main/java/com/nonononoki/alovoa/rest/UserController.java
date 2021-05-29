@@ -50,7 +50,7 @@ public class UserController {
 	@PostMapping(value = "/update/profile-picture", consumes = "text/plain")
 	public void updateProfilePicture(@RequestBody String imageB64) throws Exception {
 		if(Tools.getBase64Size(imageB64) > mediaMaxSize) {
-			throw new AlovoaException("max_media_size_exceeded");
+			throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
 		}
 		userService.updateProfilePicture(imageB64);
 	}
@@ -68,7 +68,7 @@ public class UserController {
 	@PostMapping(value = "/update/audio/{mimeType}", consumes = "text/plain")
 	public void updateAudio(@RequestBody String audioB64, @PathVariable String mimeType) throws Exception {
 		if(Tools.getBase64Size(audioB64) > mediaMaxSize) {
-			throw new AlovoaException("max_media_size_exceeded");
+			throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
 		}
 		userService.updateAudio(audioB64, mimeType);
 	}
@@ -121,7 +121,7 @@ public class UserController {
 	@PostMapping(value = "/image/add", consumes = "text/plain")
 	public void addImage(@RequestBody String imageB64) throws Exception {
 		if(Tools.getBase64Size(imageB64) > mediaMaxSize) {
-			throw new AlovoaException("max_media_size_exceeded");
+			throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
 		}
 		userService.addImage(imageB64);
 	}
