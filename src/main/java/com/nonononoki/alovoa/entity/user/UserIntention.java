@@ -20,11 +20,11 @@ import lombok.Data;
 public class UserIntention {
 	
 	@Transient
-	public static int MEET = 1;
+	public static final int MEET = 1;
 	@Transient
-	public static int DATE = 2;
+	public static final int DATE = 2;
 	@Transient
-	public static int SEX = 3;
+	public static final int SEX = 3;
 
 	@JsonIgnore
 	@Id
