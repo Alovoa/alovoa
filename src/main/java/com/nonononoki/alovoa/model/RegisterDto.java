@@ -11,7 +11,7 @@ public class RegisterDto {
 	private String password;
 	private String firstName;
 	private Date dateOfBirth;
-	//private LocalDate dateOfBirth;
+	
 	private long gender;
 	private long intention;
 	
