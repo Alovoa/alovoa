@@ -48,10 +48,7 @@ public class Conversation {
 	private String lastMessage;
 
 	public boolean containsUser(User user) {
-		if (users.contains(user)) {
-			return true;
-		}
-		return false;
+		return users.contains(user);
 	}
 
 	public User getPartner(User user) {
@@ -65,11 +62,7 @@ public class Conversation {
 		UserBlock blockFrom = userBlockRepo.findByUserFromAndUserTo(users.get(0), users.get(1));
 		UserBlock blockTo = userBlockRepo.findByUserFromAndUserTo(users.get(1), users.get(0));
 
-		if (blockFrom == null && blockTo == null) {
-			return false;
-		} else {
-			return true;
-		}
+		return blockFrom != null || blockTo != null;
 	}
 
 }
