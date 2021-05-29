@@ -12,7 +12,7 @@ import com.nonononoki.alovoa.repo.CaptchaRepository;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class CaptchaServiceTest {
+class CaptchaServiceTest {
 
 
 	@Autowired
@@ -22,9 +22,9 @@ public class CaptchaServiceTest {
 	private CaptchaRepository captchaRepo;
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		captchaService.generate();
 		captchaService.generate();
-		Assert.assertEquals(captchaRepo.count(), 1);
+		Assert.assertEquals(1, captchaRepo.count());
 	}
 }

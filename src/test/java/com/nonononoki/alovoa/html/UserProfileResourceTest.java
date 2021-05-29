@@ -27,7 +27,7 @@ import com.nonononoki.alovoa.service.UserService;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class UserProfileResourceTest {
+class UserProfileResourceTest {
 	
 	@Autowired
 	private RegisterService registerService;
@@ -62,17 +62,17 @@ public class UserProfileResourceTest {
 	private TextEncryptorConverter textEncryptor;
 	
 	@BeforeEach
-	public void before() throws Exception {
+	void before() throws Exception {
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 	}
 	
 	@AfterEach
-	public void after() throws Exception {
+	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		
 		User currUser = testUsers.get(0);
 		currUser.setLocationLatitude(0.0);

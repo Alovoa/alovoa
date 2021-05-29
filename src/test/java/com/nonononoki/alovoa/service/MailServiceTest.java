@@ -19,7 +19,7 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class MailServiceTest {
+class MailServiceTest {
 
 	@Autowired
 	private RegisterService registerService;
@@ -57,23 +57,21 @@ public class MailServiceTest {
 	private List<User> testUsers;
 	
 	@BeforeEach
-	public void before() throws Exception {
+	void before() throws Exception {
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 	}
 	
 	@AfterEach
-	public void after() throws Exception {
+	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 
 	@Test
-	public void test() throws Exception {
-		
+	void test() throws Exception {
 		User user1 = testUsers.get(1);
 		String subject = "test";
 		String body = "test body";
 		mailService.sendAdminMail(user1.getEmail(), subject, body);
-		
 	}
 	
  }

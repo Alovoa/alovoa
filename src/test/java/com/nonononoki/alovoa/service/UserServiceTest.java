@@ -35,7 +35,7 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class UserServiceTest {
+class UserServiceTest {
 
 	@Autowired
 	private RegisterService registerService;
@@ -83,17 +83,17 @@ public class UserServiceTest {
 	private List<User> testUsers;
 	
 	@BeforeEach
-	public void before() throws Exception {
+	void before() throws Exception {
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 	}
 	
 	@AfterEach
-	public void after() throws Exception {
+	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 
 		User user1 = testUsers.get(0);
 		User user2 = testUsers.get(1);
@@ -113,7 +113,7 @@ public class UserServiceTest {
 		userRepo.saveAndFlush(user2);
 		userRepo.saveAndFlush(user3);
 
-		Assert.assertEquals(userRepo.count(), 4);
+		Assert.assertEquals(4, userRepo.count());
 
 		String imgMimePng = "png";
 		// setup settings

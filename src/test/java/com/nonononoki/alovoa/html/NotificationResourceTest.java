@@ -27,7 +27,7 @@ import com.nonononoki.alovoa.service.UserService;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class NotificationResourceTest {
+class NotificationResourceTest {
 	
 	@Autowired
 	private RegisterService registerService;
@@ -59,17 +59,17 @@ public class NotificationResourceTest {
 	private List<User> testUsers;
 	
 	@BeforeEach
-	public void before() throws Exception {
+	void before() throws Exception {
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 	}
 	
 	@AfterEach
-	public void after() throws Exception {
+	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		Mockito.when(authService.getCurrentUser()).thenReturn(testUsers.get(0));
 		
 		User user = testUsers.get(2);

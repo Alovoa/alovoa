@@ -24,23 +24,23 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class DonateServiceTest {
+class DonateServiceTest {
 
 	@Autowired
 	private RegisterService registerService;
 
 	@Autowired
 	private CaptchaService captchaService;
-	
+
 	@Autowired
 	private UserDonationRepository userDonationRepository;
 
 	@Value("${app.age.min}")
 	private int minAge;
-	
+
 	@Value("${app.message.size}")
 	private int maxMessageSize;
-	
+
 	@Value("${app.first-name.length-max}")
 	private int firstNameLengthMax;
 
@@ -49,10 +49,10 @@ public class DonateServiceTest {
 
 	@MockBean
 	private AuthService authService;
-	
+
 	@Autowired
 	private DonateService donateService;
-	
+
 	@Autowired
 	private UserService userService;
 
@@ -61,52 +61,54 @@ public class DonateServiceTest {
 
 	@Autowired
 	private ConversationRepository conversationRepo;
-	
+
 	private List<User> testUsers;
-	
+
 	@BeforeEach
-	public void before() throws Exception {
-		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
+	void before() throws Exception {
+		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax,
+				firstNameLengthMin);
 	}
-	
+
 	@AfterEach
-	public void after() throws Exception {
+	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 
 	@Test
-	public void test() throws Exception {
-		
+	void test() throws Exception {
+
 		User user1 = testUsers.get(1);
-		
+
 		double doubleDelta = 0.001;
-		
-		Assert.assertEquals(user1.getTotalDonations(), 0, doubleDelta);
-		Assert.assertEquals(userDonationRepository.count(), 0);
-		
+
+		Assert.assertEquals(0, user1.getTotalDonations(), doubleDelta);
+		Assert.assertEquals(0, userDonationRepository.count());
+
 		String donationString = "10.00";
 		double donationAmount = Double.valueOf(donationString);
 
-		DonationKofi donationKofi= new DonationKofi();
+		DonationKofi donationKofi = new DonationKofi();
 		donationKofi.setAmount(donationString);
 		donationKofi.setMessage(user1.getEmail());
 		donateService.donationReceivedKofi(donationKofi);
-		
-		Assert.assertEquals(user1.getTotalDonations(), donationAmount, doubleDelta);
-		Assert.assertEquals(userDonationRepository.count(), 1);
-		
+
+		Assert.assertEquals(donationAmount, user1.getTotalDonations(), doubleDelta);
+		Assert.assertEquals(1, userDonationRepository.count());
+
 		double donationAmount2 = 15;
 
-		DonationBmac donationBmac= new DonationBmac();
+		DonationBmac donationBmac = new DonationBmac();
 		DonationBmacResponse bmacResponse = new DonationBmacResponse();
 		bmacResponse.setSupporter_email(user1.getEmail());
 		bmacResponse.setTotal_amount(donationAmount2);
 		donationBmac.setResponse(bmacResponse);
 		donateService.donationReceivedBmac(donationBmac);
-		
-		Assert.assertTrue(user1.getTotalDonations() < donationAmount + donationAmount2 && user1.getTotalDonations() > donationAmount);
-		Assert.assertEquals(userDonationRepository.count(), 2);
-		
+
+		Assert.assertTrue(user1.getTotalDonations() < donationAmount + donationAmount2
+				&& user1.getTotalDonations() > donationAmount);
+		Assert.assertEquals(2, userDonationRepository.count());
+
 	}
-	
- }
+
+}

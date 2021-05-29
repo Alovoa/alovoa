@@ -15,7 +15,7 @@ import com.nonononoki.alovoa.service.AuthService;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class AdminResourceTest {
+class AdminResourceTest {
 
 	@Autowired
 	private AdminResource adminResource;
@@ -27,7 +27,7 @@ public class AdminResourceTest {
 	private AuthService authService;
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		User adminUser = userRepo.findById(1L).get();
 		Mockito.when(authService.getCurrentUser()).thenReturn(adminUser);
 		adminResource.admin();

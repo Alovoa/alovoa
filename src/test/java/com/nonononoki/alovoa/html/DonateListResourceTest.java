@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class DonateListResourceTest {
+class DonateListResourceTest {
 	
 	@Autowired
 	private DonateListResource donateListResource;
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		donateListResource.donate();
 	}
 }

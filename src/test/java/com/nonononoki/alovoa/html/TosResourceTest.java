@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class TosResourceTest {
+class TosResourceTest {
 	
 	@Autowired
 	private TosResource tosResource;
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		tosResource.tosConditions();
 	}
 }

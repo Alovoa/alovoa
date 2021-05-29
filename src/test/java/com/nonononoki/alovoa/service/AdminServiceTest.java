@@ -31,7 +31,7 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class AdminServiceTest {
+class AdminServiceTest {
 
 	@Autowired
 	private RegisterService registerService;
@@ -81,17 +81,17 @@ public class AdminServiceTest {
 	private List<User> testUsers;
 	
 	@BeforeEach
-	public void before() throws Exception {
+	void before() throws Exception {
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 	}
 	
 	@AfterEach
-	public void after() throws Exception {
+	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		
 		List<User> allUsers = userRepo.findAll();
 		User adminUser = allUsers.get(0);
@@ -116,12 +116,12 @@ public class AdminServiceTest {
 		
 		adminService.banUser(UserDto.encodeId(user1.getId(), textEncryptor));
 		User bannedUser = userRepo.findById(user1.getId()).get();
-		Assert.assertEquals(bannedUser.isDisabled(), true);
+		Assert.assertEquals(true, bannedUser.isDisabled());
 		
 	}
 	
 	private Contact contactTest() throws Exception {
-		Assert.assertEquals(contactRepo.count(), 0);
+		Assert.assertEquals(0, contactRepo.count());
 		ContactDto contact = new ContactDto();
 		Captcha captcha = captchaService.generate();
 		contact.setCaptchaId(captcha.getId());
@@ -129,7 +129,7 @@ public class AdminServiceTest {
 		String email = "test" + Tools.MAIL_TEST_DOMAIN;
 		contact.setEmail(email);
 		Contact c = imprintService.contact(contact);
-		Assert.assertEquals(contactRepo.count(), 1);
+		Assert.assertEquals(1, contactRepo.count());
 		
 		return c;
 	}
@@ -141,10 +141,10 @@ public class AdminServiceTest {
 		
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		
-		Assert.assertEquals(userReportRepo.count(), 0);
+		Assert.assertEquals(0, userReportRepo.count());
 		Captcha captchaReport = captchaService.generate();
 		UserReport report = userService.reportUser(UserDto.encodeId(user2.getId(), textEncryptor), captchaReport.getId(), captchaReport.getText(), "report");
-		Assert.assertEquals(userReportRepo.count(), 1);
+		Assert.assertEquals(1, userReportRepo.count());
 			
 		Mockito.when(authService.getCurrentUser()).thenReturn(adminUser);
 		

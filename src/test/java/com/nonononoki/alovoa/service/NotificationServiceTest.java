@@ -24,7 +24,7 @@ import com.nonononoki.alovoa.repo.UserWebPushRepository;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class NotificationServiceTest {
+class NotificationServiceTest {
 
 	@Autowired
 	private RegisterService registerService;
@@ -68,17 +68,17 @@ public class NotificationServiceTest {
 	private List<User> testUsers;
 	
 	@BeforeEach
-	public void before() throws Exception {
+	void before() throws Exception {
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 	}
 	
 	@AfterEach
-	public void after() throws Exception {
+	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 
 		User user1 = testUsers.get(1);
 
@@ -91,17 +91,17 @@ public class NotificationServiceTest {
 		for(int i = 0; i < vapidMax; i++) {
 			notificationService.subscribe(wp);
 		}
-		Assert.assertEquals(userWebPushRepository.count(), vapidMax);
+		Assert.assertEquals(vapidMax, userWebPushRepository.count());
 		
 		
 		Date newDate = new Date();
 		wp.setDate(newDate);
 		notificationService.subscribe(wp);
-		Assert.assertEquals(userWebPushRepository.count(), vapidMax);
+		Assert.assertEquals(vapidMax, userWebPushRepository.count());
 		
 		user1 = userRepo.findByEmail(user1.getEmail());
 		UserWebPush newWebPush = user1.getWebPush().get(vapidMax-1);
-		Assert.assertEquals(newWebPush.getDate(), newDate);
+		Assert.assertEquals(newDate, newWebPush.getDate());
 
 	}
 

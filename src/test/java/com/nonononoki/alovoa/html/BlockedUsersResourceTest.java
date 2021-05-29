@@ -27,7 +27,7 @@ import com.nonononoki.alovoa.service.UserService;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class BlockedUsersResourceTest {
+class BlockedUsersResourceTest {
 	
 	@Autowired
 	private RegisterService registerService;
@@ -59,17 +59,17 @@ public class BlockedUsersResourceTest {
 	private List<User> testUsers;
 	
 	@BeforeEach
-	public void before() throws Exception {
+	void before() throws Exception {
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 	}
 	
 	@AfterEach
-	public void after() throws Exception {
+	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		
 		User user = testUsers.get(0);
 		User blockUser = testUsers.get(1);

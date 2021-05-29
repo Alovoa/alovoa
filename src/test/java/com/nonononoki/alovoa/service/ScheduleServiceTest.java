@@ -34,7 +34,7 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class ScheduleServiceTest {
+class ScheduleServiceTest {
 	
 	@Autowired
 	private CaptchaRepository captchaRepo;
@@ -100,22 +100,21 @@ public class ScheduleServiceTest {
 	@Autowired
 	private UserService userService;
 	
-	
 	private List<User> testUsers;
 	
 	@BeforeEach
-	public void before() throws Exception {
+	void before() throws Exception {
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 	}
 	
 	@AfterEach
-	public void after() throws Exception {
+	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 	
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		
 		Date currentDate = new Date();
 		long currentDateTime = currentDate.getTime();
@@ -129,9 +128,9 @@ public class ScheduleServiceTest {
 		captchaNew.setDate(new Date(currentDateTime - captchaDelay));
 		catchaRepo.saveAndFlush(captchaNew);
 
-		Assert.assertEquals(catchaRepo.count(), 2);
+		Assert.assertEquals(2, catchaRepo.count());
 		scheduleService.cleanCaptcha(currentDate);
-		Assert.assertEquals(catchaRepo.count(), 1);
+		Assert.assertEquals(1, catchaRepo.count());
 		
 		//CONTACT 
 		Contact contactOld = new Contact();
@@ -148,9 +147,9 @@ public class ScheduleServiceTest {
 		contactNew.setDate(new Date(currentDateTime - contactDelay));
 		contactRepo.saveAndFlush(contactNew);
 
-		Assert.assertEquals(contactRepo.count(), 2);
+		Assert.assertEquals(2, contactRepo.count());
 		scheduleService.cleanContact(currentDate);
-		Assert.assertEquals(contactRepo.count(), 1);
+		Assert.assertEquals(1, contactRepo.count());
 
 		
 		//USERHIDE
@@ -171,9 +170,9 @@ public class ScheduleServiceTest {
 		user2.getHiddenUsers().add(hideNew);
 		userRepo.saveAndFlush(user2);
 		
-		Assert.assertEquals(userHideRepo.count(), 2);
+		Assert.assertEquals(2, userHideRepo.count());
 		scheduleService.cleanUserHide(currentDate);
-		Assert.assertEquals(userHideRepo.count(), 1);
+		Assert.assertEquals(1, userHideRepo.count());
 		
 		//USERPASSWORDTOKEN
 		Captcha captcha1 = captchaService.generate();
@@ -196,9 +195,9 @@ public class ScheduleServiceTest {
 		user2.setPasswordToken(passwordTokenNew);
 		userRepo.saveAndFlush(user2);
 		
-		Assert.assertEquals(passwordTokenRepository.count(), 2);
+		Assert.assertEquals(2, passwordTokenRepository.count());
 		scheduleService.cleanUserPasswordToken(currentDate);
-		Assert.assertEquals(passwordTokenRepository.count(), 1);
+		Assert.assertEquals(1, passwordTokenRepository.count());
 
 		//USERDELETETOKEN	
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
@@ -206,7 +205,7 @@ public class ScheduleServiceTest {
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		UserDeleteToken deleteTokenNew = userService.deleteAccountRequest();	
 		
-		Assert.assertEquals(userDeleteTokenRepository.count(), 2);
+		Assert.assertEquals(2, userDeleteTokenRepository.count());
 		deleteTokenOld.setDate(new Date(currentDateTime - passwordResetDelay -1));
 		user1.setDeleteToken(deleteTokenNew);
 		userRepo.saveAndFlush(user1);
@@ -216,7 +215,7 @@ public class ScheduleServiceTest {
 		userRepo.saveAndFlush(user2);
 		
 		scheduleService.cleanUserDeleteToken(currentDate);
-		Assert.assertEquals(userDeleteTokenRepository.count(), 1);
+		Assert.assertEquals(1, userDeleteTokenRepository.count());
 		
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}

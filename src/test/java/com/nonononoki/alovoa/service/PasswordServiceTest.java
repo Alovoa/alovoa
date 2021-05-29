@@ -28,7 +28,7 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class PasswordServiceTest {
+class PasswordServiceTest {
 
 	@Autowired
 	private RegisterService registerService;
@@ -72,17 +72,17 @@ public class PasswordServiceTest {
 	private List<User> testUsers;
 	
 	@BeforeEach
-	public void before() throws Exception {
+	void before() throws Exception {
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 	}
 	
 	@AfterEach
-	public void after() throws Exception {
+	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 	
 	@Test
-	public void test() throws Exception {		
+	void test() throws Exception {		
 		User user1 = testUsers.get(1);
 		
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
@@ -92,11 +92,11 @@ public class PasswordServiceTest {
 		passwordResetDto.setCaptchaText(captcha.getText());
 		passwordResetDto.setEmail(user1.getEmail());
 		
-		Assert.assertEquals(userPasswordTokenRepository.count(), 0);
+		Assert.assertEquals(0, userPasswordTokenRepository.count());
 		
 		UserPasswordToken userPasswordToken = passwordService.resetPasword(passwordResetDto);
 		
-		Assert.assertEquals(userPasswordTokenRepository.count(), 1);
+		Assert.assertEquals(1, userPasswordTokenRepository.count());
 		
 		String newPassword = "newPassword";
 		PasswordChangeDto passwordChangeDto = new PasswordChangeDto();
@@ -111,7 +111,7 @@ public class PasswordServiceTest {
 			throw new BadCredentialsException("");
 		}
 		
-		Assert.assertEquals(userPasswordTokenRepository.count(), 0);
+		Assert.assertEquals(0, userPasswordTokenRepository.count());
 	}
 	
  }

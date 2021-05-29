@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class ImprintResourceTest {
+class ImprintResourceTest {
 	
 	@Autowired
 	private ImprintResource imprintResource;
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		imprintResource.imprint();
 	}
 }

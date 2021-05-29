@@ -88,12 +88,12 @@ public class RegisterServiceTest {
 
 	private static List<User> testUsers = null;
 
-	private static int user1Age = 18;
-	private static int user2Age = 20;
-	private static int user3Age = 30;
+	private static final int USER1_AGE = 18;
+	private static final int USER2_AGE = 20;
+	private static final int USER3_AGE = 30;
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 
 		// one default admin user
 		Assert.assertEquals(userRepo.count(), 1);
@@ -102,13 +102,13 @@ public class RegisterServiceTest {
 				firstNameLengthMin);
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 
-		Assert.assertEquals(conversationRepo.count(), 0);
-		Assert.assertEquals(messageRepo.count(), 0);
-		Assert.assertEquals(userHideRepo.count(), 0);
-		Assert.assertEquals(userReportRepo.count(), 0);
-		Assert.assertEquals(userLikeRepo.count(), 0);
-		Assert.assertEquals(userBlockRepo.count(), 0);
-		Assert.assertEquals(userRepo.count(), 1);
+		Assert.assertEquals(0, conversationRepo.count());
+		Assert.assertEquals(0, messageRepo.count());
+		Assert.assertEquals(0, userHideRepo.count());
+		Assert.assertEquals(0, userReportRepo.count());
+		Assert.assertEquals(0, userLikeRepo.count());
+		Assert.assertEquals(0, userBlockRepo.count());
+		Assert.assertEquals(1, userRepo.count());
 
 	}
 
@@ -117,14 +117,14 @@ public class RegisterServiceTest {
 		if (testUsers == null) {
 
 			Captcha c2 = captchaService.generate();
-			RegisterDto user2Dto = createTestUserDto(2, c2, "test2", user2Age);
+			RegisterDto user2Dto = createTestUserDto(2, c2, "test2", USER2_AGE);
 			String tokenContent2 = registerService.register(user2Dto);
 			User user2 = registerService.registerConfirm(tokenContent2);
 
 			String user1Email = "nonononoki@gmail.com";
 			// register and confirm test users
 			Captcha c1 = captchaService.generate();
-			RegisterDto user1Dto = createTestUserDto(1, c1, user1Email, user1Age);
+			RegisterDto user1Dto = createTestUserDto(1, c1, user1Email, USER1_AGE);
 			String tokenContent1 = registerService.register(user1Dto);
 			User user1 = registerService.registerConfirm(tokenContent1);
 
@@ -159,7 +159,7 @@ public class RegisterServiceTest {
 			}
 
 			Captcha c3 = captchaService.generate();
-			RegisterDto user3Dto = createTestUserDto(2, c3, "test3", user3Age);
+			RegisterDto user3Dto = createTestUserDto(2, c3, "test3", USER3_AGE);
 			String tokenContent3 = registerService.register(user3Dto);
 			User user3 = registerService.registerConfirm(tokenContent3);
 

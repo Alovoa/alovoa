@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class IndexResourceTest {
+class IndexResourceTest {
 	
 	@Autowired
 	private IndexResource indexResource;
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		indexResource.index();
 	}
 }

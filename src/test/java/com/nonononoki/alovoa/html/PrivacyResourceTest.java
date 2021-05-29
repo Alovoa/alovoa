@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class PrivacyResourceTest {
+class PrivacyResourceTest {
 	
 	@Autowired
 	private PrivacyResource privacyResource;
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		privacyResource.privacy();
 	}
 }
