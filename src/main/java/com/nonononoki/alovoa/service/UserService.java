@@ -7,7 +7,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -18,13 +23,19 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
+import javax.mail.MessagingException;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -37,6 +48,7 @@ import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedin.urls.Url;
 import com.linkedin.urls.detection.UrlDetector;
@@ -158,7 +170,7 @@ public class UserService {
 
 	@Value("${app.user.delete.delay}")
 	private long userDeleteDelay;
-	
+
 	@Value("${app.intention.delay}")
 	private long intentionDelay;
 
@@ -168,7 +180,7 @@ public class UserService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	public UserDeleteToken deleteAccountRequest() throws Exception {
+	public UserDeleteToken deleteAccountRequest() throws MessagingException, IOException, AlovoaException {
 		User user = authService.getCurrentUser();
 		UserDeleteToken token = new UserDeleteToken();
 		Date currentDate = new Date();
@@ -186,7 +198,8 @@ public class UserService {
 		return user.getDeleteToken();
 	}
 
-	public void deleteAccountConfirm(UserDeleteAccountDto dto) throws Exception {
+	public void deleteAccountConfirm(UserDeleteAccountDto dto)
+			throws MessagingException, IOException, AlovoaException, NoSuchAlgorithmException {
 		User user = authService.getCurrentUser();
 		UserDeleteToken deleteToken = user.getDeleteToken();
 		String userTokenString = deleteToken.getContent();
@@ -225,7 +238,7 @@ public class UserService {
 		mailService.sendAccountDeleteConfirm(user);
 	}
 
-	public static User removeUserLinkedLists(User user, UserDeleteParams userDeleteParam) throws Exception {
+	public static User removeUserLinkedLists(User user, UserDeleteParams userDeleteParam) {
 
 		UserRepository userRepo = userDeleteParam.getUserRepo();
 		UserLikeRepository userLikeRepo = userDeleteParam.getUserLikeRepo();
@@ -236,138 +249,123 @@ public class UserService {
 		UserReportRepository userReportRepo = userDeleteParam.getUserReportRepo();
 
 		// DELETE USER LIKE
-		{
-			for (UserLike like : userLikeRepo.findByUserFrom(user)) {
-				User u = like.getUserTo();
-				u.getLikedBy().remove(like);
-				userRepo.save(u);
+		for (UserLike like : userLikeRepo.findByUserFrom(user)) {
+			User u = like.getUserTo();
+			u.getLikedBy().remove(like);
+			userRepo.save(u);
 
-				like.setUserTo(null);
-				userLikeRepo.save(like);
-			}
-			for (UserLike like : userLikeRepo.findByUserTo(user)) {
-				User u = like.getUserFrom();
-				u.getLikes().remove(like);
-				userRepo.save(u);
-
-				like.setUserFrom(null);
-				userLikeRepo.save(like);
-			}
-			userRepo.flush();
-			userLikeRepo.flush();
+			like.setUserTo(null);
+			userLikeRepo.save(like);
 		}
+		for (UserLike like : userLikeRepo.findByUserTo(user)) {
+			User u = like.getUserFrom();
+			u.getLikes().remove(like);
+			userRepo.save(u);
+
+			like.setUserFrom(null);
+			userLikeRepo.save(like);
+		}
+		userRepo.flush();
+		userLikeRepo.flush();
 
 		// DELETE USER NOTIFICATION
-		{
-			for (UserNotification notification : userNotificationRepo.findByUserFrom(user)) {
-				User u = notification.getUserTo();
-				u.getNotificationsFrom().remove(notification);
-				userRepo.save(u);
+		for (UserNotification notification : userNotificationRepo.findByUserFrom(user)) {
+			User u = notification.getUserTo();
+			u.getNotificationsFrom().remove(notification);
+			userRepo.save(u);
 
-				notification.setUserTo(null);
-				userNotificationRepo.save(notification);
-			}
-			for (UserNotification notificaton : userNotificationRepo.findByUserTo(user)) {
-				User u = notificaton.getUserFrom();
-				u.getNotifications().remove(notificaton);
-				userRepo.save(u);
-
-				notificaton.setUserFrom(null);
-				userNotificationRepo.save(notificaton);
-			}
-			userRepo.flush();
-			userNotificationRepo.flush();
+			notification.setUserTo(null);
+			userNotificationRepo.save(notification);
 		}
+		for (UserNotification notificaton : userNotificationRepo.findByUserTo(user)) {
+			User u = notificaton.getUserFrom();
+			u.getNotifications().remove(notificaton);
+			userRepo.save(u);
+
+			notificaton.setUserFrom(null);
+			userNotificationRepo.save(notificaton);
+		}
+		userRepo.flush();
+		userNotificationRepo.flush();
 
 		// DELETE USER HIDE
-		{
-			for (UserHide hide : userHideRepo.findByUserFrom(user)) {
-				User u = hide.getUserTo();
-				u.getHiddenByUsers().remove(hide);
-				userRepo.save(u);
+		for (UserHide hide : userHideRepo.findByUserFrom(user)) {
+			User u = hide.getUserTo();
+			u.getHiddenByUsers().remove(hide);
+			userRepo.save(u);
 
-				hide.setUserTo(null);
-				userHideRepo.save(hide);
-			}
-			for (UserHide hide : userHideRepo.findByUserTo(user)) {
-				User u = hide.getUserFrom();
-				u.getHiddenUsers().remove(hide);
-				userRepo.save(u);
-
-				hide.setUserFrom(null);
-				userHideRepo.save(hide);
-			}
-			userRepo.flush();
-			userHideRepo.flush();
+			hide.setUserTo(null);
+			userHideRepo.save(hide);
 		}
+		for (UserHide hide : userHideRepo.findByUserTo(user)) {
+			User u = hide.getUserFrom();
+			u.getHiddenUsers().remove(hide);
+			userRepo.save(u);
+
+			hide.setUserFrom(null);
+			userHideRepo.save(hide);
+		}
+		userRepo.flush();
+		userHideRepo.flush();
 
 		// DELETE USER BLOCK
-		{
-			for (UserBlock block : userBlockRepo.findByUserFrom(user)) {
-				User u = block.getUserTo();
-				u.getBlockedByUsers().remove(block);
-				userRepo.save(u);
+		for (UserBlock block : userBlockRepo.findByUserFrom(user)) {
+			User u = block.getUserTo();
+			u.getBlockedByUsers().remove(block);
+			userRepo.save(u);
 
-				block.setUserTo(null);
-				userBlockRepo.save(block);
-			}
-			for (UserBlock block : userBlockRepo.findByUserTo(user)) {
-				User u = block.getUserFrom();
-				u.getBlockedUsers().remove(block);
-				userRepo.save(u);
-
-				block.setUserFrom(null);
-				userBlockRepo.save(block);
-			}
-			userRepo.flush();
-			userBlockRepo.flush();
+			block.setUserTo(null);
+			userBlockRepo.save(block);
 		}
+		for (UserBlock block : userBlockRepo.findByUserTo(user)) {
+			User u = block.getUserFrom();
+			u.getBlockedUsers().remove(block);
+			userRepo.save(u);
+
+			block.setUserFrom(null);
+			userBlockRepo.save(block);
+		}
+		userRepo.flush();
+		userBlockRepo.flush();
 
 		// DELETE USER REPORT
-		{
-			for (UserReport report : userReportRepo.findByUserFrom(user)) {
-				User u = report.getUserTo();
-				u.getReportedByUsers().remove(report);
-				userRepo.save(u);
+		for (UserReport report : userReportRepo.findByUserFrom(user)) {
+			User u = report.getUserTo();
+			u.getReportedByUsers().remove(report);
+			userRepo.save(u);
 
-				report.setUserTo(null);
-				userReportRepo.save(report);
-			}
-			for (UserReport report : userReportRepo.findByUserTo(user)) {
-				User u = report.getUserFrom();
-				u.getReported().remove(report);
-				userRepo.save(u);
-
-				report.setUserFrom(null);
-				userReportRepo.save(report);
-			}
-			userRepo.flush();
-			userReportRepo.flush();
+			report.setUserTo(null);
+			userReportRepo.save(report);
 		}
+		for (UserReport report : userReportRepo.findByUserTo(user)) {
+			User u = report.getUserFrom();
+			u.getReported().remove(report);
+			userRepo.save(u);
+
+			report.setUserFrom(null);
+			userReportRepo.save(report);
+		}
+		userRepo.flush();
+		userReportRepo.flush();
 
 		// DELETE USER CONVERSATION
-		{
-			for (Conversation c : conversationRepo.findByUsers_Id(user.getId())) {
+		for (Conversation c : conversationRepo.findByUsers_Id(user.getId())) {
 
-				for (User u : c.getUsers()) {
-					u.getConversations().remove(c);
-					userRepo.save(u);
-				}
-
-//				c.getMessages().clear();			
-//				c.getUsers().clear();
-
-				conversationRepo.delete(c);
+			for (User u : c.getUsers()) {
+				u.getConversations().remove(c);
+				userRepo.save(u);
 			}
 
-			userRepo.flush();
-			conversationRepo.flush();
+			conversationRepo.delete(c);
 		}
+
+		userRepo.flush();
+		conversationRepo.flush();
 
 		return user;
 	}
 
-	public void updateProfilePicture(String imgB64) throws Exception {
+	public void updateProfilePicture(String imgB64) throws AlovoaException, IOException {
 		User user = authService.getCurrentUser();
 		String newImgB64 = adjustPicture(imgB64);
 		if (user.getProfilePicture() == null) {
@@ -382,7 +380,7 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
-	public void updateDescription(String description) throws Exception {
+	public void updateDescription(String description) throws AlovoaException {
 		if (description != null) {
 			if (description.length() > descriptionSize) {
 				throw new AlovoaException("max_length_exceeded");
@@ -402,12 +400,12 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
-	public void updateIntention(long intention) throws Exception {
+	public void updateIntention(long intention) throws AlovoaException {
 		User user = authService.getCurrentUser();
-		
+
 		Date now = new Date();
-		if(user.getDates().getIntentionChangeDate() == null || 
-				now.getTime() >= user.getDates().getIntentionChangeDate().getTime() + intentionDelay ) {
+		if (user.getDates().getIntentionChangeDate() == null
+				|| now.getTime() >= user.getDates().getIntentionChangeDate().getTime() + intentionDelay) {
 			boolean isLegal = Tools.calcUserAge(user) >= ageLegal;
 			if (!isLegal && intention == UserIntention.SEX) {
 				throw new AlovoaException("not_supported");
@@ -419,7 +417,7 @@ public class UserService {
 		}
 	}
 
-	public void updateMinAge(int userMinAge) throws Exception {
+	public void updateMinAge(int userMinAge) throws AlovoaException {
 		if (userMinAge < minAge) {
 			userMinAge = minAge;
 		}
@@ -428,7 +426,7 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
-	public void updateMaxAge(int userMaxAge) throws Exception {
+	public void updateMaxAge(int userMaxAge) throws AlovoaException {
 		if (userMaxAge > maxAge) {
 			userMaxAge = maxAge;
 		}
@@ -437,11 +435,11 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
-	public void updatePreferedGender(long genderId, boolean activated) throws Exception {
+	public void updatePreferedGender(long genderId, boolean activated) throws AlovoaException {
 		User user = authService.getCurrentUser();
 		Set<Gender> list = user.getPreferedGenders();
 		if (list == null) {
-			list = new HashSet<Gender>();
+			list = new HashSet<>();
 		}
 
 		Gender g = genderRepo.findById(genderId).orElse(null);
@@ -458,7 +456,7 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
-	public void addInterest(String value) throws Exception {
+	public void addInterest(String value) throws AlovoaException {
 		User user = authService.getCurrentUser();
 
 		if (value.length() < interestMinCharSize || value.length() > interestMaxCharSize
@@ -481,7 +479,7 @@ public class UserService {
 		}
 
 		if (user.getInterests() == null) {
-			user.setInterests(new ArrayList<UserInterest>());
+			user.setInterests(new ArrayList<>());
 		}
 
 		user.getInterests().add(interest);
@@ -489,7 +487,7 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
-	public void deleteInterest(long interestId) throws Exception {
+	public void deleteInterest(long interestId) throws AlovoaException {
 		User user = authService.getCurrentUser();
 		UserInterest interest = userInterestRepo.findById(interestId).orElse(null);
 
@@ -501,24 +499,23 @@ public class UserService {
 			throw new AlovoaException("interest_does_not_exists");
 		}
 
-		// userInterestRepo.delete(interest);
 		user.getInterests().remove(interest);
 		userRepo.saveAndFlush(user);
 	}
 
-	public void updateAccentColor(String accentColor) throws Exception {
+	public void updateAccentColor(String accentColor) throws AlovoaException {
 		User user = authService.getCurrentUser();
 		user.setAccentColor(accentColor);
 		userRepo.saveAndFlush(user);
 	}
 
-	public void updateUiDesign(String uiDesign) throws Exception {
+	public void updateUiDesign(String uiDesign) throws AlovoaException {
 		User user = authService.getCurrentUser();
 		user.setUiDesign(uiDesign);
 		userRepo.saveAndFlush(user);
 	}
 
-	public void addImage(String imgB64) throws Exception {
+	public void addImage(String imgB64) throws AlovoaException, IOException {
 		User user = authService.getCurrentUser();
 		if (user.getImages() != null && user.getImages().size() < imageMax) {
 
@@ -533,7 +530,7 @@ public class UserService {
 		}
 	}
 
-	public void deleteImage(long id) throws Exception {
+	public void deleteImage(long id) throws AlovoaException {
 		User user = authService.getCurrentUser();
 		UserImage img = userImageRepo.getOne(id);
 
@@ -581,12 +578,7 @@ public class UserService {
 			BufferedImage scaledImage = new BufferedImage(imageLength, imageLength, image.getType());
 			Graphics2D graphics2D = scaledImage.createGraphics();
 
-			// chose one
 			graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			// graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING,
-			// RenderingHints.VALUE_RENDER_QUALITY);
-			// graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-			// RenderingHints.VALUE_ANTIALIAS_ON);
 
 			graphics2D.drawImage(image, 0, 0, imageLength, imageLength, null);
 			graphics2D.dispose();
@@ -624,7 +616,7 @@ public class UserService {
 		return s;
 	}
 
-	public void likeUser(String idEnc) throws NumberFormatException, Exception {
+	public void likeUser(String idEnc) throws AlovoaException, GeneralSecurityException, IOException, JoseException {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
 
@@ -691,7 +683,9 @@ public class UserService {
 		}
 	}
 
-	public void hideUser(String idEnc) throws NumberFormatException, Exception {
+	public void hideUser(String idEnc) throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+			UnsupportedEncodingException, AlovoaException {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
 		if (userHideRepo.findByUserFromAndUserTo(currUser, user) == null) {
@@ -704,7 +698,9 @@ public class UserService {
 		}
 	}
 
-	public void blockUser(String idEnc) throws NumberFormatException, Exception {
+	public void blockUser(String idEnc) throws AlovoaException, NumberFormatException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
 		if (userBlockRepo.findByUserFromAndUserTo(currUser, user) == null) {
@@ -717,20 +713,23 @@ public class UserService {
 		}
 	}
 
-	public void unblockUser(String idEnc) throws NumberFormatException, Exception {
+	public void unblockUser(String idEnc) throws AlovoaException, NumberFormatException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
 
 		UserBlock block = userBlockRepo.findByUserFromAndUserTo(currUser, user);
 		if (block != null) {
-			// userBlockRepo.delete(block);
 			currUser.getBlockedUsers().remove(block);
 			userRepo.save(currUser);
 		}
 	}
 
 	public UserReport reportUser(String idEnc, long captchaId, String captchaText, String comment)
-			throws NumberFormatException, Exception {
+			throws AlovoaException, UnsupportedEncodingException, NoSuchAlgorithmException, NumberFormatException,
+			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
 		if (userReportRepo.findByUserFromAndUserTo(currUser, user) == null) {
@@ -753,13 +752,15 @@ public class UserService {
 		return null;
 	}
 
-	public User encodedIdToUser(String idEnc) throws NumberFormatException, Exception {
+	public User encodedIdToUser(String idEnc) throws NumberFormatException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		long id = UserDto.decodeId(idEnc, textEncryptor);
 		User user = userRepo.findById(id).orElse(null);
 		return user;
 	}
 
-	public boolean hasNewAlert() throws Exception {
+	public boolean hasNewAlert() throws AlovoaException {
 		User user = authService.getCurrentUser();
 		// user always check their alerts periodically in the background, so just update
 		// it here
@@ -778,7 +779,7 @@ public class UserService {
 	}
 
 	public void updateUserInfo(User user) {
-		if(user != null && user.getDates() != null) {
+		if (user != null && user.getDates() != null) {
 			user.getDates().setActiveDate(new Date());
 			Locale locale = LocaleContextHolder.getLocale();
 			user.setLanguage(locale.getLanguage());
@@ -786,7 +787,8 @@ public class UserService {
 		}
 	}
 
-	public ResponseEntity<Resource> getUserdata() throws Exception {
+	public ResponseEntity<Resource> getUserdata()
+			throws AlovoaException, JsonProcessingException, UnsupportedEncodingException {
 
 		User user = authService.getCurrentUser();
 		UserGdpr ug = UserGdpr.userToUserGdpr(user);
@@ -800,13 +802,15 @@ public class UserService {
 		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
 	}
 
-	public void deleteProfilePicture() throws Exception {
+	public void deleteProfilePicture() throws AlovoaException {
 		User user = authService.getCurrentUser();
 		user.setProfilePicture(null);
 		userRepo.saveAndFlush(user);
 	}
 
-	public String getAudio(String userIdEnc) throws Exception {
+	public String getAudio(String userIdEnc) throws NumberFormatException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		User user = encodedIdToUser(userIdEnc);
 		if (user.getAudio() == null) {
 			return null;
@@ -820,7 +824,8 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
-	public void updateAudio(String audioB64, String mimeType) throws Exception {
+	public void updateAudio(String audioB64, String mimeType)
+			throws AlovoaException, UnsupportedAudioFileException, IOException {
 		User user = authService.getCurrentUser();
 		String newAudioB64 = adjustAudio(audioB64, mimeType);
 
@@ -836,12 +841,12 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
-	private final String MIME_X_WAV = "x-wav";
-	private final String MIME_WAV = "wav";
-	private final String MIME_MPEG = "mpeg";
-	private final String MIME_MP3 = "mp3";
+	private static final String MIME_X_WAV = "x-wav";
+	private static final String MIME_WAV = "wav";
+	private static final String MIME_MPEG = "mpeg";
+	private static final String MIME_MP3 = "mp3";
 
-	private String adjustAudio(String audioB64, String mimeType) throws Exception {
+	private String adjustAudio(String audioB64, String mimeType) throws UnsupportedAudioFileException, IOException {
 		if (mimeType.equals(MIME_X_WAV) || mimeType.equals(MIME_WAV)) {
 			String trimmedWav = trimAudioWav(audioB64, audioMaxTime);
 			return convertAudioMp3Wav(trimmedWav, MIME_MP3);
@@ -853,7 +858,7 @@ public class UserService {
 		return null;
 	}
 
-	private static String convertAudioMp3Wav(String audioB64, String mimeType) throws Exception {
+	private static String convertAudioMp3Wav(String audioB64, String mimeType) throws UnsupportedEncodingException {
 		byte[] bytes = Base64.getDecoder().decode(stripB64Type(audioB64).getBytes(StandardCharsets.UTF_8.name()));
 		InputStream inputStream = new ByteArrayInputStream(bytes);
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -863,7 +868,7 @@ public class UserService {
 		return Tools.B64AUDIOPREFIX + mimeType + Tools.B64PREFIX + Base64.getEncoder().encodeToString(wavContent);
 	}
 
-	private String trimAudioWav(String audioB64, int maxSeconds) throws Exception {
+	private String trimAudioWav(String audioB64, int maxSeconds) throws UnsupportedAudioFileException, IOException {
 
 		ByteArrayInputStream bis = null;
 		AudioInputStream ais = null;

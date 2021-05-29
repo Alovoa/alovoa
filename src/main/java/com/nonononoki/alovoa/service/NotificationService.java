@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.service;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
@@ -9,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -55,7 +58,8 @@ public class NotificationService {
 
 	private static PushAsyncService pushService;
 
-	public PushAsyncService pushService() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+	public PushAsyncService pushService()
+			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
 		if (pushService == null) {
 			pushService = new PushAsyncService();
 			pushService.setPrivateKey(vapidPrivateKey);
@@ -80,7 +84,7 @@ public class NotificationService {
 		}
 	}
 
-	public void newLike(User user) throws Exception {
+	public void newLike(User user) throws GeneralSecurityException, IOException, JoseException {
 		user.getDates().setNotificationDate(new Date());
 		user = userRepo.saveAndFlush(user);
 
@@ -95,7 +99,7 @@ public class NotificationService {
 		send(user, message);
 	}
 
-	public void newMatch(User user) throws Exception {
+	public void newMatch(User user) throws GeneralSecurityException, IOException, JoseException {
 		user.getDates().setMessageDate(new Date());
 		user = userRepo.save(user);
 
@@ -110,7 +114,7 @@ public class NotificationService {
 		send(user, message);
 	}
 
-	public void newMessage(User user) throws Exception {
+	public void newMessage(User user) throws GeneralSecurityException, IOException, JoseException {
 		user.getDates().setMessageDate(new Date());
 		user = userRepo.saveAndFlush(user);
 
@@ -125,7 +129,7 @@ public class NotificationService {
 		send(user, message);
 	}
 
-	private void send(User user, WebPushMessage message) throws Exception {
+	private void send(User user, WebPushMessage message) throws GeneralSecurityException, IOException, JoseException {
 		List<UserWebPush> pushes = user.getWebPush();
 		for (UserWebPush uwp : pushes) {
 			Notification notification = new Notification(uwp.getEndPoint(), uwp.getPublicKey(), uwp.getAuth(),
