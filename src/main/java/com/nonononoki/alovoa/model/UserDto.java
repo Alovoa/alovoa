@@ -75,13 +75,13 @@ public class UserDto {
 	private boolean likedByCurrentUser;
 	private boolean hiddenByCurrentUser;
 
-	long numberProfileViews;
-	long numberSearches;
+	private long numberProfileViews;
+	private long numberSearches;
 
-	public static int ALL = 0;
-	public static int PROFILE_PICTURE_ONLY = 1;
-	public static int NO_AUDIO = 2;
-	public static int NO_MEDIA = 3;
+	public static final int ALL = 0;
+	public static final int PROFILE_PICTURE_ONLY = 1;
+	public static final int NO_AUDIO = 2;
+	public static final int NO_MEDIA = 3;
 
 	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
@@ -161,16 +161,13 @@ public class UserDto {
 	public static String encodeId(long id, TextEncryptorConverter textEncryptor)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
-		String en = textEncryptor.encode(Long.toString(id));
-		en = Base64.getEncoder().encodeToString(en.getBytes(StandardCharsets.UTF_8.name()));
-		return en;
+		return Base64.getEncoder().encodeToString(textEncryptor.encode(Long.toString(id)).getBytes(StandardCharsets.UTF_8.name()));
 	}
 
 	public static long decodeId(String id, TextEncryptorConverter textEncryptor) throws NumberFormatException,
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		String en = new String(Base64.getDecoder().decode(id));
-		long l = Long.parseLong(textEncryptor.decode(en));
-		return l;
+		return Long.parseLong(textEncryptor.decode(en));
 	}
 }
