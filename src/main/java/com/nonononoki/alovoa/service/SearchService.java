@@ -1,5 +1,9 @@
 package com.nonononoki.alovoa.service;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -10,6 +14,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +60,9 @@ public class SearchService {
 	private static final double LATITUDE = 111.1;
 	private static final double LONGITUDE = 111.320;
 
-	public List<UserDto> search(Double latitude, Double longitude, int distance, int sort) throws Exception {
+	public List<UserDto> search(Double latitude, Double longitude, int distance, int sort) throws AlovoaException,
+			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 
 		if (distance > maxDistance) {
 			throw new AlovoaException("max_distance_exceeded");
@@ -105,7 +115,6 @@ public class SearchService {
 		List<User> users = userRepo.usersSearch(request);
 
 		Set<Long> ignoreIds = new HashSet<>();
-		//user.getLikedBy().stream().map(o -> o.getUserFrom().getId()).collect(Collectors.toSet());
 		ignoreIds.addAll(
 				user.getBlockedByUsers().stream().map(o -> o.getUserFrom().getId()).collect(Collectors.toSet()));
 		ignoreIds.add(user.getId());
@@ -115,17 +124,10 @@ public class SearchService {
 		// filter users
 		for (User u : users) {
 
-			if (ignoreIds.contains(u.getId())) {
+			if (ignoreIds.contains(u.getId()) || !u.getPreferedGenders().contains(user.getGender())) {
 				continue;
 			}
-
-			if (!u.getPreferedGenders().contains(user.getGender())) {
-				continue;
-			}
-			// square is fine, reduces CPU load when not calculating radius distance
-			/*
-			 * if (dto.getDistanceToUser() > distance) { continue; }
-			 */
+			// square is fine, reduces CPU load when not calculating radius distance if
 			filteredUsers.add(u);
 
 			if (filteredUsers.size() >= maxResults) {
@@ -142,17 +144,10 @@ public class SearchService {
 				// filter users
 				for (User u : allUsers) {
 
-					if (ignoreIds.contains(u.getId())) {
+					if (ignoreIds.contains(u.getId()) || !u.getPreferedGenders().contains(user.getGender())) {
 						continue;
 					}
-
-					if (!u.getPreferedGenders().contains(user.getGender())) {
-						continue;
-					}
-					// square is fine, reduces CPU load when not calculating radius distance
-					/*
-					 * if (dto.getDistanceToUser() > distance) { continue; }
-					 */
+					// square is fine, reduces CPU load when not calculating radius distance if
 					filteredUsers.add(u);
 
 					if (filteredUsers.size() >= maxResults) {
