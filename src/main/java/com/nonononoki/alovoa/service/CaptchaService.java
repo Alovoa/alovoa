@@ -78,7 +78,7 @@ public class CaptchaService {
 		return c;
 	}
 
-	public boolean isValid(long id, String text) throws Exception {
+	public boolean isValid(long id, String text) throws UnsupportedEncodingException, NoSuchAlgorithmException{
 
 		Captcha captcha = captchaRepo.findById(id).orElse(null);
 		if (captcha == null) {

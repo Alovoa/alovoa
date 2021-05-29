@@ -1,6 +1,10 @@
 package com.nonononoki.alovoa.service;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+
+import javax.mail.MessagingException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +42,7 @@ public class PasswordService {
 	@Value("${app.password-token.length}")
 	private int tokenLength;
 
-	public UserPasswordToken resetPasword(PasswordResetDto dto) throws Exception {
+	public UserPasswordToken resetPasword(PasswordResetDto dto) throws AlovoaException, NoSuchAlgorithmException, MessagingException, IOException {
 		if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
 			throw new AlovoaException("captcha_invalid");
 		}
@@ -60,7 +64,7 @@ public class PasswordService {
 		return u.getPasswordToken();
 	}
 
-	public void changePasword(PasswordChangeDto dto) throws Exception {
+	public void changePasword(PasswordChangeDto dto) throws AlovoaException {
 		UserPasswordToken token = userPasswordTokenRepo.findByContent(dto.getToken());
 		if (token == null) {
 			throw new AlovoaException("token_not_found");
