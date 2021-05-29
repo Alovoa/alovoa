@@ -51,10 +51,6 @@ public class UserGdpr {
 	private String accentColor;
 	
 	private String uiDesign;
-	
-	/*
-	 * Custom classes
-	 */
 
 	private Gender gender;
 	
@@ -68,17 +64,7 @@ public class UserGdpr {
 	 
 	private List<UserDonation> donations;
 	 
-//	private List<UserLike> likes;
-	 
 	private List<Message> messageSent;
-//	 
-//	private List<UserNotification> notifications;
-//	 
-//	private List<UserHide> hiddenUsers;
-//	
-//	private List<UserBlock> blockedUsers;
-//	
-//	private List<UserReport> reported;
 	
 	private List<UserWebPush> webPush;
 
