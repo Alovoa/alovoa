@@ -42,16 +42,17 @@ public class PasswordService {
 	@Value("${app.password-token.length}")
 	private int tokenLength;
 
-	public UserPasswordToken resetPasword(PasswordResetDto dto) throws AlovoaException, NoSuchAlgorithmException, MessagingException, IOException {
+	public UserPasswordToken resetPasword(PasswordResetDto dto)
+			throws AlovoaException, NoSuchAlgorithmException, MessagingException, IOException {
 		if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
 			throw new AlovoaException("captcha_invalid");
 		}
 		User u = userRepo.findByEmail(dto.getEmail().toLowerCase());
-		
-		if(u.isDisabled()) {
+
+		if (u.isDisabled()) {
 			throw new DisabledException("user_disabled");
 		}
-		
+
 		UserPasswordToken token = new UserPasswordToken();
 		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
 		token.setDate(new Date());
@@ -60,7 +61,7 @@ public class PasswordService {
 		u = userRepo.saveAndFlush(u);
 
 		mailService.sendPasswordResetMail(u, token);
-		
+
 		return u.getPasswordToken();
 	}
 
@@ -73,7 +74,7 @@ public class PasswordService {
 			throw new AlovoaException("token_wrong_content");
 		}
 		User user = token.getUser();
-		if(!user.getEmail().equals(dto.getEmail().toLowerCase())) {
+		if (!user.getEmail().equals(dto.getEmail().toLowerCase())) {
 			throw new AlovoaException("wrong_email");
 		}
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));

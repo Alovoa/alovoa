@@ -1,6 +1,5 @@
 package com.nonononoki.alovoa.component;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -44,14 +43,15 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		return ivSpec;
 	}
 
-	private SecretKeySpec getKeySpec() throws UnsupportedEncodingException {
+	private SecretKeySpec getKeySpec() {
 		if (keySpec == null) {
 			keySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
 		}
 		return keySpec;
 	}
 
-	private Cipher getEnCipher() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+	private Cipher getEnCipher() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+			InvalidAlgorithmParameterException {
 		if (enCipher == null) {
 			enCipher = Cipher.getInstance(TRANSFORMATION);
 			enCipher.init(Cipher.ENCRYPT_MODE, getKeySpec(), getIvSpec());
@@ -59,7 +59,8 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		return enCipher;
 	}
 
-	private Cipher getDeCipher() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+	private Cipher getDeCipher() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+			InvalidAlgorithmParameterException {
 		if (deCipher == null) {
 			deCipher = Cipher.getInstance(TRANSFORMATION);
 			deCipher.init(Cipher.DECRYPT_MODE, getKeySpec(), getIvSpec());
@@ -67,12 +68,16 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		return deCipher;
 	}
 
-	public String encode(String attribute) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+	public String encode(String attribute)
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException {
 		byte[] ba = getEnCipher().doFinal(attribute.getBytes(StandardCharsets.UTF_8));
 		return Base64.getUrlEncoder().encodeToString(ba);
 	}
 
-	public String decode(String dbData) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+	public String decode(String dbData)
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException {
 		byte[] ba = getDeCipher().doFinal(Base64.getUrlDecoder().decode(dbData));
 		return new String(ba);
 	}

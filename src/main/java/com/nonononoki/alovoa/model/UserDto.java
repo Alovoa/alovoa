@@ -161,12 +161,13 @@ public class UserDto {
 	public static String encodeId(long id, TextEncryptorConverter textEncryptor)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
-		return Base64.getEncoder().encodeToString(textEncryptor.encode(Long.toString(id)).getBytes(StandardCharsets.UTF_8.name()));
+		return Base64.getEncoder()
+				.encodeToString(textEncryptor.encode(Long.toString(id)).getBytes(StandardCharsets.UTF_8.name()));
 	}
 
-	public static long decodeId(String id, TextEncryptorConverter textEncryptor) throws NumberFormatException,
-			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+	public static long decodeId(String id, TextEncryptorConverter textEncryptor)
+			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 		String en = new String(Base64.getDecoder().decode(id));
 		return Long.parseLong(textEncryptor.decode(en));
 	}

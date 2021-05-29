@@ -1,6 +1,15 @@
 package com.nonononoki.alovoa.service;
 
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,16 +36,16 @@ public class AdminService {
 
 	@Autowired
 	private AuthService authService;
-	
+
 	@Autowired
 	private MailService mailService;
 
 	@Autowired
 	private UserRepository userRepo;
-	
+
 	@Autowired
 	private UserReportRepository userReportRepository;
-	
+
 	@Autowired
 	private ContactRepository contactRepository;
 
@@ -51,7 +60,7 @@ public class AdminService {
 
 	@Autowired
 	private UserReportRepository userReportRepo;
-	
+
 	@Autowired
 	private UserNotificationRepository userNotificationRepo;
 
@@ -60,73 +69,68 @@ public class AdminService {
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
-	
-	
-	public void hideContact(long id) throws Exception {	
-		
+
+	public void hideContact(long id) throws AlovoaException {
+
 		checkRights();
-		
+
 		Contact contact = contactRepository.findById(id).orElse(null);
-		
-		if(contact == null) {
+
+		if (contact == null) {
 			throw new AlovoaException("contact_not_found");
 		}
 		contact.setHidden(true);
 		contactRepository.saveAndFlush(contact);
-	}	
-	
-	public void sendMailSingle(MailDto dto) throws Exception {
-		
+	}
+
+	public void sendMailSingle(MailDto dto) throws AlovoaException, MessagingException, IOException {
+
 		checkRights();
-		
+
 		mailService.sendAdminMail(dto.getEmail(), dto.getSubject(), dto.getBody());
 	}
-	
-	public void sendMailAll(MailDto dto) throws Exception {		
-		
+
+	public void sendMailAll(MailDto dto) throws AlovoaException, MessagingException, IOException {
+
 		checkRights();
-		
-		List<User> users = userRepo.findByDisabledFalseAndAdminFalseAndConfirmedTrue();	
+
+		List<User> users = userRepo.findByDisabledFalseAndAdminFalseAndConfirmedTrue();
 		mailService.sendAdminMailAll(dto.getSubject(), dto.getBody(), users);
 	}
 
-	public void deleteReport(long id) throws Exception {
-		
+	public void deleteReport(long id) throws AlovoaException {
+
 		checkRights();
-		
+
 		UserReport report = userReportRepository.findById(id).orElse(null);
-		
-		if(report == null) {
+
+		if (report == null) {
 			throw new AlovoaException("report_not_found");
 		}
-		
+
 		User u = report.getUserFrom();
 		u.getReported().remove(report);
 		userRepo.saveAndFlush(u);
 	}
 
-	public void banUser(String id) throws NumberFormatException, Exception {
-		
+	public void banUser(String id) throws AlovoaException, NumberFormatException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException {
+
 		checkRights();
-		 
+
 		User user = userRepo.findById(UserDto.decodeId(id, textEncryptor)).orElse(null);
-		
-		if(user == null) {
+
+		if (user == null) {
 			throw new AlovoaException("user_not_found");
 		}
-		
-		UserDeleteParams userDeleteParam = UserDeleteParams.builder()
-				.conversationRepo(conversationRepo)
-				.userBlockRepo(userBlockRepo)
-				.userHideRepo(userHideRepo)
-				.userLikeRepo(userLikeRepo)
-				.userNotificationRepo(userNotificationRepo)
-				.userRepo(userRepo)
-				.userReportRepo(userReportRepo)
-				.build();
-		
+
+		UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
+				.userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
+				.userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
+
 		UserService.removeUserLinkedLists(user, userDeleteParam);
-		
+
 		user.setAudio(null);
 		user.setDates(null);
 		user.setDeleteToken(null);
@@ -156,12 +160,11 @@ public class AdminService {
 
 		userRepo.saveAndFlush(user);
 	}
-	
-	private void checkRights() throws Exception {
+
+	private void checkRights() throws AlovoaException {
 		if (!authService.getCurrentUser().isAdmin()) {
 			throw new AlovoaException("not_admin");
 		}
 	}
-
 
 }

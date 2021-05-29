@@ -683,9 +683,9 @@ public class UserService {
 		}
 	}
 
-	public void hideUser(String idEnc) throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			UnsupportedEncodingException, AlovoaException {
+	public void hideUser(String idEnc)
+			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
 		if (userHideRepo.findByUserFromAndUserTo(currUser, user) == null) {
@@ -698,9 +698,9 @@ public class UserService {
 		}
 	}
 
-	public void blockUser(String idEnc) throws AlovoaException, NumberFormatException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException {
+	public void blockUser(String idEnc)
+			throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
 		if (userBlockRepo.findByUserFromAndUserTo(currUser, user) == null) {
@@ -713,9 +713,9 @@ public class UserService {
 		}
 	}
 
-	public void unblockUser(String idEnc) throws AlovoaException, NumberFormatException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException {
+	public void unblockUser(String idEnc)
+			throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser();
 
@@ -752,9 +752,9 @@ public class UserService {
 		return null;
 	}
 
-	public User encodedIdToUser(String idEnc) throws NumberFormatException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException {
+	public User encodedIdToUser(String idEnc)
+			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 		long id = UserDto.decodeId(idEnc, textEncryptor);
 		User user = userRepo.findById(id).orElse(null);
 		return user;
@@ -768,7 +768,7 @@ public class UserService {
 		return user.getDates().getNotificationDate().after(user.getDates().getNotificationCheckedDate());
 	}
 
-	public boolean hasNewMessage() throws Exception {
+	public boolean hasNewMessage() throws AlovoaException {
 		User user = authService.getCurrentUser();
 		if (user != null && user.getDates().getMessageDate() != null
 				&& user.getDates().getMessageCheckedDate() != null) {
@@ -808,9 +808,9 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
-	public String getAudio(String userIdEnc) throws NumberFormatException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException {
+	public String getAudio(String userIdEnc)
+			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 		User user = encodedIdToUser(userIdEnc);
 		if (user.getAudio() == null) {
 			return null;
@@ -818,7 +818,7 @@ public class UserService {
 		return user.getAudio().getData();
 	}
 
-	public void deleteAudio() throws Exception {
+	public void deleteAudio() throws AlovoaException {
 		User user = authService.getCurrentUser();
 		user.setAudio(null);
 		userRepo.saveAndFlush(user);

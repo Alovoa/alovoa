@@ -1,8 +1,16 @@
 package com.nonononoki.alovoa.html;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,7 +49,9 @@ public class MessageResource {
 	private TextEncryptorConverter textEncryptor;
 
 	@GetMapping("/chats")
-	public ModelAndView chats() throws Exception {
+	public ModelAndView chats()
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 
 		ModelAndView mav = new ModelAndView("messages");
 		User user = authService.getCurrentUser();
@@ -63,7 +73,9 @@ public class MessageResource {
 	}
 
 	@GetMapping("/chats/{id}")
-	public ModelAndView chatsDetail(@PathVariable long id) throws Exception {
+	public ModelAndView chatsDetail(@PathVariable long id) throws AlovoaException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException {
 
 		ModelAndView mav = new ModelAndView("message-detail");
 		User user = authService.getCurrentUser();
@@ -80,9 +92,9 @@ public class MessageResource {
 		User u = c.getPartner(user);
 
 		List<Message> messages = c.getMessages();
-		
+
 		messages.sort((Message a, Message b) -> b.getDate().compareTo(a.getDate()));
-		
+
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		mav.addObject("messages", messages);
 		mav.addObject("convoId", id);

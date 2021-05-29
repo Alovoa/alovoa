@@ -17,10 +17,13 @@ import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.AlovoaException;
 
 public class Tools {
 	
-	private Tools() {};
+	private Tools() throws AlovoaException {
+		throw new AlovoaException("no_contructor");
+	}
 	
 	public static final float BASE64FACTOR = 0.75f;
 	public static final int MILLION = 1000000;

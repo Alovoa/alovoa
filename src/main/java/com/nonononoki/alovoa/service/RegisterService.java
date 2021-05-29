@@ -89,10 +89,11 @@ public class RegisterService {
 	private UserService userService;
 
 	private static final String GMAIL_EMAIL = "@gmail";
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
 
-	public String register(RegisterDto dto) throws NoSuchAlgorithmException, AlovoaException, MessagingException, IOException {
+	public String register(RegisterDto dto)
+			throws NoSuchAlgorithmException, AlovoaException, MessagingException, IOException {
 
 		boolean isValid = captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText());
 		if (!isValid) {
@@ -141,7 +142,7 @@ public class RegisterService {
 		return token.getContent();
 	}
 
-	public void registerOauth(RegisterDto dto) throws Exception, MessagingException, IOException {
+	public void registerOauth(RegisterDto dto) throws MessagingException, IOException, AlovoaException {
 
 		String email = authService.getOauth2Email();
 
@@ -205,8 +206,7 @@ public class RegisterService {
 
 	private BaseRegisterDto registerBase(RegisterDto dto) throws AlovoaException {
 
-		if (dto.getFirstName().length() > firstNameLengthMax || 
-				dto.getFirstName().length() < firstNameLengthMin) {
+		if (dto.getFirstName().length() > firstNameLengthMax || dto.getFirstName().length() < firstNameLengthMin) {
 			throw new AlovoaException("name_invalid");
 		}
 

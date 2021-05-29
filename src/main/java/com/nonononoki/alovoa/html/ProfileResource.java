@@ -1,6 +1,14 @@
 package com.nonononoki.alovoa.html;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.ProfileWarningDto;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.GenderRepository;
@@ -47,7 +56,7 @@ public class ProfileResource {
 
 	@Value("${app.media.max-size}")
 	private int mediaMaxSize;
-	
+
 	@Value("${app.interest.max}")
 	private int interestMaxSize;
 
@@ -61,7 +70,9 @@ public class ProfileResource {
 	}
 
 	@GetMapping(URL)
-	public ModelAndView profile() throws Exception {
+	public ModelAndView profile() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+			UnsupportedEncodingException {
 
 		User user = authService.getCurrentUser();
 		if (user.isAdmin()) {
@@ -101,7 +112,7 @@ public class ProfileResource {
 	}
 
 	@GetMapping("/profile/warning")
-	public String warning(Model model) throws Exception {
+	public String warning(Model model) throws AlovoaException {
 
 		User user = authService.getCurrentUser();
 		ProfileWarningDto warning = getWarnings(user);
@@ -137,7 +148,7 @@ public class ProfileResource {
 			noIntention = true;
 			hasWarning = true;
 		}
-		if (user.getPreferedGenders() == null || user.getPreferedGenders().size() == 0) {
+		if (user.getPreferedGenders() == null || user.getPreferedGenders().isEmpty()) {
 			noGender = true;
 			hasWarning = true;
 		}

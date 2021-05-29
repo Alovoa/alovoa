@@ -66,9 +66,9 @@ public class DonateService {
 	private static final String BMAC_TEST_EMAIL = "test@example.com";
 	private static final double BMAC_AMOUNT_FACTOR = 0.95;
 
-	public List<DonationDto> filter(int filter)
-			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, Exception {
+	public List<DonationDto> filter(int filter) throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+			UnsupportedEncodingException {
 		List<DonationDto> donationsToDtos = null;
 
 		User currentUser = authService.getCurrentUser();
@@ -93,12 +93,10 @@ public class DonateService {
 
 			Date now = new Date();
 
-			if (profile.equals(Tools.PROD)) {
-				if (KOFI_TEST_TRANSACTION_ID.equals(donation.getKofi_transaction_id())
-						|| donation.getEmail() != null && KOFI_TEST_EMAIL.equals(donation.getEmail().toLowerCase())
-						|| !donation.is_public()) {
-					return;
-				}
+			if (profile.equals(Tools.PROD) && (KOFI_TEST_TRANSACTION_ID.equals(donation.getKofi_transaction_id())
+					|| donation.getEmail() != null && KOFI_TEST_EMAIL.equalsIgnoreCase(donation.getEmail())
+					|| !donation.is_public())) {
+				return;
 			}
 
 			User u = null;
@@ -138,7 +136,7 @@ public class DonateService {
 			Date now = new Date();
 			DonationBmac.DonationBmacResponse donation = data.getResponse();
 
-			if (profile.equals(Tools.PROD) && BMAC_TEST_EMAIL.equals(donation.getSupporter_email().toLowerCase())) {
+			if (profile.equals(Tools.PROD) && BMAC_TEST_EMAIL.equalsIgnoreCase(donation.getSupporter_email())) {
 				return;
 			}
 

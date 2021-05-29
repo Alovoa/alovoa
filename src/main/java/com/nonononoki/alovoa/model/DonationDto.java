@@ -60,9 +60,8 @@ public class DonationDto {
 	}
 
 	public static DonationDto userToDto(User user, User currentUser, TextEncryptorConverter textEncryptor, int mode)
-			throws Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			UnsupportedEncodingException {
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		DonationDto dto = new DonationDto();
 		dto.setId(user.getId());
 		dto.setAmount(user.getTotalDonations());
@@ -71,9 +70,9 @@ public class DonationDto {
 	}
 
 	public static List<DonationDto> donationsToDtos(List<UserDonation> donations, User currentUser,
-			TextEncryptorConverter textEncryptor, int maxEntries) throws Exception, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException {
+			TextEncryptorConverter textEncryptor, int maxEntries)
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		List<DonationDto> dtos = new ArrayList<>();
 		for (UserDonation donation : donations) {
 			if (!donation.getUser().getId().equals(currentUser.getId())) {

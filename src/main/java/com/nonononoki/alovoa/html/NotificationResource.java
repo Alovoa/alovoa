@@ -1,8 +1,16 @@
 package com.nonononoki.alovoa.html;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserNotification;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.NotificationDto;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -28,11 +37,13 @@ public class NotificationResource {
 
 	@Autowired
 	private UserRepository userRepo;
-	
+
 	public static final String URL = "/alerts";
 
 	@GetMapping(URL)
-	public ModelAndView notification() throws Exception {
+	public ModelAndView notification() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+			UnsupportedEncodingException {
 
 		ModelAndView mav = new ModelAndView("notification");
 		User user = authService.getCurrentUser();
@@ -48,14 +59,14 @@ public class NotificationResource {
 			boolean blockedYou = user.getBlockedUsers().stream()
 					.anyMatch(b -> b.getUserTo().getId().equals(n.getUserFrom().getId()));
 
-			if(!blockedMe && !blockedYou) {
+			if (!blockedMe && !blockedYou) {
 				NotificationDto dto = NotificationDto.notificationToNotificationDto(n, user, textEncryptor);
 				notifications.add(dto);
 			}
 		}
-		
+
 		notifications.sort((NotificationDto a, NotificationDto b) -> b.getDate().compareTo(a.getDate()));
-		
+
 		mav.addObject("notifications", notifications);
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;

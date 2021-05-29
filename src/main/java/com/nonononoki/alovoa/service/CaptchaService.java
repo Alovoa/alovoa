@@ -78,7 +78,7 @@ public class CaptchaService {
 		return c;
 	}
 
-	public boolean isValid(long id, String text) throws UnsupportedEncodingException, NoSuchAlgorithmException{
+	public boolean isValid(long id, String text) throws UnsupportedEncodingException, NoSuchAlgorithmException {
 
 		Captcha captcha = captchaRepo.findById(id).orElse(null);
 		if (captcha == null) {
@@ -87,11 +87,8 @@ public class CaptchaService {
 
 		captchaRepo.delete(captcha);
 
-		if (!captcha.getHashCode().equals(getIpHash(request.getRemoteAddr()))
-				|| !captcha.getText().toLowerCase().equals(text.toLowerCase())) {
-			return false;
-		}
-		return true;
+		return !captcha.getHashCode().equals(getIpHash(request.getRemoteAddr()))
+				|| !captcha.getText().equalsIgnoreCase(text);
 	}
 
 	private String getIpHash(String ip) throws UnsupportedEncodingException, NoSuchAlgorithmException {
