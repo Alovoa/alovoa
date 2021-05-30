@@ -98,7 +98,7 @@ class SearchAndMessageServiceTest {
 	@MockBean
 	private AuthService authService;
 
-	private static final int INTENTION_TEST = 1;
+	private static final Long INTENTION_TEST = 1L;
 
 	private final String INTEREST = "interest";
 	
@@ -166,28 +166,28 @@ class SearchAndMessageServiceTest {
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		String img3 = Tools.imageToB64("img/profile3.png", imgMimePng);
 		userService.updateProfilePicture(img3);
-		Assert.assertTrue("profile_picture", user3.getProfilePicture() != null);
+		Assert.assertNotNull(user3.getProfilePicture());
 		userService.addInterest(INTEREST);
-		Assert.assertTrue("interest", user3.getInterests().size() == 1);
+		Assert.assertEquals(1, user3.getInterests().size());
 		String description = "description3";
 		userService.updateDescription(description);
-		Assert.assertTrue("description", user3.getDescription().equals(description));
+		Assert.assertEquals(description, user3.getDescription());
 		userService.updateIntention(INTENTION_TEST);
-		Assert.assertTrue("intention", user3.getIntention().getId() == INTENTION_TEST);
+		Assert.assertEquals(INTENTION_TEST, user3.getIntention().getId());
 		userService.updateMaxAge(maxAge);
-		Assert.assertTrue("max_age", user3.getPreferedMaxAge() == maxAge);
+		Assert.assertEquals(maxAge, user3.getPreferedMaxAge());
 
 		userService.updateMinAge(minAge);
-		Assert.assertTrue("min_age", user3.getPreferedMinAge() == minAge);
+		Assert.assertEquals(minAge, user3.getPreferedMinAge());
 		userService.updatePreferedGender(1, true);
-		Assert.assertTrue(user3.getPreferedGenders().size() == 1);
+		Assert.assertEquals(1, user3.getPreferedGenders().size());
 		userService.updatePreferedGender(2, true);
-		Assert.assertTrue(user3.getPreferedGenders().size() == 2);
+		Assert.assertEquals(2, user3.getPreferedGenders().size());
 		userService.updatePreferedGender(2, false);
-		Assert.assertTrue(user3.getPreferedGenders().size() == 1);
+		Assert.assertEquals(1, user3.getPreferedGenders().size());
 
 		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getId());
-		Assert.assertTrue("interest", authService.getCurrentUser().getInterests().size() == 0);
+		Assert.assertEquals(0, authService.getCurrentUser().getInterests().size());
 		userService.addInterest(INTEREST);
 		
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
@@ -232,7 +232,7 @@ class SearchAndMessageServiceTest {
 		userService.deleteInterest(user1.getInterests().get(0).getId());
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		List<UserDto> interestSearchDto1 = searchService.search(0.0, 0.0, 50, SearchService.SORT_INTEREST);
-		Assert.assertEquals(interestSearchDto1.size(), 1);
+		Assert.assertEquals(1, interestSearchDto1.size());
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		userService.addInterest(INTEREST);
 
@@ -288,7 +288,7 @@ class SearchAndMessageServiceTest {
 		});
 
 		userService.unblockUser(UserDto.encodeId(user2.getId(), textEncryptor));
-		Assert.assertEquals(userBlockRepo.count(), 0);
+		Assert.assertEquals(0, userBlockRepo.count());
 
 		// like back
 		String user3IdEnc = UserDto.encodeId(user3.getId(), textEncryptor);
@@ -316,7 +316,7 @@ class SearchAndMessageServiceTest {
 			messageService.send(user1.getConversations().get(0).getId(), verylongString + "a");
 		});
 
-		Assert.assertEquals(messageRepo.count(), 2);
+		Assert.assertEquals(2, messageRepo.count());
 
 		// test sending message to blocked users
 		userService.blockUser(UserDto.encodeId(user3.getId(), textEncryptor));

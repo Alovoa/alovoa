@@ -645,7 +645,6 @@ public class UserService {
 			like.setDate(new Date());
 			like.setUserFrom(currUser);
 			like.setUserTo(user);
-			// userLikeRepo.save(like);
 			currUser.getLikes().add(like);
 
 			UserNotification not = new UserNotification();
@@ -756,8 +755,7 @@ public class UserService {
 			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 		long id = UserDto.decodeId(idEnc, textEncryptor);
-		User user = userRepo.findById(id).orElse(null);
-		return user;
+		return userRepo.findById(id).orElse(null);
 	}
 
 	public boolean hasNewAlert() throws AlovoaException {
@@ -799,7 +797,7 @@ public class UserService {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(mediaType);
 
-		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+		return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 	}
 
 	public void deleteProfilePicture() throws AlovoaException {

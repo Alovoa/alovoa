@@ -56,7 +56,7 @@ public class NotificationService {
 	@Autowired
 	private UserRepository userRepo;
 
-	private static PushAsyncService pushService;
+	private PushAsyncService pushService;
 
 	public PushAsyncService pushService()
 			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {

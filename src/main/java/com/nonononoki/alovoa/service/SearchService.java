@@ -119,7 +119,7 @@ public class SearchService {
 				user.getBlockedByUsers().stream().map(o -> o.getUserFrom().getId()).collect(Collectors.toSet()));
 		ignoreIds.add(user.getId());
 
-		List<User> filteredUsers = new ArrayList<User>();
+		List<User> filteredUsers = new ArrayList<>();
 
 		// filter users
 		for (User u : users) {

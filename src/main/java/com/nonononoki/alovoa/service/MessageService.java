@@ -94,7 +94,7 @@ public class MessageService {
 
 		int numMessages = c.getMessages().size();
 		if (numMessages > maxConvoMessages) {
-			Message msg = Collections.min(c.getMessages(), Comparator.comparing(o -> o.getDate()));
+			Message msg = Collections.min(c.getMessages(), Comparator.comparing(Message::getDate));
 			c.getMessages().remove(msg);
 		}
 

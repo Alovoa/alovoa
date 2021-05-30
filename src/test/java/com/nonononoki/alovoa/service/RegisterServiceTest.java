@@ -96,7 +96,7 @@ public class RegisterServiceTest {
 	void test() throws Exception {
 
 		// one default admin user
-		Assert.assertEquals(userRepo.count(), 1);
+		Assert.assertEquals(1, userRepo.count());
 		
 		RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax,
 				firstNameLengthMin);
