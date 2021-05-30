@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.service;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import java.util.List;
 
 import org.junit.Assert;
@@ -44,13 +46,13 @@ class PasswordServiceTest {
 
 	@Autowired
 	private ConversationRepository conversationRepo;
-	
+
 	@Value("${app.age.min}")
 	private int minAge;
-	
+
 	@Value("${app.message.size}")
 	private int maxMessageSize;
-	
+
 	@Value("${app.first-name.length-max}")
 	private int firstNameLengthMax;
 
@@ -59,7 +61,10 @@ class PasswordServiceTest {
 
 	@MockBean
 	private AuthService authService;
-	
+
+	@MockBean
+	private MailService mailService;
+
 	@Autowired
 	private PasswordService passwordService;
 
@@ -68,50 +73,53 @@ class PasswordServiceTest {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	private List<User> testUsers;
-	
+
 	@BeforeEach
 	void before() throws Exception {
-		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
+		Mockito.doNothing().when(mailService).sendMail(Mockito.any(String.class), any(String.class), any(String.class),
+				any(String.class));
+		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax,
+				firstNameLengthMin);
 	}
-	
+
 	@AfterEach
 	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
-	
+
 	@Test
-	void test() throws Exception {		
+	void test() throws Exception {
 		User user1 = testUsers.get(1);
-		
+
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		PasswordResetDto passwordResetDto = new PasswordResetDto();
 		Captcha captcha = captchaService.generate();
 		passwordResetDto.setCaptchaId(captcha.getId());
 		passwordResetDto.setCaptchaText(captcha.getText());
 		passwordResetDto.setEmail(user1.getEmail());
-		
+
 		Assert.assertEquals(0, userPasswordTokenRepository.count());
-		
+
 		UserPasswordToken userPasswordToken = passwordService.resetPasword(passwordResetDto);
-		
+
 		Assert.assertEquals(1, userPasswordTokenRepository.count());
-		
+
 		String newPassword = "newPassword";
 		PasswordChangeDto passwordChangeDto = new PasswordChangeDto();
 		passwordChangeDto.setEmail(user1.getEmail());
 		passwordChangeDto.setPassword(newPassword);
 		passwordChangeDto.setToken(userPasswordToken.getContent());
 		passwordService.changePasword(passwordChangeDto);
-		
+
 		user1 = userRepo.findById(user1.getId()).get();
-		
+
 		if (!passwordEncoder.matches(newPassword, user1.getPassword())) {
 			throw new BadCredentialsException("");
 		}
-		
+
 		Assert.assertEquals(0, userPasswordTokenRepository.count());
 	}
-	
- }
+
+}

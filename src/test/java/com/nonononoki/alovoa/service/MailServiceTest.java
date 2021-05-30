@@ -13,6 +13,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.UserDeleteToken;
+import com.nonononoki.alovoa.entity.user.UserPasswordToken;
+import com.nonononoki.alovoa.entity.user.UserRegisterToken;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 
@@ -68,10 +71,24 @@ class MailServiceTest {
 
 	@Test
 	void test() throws Exception {
-		User user1 = testUsers.get(1);
+		User user1 = testUsers.get(0);
 		String subject = "test";
 		String body = "test body";
+		UserDeleteToken deleteToken = new UserDeleteToken();
+		deleteToken.setContent("testToken");
+		UserPasswordToken passwordToken = new UserPasswordToken();
+		passwordToken.setContent("testToken");
+		UserRegisterToken registerToken = new UserRegisterToken();
+		registerToken.setContent("testToken");
+		user1.setDeleteToken(deleteToken);
+		user1.setPasswordToken(passwordToken);
+		user1.setRegisterToken(registerToken);
 		mailService.sendAdminMail(user1.getEmail(), subject, body);
+		mailService.sendAccountConfirmed(user1);
+		mailService.sendAccountDeleteConfirm(user1);
+		mailService.sendAccountDeleteRequest(user1);
+		mailService.sendPasswordResetMail(user1);
+		mailService.sendRegistrationMail(user1);
 	}
 	
  }

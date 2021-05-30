@@ -166,7 +166,7 @@ public class RegisterService {
 		UserRegisterToken token = generateToken(user);
 		user.setRegisterToken(token);
 		user = userRepo.saveAndFlush(user);
-		mailService.sendRegistrationMail(user, token);
+		mailService.sendRegistrationMail(user);
 		return token;
 	}
 

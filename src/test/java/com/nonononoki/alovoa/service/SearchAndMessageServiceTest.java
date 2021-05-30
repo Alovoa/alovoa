@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.service;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -98,21 +100,27 @@ class SearchAndMessageServiceTest {
 	@MockBean
 	private AuthService authService;
 
+	@MockBean
+	private MailService mailService;
+
 	private static final Long INTENTION_TEST = 1L;
 
 	private final String INTEREST = "interest";
-	
+
 	private static final int USER1_AGE = 18;
 	private static final int USER2_AGE = 20;
 	private static final int USER3_AGE = 30;
-	
+
 	private List<User> testUsers;
-	
+
 	@BeforeEach
 	void before() throws Exception {
-		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
+		Mockito.doNothing().when(mailService).sendMail(Mockito.any(String.class), any(String.class), any(String.class),
+				any(String.class));
+		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax,
+				firstNameLengthMin);
 	}
-	
+
 	@AfterEach
 	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
@@ -189,7 +197,7 @@ class SearchAndMessageServiceTest {
 		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getId());
 		Assert.assertEquals(0, authService.getCurrentUser().getInterests().size());
 		userService.addInterest(INTEREST);
-		
+
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		List<UserDto> searchDtos1 = searchService.search(0.0, 0.0, 50, 1);
 		Assert.assertEquals(2, searchDtos1.size());
@@ -280,7 +288,7 @@ class SearchAndMessageServiceTest {
 		userService.blockUser(UserDto.encodeId(user2.getId(), textEncryptor));
 		Assert.assertEquals(1, userBlockRepo.count());
 		Assert.assertEquals(1, user3.getBlockedUsers().size());
-		
+
 		String user2IdEnc = UserDto.encodeId(user2.getId(), textEncryptor);
 		Assert.assertThrows(Exception.class, () -> {
 			// cannot like user when blocked
@@ -352,5 +360,5 @@ class SearchAndMessageServiceTest {
 				captchaReport.getText(), "report");
 		Assert.assertEquals(1, userReportRepo.count());
 	}
-	
+
 }

@@ -18,9 +18,6 @@ import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.user.UserDeleteToken;
-import com.nonononoki.alovoa.entity.user.UserPasswordToken;
-import com.nonononoki.alovoa.entity.user.UserRegisterToken;
 
 @Service
 public class MailService {
@@ -89,30 +86,32 @@ public class MailService {
 		return text;
 	}
 
-	public void sendRegistrationMail(User user, UserRegisterToken token) throws MessagingException, IOException {
+	public void sendRegistrationMail(User user) throws MessagingException, IOException {
 		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.register.subject", new String[] { appName }, "",
 				locale);
 		String body = messageSource.getMessage("backend.mail.register.body",
-				new String[] { user.getFirstName(), appName, appDomain, token.getContent() }, "", locale);
+				new String[] { user.getFirstName(), appName, appDomain, user.getRegisterToken().getContent() }, "",
+				locale);
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 
-	public void sendPasswordResetMail(User user, UserPasswordToken token) throws MessagingException, IOException {
+	public void sendPasswordResetMail(User user) throws MessagingException, IOException {
 		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.password-reset.subject", new String[] { appName },
 				locale);
 		String body = messageSource.getMessage("backend.mail.password-reset.body",
-				new String[] { user.getFirstName(), appName, appDomain, token.getContent() }, locale);
+				new String[] { user.getFirstName(), appName, appDomain, user.getPasswordToken().getContent() }, locale);
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 
-	public void sendAccountDeleteRequest(User user, UserDeleteToken token) throws MessagingException, IOException {
+	public void sendAccountDeleteRequest(User user) throws MessagingException, IOException {
 		Locale locale = Tools.getUserLocale(user);
 		String subject = messageSource.getMessage("backend.mail.account-delete-request.subject",
 				new String[] { appName }, locale);
 		String body = messageSource.getMessage("backend.mail.account-delete-request.body",
-				new String[] { user.getFirstName(), appName, appDomain, token.getContent() }, "", locale);
+				new String[] { user.getFirstName(), appName, appDomain, user.getDeleteToken().getContent() }, "",
+				locale);
 		sendMail(user.getEmail(), defaultFrom, subject, body);
 	}
 

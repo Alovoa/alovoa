@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.html;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +24,7 @@ import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.CaptchaService;
+import com.nonononoki.alovoa.service.MailService;
 import com.nonononoki.alovoa.service.RegisterService;
 import com.nonononoki.alovoa.service.RegisterServiceTest;
 import com.nonononoki.alovoa.service.UserService;
@@ -58,10 +61,15 @@ class MessageResourceTest {
 	@MockBean
 	private AuthService authService;
 	
+	@MockBean
+	private MailService mailService;
+	
 	private List<User> testUsers;
 	
 	@BeforeEach
 	void before() throws Exception {
+		Mockito.doNothing().when(mailService).sendMail(Mockito.any(String.class), any(String.class), any(String.class),
+				any(String.class));
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
 	}
 	

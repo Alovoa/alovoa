@@ -1,11 +1,14 @@
 package com.nonononoki.alovoa.service;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,6 +53,9 @@ class DonateServiceTest {
 	@MockBean
 	private AuthService authService;
 
+	@MockBean
+	private MailService mailService;
+
 	@Autowired
 	private DonateService donateService;
 
@@ -66,6 +72,8 @@ class DonateServiceTest {
 
 	@BeforeEach
 	void before() throws Exception {
+		Mockito.doNothing().when(mailService).sendMail(Mockito.any(String.class), any(String.class), any(String.class),
+				any(String.class));
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax,
 				firstNameLengthMin);
 	}

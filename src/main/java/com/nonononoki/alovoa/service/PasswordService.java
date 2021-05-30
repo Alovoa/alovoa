@@ -60,7 +60,7 @@ public class PasswordService {
 		u.setPasswordToken(token);
 		u = userRepo.saveAndFlush(u);
 
-		mailService.sendPasswordResetMail(u, token);
+		mailService.sendPasswordResetMail(u);
 
 		return u.getPasswordToken();
 	}

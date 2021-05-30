@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.service;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import java.util.Date;
 import java.util.List;
 
@@ -35,10 +37,10 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @ActiveProfiles("test")
 @Transactional
 class ScheduleServiceTest {
-	
+
 	@Autowired
 	private CaptchaRepository captchaRepo;
-	
+
 	@Autowired
 	private ContactRepository contactRepo;
 
@@ -53,19 +55,22 @@ class ScheduleServiceTest {
 
 	@Autowired
 	private UserDeleteTokenRepository userDeleteTokenRepository;
-	
+
 	@Autowired
 	private ConversationRepository conversationRepo;
-	
+
 	@Autowired
 	private ScheduleService scheduleService;
 
-	//@MockBean
+	// @MockBean
 	@Autowired
 	private CaptchaService captchaService;
 
 	@MockBean
 	private AuthService authService;
+
+	@MockBean
+	private MailService mailService;
 
 	@Value("${app.schedule.delay.captcha}")
 	private long captchaDelay;
@@ -78,10 +83,10 @@ class ScheduleServiceTest {
 
 	@Value("${app.schedule.delay.delete-account}")
 	private long deleteAccountDelay;
-	
+
 	@Value("${app.schedule.delay.contact}")
 	private long contactDelay;
-	
+
 	@Value("${app.first-name.length-max}")
 	private int firstNameLengthMax;
 
@@ -93,35 +98,37 @@ class ScheduleServiceTest {
 
 	@Autowired
 	private RegisterService registerService;
-	
+
 	@Autowired
 	private PasswordService passwordService;
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	private List<User> testUsers;
-	
+
 	@BeforeEach
 	void before() throws Exception {
-		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
+		Mockito.doNothing().when(mailService).sendMail(Mockito.any(String.class), any(String.class), any(String.class),
+				any(String.class));
+		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax,
+				firstNameLengthMin);
 	}
-	
+
 	@AfterEach
 	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
-	
-	
+
 	@Test
 	void test() throws Exception {
-		
+
 		Date currentDate = new Date();
 		long currentDateTime = currentDate.getTime();
-		
-		//CAPTCHA 
+
+		// CAPTCHA
 		Captcha captchaOld = generateCaptcha("hash1");
-		captchaOld.setDate(new Date(currentDateTime - captchaDelay - 1 ));
+		captchaOld.setDate(new Date(currentDateTime - captchaDelay - 1));
 		catchaRepo.saveAndFlush(captchaOld);
 
 		Captcha captchaNew = generateCaptcha("hash2");
@@ -131,13 +138,13 @@ class ScheduleServiceTest {
 		Assert.assertEquals(2, catchaRepo.count());
 		scheduleService.cleanCaptcha(currentDate);
 		Assert.assertEquals(1, catchaRepo.count());
-		
-		//CONTACT 
+
+		// CONTACT
 		Contact contactOld = new Contact();
 		contactOld.setEmail("test" + Tools.MAIL_TEST_DOMAIN);
 		contactOld.setHidden(false);
 		contactOld.setMessage("test message");
-		contactOld.setDate(new Date(currentDateTime - contactDelay - 1 ));
+		contactOld.setDate(new Date(currentDateTime - contactDelay - 1));
 		contactRepo.saveAndFlush(contactOld);
 
 		Contact contactNew = new Contact();
@@ -151,30 +158,29 @@ class ScheduleServiceTest {
 		scheduleService.cleanContact(currentDate);
 		Assert.assertEquals(1, contactRepo.count());
 
-		
-		//USERHIDE
+		// USERHIDE
 		User user1 = testUsers.get(1);
 		User user2 = testUsers.get(2);
-		
+
 		UserHide hideOld = new UserHide();
 		hideOld.setDate(new Date(currentDateTime - hideDelay - 1));
 		hideOld.setUserFrom(user1);
 		hideOld.setUserTo(user2);
 		user1.getHiddenUsers().add(hideOld);
 		userRepo.saveAndFlush(user1);
-		
+
 		UserHide hideNew = new UserHide();
 		hideNew.setDate(new Date(currentDateTime - hideDelay));
 		hideNew.setUserFrom(user2);
 		hideNew.setUserTo(user1);
 		user2.getHiddenUsers().add(hideNew);
 		userRepo.saveAndFlush(user2);
-		
+
 		Assert.assertEquals(2, userHideRepo.count());
 		scheduleService.cleanUserHide(currentDate);
 		Assert.assertEquals(1, userHideRepo.count());
-		
-		//USERPASSWORDTOKEN
+
+		// USERPASSWORDTOKEN
 		Captcha captcha1 = captchaService.generate();
 		PasswordResetDto pwResetDto1 = new PasswordResetDto();
 		pwResetDto1.setEmail(user1.getEmail());
@@ -184,7 +190,7 @@ class ScheduleServiceTest {
 		passwordTokenOld.setDate(new Date(currentDateTime - passwordResetDelay - 1));
 		user1.setPasswordToken(passwordTokenOld);
 		userRepo.saveAndFlush(user1);
-		
+
 		Captcha captcha2 = captchaService.generate();
 		PasswordResetDto pwResetDto2 = new PasswordResetDto();
 		pwResetDto2.setEmail(user2.getEmail());
@@ -194,32 +200,32 @@ class ScheduleServiceTest {
 		passwordTokenNew.setDate(new Date(currentDateTime - passwordResetDelay));
 		user2.setPasswordToken(passwordTokenNew);
 		userRepo.saveAndFlush(user2);
-		
+
 		Assert.assertEquals(2, passwordTokenRepository.count());
 		scheduleService.cleanUserPasswordToken(currentDate);
 		Assert.assertEquals(1, passwordTokenRepository.count());
 
-		//USERDELETETOKEN	
+		// USERDELETETOKEN
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		UserDeleteToken deleteTokenOld = userService.deleteAccountRequest();
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
-		UserDeleteToken deleteTokenNew = userService.deleteAccountRequest();	
-		
+		UserDeleteToken deleteTokenNew = userService.deleteAccountRequest();
+
 		Assert.assertEquals(2, userDeleteTokenRepository.count());
-		deleteTokenOld.setDate(new Date(currentDateTime - passwordResetDelay -1));
+		deleteTokenOld.setDate(new Date(currentDateTime - passwordResetDelay - 1));
 		user1.setDeleteToken(deleteTokenNew);
 		userRepo.saveAndFlush(user1);
-		
+
 		deleteTokenNew.setDate(new Date(currentDateTime - passwordResetDelay));
 		user2.setDeleteToken(deleteTokenNew);
 		userRepo.saveAndFlush(user2);
-		
+
 		scheduleService.cleanUserDeleteToken(currentDate);
 		Assert.assertEquals(1, userDeleteTokenRepository.count());
-		
+
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
-	
+
 	private Captcha generateCaptcha(String hashCode) {
 		Captcha captcha = new Captcha();
 		captcha.setDate(new Date());

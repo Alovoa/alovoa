@@ -193,7 +193,7 @@ public class UserService {
 		user.setDeleteToken(token);
 		user = userRepo.saveAndFlush(user);
 
-		mailService.sendAccountDeleteRequest(user, token);
+		mailService.sendAccountDeleteRequest(user);
 
 		return user.getDeleteToken();
 	}
