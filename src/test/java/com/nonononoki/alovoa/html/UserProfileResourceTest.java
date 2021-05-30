@@ -85,7 +85,7 @@ class UserProfileResourceTest {
 		userRepo.flush();
 		
 		Mockito.when(authService.getCurrentUser()).thenReturn(currUser);
-		String encodedId = UserDto.encodeId(2, textEncryptor);
+		String encodedId = UserDto.encodeId(user.getId(), textEncryptor);
 		userProfileResource.profileView(encodedId);
 	}
 }

@@ -87,8 +87,8 @@ public class CaptchaService {
 
 		captchaRepo.delete(captcha);
 
-		return !captcha.getHashCode().equals(getIpHash(request.getRemoteAddr()))
-				|| !captcha.getText().equalsIgnoreCase(text);
+		return captcha.getHashCode().equals(getIpHash(request.getRemoteAddr()))
+				&& captcha.getText().equalsIgnoreCase(text);
 	}
 
 	private String getIpHash(String ip) throws UnsupportedEncodingException, NoSuchAlgorithmException {
