@@ -135,7 +135,7 @@ public class SearchService {
 			}
 		}
 
-		if (filteredUsers.size() < maxResults && users.size() < UserRepository.MAX_USERS_SEARCH) {
+		if (filteredUsers.size() < maxResults && users.size() >= UserRepository.MAX_USERS_SEARCH) {
 			List<User> allUsers = userRepo.usersSearchAll(request);
 			if (allUsers.size() != users.size()) {
 
