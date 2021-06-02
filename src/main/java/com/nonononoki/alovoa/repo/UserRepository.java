@@ -10,6 +10,8 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.UserSearchRequest;
 
 public interface UserRepository extends JpaRepository<User, Long> {
+	
+	public static final int MAX_USERS_SEARCH = 200;
 
 	User findByEmail(String email);
 
@@ -30,7 +32,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	}
 
 	default List<User> usersDonate() {
-		return findTop100ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullOrderByTotalDonationsDesc();
+		return findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullOrderByTotalDonationsDesc();
 	}
 
 	List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrue();
@@ -45,5 +47,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			String intentionText, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds,
 			Collection<String> genderTexts);
 
-	List<User> findTop100ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullOrderByTotalDonationsDesc();
+	List<User> findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullOrderByTotalDonationsDesc();
 }

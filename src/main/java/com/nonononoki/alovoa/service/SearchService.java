@@ -127,7 +127,7 @@ public class SearchService {
 			if (ignoreIds.contains(u.getId()) || !u.getPreferedGenders().contains(user.getGender())) {
 				continue;
 			}
-			// square is fine, reduces CPU load when not calculating radius distance if
+			// square is fine, reduces CPU load when not calculating radius distance
 			filteredUsers.add(u);
 
 			if (filteredUsers.size() >= maxResults) {
@@ -135,7 +135,7 @@ public class SearchService {
 			}
 		}
 
-		if (filteredUsers.size() < maxResults) {
+		if (filteredUsers.size() < maxResults && users.size() < UserRepository.MAX_USERS_SEARCH) {
 			List<User> allUsers = userRepo.usersSearchAll(request);
 			if (allUsers.size() != users.size()) {
 
@@ -147,7 +147,7 @@ public class SearchService {
 					if (ignoreIds.contains(u.getId()) || !u.getPreferedGenders().contains(user.getGender())) {
 						continue;
 					}
-					// square is fine, reduces CPU load when not calculating radius distance if
+					// square is fine, reduces CPU load when not calculating radius distance
 					filteredUsers.add(u);
 
 					if (filteredUsers.size() >= maxResults) {
