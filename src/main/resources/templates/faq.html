@@ -1,47 +1,49 @@
 <!DOCTYPE html>
 <html th:lang="${lang}">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Alovoa">
-<link rel="manifest" href="/manifest/manifest.json">
 
-<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-<th:block th:replace="fragments.html::bulma"></th:block>
-<th:block th:replace="fragments.html::ui-design"></th:block>
-<link rel="stylesheet" href="/css/alovoa.css" />
-<title th:text="#{faq.title}"></title>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-title" content="Alovoa">
+	<link rel="manifest" href="/manifest/manifest.json">
+
+	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+	<th:block th:replace="fragments.html::bulma"></th:block>
+	<th:block th:replace="fragments.html::ui-design"></th:block>
+	<link rel="stylesheet" href="/css/alovoa.css" />
+	<title th:text="#{faq.title}"></title>
 </head>
+
 <body>
 	<div id="main">
 
 		<header th:insert="fragments.html::header-logged-out"></header>
 		<div class="section">
-			<div class="box">
+			<div class="box" id="privacy">
 				<p class="title is-4" th:text="#{faq.privacy.question}"></p>
-				<p class="subtitle is-6 is-marginless"
-					th:text="#{faq.privacy.answer}"></p>
+				<p class="subtitle is-6 is-marginless" th:text="#{faq.privacy.answer}"></p>
 			</div>
-			<div class="box">
+			<div class="box" id="encryption">
 				<p class="title is-4" th:text="#{faq.encryption.question}"></p>
-				<p class="subtitle is-6 is-marginless"
-					th:text="#{faq.encryption.answer}"></p>
+				<p class="subtitle is-6 is-marginless" th:text="#{faq.encryption.answer}"></p>
 			</div>
-			<div class="box">
+			<div class="box" id="open-source">
 				<p class="title is-4" th:text="#{faq.open-source.question}"></p>
-				<p class="subtitle is-6 is-marginless"
-					th:text="#{faq.open-source.answer}"></p>
+				<p class="subtitle is-6 is-marginless" th:text="#{faq.open-source.answer}"></p>
 			</div>
-			<div class="box">
+			<div class="box" id="match">
 				<p class="title is-4" th:text="#{faq.match.question}"></p>
 				<p class="subtitle is-6 is-marginless" th:text="#{faq.match.answer}"></p>
 			</div>
-			<div class="box">
+			<div class="box" id="no-users">
 				<p class="title is-4" th:text="#{faq.no-users.question}"></p>
-				<p class="subtitle is-6 is-marginless"
-					th:text="#{faq.no-users.answer}"></p>
+				<p class="subtitle is-6 is-marginless" th:text="#{faq.no-users.answer}"></p>
+			</div>
+			<div class="box" id="delete-data">
+				<p class="title is-4" th:text="#{faq.delete-data.question}"></p>
+				<p class="subtitle is-6 is-marginless" th:text="#{faq.delete-data.answer}"></p>
 			</div>
 		</div>
 	</div>
@@ -50,4 +52,5 @@
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/fontawesome.all.js"></script>
 </body>
+
 </html>
