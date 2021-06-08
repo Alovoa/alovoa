@@ -15,5 +15,7 @@ class ToolsTest {
 		
 		int dist3 = (int)Math.round(Tools.calcDistanceKm(0.46, 0, 0, 0));
 		Assert.assertEquals(50, dist3);
+		
+		Assert.assertTrue(Tools.isTextContainingLineFromFile(Tools.TEMP_EMAIL_FILE_NAME, "jmpant.com"));
 	}
 }

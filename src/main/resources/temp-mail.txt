@@ -22,6 +22,7 @@
 9ox.net
 a-bc.net
 agedmail.com
+allfreemail.net
 ama-trade.de
 amilegit.com
 amiri.net
@@ -198,6 +199,7 @@ jetable.com
 jetable.fr.nf
 jetable.net
 jetable.org
+jmpant.com
 jnxjn.com
 jourrapide.com
 jsrsolutions.com
@@ -534,6 +536,8 @@ xemaps.com
 xents.com
 xmaily.com
 xoxy.net
+jmpant.com
+yaud.net
 yep.it
 yogamaven.com
 yopmail.com

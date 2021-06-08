@@ -32,8 +32,6 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @Service
 public class RegisterService {
 
-	private static final String TEMP_EMAIL_FILE_NAME = "temp-mail.txt";
-
 	@Value("${app.token.length}")
 	private int tokenLength;
 
@@ -121,7 +119,7 @@ public class RegisterService {
 		if (profile.equals(Tools.PROD)) {
 			try {
 				// check spam domains
-				if (Tools.isTextContainingLineFromFile(TEMP_EMAIL_FILE_NAME, dto.getEmail())) {
+				if (Tools.isTextContainingLineFromFile(Tools.TEMP_EMAIL_FILE_NAME, dto.getEmail())) {
 					throw new AlovoaException(publicService.text("backend.error.register.email-spam"));
 				}
 			} catch (IOException e) {
