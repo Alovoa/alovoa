@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.nonononoki.alovoa.model.AlovoaException;
-import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.service.SearchService;
 
 @Controller
@@ -33,8 +31,7 @@ public class SearchController {
 			@PathVariable int distance, @PathVariable int search)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		List<UserDto> users = searchService.search(latitude, longitude, distance, search);
-		model.addAttribute("users", users);
+		model.addAttribute("dto", searchService.search(latitude, longitude, distance, search));
 		return "fragments :: search-users";
 	}
 }

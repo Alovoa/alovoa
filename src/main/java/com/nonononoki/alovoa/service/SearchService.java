@@ -27,6 +27,7 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AlovoaException;
+import com.nonononoki.alovoa.model.SearchDto;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserSearchRequest;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -48,6 +49,9 @@ public class SearchService {
 	@Autowired
 	private UserRepository userRepo;
 
+	@Autowired
+	private PublicService publicService;
+
 	@Value("${app.search.max}")
 	private int maxResults;
 
@@ -57,10 +61,16 @@ public class SearchService {
 	@Value("${app.age.legal}")
 	private int ageLegal;
 
+	@Value("${app.age.min}")
+	private int ageMin;
+
+	@Value("${app.age.max}")
+	private int ageMax;
+
 	private static final double LATITUDE = 111.1;
 	private static final double LONGITUDE = 111.320;
 
-	public List<UserDto> search(Double latitude, Double longitude, int distance, int sort) throws AlovoaException,
+	public SearchDto search(Double latitude, Double longitude, int distance, int sort) throws AlovoaException,
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 
@@ -108,7 +118,7 @@ public class SearchService {
 				.build();
 
 		// because IS IN does not work with empty list
-		request.getBlockIds().add(0L);
+		request.getBlockIds().add(user.getId());
 		request.getLikeIds().add(0L);
 		request.getHideIds().add(0L);
 
@@ -117,13 +127,47 @@ public class SearchService {
 		Set<Long> ignoreIds = new HashSet<>();
 		ignoreIds.addAll(
 				user.getBlockedByUsers().stream().map(o -> o.getUserFrom().getId()).collect(Collectors.toSet()));
-		ignoreIds.add(user.getId());
 
+		List<User> filteredUsers = filterUsers(users, ignoreIds, user);
+
+		if (filteredUsers.size() < maxResults && users.size() >= UserRepository.MAX_USERS_SEARCH) {
+			List<User> allUsers = userRepo.usersSearchAll(request);
+			if (allUsers.size() != users.size()) {
+				filteredUsers = filterUsers(allUsers, ignoreIds, user);
+			}
+		}
+
+		if (!filteredUsers.isEmpty()) {
+			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user)).build();
+		} else {
+			filteredUsers.clear();
+			users = userRepo.usersSearchAllIgnoreLocation(request);
+			filteredUsers = filterUsers(users, ignoreIds, user);
+
+			if (!filteredUsers.isEmpty()) {
+				return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
+						.message(publicService.text("search.warning.global")).global(true).build();
+			} else {
+				filteredUsers.clear();
+				if (isLegalAge) {
+					maxDate = Tools.ageToDate(ageLegal);
+					minDate = Tools.ageToDate(ageMax);
+				} else {
+					maxDate = Tools.ageToDate(ageMin);
+					minDate = Tools.ageToDate(ageLegal - 1);
+				}
+				request.setMinDate(minDate);
+				request.setMaxDate(maxDate);
+				users = userRepo.usersSearchAllIgnoreAll(request);
+				return SearchDto.builder().users(searchResultstoUserDto(users, sort, user))
+						.message(publicService.text("search.warning.incompatible")).incompatible(true).build();
+			}
+		}
+	}
+
+	private List<User> filterUsers(List<User> users, Set<Long> ignoreIds, User user) {
 		List<User> filteredUsers = new ArrayList<>();
-
-		// filter users
 		for (User u : users) {
-
 			if (ignoreIds.contains(u.getId()) || !u.getPreferedGenders().contains(user.getGender())) {
 				continue;
 			}
@@ -134,32 +178,14 @@ public class SearchService {
 				break;
 			}
 		}
+		return filteredUsers;
+	}
 
-		if (filteredUsers.size() < maxResults && users.size() >= UserRepository.MAX_USERS_SEARCH) {
-			List<User> allUsers = userRepo.usersSearchAll(request);
-			if (allUsers.size() != users.size()) {
-
-				filteredUsers.clear();
-
-				// filter users
-				for (User u : allUsers) {
-
-					if (ignoreIds.contains(u.getId()) || !u.getPreferedGenders().contains(user.getGender())) {
-						continue;
-					}
-					// square is fine, reduces CPU load when not calculating radius distance
-					filteredUsers.add(u);
-
-					if (filteredUsers.size() >= maxResults) {
-						break;
-					}
-				}
-
-			}
-		}
-
+	private List<UserDto> searchResultstoUserDto(final List<User> userList, int sort, User user)
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		List<UserDto> userDtos = new ArrayList<>();
-		for (User u : filteredUsers) {
+		for (User u : userList) {
 			UserDto dto = UserDto.userToUserDto(u, user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY);
 			userDtos.add(dto);
 		}

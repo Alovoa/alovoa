@@ -195,12 +195,15 @@ oc
 
 		<audio id="audio" style="display: none;"></audio>
 
-		<div th:if="${#lists.isEmpty(users)}"
+		<div th:if="${#lists.isEmpty(dto.users)}"
 			style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding-top: 12px;">
 			<span th:text="#{no-users-found}"></span>
 		</div>
+		
+		<div th:if="${dto.message != null}" th:text="${dto.message}" class="notification is-warning" style="margin-top: 24px;"
+			onclick="document.getElementById('search-message').style.display = 'none'" id="search-message"></div>
 
-		<th:block th:each="user : ${users}">
+		<th:block th:each="user : ${dto.users}">
 			<div class="user-search-card" th:id="${user.idEncoded}">
 				<div class="swiper-container " th:id="${user.idEncoded}">
 					<div class="swiper-wrapper">

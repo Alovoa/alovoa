@@ -199,15 +199,15 @@ class SearchAndMessageServiceTest {
 		userService.addInterest(INTEREST);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		List<UserDto> searchDtos1 = searchService.search(0.0, 0.0, 50, 1);
+		List<UserDto> searchDtos1 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		Assert.assertEquals(2, searchDtos1.size());
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
-		List<UserDto> searchDtos2 = searchService.search(0.0, 0.0, 50, 1);
+		List<UserDto> searchDtos2 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		Assert.assertEquals(1, searchDtos2.size());
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
-		List<UserDto> searchDtos3 = searchService.search(0.0, 0.0, 50, 1);
+		List<UserDto> searchDtos3 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		Assert.assertEquals(1, searchDtos3.size());
 
 		// Tip: 1 degree equals roughly 111km
@@ -226,20 +226,20 @@ class SearchAndMessageServiceTest {
 		userService.updatePreferedGender(2, true);
 		userService.updatePreferedGender(3, true);
 
-		List<UserDto> searchDtos4 = searchService.search(0.0, 0.0, 50, 1);
+		List<UserDto> searchDtos4 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		Assert.assertEquals(2, searchDtos4.size());
 
-		List<UserDto> searchDtos5 = searchService.search(0.45, 0.0, 50, 1);
+		List<UserDto> searchDtos5 = searchService.search(0.45, 0.0, 50, 1).getUsers();
 		Assert.assertEquals(2, searchDtos5.size());
 
-		List<UserDto> searchDtos6 = searchService.search(0.46, 0.0, 50, 1);
-		Assert.assertEquals(0, searchDtos6.size());
+		List<UserDto> searchDtos6 = searchService.search(0.46, 0.0, 50, 1).getUsers();
+		Assert.assertEquals(2, searchDtos6.size());
 
 		// search filtered by interest
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		userService.deleteInterest(user1.getInterests().get(0).getId());
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
-		List<UserDto> interestSearchDto1 = searchService.search(0.0, 0.0, 50, SearchService.SORT_INTEREST);
+		List<UserDto> interestSearchDto1 = searchService.search(0.0, 0.0, 50, SearchService.SORT_INTEREST).getUsers();
 		Assert.assertEquals(1, interestSearchDto1.size());
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		userService.addInterest(INTEREST);
@@ -247,20 +247,20 @@ class SearchAndMessageServiceTest {
 		// test preferedAge
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		userService.updateMinAge(USER1_AGE + 1);
-		List<UserDto> ageSearchDto1 = searchService.search(0.0, 0.0, 50, 1);
+		List<UserDto> ageSearchDto1 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		Assert.assertEquals(1, ageSearchDto1.size());
 		userService.updateMaxAge(USER3_AGE - 1);
-		List<UserDto> ageSearchDto2 = searchService.search(0.0, 0.0, 50, 1);
-		Assert.assertEquals(0, ageSearchDto2.size());
+		List<UserDto> ageSearchDto2 = searchService.search(0.0, 0.0, 50, 1).getUsers();
+		Assert.assertEquals(2, ageSearchDto2.size()); //TODO check for incompatible
 
 		user2.getDates().setDateOfBirth(Tools.localDateToDate(LocalDateTime.now().minusYears(minAge).toLocalDate()));
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		userService.updateMinAge(minAge);
 		userService.updateMaxAge(maxAge);
-		List<UserDto> ageSearchDto3 = searchService.search(0.0, 0.0, 50, 1);
+		List<UserDto> ageSearchDto3 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		Assert.assertEquals(0, ageSearchDto3.size());
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
-		List<UserDto> ageSearchDto4 = searchService.search(0.0, 0.0, 50, 1);
+		List<UserDto> ageSearchDto4 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		Assert.assertEquals(1, ageSearchDto4.size());
 		user2.getDates().setDateOfBirth(Tools.ageToDate(USER2_AGE));
 
@@ -270,14 +270,14 @@ class SearchAndMessageServiceTest {
 		Assert.assertEquals(1, userLikeRepo.count());
 		Assert.assertEquals(1, user3.getLikes().size());
 		Assert.assertEquals(1, userNotificationRepo.count());
-		List<UserDto> searchDtos7 = searchService.search(0.0, 0.0, 50, 1);
+		List<UserDto> searchDtos7 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		Assert.assertEquals(1, searchDtos7.size());
 
 		// hideUser
 		userService.hideUser(UserDto.encodeId(user2.getId(), textEncryptor));
 		Assert.assertEquals(1, userHideRepo.count());
 		Assert.assertEquals(1, user3.getHiddenUsers().size());
-		List<UserDto> searchDtos8 = searchService.search(0.0, 0.0, 50, 1);
+		List<UserDto> searchDtos8 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		Assert.assertEquals(0, searchDtos8.size());
 
 		user3.getHiddenUsers().clear();
