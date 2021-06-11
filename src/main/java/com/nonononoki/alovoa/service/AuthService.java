@@ -35,7 +35,7 @@ public class AuthService {
 			email = (String) auth.getPrincipal();
 		}
 		
-		User user = userRepo.findByEmail(email);
+		User user = userRepo.findByEmail(email.toLowerCase());
 		if(user != null && user.isDisabled()) {
 			throw new AlovoaException("user_not_found");
 		}

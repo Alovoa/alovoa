@@ -99,6 +99,8 @@ public class RegisterService {
 		if (!isValid) {
 			throw new AlovoaException(publicService.text("backend.error.captcha.invalid"));
 		}
+		
+		dto.setEmail(dto.getEmail().toLowerCase());
 
 		if (!isValidEmailAddress(dto.getEmail())) {
 			throw new AlovoaException("email_invalid");
@@ -144,7 +146,7 @@ public class RegisterService {
 
 	public void registerOauth(RegisterDto dto) throws MessagingException, IOException, AlovoaException {
 
-		String email = authService.getOauth2Email();
+		String email = authService.getOauth2Email().toLowerCase();
 		if (email == null) {
 			throw new AlovoaException(publicService.text("email_is_null"));
 		}
