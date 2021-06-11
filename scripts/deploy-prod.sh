@@ -1,6 +1,9 @@
 #!/bin/bash
+cd ..
+git pull origin master
+mvn install -DskipTests
+cd target
 read -sp 'Password: ' pw
-cd ../target
 fuser -k 8843/tcp
 export JASYPT_ENCRYPTOR_PASSWORD=$pw
 nohup java -jar -Dspring.profiles.active=prod alovoa-1.0.0.jar &

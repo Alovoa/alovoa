@@ -7,7 +7,12 @@
 }
 
 #hero-padding {
-	 height: calc(100vh - 350px);
+	 height: calc(100vh - 370px);
+}
+
+#hero-register-button {
+	margin-bottom: 48px;
+	font-size: 1.5em;
 }
 
 .cards {
@@ -55,6 +60,9 @@
 	#hero {
 		background-size: 600px;
 	}
+	#hero-register-button {
+		width: 100%;
+	}
 }
 
 @media screen and (max-width: 374px) {
@@ -62,7 +70,7 @@
 		 height: 300px;
 	}
 	#hero-padding {
-	 height: calc(100vh - 390px);
+	 height: calc(100vh - 410px);
 	}
 }
 
