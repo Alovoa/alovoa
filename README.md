@@ -31,12 +31,7 @@ Alovoa aims to be the first widespread open-source dating web application on the
 - Please read the DOCUMENTATION.md
 
 ### Licenses:
-- All code not otherwise stated is licensed under the AGPLv3 license. 
+- All code is licensed under the AGPLv3 license, unless stated otherwise. 
+- All images are proprietary, unless stated otherwise.
 - Third-party web libraries can be found under resources/css/lib and resources/js/lib and have their own license.
 - Third-party Java libraries can be found in the pom.xml and have their own license.
-
-### Screenshots:
-
-<img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/screenshots/index.gif">
-<img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/screenshots/search.gif">
-<img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/screenshots/search_mobile.gif">

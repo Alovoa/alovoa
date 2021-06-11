@@ -75,7 +75,7 @@ const staticAssets = [
 	'/css/user-profile.css',
 
 	'/img/search-cover.webp',
-	'/img/banner.svg',
+	'/img/banner.webp',
 	'/img/android-chrome-192x192.png',
 	'/img/android-chrome-512x512.png',
 	'/img/apple-touch-icon.png',

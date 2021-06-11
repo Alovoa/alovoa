@@ -1,153 +1,165 @@
 <!DOCTYPE html>
 <html th:lang="${lang}">
+
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Alovoa">
-<meta name="theme-color" content="#3298DC" />
-<link rel="manifest" href="/manifest/manifest.json">
-<link rel="apple-touch-icon" href="/img/android-chrome-192x192.png">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-title" content="Alovoa">
+	<meta name="theme-color" content="#3298DC" />
+	<link rel="manifest" href="/manifest/manifest.json">
+	<link rel="apple-touch-icon" href="/img/android-chrome-192x192.png">
 
-<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-<th:block th:replace="fragments.html::bulma"></th:block>
-<th:block th:replace="fragments.html::ui-design"></th:block>
-<link rel="stylesheet" href="/css/alovoa.css" />
-<link rel="stylesheet" href="/css/index.css" />
+	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+	<th:block th:replace="fragments.html::bulma"></th:block>
+	<th:block th:replace="fragments.html::ui-design"></th:block>
+	<link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
+	<link rel="stylesheet" href="/css/alovoa.css" />
+	<link rel="stylesheet" href="/css/index.css" />
 
-<link rel="alternate" hreflang="en" href="/?lang=en" />
-<link rel="alternate" hreflang="de" href="/?lang=de" />
-<link rel="alternate" hreflang="es" href="/?lang=es" />
-<link rel="alternate" hreflang="fr" href="/?lang=fr" />
-<link rel="alternate" hreflang="pt" href="/?lang=pt" />
-<link rel="alternate" hreflang="it" href="/?lang=it" />
-<link rel="alternate" hreflang="ru" href="/?lang=ru" />
-<link rel="alternate" hreflang="ja" href="/?lang=ja" />
-<link rel="alternate" hreflang="zh" href="/?lang=zh" />
-<link rel="alternate" hreflang="ko" href="/?lang=ko" />
+	<link rel="alternate" hreflang="en" href="/?lang=en" />
+	<link rel="alternate" hreflang="de" href="/?lang=de" />
+	<link rel="alternate" hreflang="es" href="/?lang=es" />
+	<link rel="alternate" hreflang="fr" href="/?lang=fr" />
+	<link rel="alternate" hreflang="pt" href="/?lang=pt" />
+	<link rel="alternate" hreflang="it" href="/?lang=it" />
+	<link rel="alternate" hreflang="ru" href="/?lang=ru" />
+	<link rel="alternate" hreflang="ja" href="/?lang=ja" />
+	<link rel="alternate" hreflang="zh" href="/?lang=zh" />
+	<link rel="alternate" hreflang="ko" href="/?lang=ko" />
 
-<title th:text="#{app.name} + ' - ' + #{index.subtitle}"></title>
-<meta name="description" th:content="#{meta.content}">
+	<title th:text="#{app.name} + ' - ' + #{index.subtitle}"></title>
+	<meta name="description" th:content="#{meta.content}">
 
 </head>
 
 <body>
 	<div id="main">
 		<header th:replace="fragments.html::header-logged-out"></header>
-		<section class="hero is-info is-medium is-bold">
+		<section id="hero">
 			<div class="hero-body">
 				<div class="container has-text-centered">
-					<h1 class="title is-size-1" th:text="#{app.name}"></h1>
-					<h2 class="subtitle is-size-4" th:text="#{index.subtitle}"></h2>
+					<h1 class="title is-size-2" th:text="#{app.name}" style="color: white;"></h1>
+					<h2 class="subtitle is-size-4" th:text="#{index.subtitle}" style="color: white;"></h2>
+					<div id="hero-padding"></div>
+					<a class="button is-info" style="margin-bottom: 48px;" th:utext="#{index.sign-up-now}"
+						href="/register"></a>
+					<div th:text="#{index.subtitle-2}" style="color: white;"></div>
+					<div th:text="#{index.notice}" style="font-size: 0.6em; color: white;"></div>
 				</div>
 			</div>
 		</section>
 
-		<div>
-			<div id="banner"></div>
+		<div style="padding-top: 240px;"></div>
+		<header class="card-header collapsible-header">
+			<a href="#collapsible-card" data-action="collapse" class="card-header-icon is-hidden-fullscreen full-width"
+				aria-label="more options" style="padding: 1.25rem; display: flex; justify-content: space-between;">
+				<span class="label" style="margin-bottom: initial;" th:text="#{index.key-features}"></span>
+				<div class="navbar-link"></div>
+			</a>
+		</header>
+		<div id="collapsible-card" class="is-collapsible">
+			<section class="container cards">
+				<div class="columns features">
+					<div class="column is-4">
+						<div class="card is-shady">
+							<div class="card-image has-text-centered">
+								<i class="fa fa-hand-holding-usd" id="icon-free"></i>
+							</div>
+							<div class="card-content">
+								<div class="content">
+									<h4 th:utext="#{index.free.title}"></h4>
+									<p th:utext="#{index.free.description}"></p>
+									<p>
+										<a href="/donate-list" th:utext="#{donate}" target="_blank"></a>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="column is-4">
+						<div class="card is-shady">
+							<div class="card-image has-text-centered">
+								<i class="fa fa-door-open" id="icon-open-source"></i>
+							</div>
+							<div class="card-content">
+								<div class="content">
+									<h4 th:utext="#{index.open-source.title}"></h4>
+									<p th:utext="#{index.open-source.description}"></p>
+									<p>
+										<a href="https://github.com/Alovoa/alovoa" th:utext="#{source-code}"></a>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="column is-4">
+						<div class="card is-shady">
+							<div class="card-image has-text-centered">
+								<i class="fa fa-lock" id="icon-private"></i>
+							</div>
+							<div class="card-content">
+								<div class="content">
+									<h4 th:utext="#{index.private.title}"></h4>
+									<p th:utext="#{index.private.description}"></p>
+									<p>
+										<a href="/privacy" th:utext="#{privacy-policy}"></a>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section class="container cards">
+				<div class="columns features">
+					<div class="column is-4">
+						<div class="card is-shady">
+							<div class="card-image has-text-centered">
+								<i class="fa fa-ad" id="icon-ad-free"></i>
+							</div>
+							<div class="card-content">
+								<div class="content">
+									<h4 th:utext="#{index.ad-free.title}"></h4>
+									<p th:utext="#{index.ad-free.description}"></p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="column is-4">
+						<div class="card is-shady">
+							<div class="card-image has-text-centered">
+								<i class="fa fa-microchip" id="icon-technology"></i>
+							</div>
+							<div class="card-content">
+								<div class="content">
+									<h4 th:utext="#{index.technology.title}"></h4>
+									<p th:utext="#{index.technology.description}"></p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="column is-4">
+						<div class="card is-shady">
+							<div class="card-image has-text-centered">
+								<i class="fa fa-child" id="icon-for-you"></i>
+							</div>
+							<div class="card-content">
+								<div class="content">
+									<h4 th:utext="#{index.for-you.title}"></h4>
+									<p th:text="#{index.for-you.description}"></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 		</div>
 
-		<section class="container cards">
-			<div class="columns features">
-				<div class="column is-4">
-					<div class="card is-shady">
-						<div class="card-image has-text-centered">
-							<i class="fa fa-hand-holding-usd" id="icon-free"></i>
-						</div>
-						<div class="card-content">
-							<div class="content">
-								<h4 th:utext="#{index.free.title}"></h4>
-								<p th:utext="#{index.free.description}"></p>
-								<p>
-									<a href="/donate-list" th:utext="#{donate}" target="_blank"></a>
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="column is-4">
-					<div class="card is-shady">
-						<div class="card-image has-text-centered">
-							<i class="fa fa-door-open" id="icon-open-source"></i>
-						</div>
-						<div class="card-content">
-							<div class="content">
-								<h4 th:utext="#{index.open-source.title}"></h4>
-								<p th:utext="#{index.open-source.description}"></p>
-								<p>
-									<a href="https://github.com/Alovoa/alovoa"
-										th:utext="#{source-code}"></a>
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="column is-4">
-					<div class="card is-shady">
-						<div class="card-image has-text-centered">
-							<i class="fa fa-lock" id="icon-private"></i>
-						</div>
-						<div class="card-content">
-							<div class="content">
-								<h4 th:utext="#{index.private.title}"></h4>
-								<p th:utext="#{index.private.description}"></p>
-								<p>
-									<a href="/privacy" th:utext="#{privacy-policy}"></a>
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<section class="container cards">
-			<div class="columns features">
-				<div class="column is-4">
-					<div class="card is-shady">
-						<div class="card-image has-text-centered">
-							<i class="fa fa-ad" id="icon-ad-free"></i>
-						</div>
-						<div class="card-content">
-							<div class="content">
-								<h4 th:utext="#{index.ad-free.title}"></h4>
-								<p th:utext="#{index.ad-free.description}"></p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="column is-4">
-					<div class="card is-shady">
-						<div class="card-image has-text-centered">
-							<i class="fa fa-microchip" id="icon-technology"></i>
-						</div>
-						<div class="card-content">
-							<div class="content">
-								<h4 th:utext="#{index.technology.title}"></h4>
-								<p th:utext="#{index.technology.description}"></p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="column is-4">
-					<div class="card is-shady">
-						<div class="card-image has-text-centered">
-							<i class="fa fa-child" id="icon-for-you"></i>
-						</div>
-						<div class="card-content">
-							<div class="content">
-								<h4 th:utext="#{index.for-you.title}"></h4>
-								<p th:text="#{index.for-you.description}"></p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
 		<section class="container cards" style="margin-top: 1.5em">
 			<div class="card">
-				<a class="button is-info is-outlined" th:utext="#{index.sign-up-now}"
-					style="width: 100%;" href="/register"></a>
+
 			</div>
 		</section>
 		<section>
@@ -163,6 +175,7 @@
 
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
+	<script src="/js/lib/bulma-collapsible.min.js"></script>
 	<script src="/js/tools/get-text.js"></script>
 	<script src="/sw.js"></script>
 	<script src="/js/index.js"></script>
