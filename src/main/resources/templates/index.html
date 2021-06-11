@@ -157,13 +157,10 @@
 			</section>
 		</div>
 
-		<section class="container cards" style="margin-top: 1.5em">
-			<div class="card">
+		<div style="margin-top: 1.5em"></div>
 
-			</div>
-		</section>
 		<section>
-			<div class="box" id="cookie-banner" onclick="cookieClick()">
+			<div class="box" id="cookie-banner" onclick="cookieClick()" style="display: none;">
 				<div class="has-text-centered" th:text="#{index.cookie.notice}">
 					<a href="/privacy#cookies" th:text="#{index.cookie.more}"></a>
 				</div>
