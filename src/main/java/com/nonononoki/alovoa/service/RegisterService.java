@@ -87,7 +87,7 @@ public class RegisterService {
 	private UserService userService;
 
 	private static final String GMAIL_EMAIL = "@gmail";
-	
+
 	private static final int MIN_PASSWORD_SIZE = 7;
 
 	private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
@@ -145,6 +145,9 @@ public class RegisterService {
 	public void registerOauth(RegisterDto dto) throws MessagingException, IOException, AlovoaException {
 
 		String email = authService.getOauth2Email();
+		if (email == null) {
+			throw new AlovoaException(publicService.text("email_is_null"));
+		}
 
 		User user = userRepo.findByEmail(email);
 		if (user != null) {
@@ -204,7 +207,7 @@ public class RegisterService {
 		return user;
 	}
 
-	//used by normal registration and oauth
+	// used by normal registration and oauth
 	private BaseRegisterDto registerBase(RegisterDto dto) throws AlovoaException {
 
 		if (dto.getFirstName().length() > firstNameLengthMax || dto.getFirstName().length() < firstNameLengthMin) {
@@ -216,20 +219,20 @@ public class RegisterService {
 		if (userAge < minAge) {
 			throw new AlovoaException(publicService.text("backend.error.register.min-age"));
 		}
-		
-		if(dto.getPassword().length() < MIN_PASSWORD_SIZE) {
+
+		if (dto.getPassword().length() < MIN_PASSWORD_SIZE) {
 			throw new AlovoaException("password_too_short");
 		}
-		
-		if(!dto.getPassword().matches(".*\\d.*") || !dto.getPassword().matches(".*[a-zA-Z].*")) {
+
+		if (!dto.getPassword().matches(".*\\d.*") || !dto.getPassword().matches(".*[a-zA-Z].*")) {
 			throw new AlovoaException("password_too_simple");
 		}
 
 		User user = new User();
 		user.setEmail(dto.getEmail().toLowerCase());
 		user.setFirstName(dto.getFirstName());
-		
-		//default age bracket, user can change it later in their profile
+
+		// default age bracket, user can change it later in their profile
 		int userMinAge = userAge - ageRange;
 		int userMaxAge = userAge + ageRange;
 		if (userMinAge < minAge) {
