@@ -33,11 +33,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static final String ROLE_USER = "ROLE_USER";
 	private static final String ROLE_ADMIN = "ROLE_ADMIN";
-	
+
 	public static String getRoleUser() {
 		return ROLE_USER;
 	}
-	
+
 	public static String getRoleAdmin() {
 		return ROLE_ADMIN;
 	}
@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/register/**").permitAll().antMatchers("/captcha/**").permitAll()
 				.antMatchers("/donate-list").permitAll().antMatchers("/donate/received/**").permitAll()
 				.antMatchers("/password/**").permitAll().antMatchers("/favicon.ico").permitAll().antMatchers("/sw.js")
+				.permitAll().antMatchers("/.well-known/assetlinks.json")
 				.permitAll().antMatchers("/text/*").permitAll().antMatchers("/manifest/**").permitAll()
 				.antMatchers("/fonts/**").permitAll()
 

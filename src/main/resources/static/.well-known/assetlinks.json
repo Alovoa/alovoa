@@ -1,0 +1,5 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target" : { "namespace": "android_app", "package_name": "com.alovoa.alovoa",
+               "sha256_cert_fingerprints": ["0B:AB:9A:A5:1B:14:A4:C5:73:3B:12:85:71:A8:69:89:54:F1:20:83:40:C7:9D:73:6D:BF:47:21:97:6B:CA:39"] }
+}]
