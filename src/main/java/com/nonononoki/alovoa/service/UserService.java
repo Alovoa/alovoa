@@ -639,6 +639,10 @@ public class UserService {
 		if (isUserLegalAge != isCurrentUserLegalAge) {
 			throw new AlovoaException("one_user_is_minor");
 		}
+		
+		if(!User.isCompatible(currUser, user)) {
+			throw new AlovoaException("users_not_compatible");
+		}
 
 		if (userLikeRepo.findByUserFromAndUserTo(currUser, user) == null) {
 			UserLike like = new UserLike();

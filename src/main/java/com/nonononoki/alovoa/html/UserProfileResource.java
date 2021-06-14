@@ -69,7 +69,7 @@ public class UserProfileResource {
 			mav.addObject("currUser", currUserDto);
 
 			boolean isAgeCompatible = userDto.getAge() < ageLegal == currUserDto.getAge() < ageLegal;
-			mav.addObject("isAgeCompatible", isAgeCompatible);
+			mav.addObject("isAgeCompatible", isAgeCompatible && User.isCompatible(user, userView));
 
 			return mav;
 

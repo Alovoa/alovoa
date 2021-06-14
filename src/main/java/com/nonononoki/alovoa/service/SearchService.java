@@ -139,30 +139,42 @@ public class SearchService {
 
 		if (!filteredUsers.isEmpty()) {
 			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user)).build();
-		} else {
-			filteredUsers.clear();
-			users = userRepo.usersSearchAllIgnoreLocation(request);
-			filteredUsers = filterUsers(users, ignoreIds, user);
-
-			if (!filteredUsers.isEmpty()) {
-				return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
-						.message(publicService.text("search.warning.global")).global(true).build();
-			} else {
-				filteredUsers.clear();
-				if (isLegalAge) {
-					maxDate = Tools.ageToDate(ageLegal);
-					minDate = Tools.ageToDate(ageMax);
-				} else {
-					maxDate = Tools.ageToDate(ageMin);
-					minDate = Tools.ageToDate(ageLegal - 1);
-				}
-				request.setMinDate(minDate);
-				request.setMaxDate(maxDate);
-				users = userRepo.usersSearchAllIgnoreAll(request);
-				return SearchDto.builder().users(searchResultstoUserDto(users, sort, user))
-						.message(publicService.text("search.warning.incompatible")).incompatible(true).build();
-			}
 		}
+		filteredUsers.clear();
+		users = userRepo.usersSearchAllIgnoreLocation(request);
+		filteredUsers = filterUsers(users, ignoreIds, user);
+
+		if (!filteredUsers.isEmpty()) {
+			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
+					.message(publicService.text("search.warning.global")).global(true).build();
+		}
+
+		filteredUsers.clear();
+		users = userRepo.usersSearchAllIgnoreLocationAndIntention(request);
+		filteredUsers = filterUsers(users, ignoreIds, user);
+		if (!filteredUsers.isEmpty()) {
+			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
+					.message(publicService.text("search.warning.global")).global(true).build();
+		}
+
+		filteredUsers.clear();
+		users = userRepo.usersSearchAllIgnoreLocation(request);
+		filteredUsers = filterUsers(users, ignoreIds, user);
+
+		filteredUsers.clear();
+		if (isLegalAge) {
+			maxDate = Tools.ageToDate(ageLegal);
+			minDate = Tools.ageToDate(ageMax);
+		} else {
+			maxDate = Tools.ageToDate(ageMin);
+			minDate = Tools.ageToDate(ageLegal - 1);
+		}
+		request.setMinDate(minDate);
+		request.setMaxDate(maxDate);
+		users = userRepo.usersSearchAllIgnoreAll(request);
+		return SearchDto.builder().users(searchResultstoUserDto(users, sort, user))
+				.message(publicService.text("search.warning.incompatible")).incompatible(true).build();
+
 	}
 
 	private List<User> filterUsers(List<User> users, Set<Long> ignoreIds, User user) {

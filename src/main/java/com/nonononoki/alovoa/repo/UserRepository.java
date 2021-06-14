@@ -16,7 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	User findByEmail(String email);
 
 	default List<User> usersSearch(UserSearchRequest request) {
-
 		return findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetweenAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 				request.getMinDate(), request.getMaxDate(), request.getMinLat(), request.getMaxLat(),
 				request.getMinLong(), request.getMaxLong(), request.getIntentionText(), request.getLikeIds(),
@@ -24,7 +23,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	}
 
 	default List<User> usersSearchAll(UserSearchRequest request) {
-
 		return findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetweenAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 				request.getMinDate(), request.getMaxDate(), request.getMinLat(), request.getMaxLat(),
 				request.getMinLong(), request.getMaxLong(), request.getIntentionText(), request.getLikeIds(),
@@ -32,15 +30,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	}
 
 	default List<User> usersSearchAllIgnoreLocation(UserSearchRequest request) {
-
-		return findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
+		return findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 				request.getMinDate(), request.getMaxDate(), request.getIntentionText(), request.getLikeIds(),
+				request.getHideIds(), request.getBlockIds(), request.getGenderTexts());
+	}
+	
+	default List<User> usersSearchAllIgnoreLocationAndIntention(UserSearchRequest request) {
+		return findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
+				request.getMinDate(), request.getMaxDate(), request.getLikeIds(),
 				request.getHideIds(), request.getBlockIds(), request.getGenderTexts());
 	}
 
 	//almost all, must have complete profile and not blocked
 	default List<User> usersSearchAllIgnoreAll(UserSearchRequest request) {
-		return findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotIn(
+		return findTop50ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotIn(
 				request.getMinDate(), request.getMaxDate(), request.getLikeIds(), request.getHideIds(), request.getBlockIds());
 	}
 
@@ -62,10 +65,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	List<User> findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullOrderByTotalDonationsDesc();
 
-	List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
+	List<User> findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 			Date min, Date max, String intentionText, Collection<Long> likeIds, Collection<Long> hideIds,
 			Collection<Long> blockIds, Collection<String> genderTexts);
+	
+	List<User> findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
+			Date min, Date max, Collection<Long> likeIds, Collection<Long> hideIds,
+			Collection<Long> blockIds, Collection<String> genderTexts);
 
-	List<User> findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotIn(
+	List<User> findTop50ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotIn(
 			Date min, Date max, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds);
 }

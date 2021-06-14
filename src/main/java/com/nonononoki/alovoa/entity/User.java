@@ -244,5 +244,10 @@ public class User implements UserDetails {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		throw new IOException();
 	}
+	
+	public static boolean isCompatible(User currentUser, User user2) {
+		return user2.getPreferedGenders().contains(currentUser.getGender())
+				&& user2.getIntention().getText().equals(currentUser.getIntention().getText());
+	}
 
 }
