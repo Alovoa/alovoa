@@ -1,48 +1,51 @@
 //TODO
 const minAge = 16;
+const maxAge = 99;
 
 $(function() {
 
 	let today = new Date();
 	let startDate = new Date(today.setFullYear(today.getFullYear() - minAge));
+	let endDate = new Date(today.setFullYear(today.getFullYear() - maxAge));
 
 	// Initialize all input of date type.
 	bulmaCalendar.attach('[type="date"]', {
-		showHeader : false,
-		startDate : startDate,
-		maxDate : startDate,
-		showFooter : false,
-		type : 'date',
-		dateFormat : 'YYYY-MM-DD'
+		showHeader: false,
+		startDate: startDate,
+		maxDate: startDate,
+		minDate: endDate,
+		showFooter: false,
+		type: 'date',
+		dateFormat: 'YYYY-MM-DD'
 	});
-	
-		$("#register-form").submit(
-			function(e) {
-				e.preventDefault();
 
-				var actionUrl = e.currentTarget.action;
-				let formdata = $("#register-form").serializeArray().reduce(
-						function(a, x) {
-							a[x.name] = x.value;
-							return a;
-						}, {});
+	$("#register-form").submit(
+		function(e) {
+			e.preventDefault();
 
-				$.ajax({
-					url : actionUrl,
-					headers : {
-						"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
-					},
-					type : 'POST',
-					data : JSON.stringify(formdata),
-					contentType : "application/json",
-					success : function(data) {
-						window.location = "/profile";
-					},
-					error : function(e) {
-						console.log(e);
-						alert(e.responseText);
-					}
-				});
+			var actionUrl = e.currentTarget.action;
+			let formdata = $("#register-form").serializeArray().reduce(
+				function(a, x) {
+					a[x.name] = x.value;
+					return a;
+				}, {});
 
+			$.ajax({
+				url: actionUrl,
+				headers: {
+					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
+				},
+				type: 'POST',
+				data: JSON.stringify(formdata),
+				contentType: "application/json",
+				success: function(data) {
+					window.location = "/profile";
+				},
+				error: function(e) {
+					console.log(e);
+					alert(e.responseText);
+				}
 			});
+
+		});
 });
