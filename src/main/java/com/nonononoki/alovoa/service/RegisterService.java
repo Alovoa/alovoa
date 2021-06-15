@@ -99,7 +99,7 @@ public class RegisterService {
 		if (!isValid) {
 			throw new AlovoaException(publicService.text("backend.error.captcha.invalid"));
 		}
-		
+
 		dto.setEmail(dto.getEmail().toLowerCase());
 
 		if (!isValidEmailAddress(dto.getEmail())) {
@@ -134,7 +134,7 @@ public class RegisterService {
 			throw new AlovoaException(publicService.text("backend.error.register.email-exists"));
 		}
 
-		BaseRegisterDto baseRegisterDto = registerBase(dto);
+		BaseRegisterDto baseRegisterDto = registerBase(dto, false);
 		user = baseRegisterDto.getUser();
 
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -157,7 +157,7 @@ public class RegisterService {
 		}
 
 		dto.setEmail(email);
-		BaseRegisterDto baseRegisterDto = registerBase(dto);
+		BaseRegisterDto baseRegisterDto = registerBase(dto, true);
 		user = baseRegisterDto.getUser();
 		user.setConfirmed(true);
 		userRepo.saveAndFlush(user);
@@ -210,7 +210,7 @@ public class RegisterService {
 	}
 
 	// used by normal registration and oauth
-	private BaseRegisterDto registerBase(RegisterDto dto) throws AlovoaException {
+	private BaseRegisterDto registerBase(RegisterDto dto, boolean isOauth) throws AlovoaException {
 
 		if (dto.getFirstName().length() > firstNameLengthMax || dto.getFirstName().length() < firstNameLengthMin) {
 			throw new AlovoaException("name_invalid");
@@ -222,12 +222,14 @@ public class RegisterService {
 			throw new AlovoaException(publicService.text("backend.error.register.min-age"));
 		}
 
-		if (dto.getPassword().length() < MIN_PASSWORD_SIZE) {
-			throw new AlovoaException("password_too_short");
-		}
+		if (!isOauth) {
+			if (dto.getPassword().length() < MIN_PASSWORD_SIZE) {
+				throw new AlovoaException("password_too_short");
+			}
 
-		if (!dto.getPassword().matches(".*\\d.*") || !dto.getPassword().matches(".*[a-zA-Z].*")) {
-			throw new AlovoaException("password_too_simple");
+			if (!dto.getPassword().matches(".*\\d.*") || !dto.getPassword().matches(".*[a-zA-Z].*")) {
+				throw new AlovoaException("password_too_simple");
+			}
 		}
 
 		User user = new User();
