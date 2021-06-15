@@ -200,8 +200,15 @@ oc
 			<span th:text="#{no-users-found}"></span>
 		</div>
 		
-		<div th:if="${dto.message != null}" th:text="${dto.message}" class="notification is-warning" style="margin-top: 24px;"
-			onclick="document.getElementById('search-message').style.display = 'none'" id="search-message"></div>
+		<div th:if="${dto.message != null}" id="search-message" th:text="${dto.message}" style="display: none;"></div>
+		<script>
+			let searchMessageDiv = $("#search-message");
+			if(searchMessageDiv) {
+				if(searchMessageDiv.text()) {
+					alert(searchMessageDiv.text());
+				}
+			}
+		</script>
 
 		<th:block th:each="user : ${dto.users}">
 			<div class="user-search-card" th:id="${user.idEncoded}">

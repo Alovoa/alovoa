@@ -5,6 +5,7 @@
 .image img {
 	max-height: 400px;
 	max-width: 400px;
+	border-radius: .25rem;
 }
 
 .card {
@@ -113,7 +114,7 @@
 }
 
 .content-background {
-	margin-bottom: 8px;
+	padding-bottom: 8px;
 }
 
 @media screen and (max-width: 1024px) {
@@ -161,7 +162,7 @@
 	.profile-bottom {
 		padding-left: 12px;
 		padding-right: 12px;
-		margin-bottom: 8px;
+		padding-bottom: 8px;
 	}
 	.content {
 		padding: 12px;
@@ -209,8 +210,8 @@
 		border-radius: 0px;
 	}
 	.image img {
-		height: calc(100vh);
-		height: calc(100 * var(--vh));
+		max-height: initial;
+		max-width: initial;
 	}
 	.user-search-div {
 		margin-bottom: 0px;
