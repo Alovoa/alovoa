@@ -67,10 +67,12 @@ button, .button, .input, .select, select {
 
 #main {
 	min-height: 100vh;
+	min-height: calc(100 * var(--vh));
 }
 
 #main-logged-in {
-	min-height: calc(100vh - 50px);;
+	min-height: calc(100vh - 50px);
+	min-height: calc(100 * var(--vh) - 50px);
 }
 
 .navbar-brand {
@@ -270,6 +272,7 @@ input[type=range].slider {
 	display: none;
 	width: 100vw;
 	height: 100vh;
+	height: calc(100 * var(--vh));
 	top: 0;
 	left: 0;
 	right: 0;
@@ -444,9 +447,11 @@ input[type=range].slider {
 	}
 	#main-logged-in {
 		min-height: calc(100vh - 52px);
+		min-height: calc(100 * var(--vh) - 52px);
 	}
 	.user-search-div {
 		min-height: calc(100vh - 52px);
+		min-height: calc(100 * var(--vh) - 52px);
 	}
 	.profile-bottom {
 		height: initial !important;
@@ -478,12 +483,14 @@ input[type=range].slider {
 	}
 	#messages-div {
 		min-height: calc(100vh - 220px) !important;
+		min-height: calc(100 * var(--vh) - 220px) !important;
 	}
 	.modal-content .box {
 		padding: 6px;
 	}
 	#donate-cards-div {
 		height: calc(100vh - 122px) !important;
+		height: calc(100 * var(--vh) - 122px) !important;
 	}
 	.cards {
 		padding: initial !important;

@@ -8,8 +8,8 @@
 }
 
 #messages-div {
-	min-height: calc(100vh - 370px);
-	max-height: calc(100vh - 370px);
+	height: calc(100vh - 370px);
+	height: calc(100 * var(--vh) - 370px);
 	overflow: auto;
 }
 
@@ -72,8 +72,8 @@
 		height: 60px;
 	}
 	#messages-div {
-		min-height: calc(100vh - 370px);
-		max-height: calc(100vh - 370px);
+		height: calc(100vh - 370px);
+		height: calc(100 * var(--vh) - 370px);
 	}
 	#first-name {
 		font-size: 1.7em
@@ -89,7 +89,7 @@
 		padding-right: 8px;
 	}
 	#messages-div {
-		min-height: calc(100vh - 290px);
-		max-height: calc(100vh - 290px);
+		height: calc(100vh - 290px);
+		height: calc(100 * var(--vh) - 290px);
 	}
 }

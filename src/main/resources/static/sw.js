@@ -32,6 +32,7 @@ const staticAssets = [
 	'/js/tools/modal.js',
 	'/js/tools/refresh-captcha.js',
 	
+	'/js/alovoa.js',
 	'/js/admin.js',
 	'/js/delete-account.js',
 	'/js/donate.js',

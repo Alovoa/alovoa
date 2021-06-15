@@ -1,3 +1,7 @@
+#main-logged-in {
+    height: initial;
+}
+
 .notification:not(:last-child) {
 	margin-bottom: 0.5rem;
 }

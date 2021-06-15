@@ -90,9 +90,9 @@
 	margin-bottom: 24px;
 	scroll-snap-type: y mandatory;
 	height: calc(100vh - 108px);
+	height: calc(100 * var(--vh) - 108px);
 	overflow-y: scroll;
 	scrollbar-width: none;
-	scrollbar-height: none;
 }
 
 #search-button-section {
@@ -124,6 +124,7 @@
 		border: initial;
 		border-radius: 0px !important;
 		height: calc(100vh - 236px);
+		height: calc(100 * var(--vh) - 236px);
 		position: relative;
 		padding: 0px;
 	}
@@ -192,6 +193,7 @@
 	.card {
 		padding: 0px;
 		height: calc(100vh - 132px);
+		height: calc(100 * var(--vh) - 132px);
 		padding-top: 0px !important;
 	}
 	.card-image {
@@ -207,8 +209,8 @@
 		border-radius: 0px;
 	}
 	.image img {
-		max-height: calc(100vh - 0px);
-		max-width: calc(100vh - 0px);
+		height: calc(100vh);
+		height: calc(100 * var(--vh));
 	}
 	.user-search-div {
 		margin-bottom: 0px;

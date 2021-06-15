@@ -27,6 +27,7 @@
 	 scroll-snap-type: y mandatory;
 	 overflow-y: scroll;
  	 height: calc(100vh - 182px);
+ 	 height: calc(100 * var(--vh) - 182px);
 }
 
 #donate-bottom {
@@ -67,5 +68,6 @@
 @media screen and (max-width: 302px) {
 	#main-container {
 	    height: calc(100vh - 120px);
+	    height: calc(100 * var(--vh) - 120px);
 	}
 }
