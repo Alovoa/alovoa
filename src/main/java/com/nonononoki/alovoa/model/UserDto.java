@@ -77,6 +77,8 @@ public class UserDto {
 
 	private long numberProfileViews;
 	private long numberSearches;
+	
+	private boolean compatible;
 
 	public static final int ALL = 0;
 	public static final int PROFILE_PICTURE_ONLY = 1;
@@ -155,6 +157,7 @@ public class UserDto {
 			}
 			dto.setDistanceToUser(dist);
 		}
+		dto.setCompatible(User.isCompatible(currentUser, user));		
 		return dto;
 	}
 

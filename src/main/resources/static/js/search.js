@@ -65,7 +65,8 @@ function likeUser(idEnc) {
 		},
 		error: function(e) {
 			console.log(e);
-			alert(getGenericErrorText());
+			hideProfileTile(idEnc);
+			//alert(getGenericErrorText());
 		}
 	});
 
@@ -83,7 +84,8 @@ function hideUser(idEnc) {
 		},
 		error: function(e) {
 			console.log(e);
-			alert(getGenericErrorText());
+			hideProfileTile(idEnc);
+			//alert(getGenericErrorText());
 		}
 	});
 }

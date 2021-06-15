@@ -264,7 +264,7 @@ oc
 												<i class="fa fa-headphones"></i>
 											</button>
 										</div>
-										<div class="right">
+										<div class="right" th:if="${user.compatible}">
 											<button class="button colored is-danger"
 												style="margin-right: 4px;"
 												th:onclick="hideUser([[${user.idEncoded}]])">
