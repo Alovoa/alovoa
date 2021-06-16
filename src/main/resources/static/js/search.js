@@ -1,56 +1,98 @@
 var locationFound = false;
+var map;
+var popup;
 
 $(function() {
 	bulmaSlider.attach();
+
+	let lat = 52.5;
+	let lon = 13.5;
+	map = L.map('map').setView({ lon: lon, lat: lat }, 4);
+
+	// add the OpenStreetMap tiles
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 8,
+		attribution: '<a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+	}).addTo(map);
+	L.control.scale().addTo(map);
+	popup = L.popup();
+	map.on('click', onMapClick);
 });
+
+window.addEventListener('resize', () => {
+	map.invalidateSize(true);
+})
+
+
+function onMapClick(e) {
+	popup
+		.setLatLng(e.latlng)
+		.setContent('<input style="display: none;" id="map-lat" value="' + e.latlng.lat +
+			'"><input style="display: none;" id="map-lon" value="' + e.latlng.lng +
+			'"><button id="map-search-btn" class="button is-colored is-rounded is-primary" style="height: 56px;" onclick="mapSearchButtonClicked()"><i class="fa fa-search"></i></button>')
+		.openOn(map);
+}
+
+function mapSearchButtonClicked() {
+	let lat = $("#map-lat").val();
+	let lon = $("#map-lon").val();
+	searchBase(lat, lon);
+}
 
 function search() {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function(position) {
-
-			let distance = $("#max-distance-slider").val();
-			let sort = $("#sort").val();
-			let url = "/search/users/" + position.coords.latitude + "/"
-				+ position.coords.longitude + "/" + distance + "/" + sort;
-
-			$(".loader-parent").css("display", "flex");
-			$("#main-container").load(url, function() {
-
-				var sliders = [];
-
-				$('.swiper-container').each(function(index, element) {
-					$(this).addClass('s' + index);
-					let slider = new Swiper('.s' + index, {
-						initialSlide: 1,
-						shortSwipes: false
-					});
-
-
-					slider.on('transitionEnd', function() {
-						let id = $(slider.el).attr("id");
-
-						if (slider.activeIndex == 0) {
-							likeUser(id);
-						} else if (slider.activeIndex == 2) {
-							hideUser(id);
-						}
-					});
-
-					sliders.push(slider);
-				});
-
-				$(".loader-parent").css("display", "none");
-
-			});
-			$("#filter-div").addClass("searched");
-			$("#search-div").addClass("searched");
+			searchBase(position.coords.latitude, position.coords.longitude);
 		}, function(e) {
 			console.log(e);
 			alert(getText("search.js.error.no-location"));
 		});
 	} else {
-		alert(getText("search.js.error.no-geolocation"));
+		//alert(getText("search.js.error.no-geolocation"));
+		openModal("map-modal");
+		map.invalidateSize(true);
 	}
+}
+
+function searchBase(lat, lon) {
+	let distance = $("#max-distance-slider").val();
+	let sort = $("#sort").val();
+	let url = "/search/users/" + lat + "/"
+		+ lon + "/" + distance + "/" + sort;
+
+	$(".loader-parent").css("display", "flex");
+	$("#main-container").load(url, function() {
+
+		closeModal();
+
+		var sliders = [];
+
+		$('.swiper-container').each(function(index, element) {
+			$(this).addClass('s' + index);
+			let slider = new Swiper('.s' + index, {
+				initialSlide: 1,
+				shortSwipes: false
+			});
+
+
+			slider.on('transitionEnd', function() {
+				let id = $(slider.el).attr("id");
+
+				if (slider.activeIndex == 0) {
+					likeUser(id);
+				} else if (slider.activeIndex == 2) {
+					hideUser(id);
+				}
+			});
+
+			sliders.push(slider);
+		});
+
+		$(".loader-parent").css("display", "none");
+
+	});
+	$("#filter-div").addClass("searched");
+	$("#search-div").addClass("searched");
 }
 
 function likeUser(idEnc) {

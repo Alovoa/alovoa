@@ -2,6 +2,12 @@
 	background-image: url(/img/search-cover.webp);
 }
 
+#map {
+	height: 90vh;
+	min-height: 360px;
+	width: 100%;
+}
+
 .image img {
 	max-height: 400px;
 	max-width: 400px;
@@ -115,6 +121,10 @@
 
 .content-background {
 	padding-bottom: 8px;
+}
+
+.leaflet-popup-content {
+	width: 56px !important;
 }
 
 @media screen and (max-width: 1024px) {
