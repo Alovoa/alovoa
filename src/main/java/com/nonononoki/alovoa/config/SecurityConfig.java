@@ -44,8 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/admin/**").hasAnyAuthority(ROLE_ADMIN)
-
+		http.authorizeRequests()// .antMatchers("/admin/**").hasAnyAuthority(ROLE_ADMIN)
 				.antMatchers("/css/**").permitAll().antMatchers("/js/**").permitAll().antMatchers("/img/**").permitAll()
 				.antMatchers("/font/**").permitAll().antMatchers("/json/**").permitAll().antMatchers("/oauth2/**")
 				.permitAll().antMatchers("/").permitAll().antMatchers("/login/**").permitAll()
@@ -55,9 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/register/**").permitAll().antMatchers("/captcha/**").permitAll()
 				.antMatchers("/donate-list").permitAll().antMatchers("/donate/received/**").permitAll()
 				.antMatchers("/password/**").permitAll().antMatchers("/favicon.ico").permitAll().antMatchers("/sw.js")
-				.permitAll().antMatchers("/.well-known/assetlinks.json")
-				.permitAll().antMatchers("/text/*").permitAll().antMatchers("/manifest/**").permitAll()
-				.antMatchers("/fonts/**").permitAll()
+				.permitAll().antMatchers("/.well-known/assetlinks.json").permitAll().antMatchers("/text/*").permitAll()
+				.antMatchers("/manifest/**").permitAll().antMatchers("/fonts/**").permitAll()
 
 				.anyRequest().authenticated().and().formLogin().loginPage("/login").and().logout()
 				.deleteCookies("JSESSIONID").logoutUrl("/logout").logoutSuccessUrl("/?logout").and().oauth2Login()

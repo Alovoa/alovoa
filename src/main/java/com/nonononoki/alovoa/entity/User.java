@@ -200,12 +200,11 @@ public class User implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> authorities = new ArrayList<>();
-		final String ROLE_PREFIX = "ROLE_";
 		String role;
 		if (admin) {
-			role = ROLE_PREFIX + SecurityConfig.getRoleAdmin();
+			role = SecurityConfig.getRoleAdmin();
 		} else {
-			role = ROLE_PREFIX + SecurityConfig.getRoleUser();
+			role = SecurityConfig.getRoleUser();
 		}
 		authorities.add(new SimpleGrantedAuthority(role));
 
