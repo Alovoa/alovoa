@@ -8,6 +8,8 @@ import java.util.Locale;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -40,23 +42,37 @@ public class MailService {
 	@Value("${app.company.name}")
 	private String companyName;
 
-	public void sendMail(String to, String from, String subject, String body) throws MessagingException, IOException {
-		MimeMessage mimeMessage = mailSender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, StandardCharsets.UTF_8.name());
-		helper.setFrom(from);
-		helper.setTo(to);
-		helper.setSubject(subject);
-		helper.setText(getEmailText(body), true);
-		mailSender.send(mimeMessage);
+	private static final Logger logger = LoggerFactory.getLogger(MailService.class);
+
+	public boolean sendMail(String to, String from, String subject, String body) {
+		try {
+			MimeMessage mimeMessage = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, StandardCharsets.UTF_8.name());
+			helper.setFrom(from);
+			helper.setTo(to);
+			helper.setSubject(subject);
+			helper.setText(getEmailText(body), true);
+			mailSender.send(mimeMessage);
+			return true;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return false;
+		}
 	}
 
-	public void sendAdminMail(String to, String subject, String body) throws MessagingException, IOException {
+	public void sendAdminMail(String to, String subject, String body) {
 		sendMail(to, defaultFrom, subject, body);
 	}
 
 	public void sendAdminMailAll(String subject, String body, List<User> users) throws MessagingException, IOException {
+		boolean failed = false;
 		for (User u : users) {
-			sendMail(u.getEmail(), defaultFrom, subject, body);
+			if (!sendMail(u.getEmail(), defaultFrom, subject, body)) {
+				failed = true;
+			}
+		}
+		if (failed) {
+			throw new MessagingException("One or more emails failed to send. Please check your logs.");
 		}
 	}
 
