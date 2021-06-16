@@ -10,6 +10,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,6 +27,9 @@ public class LoginResource {
 
 	@Autowired
 	private ProfileResource profileResource;
+	
+	@Value("${app.privacy.update-date}")
+	private String privacyDate;
 
 	@GetMapping("/login")
 	public ModelAndView login() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
@@ -37,6 +41,8 @@ public class LoginResource {
 			return profileResource.profile();
 		}
 
-		return new ModelAndView("login");
+		ModelAndView mav = new ModelAndView("login");
+		mav.addObject("privacyPolicyDate", privacyDate);
+		return mav;
 	}
 }
