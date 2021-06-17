@@ -289,9 +289,6 @@ input[type=range].slider {
 		background-color: #121212;
 		color: white;
 	}
-	#addImageDiv path, .profile-pic path {
-		color: #121212;
-	}
 	.input {
 		background-color: #121212;
 		color: white;
