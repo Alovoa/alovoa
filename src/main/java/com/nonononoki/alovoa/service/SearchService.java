@@ -58,9 +58,6 @@ public class SearchService {
 	@Value("${app.search.max.distance}")
 	private int maxDistance;
 
-	@Value("${app.age.legal}")
-	private int ageLegal;
-
 	@Value("${app.age.min}")
 	private int ageMin;
 
@@ -74,6 +71,8 @@ public class SearchService {
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 
+		int ageLegal = Tools.AGE_LEGAL;
+		
 		if (distance > maxDistance) {
 			throw new AlovoaException("max_distance_exceeded");
 		}
@@ -92,11 +91,11 @@ public class SearchService {
 		int minAge = user.getPreferedMinAge();
 		int maxAge = user.getPreferedMaxAge();
 
-		if (isLegalAge && minAge < this.ageLegal) {
-			minAge = this.ageLegal;
+		if (isLegalAge && minAge < ageLegal) {
+			minAge = ageLegal;
 		}
-		if (!isLegalAge && maxAge >= this.ageLegal) {
-			maxAge = this.ageLegal - 1;
+		if (!isLegalAge && maxAge >= ageLegal) {
+			maxAge = ageLegal - 1;
 		}
 
 		Date minDate = Tools.ageToDate(maxAge);

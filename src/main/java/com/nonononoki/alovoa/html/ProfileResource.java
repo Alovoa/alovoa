@@ -51,9 +51,6 @@ public class ProfileResource {
 	@Value("${app.vapid.public}")
 	private String vapidPublicKey;
 
-	@Value("${app.age.legal}")
-	private int ageLegal;
-
 	@Value("${app.media.max-size}")
 	private int mediaMaxSize;
 
@@ -79,7 +76,7 @@ public class ProfileResource {
 			return adminResource.admin();
 		} else {
 			int age = Tools.calcUserAge(user);
-			boolean isLegal = age >= ageLegal;
+			boolean isLegal = age >= Tools.AGE_LEGAL;
 			ModelAndView mav = new ModelAndView("profile");
 			mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.ALL));
 			mav.addObject("genders", genderRepo.findAll());

@@ -141,9 +141,6 @@ public class UserService {
 	@Value("${app.age.max}")
 	private int maxAge;
 
-	@Value("${app.age.legal}")
-	private int ageLegal;
-
 	@Value("${app.profile.image.length}")
 	private int imageLength;
 
@@ -406,7 +403,7 @@ public class UserService {
 		Date now = new Date();
 		if (user.getDates().getIntentionChangeDate() == null
 				|| now.getTime() >= user.getDates().getIntentionChangeDate().getTime() + intentionDelay) {
-			boolean isLegal = Tools.calcUserAge(user) >= ageLegal;
+			boolean isLegal = Tools.calcUserAge(user) >= Tools.AGE_LEGAL;
 			if (!isLegal && intention == UserIntention.SEX) {
 				throw new AlovoaException("not_supported");
 			}
@@ -630,14 +627,6 @@ public class UserService {
 
 		if (currUser.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
 			throw new AlovoaException("is_blocked");
-		}
-
-		int userAge = Tools.calcUserAge(user);
-		int currentUserAge = Tools.calcUserAge(currUser);
-		boolean isUserLegalAge = userAge >= ageLegal;
-		boolean isCurrentUserLegalAge = currentUserAge >= ageLegal;
-		if (isUserLegalAge != isCurrentUserLegalAge) {
-			throw new AlovoaException("one_user_is_minor");
 		}
 		
 		if(!User.isCompatible(currUser, user)) {

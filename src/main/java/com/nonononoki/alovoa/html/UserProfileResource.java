@@ -10,7 +10,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,9 +36,6 @@ public class UserProfileResource {
 
 	@Autowired
 	private ProfileResource profileResource;
-
-	@Value("${app.age.legal}")
-	private int ageLegal;
 
 	@GetMapping("/profile/view/{idEncoded}")
 	public ModelAndView profileView(@PathVariable String idEncoded) throws NumberFormatException, InvalidKeyException,
@@ -68,8 +64,7 @@ public class UserProfileResource {
 			mav.addObject("user", userDto);
 			mav.addObject("currUser", currUserDto);
 
-			boolean isAgeCompatible = userDto.getAge() < ageLegal == currUserDto.getAge() < ageLegal;
-			mav.addObject("isAgeCompatible", isAgeCompatible && User.isCompatible(user, userView));
+			mav.addObject("compatible", User.isCompatible(user, userView));
 
 			return mav;
 

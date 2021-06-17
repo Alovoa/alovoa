@@ -177,7 +177,7 @@
 							<i class="fa fa-flag"></i>
 						</button>
 					</div>
-					<div class="right" th:if="${isAgeCompatible}" style="margin-bottom: 12px;">
+					<div class="right" th:if="${compatible}" style="margin-bottom: 12px;">
 						<button class="button colored is-danger"
 							th:unless="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
 							th:onclick="hideUser([[${user.idEncoded}]])">
