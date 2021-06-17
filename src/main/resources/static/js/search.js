@@ -29,7 +29,7 @@ function onMapClick(e) {
 		.setLatLng(e.latlng)
 		.setContent('<input style="display: none;" id="map-lat" value="' + e.latlng.lat +
 			'"><input style="display: none;" id="map-lon" value="' + e.latlng.lng +
-			'"><button id="map-search-btn" class="button is-colored is-rounded is-primary" style="height: 56px;" onclick="mapSearchButtonClicked()"><i class="fa fa-search"></i></button>')
+			'"><button id="map-search-btn" class="button colored is-rounded is-primary" style="height: 56px;" onclick="mapSearchButtonClicked()"><i class="fa fa-search"></i></button>')
 		.openOn(map);
 }
 
