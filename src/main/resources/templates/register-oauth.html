@@ -12,7 +12,6 @@
 <th:block th:replace="fragments.html::bulma"></th:block>
 <th:block th:replace="fragments.html::ui-design"></th:block>
 <link rel="stylesheet" href="/css/lib/bulma-switch.min.css" />
-<link rel="stylesheet" href="/css/lib/bulma-calendar.min.css" />
 <link rel="stylesheet" href="/css/alovoa.css" />
 <title th:text="#{register.title}"></title>
 </head>
@@ -41,7 +40,7 @@
 							<label class="label" th:text="#{dob}" style="float: left;"></label><span
 								class="asterisk">*</span>
 							<div class="control">
-								<input type="date" name="dateOfBirth" required>
+								<input id="dob-input" class="input" type="date" name="dateOfBirth" required>
 							</div>
 						</div>
 
@@ -105,7 +104,6 @@
 
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
-	<script src="/js/lib/bulma-calendar.min.js"></script>
 	<script src="/js/alovoa.js"></script>
 	<script src="/js/register-oauth.js"></script>
 

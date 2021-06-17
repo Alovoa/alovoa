@@ -9,13 +9,12 @@
  */
 
 
-const cacheName = '3';
+const cacheName = '3´4';
 const staticAssets = [
 
 	'/sw.js',
 	'/favicon.ico',
 
-	'/js/lib/bulma-calendar.min.js',
 	'/js/lib/bulma-collapsible.min.js',
 	'/js/lib/bulma-slider.min.js',
 	'/js/lib/cutter.min.js',
@@ -55,7 +54,6 @@ const staticAssets = [
 	'/css/lib/bulma.orange.css',
 	'/css/lib/bulma.purple.css',
 	'/css/lib/bulma.blue.css',
-	'/css/lib/bulma-calendar.min.css',
 	'/css/lib/bulma-collapsible.min.css',
 	'/css/lib/bulma-slider.min.css',
 	'/css/lib/bulma-switch.min.css',

@@ -200,16 +200,8 @@ button, .button, .input, .select, select {
 	visibility: hidden;
 }
 
-.datetimepicker-clear-button {
-	display: none;
-}
-
 input[type=range].slider {
 	margin: initial;
-}
-
-.datepicker-nav svg {
-	color: white;
 }
 
 #navbar-item-register {
@@ -241,31 +233,6 @@ input[type=range].slider {
  background:#ec417a
 }
 */
-
-.datetimepicker-dummy-input {
-	min-width: 232px;
-}
-
-.datepicker-nav .button.is-text:active, .datepicker-nav .button.is-text:focus
-{
-	background: #ec417a;
-}
-
-.datepicker-year span, .datepicker-month, .date-item {
-	color: #4a4a4a !important;
-}
-
-.datepicker-nav-year {
-	border: white 1px solid;
-	border-radius: 4px;
-	padding: 2px;
-	padding-right: 4px;
-	padding-left: 4px;
-}
-
-.datepicker-nav-month {
-	line-height: 1.8;
-}
 
 .loader-parent {
 	position: fixed;
@@ -318,8 +285,7 @@ input[type=range].slider {
 		{
 		background-color: #121212;
 	}
-	.button:not(.colored):not(.datetimepicker-footer-cancel):not(.datepicker-nav-previous):not(.datepicker-nav-next)::hover
-		{
+	.button:not(.colored) {
 		background-color: #121212;
 		color: white;
 	}
@@ -363,9 +329,6 @@ input[type=range].slider {
 	.card, .box {
 		box-shadow: 0 .5em 1em -.125em rgba(10, 10, 10, .9), 0 0 0 1px
 			rgba(10, 10, 10, .9);
-	}
-	.datetimepicker-dummy-input {
-		color: white !important;
 	}
 	@media screen and (max-width: 1024px) {
 		.content-background {

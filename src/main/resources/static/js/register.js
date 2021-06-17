@@ -5,19 +5,13 @@ const maxAge = 99;
 $(function() {
 
 	let today = new Date();
-	let startDate = new Date(today.setFullYear(today.getFullYear() - minAge));
-	let endDate = new Date(today.setFullYear(today.getFullYear() - maxAge));
-
-	// Initialize all input of date type.
-	bulmaCalendar.attach('[type="date"]', {
-		showHeader: false,
-		startDate: startDate,
-		maxDate: startDate,
-		minDate: endDate,
-		showFooter: false,
-		type: 'date',
-		dateFormat: 'YYYY-MM-DD'
-	});
+	let startDate = new Date(today.setFullYear(today.getFullYear() - minAge)).toISOString().split('T')[0];
+	let endDate = new Date(today.setFullYear(today.getFullYear() - maxAge)).toISOString().split('T')[0];
+	
+	let dobInput = $("#dob-input");
+	dobInput.val(startDate);
+	dobInput.attr('max', startDate); 
+	dobInput.attr('min', endDate); 
 
 	bulmaCollapsible.attach();
 
