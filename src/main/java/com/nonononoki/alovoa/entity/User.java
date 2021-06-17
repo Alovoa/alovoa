@@ -246,6 +246,10 @@ public class User implements UserDetails {
 	}
 
 	public static boolean isCompatible(User user1, User user2) {
+		if (user2.getPreferedGenders() == null || user1.getPreferedGenders() == null || user1.getDates() == null
+				|| user2.getDates() == null) {
+			return false;
+		}
 		return Tools.calcUserAge(user2) < Tools.AGE_LEGAL == Tools.calcUserAge(user1) < Tools.AGE_LEGAL
 				&& user2.getPreferedGenders().contains(user1.getGender())
 				&& user1.getPreferedGenders().contains(user2.getGender())

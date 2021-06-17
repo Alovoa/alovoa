@@ -127,12 +127,12 @@ public class SearchService {
 		ignoreIds.addAll(
 				user.getBlockedByUsers().stream().map(o -> o.getUserFrom().getId()).collect(Collectors.toSet()));
 
-		List<User> filteredUsers = filterUsers(users, ignoreIds, user);
+		List<User> filteredUsers = filterUsers(users, ignoreIds, user, false);
 
 		if (filteredUsers.size() < maxResults && users.size() >= UserRepository.MAX_USERS_SEARCH) {
 			List<User> allUsers = userRepo.usersSearchAll(request);
 			if (allUsers.size() != users.size()) {
-				filteredUsers = filterUsers(allUsers, ignoreIds, user);
+				filteredUsers = filterUsers(allUsers, ignoreIds, user, false);
 			}
 		}
 
@@ -141,7 +141,7 @@ public class SearchService {
 		}
 		filteredUsers.clear();
 		users = userRepo.usersSearchAllIgnoreLocation(request);
-		filteredUsers = filterUsers(users, ignoreIds, user);
+		filteredUsers = filterUsers(users, ignoreIds, user, true);
 
 		if (!filteredUsers.isEmpty()) {
 			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
@@ -150,7 +150,7 @@ public class SearchService {
 
 		filteredUsers.clear();
 		users = userRepo.usersSearchAllIgnoreLocationAndIntention(request);
-		filteredUsers = filterUsers(users, ignoreIds, user);
+		filteredUsers = filterUsers(users, ignoreIds, user, false);
 		if (!filteredUsers.isEmpty()) {
 			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
 					.message(publicService.text("search.warning.global")).global(true).build();
@@ -158,7 +158,7 @@ public class SearchService {
 
 		filteredUsers.clear();
 		users = userRepo.usersSearchAllIgnoreLocation(request);
-		filteredUsers = filterUsers(users, ignoreIds, user);
+		filteredUsers = filterUsers(users, ignoreIds, user, true);
 
 		filteredUsers.clear();
 		if (isLegalAge) {
@@ -176,10 +176,13 @@ public class SearchService {
 
 	}
 
-	private List<User> filterUsers(List<User> users, Set<Long> ignoreIds, User user) {
+	private List<User> filterUsers(List<User> users, Set<Long> ignoreIds, User user, boolean ignoreGenders) {
 		List<User> filteredUsers = new ArrayList<>();
 		for (User u : users) {
-			if (ignoreIds.contains(u.getId()) || !u.getPreferedGenders().contains(user.getGender())) {
+			if (ignoreIds.contains(u.getId())) {
+				continue;
+			}
+			if(!ignoreGenders && !u.getPreferedGenders().contains(user.getGender())) {
 				continue;
 			}
 			// square is fine, reduces CPU load when not calculating radius distance

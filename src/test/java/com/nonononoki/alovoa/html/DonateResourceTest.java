@@ -41,39 +41,40 @@ class DonateResourceTest {
 
 	@Autowired
 	private UserRepository userRepo;
-	
+
 	@Autowired
 	private ConversationRepository conversationRepo;
-	
+
 	@Value("${app.first-name.length-max}")
 	private int firstNameLengthMax;
 
 	@Value("${app.first-name.length-min}")
 	private int firstNameLengthMin;
-	
+
 	@Autowired
 	private DonateResource donateResource;
 
 	@MockBean
 	private AuthService authService;
-	
+
 	@MockBean
 	private MailService mailService;
-	
+
 	private List<User> testUsers;
-	
+
 	@BeforeEach
 	void before() throws Exception {
-		Mockito.doNothing().when(mailService).sendMail(Mockito.any(String.class), any(String.class), any(String.class),
-				any(String.class));
-		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
+		Mockito.when(mailService.sendMail(Mockito.any(String.class), any(String.class), any(String.class),
+				any(String.class))).thenReturn(true);
+		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax,
+				firstNameLengthMin);
 	}
-	
+
 	@AfterEach
 	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
-	
+
 	@Test
 	void test() throws Exception {
 		Mockito.when(authService.getCurrentUser()).thenReturn(testUsers.get(0));

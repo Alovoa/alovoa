@@ -115,8 +115,8 @@ class SearchAndMessageServiceTest {
 
 	@BeforeEach
 	void before() throws Exception {
-		Mockito.doNothing().when(mailService).sendMail(Mockito.any(String.class), any(String.class), any(String.class),
-				any(String.class));
+		Mockito.when(mailService.sendMail(Mockito.any(String.class), any(String.class), any(String.class),
+				any(String.class))).thenReturn(true);
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax,
 				firstNameLengthMin);
 	}
@@ -251,7 +251,7 @@ class SearchAndMessageServiceTest {
 		Assert.assertEquals(1, ageSearchDto1.size());
 		userService.updateMaxAge(USER3_AGE - 1);
 		List<UserDto> ageSearchDto2 = searchService.search(0.0, 0.0, 50, 1).getUsers();
-		Assert.assertEquals(2, ageSearchDto2.size()); //TODO check for incompatible
+		Assert.assertEquals(2, ageSearchDto2.size()); // TODO check for incompatible
 
 		user2.getDates().setDateOfBirth(Tools.localDateToDate(LocalDateTime.now().minusYears(minAge).toLocalDate()));
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);

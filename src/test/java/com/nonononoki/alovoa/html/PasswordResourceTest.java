@@ -64,8 +64,8 @@ class PasswordResourceTest {
 
 	@BeforeEach
 	void before() throws Exception {
-		Mockito.doNothing().when(mailService).sendMail(Mockito.any(String.class), any(String.class), any(String.class),
-				any(String.class));
+		Mockito.when(mailService.sendMail(Mockito.any(String.class), any(String.class), any(String.class),
+				any(String.class))).thenReturn(true);
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax,
 				firstNameLengthMin);
 	}

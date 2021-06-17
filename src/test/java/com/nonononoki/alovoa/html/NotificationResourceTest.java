@@ -31,7 +31,7 @@ import com.nonononoki.alovoa.service.UserService;
 @ActiveProfiles("test")
 @Transactional
 class NotificationResourceTest {
-	
+
 	@Autowired
 	private RegisterService registerService;
 
@@ -43,16 +43,16 @@ class NotificationResourceTest {
 
 	@Autowired
 	private UserRepository userRepo;
-	
+
 	@Autowired
 	private ConversationRepository conversationRepo;
-	
+
 	@Value("${app.first-name.length-max}")
 	private int firstNameLengthMax;
 
 	@Value("${app.first-name.length-min}")
 	private int firstNameLengthMin;
-	
+
 	@Autowired
 	private NotificationResource notificationResource;
 
@@ -61,28 +61,29 @@ class NotificationResourceTest {
 
 	@MockBean
 	private MailService mailService;
-	
+
 	private List<User> testUsers;
-	
+
 	@BeforeEach
 	void before() throws Exception {
-		Mockito.doNothing().when(mailService).sendMail(Mockito.any(String.class), any(String.class), any(String.class),
-				any(String.class));
-		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
+		Mockito.when(mailService.sendMail(Mockito.any(String.class), any(String.class), any(String.class),
+				any(String.class))).thenReturn(true);
+		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax,
+				firstNameLengthMin);
 	}
-	
+
 	@AfterEach
 	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
-	
+
 	@Test
 	void test() throws Exception {
 		Mockito.when(authService.getCurrentUser()).thenReturn(testUsers.get(0));
-		
+
 		User user = testUsers.get(2);
 		User currUser = testUsers.get(1);
-		
+
 		UserNotification not = new UserNotification();
 		not.setContent(UserNotification.USER_LIKE);
 		not.setDate(new Date());
@@ -90,7 +91,7 @@ class NotificationResourceTest {
 		not.setUserTo(user);
 		currUser.getNotifications().add(not);
 		userRepo.saveAndFlush(currUser);
-		
+
 		notificationResource.notification();
 	}
 }
