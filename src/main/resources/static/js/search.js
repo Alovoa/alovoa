@@ -44,7 +44,9 @@ function search() {
 		navigator.geolocation.getCurrentPosition(function(position) {
 			searchBase(position.coords.latitude, position.coords.longitude);
 		}, function(e) {
-			console.log(e);
+			//console.log(e);	
+			openModal("map-modal");
+			map.invalidateSize(true);
 			alert(getText("search.js.error.no-location"));
 		});
 	} else {
