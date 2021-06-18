@@ -141,7 +141,7 @@ public class SearchService {
 		}
 		filteredUsers.clear();
 		users = userRepo.usersSearchAllIgnoreLocation(request);
-		filteredUsers = filterUsers(users, ignoreIds, user, true);
+		filteredUsers = filterUsers(users, ignoreIds, user, false);
 
 		if (!filteredUsers.isEmpty()) {
 			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
