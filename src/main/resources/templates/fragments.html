@@ -203,8 +203,8 @@ oc
 		<div th:if="${dto.message != null}" id="search-message" th:text="${dto.message}" style="display: none;"></div>
 		<script>
 			let searchMessageDiv = $("#search-message");
-			if(searchMessageDiv) {
-				if(searchMessageDiv.text()) {
+			if (searchMessageDiv) {
+				if (searchMessageDiv.text()) {
 					alert(searchMessageDiv.text());
 				}
 			}
@@ -233,23 +233,23 @@ oc
 											<div class="content">
 												<div class="media">
 													<div class="full-width">
-														<div class="left" style="font-size: 2em"
-															th:text="${user.firstName}"></div>
-														<div class="right" style="font-size: 1.5em">
-															<span th:text="#{age}"></span><span>: </span><span
+														<div class="left first-name" style="font-size: 2em" th:text="${user.firstName}"
+															th:classappend="${user.gender.text == 'male' ? 'male' : user.gender.text == 'female' ? 'female' : 'other'}"></div>
+														<div class="left" style="font-size: 1.5em; padding-top: 6px;">
+															<span>, </span><span
 																th:text="${user.age}"></span>
+														</div>
+														<div class="right" style="font-size: 1.2em; padding-top: 6px;">
+															<i class="fa fa-map-marker-alt"></i>
+															<span th:text="${user.distanceToUser}"></span><span> </span><span th:text="#{km}"></span>
 														</div>
 													</div>
 												</div>
-												<div class="media" style="padding-bottom: 16px;">
+												<div class="media" style="padding-bottom: 8px; padding-top: 8px; font-size: 0.9em;">
 													<div class="full-width">
-														<div class="left" style="font-size: 1.2em">
+														<div class="left">
 															<span th:text="#{last-active}"></span><span>: </span><span
 																th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
-														</div>
-														<div class="right" style="font-size: 1.2em">
-															<span th:text="${user.distanceToUser}"></span><span>
-															</span><span th:text="#{km-from-you}"></span>
 														</div>
 													</div>
 												</div>
@@ -328,11 +328,15 @@ oc
 				<div class="content">
 					<div class="media">
 						<div class="full-width">
-							<div class="left" style="font-size: 2em"
-								th:text="${donation.user.firstName}"></div>
-							<div class="right" style="font-size: 1.5em">
-								<span th:text="#{age}"></span><span>: </span><span
+							<div class="left first-name" style="font-size: 2em" th:text="${donation.user.firstName}"
+								th:classappend="${donation.user.gender.text == 'male' ? 'male' : donation.user.gender.text == 'female' ? 'female' : 'other'}"></div>
+							<div class="left" style="font-size: 1.5em; padding-top: 6px;">
+								<span>, </span><span
 									th:text="${donation.user.age}"></span>
+							</div>
+							<div class="right" style="font-size: 1.2em; padding-top: 6px;">
+								<i class="fa fa-map-marker-alt"></i>
+								<span th:text="${donation.user.distanceToUser}"></span><span> </span><span th:text="#{km}"></span>
 							</div>
 						</div>
 					</div>
@@ -344,10 +348,6 @@ oc
 									th:if="${filter == 1}"></span> <span
 									th:text="${#numbers.formatDecimal(donation.user.totalDonations, 1, 2, 'POINT') + ' €'}"
 									th:if="${filter == 2}"></span>
-							</div>
-							<div class="right" style="font-size: 1.2em">
-								<span th:text="${donation.user.distanceToUser}"></span><span>
-								</span><span th:text="#{km-from-you}"></span>
 							</div>
 						</div>
 					</div>

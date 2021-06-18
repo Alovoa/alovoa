@@ -258,6 +258,14 @@ input[type=range].slider {
 	display: none;
 }
 
+.first-name.female {
+	color: #880E4f;
+}
+
+.first-name.male {
+	color: #0D47A1;
+}
+
 @media screen and (min-width: 1024px) {
 	.is-collapsible:not(.always-collapse) {
 		height: initial !important;
@@ -326,6 +334,13 @@ input[type=range].slider {
 	.card, .box {
 		box-shadow: 0 .5em 1em -.125em rgba(10, 10, 10, .9), 0 0 0 1px
 			rgba(10, 10, 10, .9);
+	}
+	.first-name.female {
+		color: #FFD2E1;
+	}
+	
+	.first-name.male {
+		color: #B6E0FF;;
 	}
 	@media screen and (max-width: 1024px) {
 		.content-background {

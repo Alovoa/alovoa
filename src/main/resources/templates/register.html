@@ -47,7 +47,8 @@
 									<label class="label" th:text="#{first-name}" style="float: left;"></label><span
 										class="asterisk">*</span>
 									<div class="control">
-										<input class="input" type="text" name="firstName" minlength="2" maxlength="20" required>
+										<input class="input" type="text" name="firstName" minlength="2" maxlength="20"
+											required>
 									</div>
 								</div>
 								<div class="field">
@@ -61,7 +62,8 @@
 									<label class="label" th:text="#{dob}" style="float: left;"></label><span
 										class="asterisk">*</span>
 									<div class="control">
-										<input id="dob-input" class="input" type="date" name="dateOfBirth" style="width: 100%;" required>
+										<input id="dob-input" class="input" type="date" name="dateOfBirth"
+											style="width: 100%;" required>
 									</div>
 								</div>
 
@@ -118,14 +120,11 @@
 
 								<div class="register-warning" th:text="#{register.asterisk-warning}"></div>
 
-								<div class="field is-grouped" style="display: flex; justify-content: flex-start;">
-									<div class="control">
-										<button class="button is-link" type="submit" th:text="#{submit}"></button>
-									</div>
-									<div class="control">
-										<button class="button is-danger is-outlined" type="button"
-											onclick="window.location = '/'" th:text="#{cancel}"></button>
-									</div>
+								<div class="field is-grouped" style="height: 42px; display: block;">
+									<button style="float: right;" class="button colored is-link" type="submit"
+										th:text="#{submit}"></button>
+									<button style="float: left;" class="button is-danger is-outlined" type="button"
+										onclick="window.location = '/'" th:text="#{cancel}"></button>
 								</div>
 							</form>
 						</div>
