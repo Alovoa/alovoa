@@ -211,7 +211,7 @@ public class SearchService {
 		}
 
 		if (sort == SORT_DISTANCE) {
-			userDtos = userDtos.stream().sorted(Comparator.comparing(UserDto::getDistanceToUser).reversed())
+			userDtos = userDtos.stream().sorted(Comparator.comparing(UserDto::getDistanceToUser))
 					.collect(Collectors.toList());
 		} else if (sort == SORT_ACTIVE_DATE) {
 			userDtos = userDtos.stream()
