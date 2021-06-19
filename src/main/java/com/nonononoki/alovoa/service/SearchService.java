@@ -153,14 +153,9 @@ public class SearchService {
 		filteredUsers = filterUsers(users, ignoreIds, user, false);
 		if (!filteredUsers.isEmpty()) {
 			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
-					.message(publicService.text("search.warning.global")).global(true).build();
+					.message(publicService.text("search.warning.incompatible")).global(true).build();
 		}
 
-		filteredUsers.clear();
-		users = userRepo.usersSearchAllIgnoreLocation(request);
-		filteredUsers = filterUsers(users, ignoreIds, user, true);
-
-		filteredUsers.clear();
 		if (isLegalAge) {
 			maxDate = Tools.ageToDate(ageLegal);
 			minDate = Tools.ageToDate(ageMax);
@@ -170,8 +165,19 @@ public class SearchService {
 		}
 		request.setMinDate(minDate);
 		request.setMaxDate(maxDate);
+		
+		filteredUsers.clear();
+		users = userRepo.usersSearchAllIgnoreLocationAndIntention(request);
+		filteredUsers = filterUsers(users, ignoreIds, user, false);
+		if (!filteredUsers.isEmpty()) {
+			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
+					.message(publicService.text("search.warning.incompatible")).global(true).build();
+		}
+		
+		filteredUsers.clear();
 		users = userRepo.usersSearchAllIgnoreAll(request);
-		return SearchDto.builder().users(searchResultstoUserDto(users, sort, user))
+		filteredUsers = filterUsers(users, ignoreIds, user, true);
+		return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
 				.message(publicService.text("search.warning.incompatible")).incompatible(true).build();
 
 	}
