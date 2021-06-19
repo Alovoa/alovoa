@@ -95,7 +95,6 @@
 
 .user-search-div {
 	margin-bottom: 24px;
-	scroll-snap-type: y mandatory;
 	height: calc(100vh - 108px);
 	height: calc(100 * var(--vh) - 108px);
 	overflow-y: scroll;
@@ -180,6 +179,9 @@
 	}
 	.user-search-card {
 		height: 100%;
+	}
+	.user-search-div {
+		scroll-snap-type: y mandatory;
 	}
 }
 /*very small screens*/
