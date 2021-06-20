@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html th:lang="${lang}">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-title" content="Alovoa">
+	<link rel="manifest" href="/manifest/manifest.json">
+
+	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+	<th:block th:replace="fragments.html::bulma"></th:block>
+	<th:block th:replace="fragments.html::ui-design"></th:block>
+	<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
+	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
+	<link rel="stylesheet" href="/css/alovoa.css" />
+	<link rel="stylesheet" href="/css/notification.css" />
+	<title th:text="#{liked-users.title}"></title>
+</head>
+
+<body>
+	<div id="main-logged-in">
+		<header th:insert="fragments.html::header-logged-in"></header>
+		<section class="container" id="main-container">
+			<div class="section">
+				<div class="container" style="width: 100%;">
+					<div class="card is-horizontal notification-card" th:each="user : ${users}" style="width: 100%;"
+						th:onclick="viewProfile([[${user.idEncoded}]])">
+						<div class="card-image">
+							<figure class="image">
+								<img th:src="${user.profilePicture}" class="profile-pic" style="margin: 0;">
+							</figure>
+						</div>
+						<div class="card-content">
+							<div class="notification-div full-width"
+								style="height: 100%; display: flex; line-height: initial; align-items: center; justify-content: center;">
+								<div>
+									<span th:text="${user.firstName + ', ' + user.age}"></span>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<div class="loader-parent">
+		<div class="loader"></div>
+	</div>
+
+	<script>
+		function viewProfile(idEnc) {
+			let url = 'profile/view/' + idEnc;
+			window.open(url, '_blank').focus();
+		}
+	</script>
+
+	<footer th:replace="fragments.html::navigation"></footer>
+
+	<script src="/js/lib/fontawesome.all.js"></script>
+	<script src="/js/lib/jquery.min.js"></script>
+	<script src="/js/tools/get-notification.js"></script>
+	<script src="/js/tools/get-text.js"></script>
+	<script src="/js/tools/loader.js"></script>
+	<script src="/js/alovoa.js"></script>
+</body>
+
+</html>
