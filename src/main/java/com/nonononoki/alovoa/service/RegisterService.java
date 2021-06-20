@@ -221,6 +221,9 @@ public class RegisterService {
 		if (userAge < minAge) {
 			throw new AlovoaException(publicService.text("backend.error.register.min-age"));
 		}
+		if (userAge > maxAge) {
+			throw new AlovoaException(publicService.text("max_age_exceeded"));
+		}
 
 		if (!isOauth) {
 			if (dto.getPassword().length() < MIN_PASSWORD_SIZE) {
