@@ -1,12 +1,14 @@
 var locationFound = false;
 var map;
 var popup;
+var lat;
+var long;
 
 $(function() {
 	bulmaSlider.attach();
 
-	let lat = 52.5;
-	let lon = 13.5;
+	lat = 52.5;
+	lon = 13.5;
 	map = L.map('map').setView({ lon: lon, lat: lat }, 4);
 
 	// add the OpenStreetMap tiles
@@ -34,15 +36,17 @@ function onMapClick(e) {
 }
 
 function mapSearchButtonClicked() {
-	let lat = $("#map-lat").val();
-	let lon = $("#map-lon").val();
-	searchBase(lat, lon);
+	lat = $("#map-lat").val();
+	lon = $("#map-lon").val();
+	searchBase();
 }
 
 function search() {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function(position) {
-			searchBase(position.coords.latitude, position.coords.longitude);
+			lat = position.coords.latitude;
+			lon = position.coords.longitude;
+			searchBase();
 		}, function(e) {
 			//console.log(e);	
 			openModal("map-modal");
@@ -56,7 +60,7 @@ function search() {
 	}
 }
 
-function searchBase(lat, lon) {
+function searchBase() {
 	let distance = $("#max-distance-slider").val();
 	let sort = $("#sort").val();
 	let url = "/search/users/" + lat + "/"
@@ -155,6 +159,7 @@ function hideProfileTile(id) {
 	let tile = $("#" + id);
 	$(tile).fadeOut(200, function() {
 		tile.hide();
+		searchAgain();
 	});
 }
 
@@ -200,4 +205,20 @@ function playPauseAudio(userIdEnc) {
 function viewProfile(idEnc) {
 	let url = 'profile/view/' + idEnc;
 	window.open(url, '_blank').focus();
+}
+
+function searchAgain() {
+	if(!hasVisibleUsers()) {
+		searchBase();
+	}
+}
+
+function hasVisibleUsers() {
+	let hasUsers = false;
+	$(".user-search-card").each(function(i, obj) {
+		if(!hasUsers && $(obj).is(":visible")) {
+			hasUsers = true;
+		}
+	});
+	return hasUsers;
 }

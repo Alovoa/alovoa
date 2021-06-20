@@ -202,11 +202,13 @@ oc
 		</div>
 		
 		<div th:if="${dto.message != null}" id="search-message" th:text="${dto.message}" style="display: none;"></div>
-		<script>
-			let searchMessageDiv = $("#search-message");
-			if (searchMessageDiv) {
-				if (searchMessageDiv.text()) {
-					alert(searchMessageDiv.text());
+		<script> 
+			{
+				let searchMessageDiv = $("#search-message");
+				if (searchMessageDiv) {
+					if (searchMessageDiv.text()) {
+						alert(searchMessageDiv.text());
+					}
 				}
 			}
 		</script>
