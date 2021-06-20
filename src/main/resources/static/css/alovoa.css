@@ -14,7 +14,7 @@ html {
 
 * {
 	overflow-wrap: anywhere;
-	scrollbar-width: none;
+	scrollbar-width: thin;
 	font-family: "Montserrat" !important;
 }
 
@@ -264,6 +264,12 @@ input[type=range].slider {
 
 .first-name.male {
 	color: #0D47A1;
+}
+
+@media screen and (max-width: 1024px) {
+	* {
+		scrollbar-width: none;
+	}
 }
 
 @media screen and (min-width: 1024px) {

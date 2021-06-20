@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html th:lang="${lang}">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Alovoa">
-<link rel="manifest" href="/manifest/manifest.json">
 
-<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-<th:block th:replace="fragments.html::bulma"></th:block>
-<th:block th:replace="fragments.html::ui-design"></th:block>
-<link rel="stylesheet" href="/css/lib/css-loaders.css" />
-<link rel="stylesheet" href="/css/alovoa.css" />
-<link rel="stylesheet" href="/css/search.css" />
-<link rel="stylesheet" href="/css/donate.css" />
-<title th:text="#{donate.title}"></title>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-title" content="Alovoa">
+	<link rel="manifest" href="/manifest/manifest.json">
+
+	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+	<th:block th:replace="fragments.html::bulma"></th:block>
+	<th:block th:replace="fragments.html::ui-design"></th:block>
+	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
+	<link rel="stylesheet" href="/css/alovoa.css" />
+	<link rel="stylesheet" href="/css/search.css" />
+	<link rel="stylesheet" href="/css/donate.css" />
+	<title th:text="#{donate.title}"></title>
 </head>
+
 <body>
 	<div id="main-logged-in">
 		<header th:insert="fragments.html::header-logged-in"></header>
-		<div id="donate-top-margin"></div>
-		<section class="container" id="main-container"></section>
-		<div class="section" id="donate-bottom">
+		<section class="container" id="donate-bottom">
 			<div class="select" id="donation-select">
 				<select id="sort" onchange="search()">
 					<option value="1" th:text="#{donate.latest-donations}"></option>
@@ -30,14 +30,14 @@
 				</select>
 			</div>
 			<div class="container" id="donate-button">
-				<button class="button colored is-primary"
-					style="width: 100%; padding: 4px;" onclick="onDonateClick()">
-					<i class="fa fa-hand-holding-usd fa-lg"></i><span
-						th:text="#{donate.donate-now}" style="padding-left: 8px;"
-						id="donate-now-text"></span>
+				<button class="button colored is-primary" style="width: 100%; padding: 4px;" onclick="onDonateClick()">
+					<i class="fa fa-hand-holding-usd fa-lg"></i><span th:text="#{donate.donate-now}"
+						style="padding-left: 8px;" id="donate-now-text"></span>
 				</button>
 			</div>
-		</div>
+		</section>
+		<div id="donate-top-margin"></div>
+		<section class="container" id="main-container" style="margin-bottom: 52px;"></section>
 	</div>
 
 	<div class="loader-parent">
@@ -53,4 +53,5 @@
 	<script src="/js/alovoa.js"></script>
 	<script src="/js/donate.js"></script>
 </body>
+
 </html>

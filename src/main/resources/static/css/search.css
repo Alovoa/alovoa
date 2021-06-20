@@ -95,10 +95,8 @@
 
 .user-search-div {
 	margin-bottom: 24px;
-	height: calc(100vh - 108px);
-	height: calc(100 * var(--vh) - 108px);
 	overflow-y: scroll;
-	scrollbar-width: none;
+	scrollbar-width: thin;
 }
 
 #search-button-section {
@@ -182,6 +180,8 @@
 	}
 	.user-search-div {
 		scroll-snap-type: y mandatory;
+		height: calc(100vh - 108px);
+		height: calc(100 * var(--vh) - 108px);
 	}
 }
 /*very small screens*/

@@ -24,18 +24,13 @@
 }
 
 #main-container {
-	 scroll-snap-type: y mandatory;
-	 overflow-y: scroll;
- 	 height: calc(100vh - 182px);
- 	 height: calc(100 * var(--vh) - 182px);
+	overflow-y: scroll;
 }
 
 #donate-bottom {
 	display: flex;
 	padding: initial;
-	padding-top: 1em;
-	padding-left: 1em;
-	padding-right: 1em;
+	padding: 1em;
 }
 
 #donate-top-margin {
@@ -49,6 +44,12 @@
 	
 	.card.is-horizontal {
 	    margin-top: initial;
+	}
+	
+	#main-container {
+		scroll-snap-type: y mandatory;
+	 	height: calc(100vh - 182px);
+ 	 	height: calc(100 * var(--vh) - 182px);
 	}
 }
 
