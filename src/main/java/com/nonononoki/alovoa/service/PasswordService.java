@@ -79,6 +79,12 @@ public class PasswordService {
 		}
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 		user.setPasswordToken(null);
+		
+		if(!user.isConfirmed()) {
+			user.setConfirmed(true);
+			user.setRegisterToken(null);
+		}
+		
 		userRepo.saveAndFlush(user);
 	}
 }
