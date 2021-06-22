@@ -36,6 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static final String ROLE_USER = "ROLE_USER";
 	private static final String ROLE_ADMIN = "ROLE_ADMIN";
+	private static final String COOKIE_SESSION = "JSESSIONID";
+	private static final String COOKIE_REMEMBER = "JSESSIONREMEMBERID";
 
 	public static String getRoleUser() {
 		return ROLE_USER;
@@ -47,11 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()// .antMatchers("/admin/**").hasAnyAuthority(ROLE_ADMIN)
-				.antMatchers("/css/**").permitAll().antMatchers("/js/**").permitAll().antMatchers("/img/**").permitAll()
-				.antMatchers("/font/**").permitAll().antMatchers("/json/**").permitAll().antMatchers("/oauth2/**")
-				.permitAll().antMatchers("/").permitAll().antMatchers("/login/**").permitAll()
-				.antMatchers("/terms-conditions").permitAll().antMatchers("/imprint").permitAll()
+		http.authorizeRequests().antMatchers("/admin").hasAnyAuthority(ROLE_ADMIN).antMatchers("/admin/**")
+				.hasAnyAuthority(ROLE_ADMIN).antMatchers("/css/**").permitAll().antMatchers("/js/**").permitAll()
+				.antMatchers("/img/**").permitAll().antMatchers("/font/**").permitAll().antMatchers("/json/**")
+				.permitAll().antMatchers("/oauth2/**").permitAll().antMatchers("/").permitAll().antMatchers("/login/**")
+				.permitAll().antMatchers("/terms-conditions").permitAll().antMatchers("/imprint").permitAll()
 				.antMatchers("/imprint/*").permitAll().antMatchers("/privacy").permitAll().antMatchers("/faq")
 				.permitAll().antMatchers("/tos").permitAll().antMatchers("/register").permitAll()
 				.antMatchers("/register/**").permitAll().antMatchers("/captcha/**").permitAll()
@@ -61,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/manifest/**").permitAll().antMatchers("/fonts/**").permitAll()
 
 				.anyRequest().authenticated().and().formLogin().loginPage("/login").and().logout()
-				.deleteCookies("JSESSIONID").logoutUrl("/logout").logoutSuccessUrl("/?logout").and().oauth2Login()
+				.deleteCookies(COOKIE_SESSION).logoutUrl("/logout").logoutSuccessUrl("/?logout").and().oauth2Login()
 				.loginPage("/login").defaultSuccessUrl("/login/oauth2/success").and()
 				.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class).rememberMe()
 				.key(rememberKey);

@@ -1,5 +1,8 @@
 package com.nonononoki.alovoa.component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +13,12 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AuthToken;
@@ -83,8 +89,17 @@ public class AuthProvider implements AuthenticationProvider {
 
 			throw new InsufficientAuthenticationException("");
 		}
+		
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		String role;
+		if (user.isAdmin()) {
+			role = SecurityConfig.getRoleAdmin();
+		} else {
+			role = SecurityConfig.getRoleUser();
+		}
+		authorities.add(new SimpleGrantedAuthority(role));
 
-		return new UsernamePasswordAuthenticationToken(email, password, null);
+		return new UsernamePasswordAuthenticationToken(email, password, authorities);
 	}
 
 	@Override
