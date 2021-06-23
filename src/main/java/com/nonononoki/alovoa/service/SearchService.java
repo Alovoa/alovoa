@@ -21,6 +21,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.Tools;
@@ -38,7 +39,9 @@ public class SearchService {
 	public static final int SORT_DISTANCE = 1;
 	public static final int SORT_ACTIVE_DATE = 2;
 	public static final int SORT_INTEREST = 3;
-	public static final int SORT_DONATION = 4;
+	public static final int SORT_DONATION_LATEST = 4;
+	public static final int SORT_DONATION_TOTAL = 5;
+	public static final int SORT_NEWEST_USER = 6;
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
@@ -67,12 +70,28 @@ public class SearchService {
 	private static final double LATITUDE = 111.1;
 	private static final double LONGITUDE = 111.320;
 
-	public SearchDto search(Double latitude, Double longitude, int distance, int sort) throws AlovoaException,
+	public SearchDto search(Double latitude, Double longitude, int distance, int sortId) throws AlovoaException,
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 
+		Sort sort = Sort.by(Sort.Direction.DESC, "dates.latestDonationDate");
+		switch (sortId) {
+		case SORT_ACTIVE_DATE:
+			sort = Sort.by(Sort.Direction.DESC, "dates.activeDate");
+			break;
+//		case SORT_DONATION_LATEST:
+//			sort = Sort.by(Sort.Direction.ASC, "dates.latestDonationDate");
+//			break;
+		case SORT_DONATION_TOTAL:
+			sort = Sort.by(Sort.Direction.ASC, "totalDonations");
+			break;
+		case SORT_NEWEST_USER:
+			sort = Sort.by(Sort.Direction.DESC, "dates.creationDate");
+			break;
+		}
+
 		int ageLegal = Tools.AGE_LEGAL;
-		
+
 		if (distance > maxDistance) {
 			throw new AlovoaException("max_distance_exceeded");
 		}
@@ -121,7 +140,7 @@ public class SearchService {
 		request.getLikeIds().add(0L);
 		request.getHideIds().add(0L);
 
-		List<User> users = userRepo.usersSearch(request);
+		List<User> users = userRepo.usersSearch(request, sort);
 
 		Set<Long> ignoreIds = new HashSet<>();
 		ignoreIds.addAll(
@@ -130,29 +149,29 @@ public class SearchService {
 		List<User> filteredUsers = filterUsers(users, ignoreIds, user, false);
 
 		if (filteredUsers.size() < maxResults && users.size() >= UserRepository.MAX_USERS_SEARCH) {
-			List<User> allUsers = userRepo.usersSearchAll(request);
+			List<User> allUsers = userRepo.usersSearchAll(request, sort);
 			if (allUsers.size() != users.size()) {
 				filteredUsers = filterUsers(allUsers, ignoreIds, user, false);
 			}
 		}
 
 		if (!filteredUsers.isEmpty()) {
-			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user)).build();
+			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user)).build();
 		}
 		filteredUsers.clear();
-		users = userRepo.usersSearchAllIgnoreLocation(request);
+		users = userRepo.usersSearchAllIgnoreLocation(request, sort);
 		filteredUsers = filterUsers(users, ignoreIds, user, false);
 
 		if (!filteredUsers.isEmpty()) {
-			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
+			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
 					.message(publicService.text("search.warning.global")).global(true).build();
 		}
 
 		filteredUsers.clear();
-		users = userRepo.usersSearchAllIgnoreLocationAndIntention(request);
+		users = userRepo.usersSearchAllIgnoreLocationAndIntention(request, sort);
 		filteredUsers = filterUsers(users, ignoreIds, user, false);
 		if (!filteredUsers.isEmpty()) {
-			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
+			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
 					.message(publicService.text("search.warning.incompatible")).global(true).build();
 		}
 
@@ -165,19 +184,19 @@ public class SearchService {
 		}
 		request.setMinDate(minDate);
 		request.setMaxDate(maxDate);
-		
+
 		filteredUsers.clear();
-		users = userRepo.usersSearchAllIgnoreLocationAndIntention(request);
+		users = userRepo.usersSearchAllIgnoreLocationAndIntention(request, sort);
 		filteredUsers = filterUsers(users, ignoreIds, user, false);
 		if (!filteredUsers.isEmpty()) {
-			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
+			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
 					.message(publicService.text("search.warning.incompatible")).global(true).build();
 		}
-		
+
 		filteredUsers.clear();
-		users = userRepo.usersSearchAllIgnoreAll(request);
+		users = userRepo.usersSearchAllIgnoreAll(request, sort);
 		filteredUsers = filterUsers(users, ignoreIds, user, true);
-		return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sort, user))
+		return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
 				.message(publicService.text("search.warning.incompatible")).incompatible(true).build();
 
 	}
@@ -188,7 +207,7 @@ public class SearchService {
 			if (ignoreIds.contains(u.getId())) {
 				continue;
 			}
-			if(!ignoreGenders && !u.getPreferedGenders().contains(user.getGender())) {
+			if (!ignoreGenders && !u.getPreferedGenders().contains(user.getGender())) {
 				continue;
 			}
 			// square is fine, reduces CPU load when not calculating radius distance
@@ -213,19 +232,9 @@ public class SearchService {
 		if (sort == SORT_DISTANCE) {
 			userDtos = userDtos.stream().sorted(Comparator.comparing(UserDto::getDistanceToUser))
 					.collect(Collectors.toList());
-		} else if (sort == SORT_ACTIVE_DATE) {
-			userDtos = userDtos.stream()
-					.sorted(Comparator.comparing(UserDto::getActiveDate).reversed()
-							.thenComparing(Comparator.comparing(UserDto::getDistanceToUser).reversed()))
-					.collect(Collectors.toList());
 		} else if (sort == SORT_INTEREST) {
 			userDtos = userDtos.stream().filter(f -> f.getSameInterests() > 0)
 					.sorted(Comparator.comparing(UserDto::getSameInterests).reversed()
-							.thenComparing(Comparator.comparing(UserDto::getDistanceToUser).reversed()))
-					.collect(Collectors.toList());
-		} else if (sort == SORT_DONATION) {
-			userDtos = userDtos.stream()
-					.sorted(Comparator.comparing(UserDto::getTotalDonations).reversed()
 							.thenComparing(Comparator.comparing(UserDto::getDistanceToUser).reversed()))
 					.collect(Collectors.toList());
 		}

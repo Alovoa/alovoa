@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.nonononoki.alovoa.entity.User;
@@ -15,64 +16,67 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	User findByEmail(String email);
 
-	default List<User> usersSearch(UserSearchRequest request) {
+	default List<User> usersSearch(UserSearchRequest request, Sort sort) {
 		return findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetweenAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 				request.getMinDate(), request.getMaxDate(), request.getMinLat(), request.getMaxLat(),
 				request.getMinLong(), request.getMaxLong(), request.getIntentionText(), request.getLikeIds(),
-				request.getHideIds(), request.getBlockIds(), request.getGenderTexts());
+				request.getHideIds(), request.getBlockIds(), request.getGenderTexts(), sort);
 	}
 
-	default List<User> usersSearchAll(UserSearchRequest request) {
+	default List<User> usersSearchAll(UserSearchRequest request, Sort sort) {
 		return findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetweenAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 				request.getMinDate(), request.getMaxDate(), request.getMinLat(), request.getMaxLat(),
 				request.getMinLong(), request.getMaxLong(), request.getIntentionText(), request.getLikeIds(),
-				request.getHideIds(), request.getBlockIds(), request.getGenderTexts());
+				request.getHideIds(), request.getBlockIds(), request.getGenderTexts(), sort);
 	}
 
-	default List<User> usersSearchAllIgnoreLocation(UserSearchRequest request) {
+	default List<User> usersSearchAllIgnoreLocation(UserSearchRequest request, Sort sort) {
 		return findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 				request.getMinDate(), request.getMaxDate(), request.getIntentionText(), request.getLikeIds(),
-				request.getHideIds(), request.getBlockIds(), request.getGenderTexts());
-	}
-	
-	default List<User> usersSearchAllIgnoreLocationAndIntention(UserSearchRequest request) {
-		return findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
-				request.getMinDate(), request.getMaxDate(), request.getLikeIds(),
-				request.getHideIds(), request.getBlockIds(), request.getGenderTexts());
+				request.getHideIds(), request.getBlockIds(), request.getGenderTexts(), sort);
 	}
 
-	//almost all, must have complete profile and not blocked
-	default List<User> usersSearchAllIgnoreAll(UserSearchRequest request) {
+	default List<User> usersSearchAllIgnoreLocationAndIntention(UserSearchRequest request, Sort sort) {
+		return findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
+				request.getMinDate(), request.getMaxDate(), request.getLikeIds(), request.getHideIds(),
+				request.getBlockIds(), request.getGenderTexts(), sort);
+	}
+
+	// almost all, must have complete profile and not blocked
+	default List<User> usersSearchAllIgnoreAll(UserSearchRequest request, Sort sort) {
 		return findTop50ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotIn(
-				request.getMinDate(), request.getMaxDate(), request.getLikeIds(), request.getHideIds(), request.getBlockIds());
+				request.getMinDate(), request.getMaxDate(), request.getLikeIds(), request.getHideIds(),
+				request.getBlockIds(), sort);
 	}
 
 	default List<User> usersDonate() {
 		return findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullOrderByTotalDonationsDesc();
 	}
 
+	// used for sending mails to all
 	List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrue();
 
 	List<User> findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetweenAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 			Date min, Date max, Double latitudeFrom, Double latitudeTo, Double longitudeFrom, Double longitudeTo,
 			String intentionText, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds,
-			Collection<String> genderTexts);
+			Collection<String> genderTexts, Sort sort);
 
 	List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetweenAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 			Date min, Date max, Double latitudeFrom, Double latitudeTo, Double longitudeFrom, Double longitudeTo,
 			String intentionText, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds,
-			Collection<String> genderTexts);
+			Collection<String> genderTexts, Sort sort);
 
 	List<User> findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullOrderByTotalDonationsDesc();
 
 	List<User> findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 			Date min, Date max, String intentionText, Collection<Long> likeIds, Collection<Long> hideIds,
-			Collection<Long> blockIds, Collection<String> genderTexts);
-	
+			Collection<Long> blockIds, Collection<String> genderTexts, Sort sort);
+
 	List<User> findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
-			Date min, Date max, Collection<Long> likeIds, Collection<Long> hideIds,
-			Collection<Long> blockIds, Collection<String> genderTexts);
+			Date min, Date max, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds,
+			Collection<String> genderTexts, Sort sort);
 
 	List<User> findTop50ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotIn(
-			Date min, Date max, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds);
+			Date min, Date max, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds,
+			Sort sort);
 }

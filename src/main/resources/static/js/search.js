@@ -42,19 +42,21 @@ function mapSearchButtonClicked() {
 }
 
 function search() {
+	$(".loader-parent").css("display", "flex");
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function(position) {
 			lat = position.coords.latitude;
 			lon = position.coords.longitude;
 			searchBase();
-		}, function(e) {
-			//console.log(e);	
+		}, function() {
+			$(".loader-parent").css("display", "none");
 			openModal("map-modal");
 			map.invalidateSize(true);
 			alert(getText("search.js.error.no-location"));
 		});
 	} else {
-		//alert(getText("search.js.error.no-geolocation"));
+		$(".loader-parent").css("display", "none");
+		alert(getText("search.js.error.no-geolocation"));
 		openModal("map-modal");
 		map.invalidateSize(true);
 	}
@@ -66,7 +68,6 @@ function searchBase() {
 	let url = "/search/users/" + lat + "/"
 		+ lon + "/" + distance + "/" + sort;
 
-	$(".loader-parent").css("display", "flex");
 	$("#main-container").load(url, function() {
 
 		closeModal();
@@ -208,7 +209,7 @@ function viewProfile(idEnc) {
 }
 
 function searchAgain() {
-	if(!hasVisibleUsers()) {
+	if (!hasVisibleUsers()) {
 		searchBase();
 	}
 }
@@ -216,7 +217,7 @@ function searchAgain() {
 function hasVisibleUsers() {
 	let hasUsers = false;
 	$(".user-search-card").each(function(i, obj) {
-		if(!hasUsers && $(obj).is(":visible")) {
+		if (!hasUsers && $(obj).is(":visible")) {
 			hasUsers = true;
 		}
 	});

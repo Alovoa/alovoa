@@ -39,4 +39,5 @@ public class UserDates {
 	private Date notificationCheckedDate = new Date();
 	private Date messageDate = new Date();
 	private Date messageCheckedDate = new Date();
+	private Date latestDonationDate = new Date();
 }

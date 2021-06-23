@@ -122,6 +122,7 @@ public class DonateService {
 				userDonation.setUser(u);
 				u.getDonations().add(userDonation);
 				u.setTotalDonations(u.getTotalDonations() + amount);
+				u.getDates().setLatestDonationDate(new Date());
 				userRepo.save(u);
 			}
 		}
@@ -163,6 +164,7 @@ public class DonateService {
 				userDonation.setUser(u);
 				u.getDonations().add(userDonation);
 				u.setTotalDonations(u.getTotalDonations() + amount);
+				u.getDates().setLatestDonationDate(new Date());
 				userRepo.save(u);
 			}
 		}
