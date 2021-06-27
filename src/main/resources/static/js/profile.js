@@ -32,11 +32,11 @@ $(function() {
 	$("#profilePictureUpload").change(function() {
 		showLoader();
 		let file = document.querySelector('#profilePictureUpload').files[0];
-//		if (file.size > mediaMaxSize) {
-//			hideLoader();
-//			alert(getText("error.media.max-size-exceeded"));
-//			return;
-//		}
+		//		if (file.size > mediaMaxSize) {
+		//			hideLoader();
+		//			alert(getText("error.media.max-size-exceeded"));
+		//			return;
+		//		}
 
 		resizeImage(file, function(b64) {
 			if (b64) {
@@ -261,6 +261,26 @@ $(function() {
 		});
 	});
 
+	$("#password-change-submit").click(function(e) {
+		let url = "/password/reset";
+		$.ajax({
+			type: "POST",
+			url: url,
+			headers: {
+				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
+			},
+			data: "{}",
+			contentType: "application/json", 
+			success: function(e) {
+				alert(getText("index.js.password-reset-requested"));
+			},
+			error: function(e) {
+				console.log(e);
+				alert(getGenericErrorText());
+			}
+		});
+	});
+
 	$("#userdata-submit").click(function(e) {
 		let url = "/user/userdata";
 		window.open(url);
@@ -300,7 +320,7 @@ $(function() {
 					alert(getText("error.media.max-size-exceeded"));
 					return;
 				}
-				
+
 				var type = file.type.split('/')[1];
 
 				$.ajax({
@@ -418,38 +438,38 @@ function updateUiDesign() {
 
 function updateProfileWarning() {
 	let url = "/profile/warning";
-	
+
 	$.ajax({
 		type: "GET",
 		url: url,
 		success: function(res) {
 			console.log(res)
 			let warning = "profile-warning-collapsible";
-			if(!res.includes(warning)) {
+			if (!res.includes(warning)) {
 				$("#" + warning).addClass("disabled");
 			} else {
 				$("#" + warning).removeClass("disabled");
 			}
 			warning = "no-profile-picture";
-			if(!res.includes(warning)) {
+			if (!res.includes(warning)) {
 				$("#" + warning).addClass("disabled");
 			} else {
 				$("#" + warning).removeClass("disabled");
 			}
 			warning = "no-description";
-			if(!res.includes(warning)) {
+			if (!res.includes(warning)) {
 				$("#" + warning).addClass("disabled");
 			} else {
 				$("#" + warning).removeClass("disabled");
 			}
 			warning = "no-intention";
-			if(!res.includes(warning)) {
+			if (!res.includes(warning)) {
 				$("#" + warning).addClass("disabled");
 			} else {
 				$("#" + warning).removeClass("disabled");
 			}
 			warning = "no-gender";
-			if(!res.includes(`${warning}`)) {
+			if (!res.includes(`${warning}`)) {
 				console.log("gender")
 				$("#" + warning).addClass("disabled");
 			} else {
@@ -457,7 +477,7 @@ function updateProfileWarning() {
 				$("#" + warning).removeClass("disabled");
 			}
 			warning = "no-location";
-			if(!res.includes(warning)) {
+			if (!res.includes(warning)) {
 				$("#" + warning).addClass("disabled");
 			} else {
 				$("#" + warning).removeClass("disabled");
@@ -477,17 +497,17 @@ function viewProfile(idEnc) {
 }
 
 function resizeAudio(file, callback) {
-	if(file.type == "audio/mpeg") {
+	if (file.type == "audio/mpeg") {
 		try {
-		let cutter = new mp3cutter();
-		cutter.cut(file, 0, maxAudioSeconds, function(cut) {
-			getBase64(cut, callback);
-		});
-		} catch(e) {
+			let cutter = new mp3cutter();
+			cutter.cut(file, 0, maxAudioSeconds, function(cut) {
+				getBase64(cut, callback);
+			});
+		} catch (e) {
 			console.log(e);
 			getBase64(file, callback);
 		}
-	} else if(file.type == "audio/x-wav"){
+	} else if (file.type == "audio/x-wav") {
 		getBase64(file, callback);
 	} else {
 		hideLoader();
@@ -526,7 +546,7 @@ function resizeImage(file, callback) {
 }
 
 function getBase64InMB(base64) {
-	return (base64.length * (3/4) - 1) / 1000000;
+	return (base64.length * (3 / 4) - 1) / 1000000;
 }
 
 function getBase64(file, callback) {

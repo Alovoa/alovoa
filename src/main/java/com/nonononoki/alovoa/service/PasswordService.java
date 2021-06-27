@@ -37,6 +37,9 @@ public class PasswordService {
 	private CaptchaService captchaService;
 
 	@Autowired
+	private AuthService authService;
+
+	@Autowired
 	private MailService mailService;
 
 	@Value("${app.password-token.length}")
@@ -44,13 +47,22 @@ public class PasswordService {
 
 	public UserPasswordToken resetPasword(PasswordResetDto dto)
 			throws AlovoaException, NoSuchAlgorithmException, MessagingException, IOException {
-		if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
-			throw new AlovoaException("captcha_invalid");
-		}
-		User u = userRepo.findByEmail(dto.getEmail().toLowerCase());
 
-		if (u.isDisabled()) {
-			throw new DisabledException("user_disabled");
+		User u = authService.getCurrentUser();
+
+		if (u == null) {
+			if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
+				throw new AlovoaException("captcha_invalid");
+			}
+			u = userRepo.findByEmail(dto.getEmail().toLowerCase());
+
+			if (u == null) {
+				throw new DisabledException("user_not_found");
+			}
+			
+			if (u.isDisabled()) {
+				throw new DisabledException("user_disabled");
+			}
 		}
 
 		UserPasswordToken token = new UserPasswordToken();
@@ -79,12 +91,12 @@ public class PasswordService {
 		}
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 		user.setPasswordToken(null);
-		
-		if(!user.isConfirmed()) {
+
+		if (!user.isConfirmed()) {
 			user.setConfirmed(true);
 			user.setRegisterToken(null);
 		}
-		
+
 		userRepo.saveAndFlush(user);
 	}
 }
