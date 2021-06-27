@@ -20,11 +20,11 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AlovoaException;
 
 public class Tools {
-	
+
 	private Tools() throws AlovoaException {
 		throw new AlovoaException("no_contructor");
 	}
-	
+
 	public static final float BASE64FACTOR = 0.75f;
 	public static final int MILLION = 1000000;
 	public static final int THOUSAND = 1000;
@@ -38,10 +38,14 @@ public class Tools {
 
 	public static final String MAIL_TEST_DOMAIN = "@mailinator.com";
 	public static final String MAIL_GMAIL_DOMAIN = "@gmail.com";
-	
+
 	public static final String TEMP_EMAIL_FILE_NAME = "temp-mail.txt";
-	
+
 	public static final int AGE_LEGAL = 18;
+
+	public static final long GENDER_MALE_ID = 1;
+	public static final long GENDER_FEMALE_ID = 2;
+	public static final long GENDER_OTHER_ID = 3;
 
 	public static Locale getUserLocale(User user) {
 		String language = user.getLanguage();
@@ -147,10 +151,12 @@ public class Tools {
 		double dist = Math.sqrt(a * a + b * b);
 		return (int) dist / THOUSAND;
 	}
+
 	private static double distPerLng(double lat) {
 		return 0.0003121092 * Math.pow(lat, 4) + 0.0101182384 * Math.pow(lat, 3) - 17.2385140059 * lat * lat
 				+ 5.5485277537 * lat + 111301.967182595;
 	}
+
 	private static double distPerLat(double lat) {
 		return -0.000000487305676 * Math.pow(lat, 4) - 0.0033668574 * Math.pow(lat, 3) + 0.4601181791 * lat * lat
 				- 1.4558127346 * lat + 110579.25662316;

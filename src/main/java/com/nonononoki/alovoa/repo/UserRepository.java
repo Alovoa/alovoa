@@ -16,6 +16,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	User findByEmail(String email);
 
+	long countByConfirmed(boolean confirmed);
+	
+	long countByConfirmedAndGenderId(boolean confirmed, long genderId);
+
 	default List<User> usersSearch(UserSearchRequest request, Sort sort) {
 		return findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetweenAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 				request.getMinDate(), request.getMaxDate(), request.getMinLat(), request.getMaxLat(),
