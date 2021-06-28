@@ -22,6 +22,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Value("${app.text.key}")
 	private String key;
 
+	@Value("${app.login.remember.key}")
+	private String rememberKey;
+
 	@Autowired
 	private AuthProvider authProvider;
 
@@ -63,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.deleteCookies(COOKIE_SESSION).logoutUrl("/logout").logoutSuccessUrl("/?logout").and().oauth2Login()
 				.loginPage("/login").defaultSuccessUrl("/login/oauth2/success").and()
 				.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class).rememberMe()
-				.key(key);
+				.key(rememberKey);
 
 		http.csrf().ignoringAntMatchers("/donate/received/**");
 		http.requiresChannel().anyRequest().requiresSecure();

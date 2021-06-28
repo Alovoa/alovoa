@@ -248,5 +248,10 @@
     "name": "app.schedule.delay.contact",
     "type": "java.lang.String",
     "description": "A description for 'app.schedule.delay.contact'"
+  },
+  {
+    "name": "app.login.remember.key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.login.remember.key'"
   }
 ]}
