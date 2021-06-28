@@ -29,27 +29,30 @@ public class AuthService {
 			DefaultOAuth2User principal = (DefaultOAuth2User) auth.getPrincipal();
 			email = principal.getAttribute("email");
 		} else {
-			if(auth == null) {
+			if (auth == null) {
 				return null;
+			} else if (auth.getPrincipal() instanceof User) {
+				email = ((User) auth.getPrincipal()).getEmail();
+			} else {
+				email = (String) auth.getPrincipal();
 			}
-			email = (String) auth.getPrincipal();
 		}
-		
+
 		User user = userRepo.findByEmail(email.toLowerCase());
-		if(user != null && user.isDisabled()) {
+		if (user != null && user.isDisabled()) {
 			throw new AlovoaException("user_not_found");
 		}
-		
+
 		return user;
 	}
-	
+
 	public String getOauth2Email() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String email = null;
 		if (auth instanceof OAuth2AuthenticationToken) {
 			DefaultOAuth2User principal = (DefaultOAuth2User) auth.getPrincipal();
 			email = principal.getAttribute("email");
-		} 
+		}
 		return email;
 	}
 }

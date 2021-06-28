@@ -10,9 +10,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
 import com.nonononoki.alovoa.component.AuthFilter;
 import com.nonononoki.alovoa.component.AuthProvider;
+import com.nonononoki.alovoa.component.CustomUserDetailsService;
 import com.nonononoki.alovoa.component.FailureHandler;
 import com.nonononoki.alovoa.component.SuccessHandler;
 
@@ -34,10 +36,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private FailureHandler failureHandler;
 
+	@Autowired
+	private CustomUserDetailsService customUserDetailsService;
+
 	private static final String ROLE_USER = "ROLE_USER";
 	private static final String ROLE_ADMIN = "ROLE_ADMIN";
 	private static final String COOKIE_SESSION = "JSESSIONID";
-	private static final String COOKIE_REMEMBER = "JSESSIONREMEMBERID";
+	private static final String COOKIE_REMEMBER = "remember-me";
 
 	public static String getRoleUser() {
 		return ROLE_USER;
@@ -63,10 +68,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/manifest/**").permitAll().antMatchers("/fonts/**").permitAll()
 
 				.anyRequest().authenticated().and().formLogin().loginPage("/login").and().logout()
-				.deleteCookies(COOKIE_SESSION).logoutUrl("/logout").logoutSuccessUrl("/?logout").and().oauth2Login()
-				.loginPage("/login").defaultSuccessUrl("/login/oauth2/success").and()
+				.deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER).logoutUrl("/logout").logoutSuccessUrl("/?logout").and()
+				.oauth2Login().loginPage("/login").defaultSuccessUrl("/login/oauth2/success").and()
 				.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class).rememberMe()
-				.key(rememberKey);
+				.rememberMeServices(rememberMeServices()).key(rememberKey);
 
 		http.csrf().ignoringAntMatchers("/donate/received/**");
 		http.requiresChannel().anyRequest().requiresSecure();
@@ -83,7 +88,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		filter.setAuthenticationManager(authenticationManager());
 		filter.setAuthenticationSuccessHandler(successHandler);
 		filter.setAuthenticationFailureHandler(failureHandler);
+		filter.setRememberMeServices(rememberMeServices());
 		return filter;
+	}
+
+	@Bean
+	public TokenBasedRememberMeServices rememberMeServices() throws Exception {
+		return new TokenBasedRememberMeServices(rememberKey, customUserDetailsService);
 	}
 
 	@Bean
