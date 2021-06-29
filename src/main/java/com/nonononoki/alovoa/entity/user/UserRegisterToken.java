@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.entity.User;
 
 import lombok.Data;
@@ -15,7 +16,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@EqualsAndHashCode(exclude="user")
+@EqualsAndHashCode(exclude = "user")
 public class UserRegisterToken {
 
 	@Id
@@ -23,6 +24,7 @@ public class UserRegisterToken {
 	private Long id;
 
 	@OneToOne
+	@JsonIgnore
 	private User user;
 
 	private String content;

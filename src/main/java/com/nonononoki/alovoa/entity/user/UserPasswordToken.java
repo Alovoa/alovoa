@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.entity.User;
 
 import lombok.Data;
@@ -23,6 +24,7 @@ public class UserPasswordToken{
 	private Long id;
 	
 	@OneToOne
+	@JsonIgnore
 	private User user;
 	
 	private String content;
