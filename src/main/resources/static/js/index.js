@@ -1,3 +1,5 @@
+const twa_playstore = "android-app://com.alovoa.alovoa_playstore";
+
 $(function() {
 
 	bulmaCollapsible.attach();
@@ -34,6 +36,10 @@ $(function() {
 	if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.register('/sw.js');
 	};
+	
+	if (document.referrer.includes(twa_playstore)) {
+		docCookies.setItem("twa_playstore", "true");
+	}
 });
 
 function cookieClick() {

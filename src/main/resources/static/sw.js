@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '4';
+const cacheName = '5';
 const staticAssets = [
 
 	'/',
@@ -21,6 +21,7 @@ const staticAssets = [
 
 	'/sw.js',
 	'/favicon.ico',
+	'/manifest/manifest.json',
 
 	'/js/lib/bulma-collapsible.min.js',
 	'/js/lib/bulma-slider.min.js',
@@ -31,6 +32,7 @@ const staticAssets = [
 	'/js/lib/notification.js',
 	'/js/lib/swiper.all.js',
 	'/js/lib/leaflet.min.js',
+	'/js/lib/cookies.js',
 	
 	'/js/tools/check-password.js',
 	'/js/tools/get-notification.js',
