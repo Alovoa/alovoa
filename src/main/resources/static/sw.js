@@ -9,8 +9,15 @@
  */
 
 
-const cacheName = '3´4';
+const cacheName = '4';
 const staticAssets = [
+
+	'/',
+	'/donate-list',
+	'/privacy',
+	'/tos',
+	'/imprint',
+	'/faq',
 
 	'/sw.js',
 	'/favicon.ico',
@@ -36,6 +43,7 @@ const staticAssets = [
 	'/js/admin.js',
 	'/js/delete-account.js',
 	'/js/donate.js',
+	'/js/donate-list.js',
 	'/js/imprint.js',
 	'/js/index.js',
 	'/js/login.js',

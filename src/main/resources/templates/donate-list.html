@@ -22,24 +22,27 @@
 		<header th:insert="fragments.html::header-logged-out"></header>
 		<div class="section">
 			<div class="container">
-
-				<div class="box">
-					<a href="https://ko-fi.com/alovoa" target="_blank" class="button colored is-info"
-						style="width: 100%; border-color: #dbdbdb; margin-bottom: 4px;"><i class="fa fa-coins"></i><span
-							th:text="#{kofi}" style="padding-left: 4px;"></span></a>
-					<div class="notification is-success" th:text="#{donate.notice-1}"
-						style="margin-bottom: 4px; font-size: 0.8em;"></div>
-					<div class="notification is-success" style="font-size: 0.8em;" th:text="#{donate.notice-2}"></div>
-				</div>
-				<div class="box">
-					<a href="https://www.buymeacoffee.com/alovoa" target="_blank" class="button colored is-info"
-						style="width: 100%; border-color: #dbdbdb; margin-bottom: 4px;"><i class="fa fa-coins"></i><span
-							th:text="#{bmac}" style="padding-left: 4px;"></span></a>
-					<div class="notification is-success" th:text="#{donate.notice-1}"
-						style="margin-bottom: 4px; font-size: 0.8em;"></div>
-					<div class="notification is-success" th:text="#{donate.notice-2}"
-						style="margin-bottom: 4px; font-size: 0.8em;"></div>
-					<div class="notification is-success" style="font-size: 0.8em;" th:text="#{donate.notice-3}"></div>
+				<div id="donation-links">
+					<div class="box">
+						<a href="https://ko-fi.com/alovoa" target="_blank" class="button colored is-info"
+							style="width: 100%; border-color: #dbdbdb; margin-bottom: 4px;"><i
+								class="fa fa-coins"></i><span th:text="#{kofi}" style="padding-left: 4px;"></span></a>
+						<div class="notification is-success" th:text="#{donate.notice-1}"
+							style="margin-bottom: 4px; font-size: 0.8em;"></div>
+						<div class="notification is-success" style="font-size: 0.8em;" th:text="#{donate.notice-2}">
+						</div>
+					</div>
+					<div class="box">
+						<a href="https://www.buymeacoffee.com/alovoa" target="_blank" class="button colored is-info"
+							style="width: 100%; border-color: #dbdbdb; margin-bottom: 4px;"><i
+								class="fa fa-coins"></i><span th:text="#{bmac}" style="padding-left: 4px;"></span></a>
+						<div class="notification is-success" th:text="#{donate.notice-1}"
+							style="margin-bottom: 4px; font-size: 0.8em;"></div>
+						<div class="notification is-success" th:text="#{donate.notice-2}"
+							style="margin-bottom: 4px; font-size: 0.8em;"></div>
+						<div class="notification is-success" style="font-size: 0.8em;" th:text="#{donate.notice-3}">
+						</div>
+					</div>
 				</div>
 				<div class="box">
 					<div class="notification is-info" style="margin-bottom: 8px;">
@@ -53,12 +56,13 @@
 
 		</div>
 	</div>
-	
+
 	<script src="/js/tools/get-text.js"></script>
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/alovoa.js"></script>
-	
+	<script src="/js/donate-list.js"></script>
+
 </body>
 
 </html>
