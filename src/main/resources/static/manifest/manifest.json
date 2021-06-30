@@ -30,7 +30,7 @@
   ],
   "start_url": "/",
   "background_color": "#ec407a",
-  "display": "standalone",
+  "display": "fullscreen",
   "scope": "/",
   "theme_color": "#ec407a",
   "description" : "Meet new, exciting people!",
