@@ -2,6 +2,8 @@ package com.nonononoki.alovoa.config;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -66,6 +68,8 @@ public class EventListenerConfig {
 
 	@Value("${app.admin.key}")
 	private String adminKey;
+
+	private static final Logger logger = LoggerFactory.getLogger(EventListenerConfig.class);
 
 	@EventListener
 	public void handleContextRefresh(ApplicationStartedEvent event) throws AlovoaException {
@@ -134,17 +138,18 @@ public class EventListenerConfig {
 		for (User user : users) {
 
 			if (!user.getEmail().contains("@")) {
-				UserService.removeUserDataCascading(user, userDeleteParam);
 
-				user = authService.getCurrentUser();
-				user = userRepo.saveAndFlush(user);
-				userRepo.delete(user);
-				userRepo.flush();
+				try {
+					UserService.removeUserDataCascading(user, userDeleteParam);
 
-				user = authService.getCurrentUser();
-				user = userRepo.saveAndFlush(user);
-				userRepo.delete(user);
-				userRepo.flush();
+					user = authService.getCurrentUser();
+					user = userRepo.saveAndFlush(user);
+					userRepo.delete(user);
+					userRepo.flush();
+
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+				}
 			}
 		}
 	}
