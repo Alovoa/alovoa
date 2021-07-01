@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nonononoki.alovoa.model.AdminAccountDeleteDto;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.MailDto;
 import com.nonononoki.alovoa.service.AdminService;
@@ -34,9 +35,9 @@ public class AdminController {
 	}
 
 	@PostMapping("/ban-user/{id}")
-	public void banUser(@PathVariable String id) throws NumberFormatException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, AlovoaException {
+	public void banUser(@PathVariable String id)
+			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
 		adminService.banUser(id);
 	}
 
@@ -53,6 +54,12 @@ public class AdminController {
 	@PostMapping(value = "/mail/all", consumes = "application/json")
 	public void sendMailAll(@RequestBody MailDto dto) throws AlovoaException, MessagingException, IOException {
 		adminService.sendMailAll(dto);
+	}
+
+	@PostMapping(value = "/delete-account", consumes = "application/json")
+	public void deleteAccount(@RequestBody AdminAccountDeleteDto dto)
+			throws AlovoaException, MessagingException, IOException {
+		adminService.deleteAccount(dto);
 	}
 
 }

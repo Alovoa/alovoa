@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.config;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -10,16 +12,46 @@ import org.springframework.stereotype.Component;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Gender;
 import com.nonononoki.alovoa.entity.user.UserIntention;
+import com.nonononoki.alovoa.model.AlovoaException;
+import com.nonononoki.alovoa.model.UserDeleteParams;
+import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.GenderRepository;
+import com.nonononoki.alovoa.repo.UserBlockRepository;
+import com.nonononoki.alovoa.repo.UserHideRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
+import com.nonononoki.alovoa.repo.UserLikeRepository;
+import com.nonononoki.alovoa.repo.UserNotificationRepository;
+import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
+import com.nonononoki.alovoa.service.AuthService;
+import com.nonononoki.alovoa.service.UserService;
 
 @Component
 public class EventListenerConfig {
 
 	@Autowired
+	private AuthService authService;
+
+	@Autowired
 	private UserRepository userRepo;
 
+	@Autowired
+	private UserLikeRepository userLikeRepo;
+
+	@Autowired
+	private UserHideRepository userHideRepo;
+
+	@Autowired
+	private UserBlockRepository userBlockRepo;
+
+	@Autowired
+	private UserReportRepository userReportRepo;
+
+	@Autowired
+	private UserNotificationRepository userNotificationRepo;
+
+	@Autowired
+	private ConversationRepository conversationRepo;
 	@Autowired
 	private GenderRepository genderRepo;
 
@@ -36,12 +68,13 @@ public class EventListenerConfig {
 	private String adminKey;
 
 	@EventListener
-	public void handleContextRefresh(ApplicationStartedEvent event) {
+	public void handleContextRefresh(ApplicationStartedEvent event) throws AlovoaException {
 		setDefaultAdmin();
 		setDefaultGenders();
 		setDefaulIntentions();
+		removeInvalidUsers();
 	}
-	
+
 	public void setDefaultAdmin() {
 		long noUsers = userRepo.count();
 		if (noUsers == 0) {
@@ -55,10 +88,9 @@ public class EventListenerConfig {
 	}
 
 	public void setDefaultGenders() {
-		
+
 		long noGenders = genderRepo.count();
-		
-		
+
 		if (noGenders == 0) {
 			Gender male = new Gender();
 			male.setText("male");
@@ -72,9 +104,9 @@ public class EventListenerConfig {
 			other.setText("other");
 			genderRepo.saveAndFlush(other);
 		}
-		
+
 	}
-	
+
 	public void setDefaulIntentions() {
 		long noIntentions = userIntentionRepo.count();
 		if (noIntentions == 0) {
@@ -89,6 +121,31 @@ public class EventListenerConfig {
 			UserIntention sex = new UserIntention();
 			sex.setText("sex");
 			userIntentionRepo.saveAndFlush(sex);
+		}
+	}
+
+	public void removeInvalidUsers() throws AlovoaException {
+		List<User> users = userRepo.findAll();
+
+		UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
+				.userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
+				.userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
+
+		for (User user : users) {
+
+			if (!user.getEmail().contains("@")) {
+				UserService.removeUserDataCascading(user, userDeleteParam);
+
+				user = authService.getCurrentUser();
+				user = userRepo.saveAndFlush(user);
+				userRepo.delete(user);
+				userRepo.flush();
+
+				user = authService.getCurrentUser();
+				user = userRepo.saveAndFlush(user);
+				userRepo.delete(user);
+				userRepo.flush();
+			}
 		}
 	}
 

@@ -18,6 +18,7 @@ import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserReport;
+import com.nonononoki.alovoa.model.AdminAccountDeleteDto;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.MailDto;
 import com.nonononoki.alovoa.model.UserDeleteParams;
@@ -113,9 +114,9 @@ public class AdminService {
 		userRepo.saveAndFlush(u);
 	}
 
-	public void banUser(String id) throws AlovoaException, NumberFormatException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException {
+	public void banUser(String id)
+			throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 
 		checkRights();
 
@@ -129,7 +130,7 @@ public class AdminService {
 				.userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
 				.userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
 
-		UserService.removeUserLinkedLists(user, userDeleteParam);
+		UserService.removeUserDataCascading(user, userDeleteParam);
 
 		user.setAudio(null);
 		user.setDates(null);
@@ -159,6 +160,30 @@ public class AdminService {
 		user.getWebPush().clear();
 
 		userRepo.saveAndFlush(user);
+	}
+
+	public void deleteAccount(AdminAccountDeleteDto dto) throws AlovoaException {
+		checkRights();
+
+		User user = userRepo.findByEmail(dto.getEmail());
+		
+		if(user.isAdmin()) {
+			throw new AlovoaException("cannot_delete_admin");
+		}
+		
+		UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
+				.userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
+				.userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
+
+		if (user != null) {
+			UserService.removeUserDataCascading(user, userDeleteParam);
+			user = authService.getCurrentUser();
+			user = userRepo.saveAndFlush(user);
+			userRepo.delete(user);
+			userRepo.flush();
+		}
+		
+		throw new AlovoaException("user_not_found");
 	}
 
 	private void checkRights() throws AlovoaException {

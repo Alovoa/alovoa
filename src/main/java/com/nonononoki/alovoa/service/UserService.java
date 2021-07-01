@@ -226,7 +226,8 @@ public class UserService {
 				.userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
 				.userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
 
-		removeUserLinkedLists(user, userDeleteParam);
+		removeUserDataCascading(user, userDeleteParam);
+		
 		user = authService.getCurrentUser();
 		user = userRepo.saveAndFlush(user);
 		userRepo.delete(user);
@@ -235,7 +236,7 @@ public class UserService {
 		mailService.sendAccountDeleteConfirm(user);
 	}
 
-	public static User removeUserLinkedLists(User user, UserDeleteParams userDeleteParam) {
+	public static User removeUserDataCascading(User user, UserDeleteParams userDeleteParam) {
 
 		UserRepository userRepo = userDeleteParam.getUserRepo();
 		UserLikeRepository userLikeRepo = userDeleteParam.getUserLikeRepo();
@@ -358,7 +359,6 @@ public class UserService {
 
 		userRepo.flush();
 		conversationRepo.flush();
-
 		return user;
 	}
 
