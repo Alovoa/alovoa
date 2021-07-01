@@ -9,6 +9,10 @@ $(function() {
 	bulmaSlider.attach();
 	bulmaCollapsible.attach();
 
+	if (document.referrer.includes(twa_playstore)) {
+		docCookies.setItem("twa_playstore", "true");
+	}
+
 	var mediaMaxSize = $("#mediaMaxSize").val();
 
 	var swiper = new Swiper('.swiper-container', {
@@ -270,7 +274,7 @@ $(function() {
 				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
 			},
 			data: "{}",
-			contentType: "application/json", 
+			contentType: "application/json",
 			success: function(e) {
 				alert(getText("index.js.password-reset-requested"));
 			},
