@@ -25,14 +25,10 @@ import com.nonononoki.alovoa.repo.UserLikeRepository;
 import com.nonononoki.alovoa.repo.UserNotificationRepository;
 import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
-import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.UserService;
 
 @Component
 public class EventListenerConfig {
-
-	@Autowired
-	private AuthService authService;
 
 	@Autowired
 	private UserRepository userRepo;
@@ -141,10 +137,7 @@ public class EventListenerConfig {
 
 				try {
 					UserService.removeUserDataCascading(user, userDeleteParam);
-
-					user = authService.getCurrentUser();
-					user = userRepo.saveAndFlush(user);
-					userRepo.delete(user);
+					userRepo.delete(userRepo.findByEmail(user.getEmail()));
 					userRepo.flush();
 
 				} catch (Exception e) {

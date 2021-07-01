@@ -236,7 +236,7 @@ public class UserService {
 		mailService.sendAccountDeleteConfirm(user);
 	}
 
-	public static User removeUserDataCascading(User user, UserDeleteParams userDeleteParam) {
+	public static void removeUserDataCascading(User user, UserDeleteParams userDeleteParam) {
 
 		UserRepository userRepo = userDeleteParam.getUserRepo();
 		UserLikeRepository userLikeRepo = userDeleteParam.getUserLikeRepo();
@@ -359,7 +359,6 @@ public class UserService {
 
 		userRepo.flush();
 		conversationRepo.flush();
-		return user;
 	}
 
 	public void updateProfilePicture(String imgB64) throws AlovoaException, IOException {

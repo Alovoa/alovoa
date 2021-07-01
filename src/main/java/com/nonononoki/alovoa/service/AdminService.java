@@ -132,6 +132,8 @@ public class AdminService {
 
 		UserService.removeUserDataCascading(user, userDeleteParam);
 
+		user = userRepo.findByEmail(user.getEmail());
+		
 		user.setAudio(null);
 		user.setDates(null);
 		user.setDeleteToken(null);
@@ -177,9 +179,7 @@ public class AdminService {
 
 		if (user != null) {
 			UserService.removeUserDataCascading(user, userDeleteParam);
-			user = authService.getCurrentUser();
-			user = userRepo.saveAndFlush(user);
-			userRepo.delete(user);
+			userRepo.delete(userRepo.findByEmail(user.getEmail()));
 			userRepo.flush();
 		}
 		
