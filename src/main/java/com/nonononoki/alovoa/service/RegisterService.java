@@ -235,8 +235,7 @@ public class RegisterService {
 			}
 		}
 
-		User user = new User();
-		user.setEmail(dto.getEmail().toLowerCase());
+		User user = new User(dto.getEmail().toLowerCase());
 		user.setFirstName(dto.getFirstName());
 
 		// default age bracket, user can change it later in their profile

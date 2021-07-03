@@ -78,9 +78,8 @@ public class EventListenerConfig {
 	public void setDefaultAdmin() {
 		long noUsers = userRepo.count();
 		if (noUsers == 0) {
-			User user = new User();
+			User user = new User(adminEmail);
 			user.setAdmin(true);
-			user.setEmail(adminEmail);
 			String enc = passwordEncoder.encode(adminKey);
 			user.setPassword(enc);
 			userRepo.save(user);

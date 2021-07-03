@@ -66,7 +66,7 @@ public class User implements UserDetails {
 
 	@Column(nullable = false, unique = true)
 	@Convert(converter = TextEncryptorConverter.class)
-	private String email;
+	private final String email;
 
 	private String password;
 

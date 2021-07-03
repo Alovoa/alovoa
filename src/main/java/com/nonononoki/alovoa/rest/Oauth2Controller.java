@@ -84,8 +84,7 @@ public class Oauth2Controller {
 
 				User user = userRepo.findByEmail(email);
 				if (user == null) {
-					user = new User();
-					user.setEmail(email);
+					user = new User(email);
 				}
 
 				// administrator cannot use oauth for security reason e.g. password breach on
