@@ -11,6 +11,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.mail.MessagingException;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,10 +48,7 @@ public class AdminService {
 	private UserRepository userRepo;
 
 	@Autowired
-	private UserReportRepository userReportRepository;
-
-	@Autowired
-	private ContactRepository contactRepository;
+	private ContactRepository contactRepo;
 
 	@Autowired
 	private UserLikeRepository userLikeRepo;
@@ -71,17 +71,19 @@ public class AdminService {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
+	private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
+
 	public void hideContact(long id) throws AlovoaException {
 
 		checkRights();
 
-		Contact contact = contactRepository.findById(id).orElse(null);
+		Contact contact = contactRepo.findById(id).orElse(null);
 
 		if (contact == null) {
 			throw new AlovoaException("contact_not_found");
 		}
 		contact.setHidden(true);
-		contactRepository.saveAndFlush(contact);
+		contactRepo.saveAndFlush(contact);
 	}
 
 	public void sendMailSingle(MailDto dto) throws AlovoaException, MessagingException, IOException {
@@ -103,15 +105,19 @@ public class AdminService {
 
 		checkRights();
 
-		UserReport report = userReportRepository.findById(id).orElse(null);
+		UserReport report = userReportRepo.findById(id).orElse(null);
 
-		if (report == null) {
-			throw new AlovoaException("report_not_found");
+		try {
+			if (report == null) {
+				throw new AlovoaException("report_not_found");
+			}
+
+			User u = report.getUserFrom();
+			u.getReported().remove(report);
+			userRepo.saveAndFlush(u);
+		} catch (Exception e) {
+			userReportRepo.delete(report);
 		}
-
-		User u = report.getUserFrom();
-		u.getReported().remove(report);
-		userRepo.saveAndFlush(u);
 	}
 
 	public void banUser(String id)
@@ -130,10 +136,14 @@ public class AdminService {
 				.userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
 				.userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
 
-		UserService.removeUserDataCascading(user, userDeleteParam);
+		try {
+			UserService.removeUserDataCascading(user, userDeleteParam);
+		} catch (Exception e) {
+			logger.warn(ExceptionUtils.getStackTrace(e));
+		}
 
 		user = userRepo.findByEmail(user.getEmail());
-		
+
 		user.setAudio(null);
 		user.setDates(null);
 		user.setDeleteToken(null);
@@ -159,6 +169,7 @@ public class AdminService {
 		user.setTotalDonations(0);
 		user.setNumberProfileViews(0);
 		user.setNumberSearches(0);
+		user.setProfilePicture(null);
 		user.getWebPush().clear();
 
 		userRepo.saveAndFlush(user);
@@ -168,11 +179,11 @@ public class AdminService {
 		checkRights();
 
 		User user = userRepo.findByEmail(dto.getEmail());
-		
-		if(user.isAdmin()) {
+
+		if (user.isAdmin()) {
 			throw new AlovoaException("cannot_delete_admin");
 		}
-		
+
 		UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
 				.userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
 				.userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
@@ -182,7 +193,7 @@ public class AdminService {
 			userRepo.delete(userRepo.findByEmail(user.getEmail()));
 			userRepo.flush();
 		}
-		
+
 		throw new AlovoaException("user_not_found");
 	}
 
