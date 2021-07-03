@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.component;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +18,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler
 	protected ResponseEntity<Object> handleConflict(Exception ex, WebRequest request) {
-		LOGGER.error(ex.getMessage());
+		LOGGER.error(ExceptionUtils.getStackTrace(ex));
 		return handleExceptionInternal(ex, ex.getMessage() /* ExceptionUtils.getStackTrace(ex) */, new HttpHeaders(),
 				HttpStatus.CONFLICT, request);
 	}
