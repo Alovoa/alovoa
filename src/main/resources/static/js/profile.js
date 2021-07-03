@@ -2,6 +2,7 @@
 const descriptionMaxLength = 200;
 const maxImageSize = 600;
 const maxAudioSeconds = 10;
+const twa_playstore = "android-app://com.alovoa.alovoa_playstore";
 
 $(function() {
 
