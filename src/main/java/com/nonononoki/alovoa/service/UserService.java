@@ -249,7 +249,7 @@ public class UserService {
 		// DELETE USER LIKE
 		for (UserLike like : userLikeRepo.findByUserFrom(user)) {
 			User u = like.getUserTo();
-			if (u.getLikedBy() != null) {
+			if (u != null && u.getLikedBy() != null) {
 				u.getLikedBy().remove(like);
 				userRepo.save(u);
 			}
@@ -259,7 +259,7 @@ public class UserService {
 		}
 		for (UserLike like : userLikeRepo.findByUserTo(user)) {
 			User u = like.getUserFrom();
-			if (u.getLikes() != null) {
+			if (u != null && u.getLikes() != null) {
 				u.getLikes().remove(like);
 				userRepo.save(u);
 			}
@@ -273,8 +273,7 @@ public class UserService {
 		// DELETE USER NOTIFICATION
 		for (UserNotification notification : userNotificationRepo.findByUserFrom(user)) {
 			User u = notification.getUserTo();
-
-			if (u.getNotificationsFrom() != null) {
+			if (u != null && u.getNotificationsFrom() != null) {
 				u.getNotificationsFrom().remove(notification);
 				userRepo.save(u);
 			}
@@ -283,8 +282,7 @@ public class UserService {
 		}
 		for (UserNotification notificaton : userNotificationRepo.findByUserTo(user)) {
 			User u = notificaton.getUserFrom();
-
-			if (u.getNotifications() != null) {
+			if (u != null && u.getNotifications() != null) {
 				u.getNotifications().remove(notificaton);
 				userRepo.save(u);
 			}
@@ -297,7 +295,7 @@ public class UserService {
 		// DELETE USER HIDE
 		for (UserHide hide : userHideRepo.findByUserFrom(user)) {
 			User u = hide.getUserTo();
-			if (u.getHiddenByUsers() != null) {
+			if (u != null && u.getHiddenByUsers() != null) {
 				u.getHiddenByUsers().remove(hide);
 				userRepo.save(u);
 			}
@@ -306,7 +304,7 @@ public class UserService {
 		}
 		for (UserHide hide : userHideRepo.findByUserTo(user)) {
 			User u = hide.getUserFrom();
-			if (u.getHiddenUsers() != null) {
+			if (u != null && u.getHiddenUsers() != null) {
 				u.getHiddenUsers().remove(hide);
 				userRepo.save(u);
 			}
@@ -320,15 +318,16 @@ public class UserService {
 		// DELETE USER BLOCK
 		for (UserBlock block : userBlockRepo.findByUserFrom(user)) {
 			User u = block.getUserTo();
-			u.getBlockedByUsers().remove(block);
-			userRepo.save(u);
-
+			if (u != null && u.getBlockedByUsers() != null) {
+				u.getBlockedByUsers().remove(block);
+				userRepo.save(u);
+			}
 			block.setUserTo(null);
 			userBlockRepo.save(block);
 		}
 		for (UserBlock block : userBlockRepo.findByUserTo(user)) {
 			User u = block.getUserFrom();
-			if (u.getBlockedUsers() != null) {
+			if (u != null && u.getBlockedUsers() != null) {
 				u.getBlockedUsers().remove(block);
 				userRepo.save(u);
 			}
@@ -341,7 +340,7 @@ public class UserService {
 		// DELETE USER REPORT
 		for (UserReport report : userReportRepo.findByUserFrom(user)) {
 			User u = report.getUserTo();
-			if (u.getReportedByUsers() != null) {
+			if (u != null && u.getReportedByUsers() != null) {
 				u.getReportedByUsers().remove(report);
 				userRepo.save(u);
 			}
@@ -350,7 +349,7 @@ public class UserService {
 		}
 		for (UserReport report : userReportRepo.findByUserTo(user)) {
 			User u = report.getUserFrom();
-			if (u.getReported() != null) {
+			if (u != null && u.getReported() != null) {
 				u.getReported().remove(report);
 				userRepo.save(u);
 			}
@@ -363,7 +362,7 @@ public class UserService {
 		// DELETE USER CONVERSATION
 		for (Conversation c : conversationRepo.findByUsers_Id(user.getId())) {
 			for (User u : c.getUsers()) {
-				if (u.getConversations() != null) {
+				if (u != null && u.getConversations() != null) {
 					u.getConversations().remove(c);
 					userRepo.save(u);
 				}
