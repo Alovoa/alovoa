@@ -53,6 +53,10 @@ public class UserProfileResource {
 			if (userView.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
 				throw new AlovoaException("blocked");
 			}
+			
+			if(userView.isDisabled()) {
+				throw new AlovoaException("disabled");
+			}
 
 			userView.setNumberProfileViews(userView.getNumberProfileViews() + 1);
 			userView = userRepo.saveAndFlush(userView);
