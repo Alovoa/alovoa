@@ -227,7 +227,7 @@ public class UserService {
 				.userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
 
 		removeUserDataCascading(user, userDeleteParam);
-		
+
 		user = authService.getCurrentUser();
 		user = userRepo.saveAndFlush(user);
 		userRepo.delete(user);
@@ -249,19 +249,23 @@ public class UserService {
 		// DELETE USER LIKE
 		for (UserLike like : userLikeRepo.findByUserFrom(user)) {
 			User u = like.getUserTo();
-			u.getLikedBy().remove(like);
-			userRepo.save(u);
-
+			if (u.getLikedBy() != null) {
+				u.getLikedBy().remove(like);
+				userRepo.save(u);
+			}
 			like.setUserTo(null);
 			userLikeRepo.save(like);
+
 		}
 		for (UserLike like : userLikeRepo.findByUserTo(user)) {
 			User u = like.getUserFrom();
-			u.getLikes().remove(like);
-			userRepo.save(u);
-
+			if (u.getLikes() != null) {
+				u.getLikes().remove(like);
+				userRepo.save(u);
+			}
 			like.setUserFrom(null);
 			userLikeRepo.save(like);
+
 		}
 		userRepo.flush();
 		userLikeRepo.flush();
@@ -269,17 +273,21 @@ public class UserService {
 		// DELETE USER NOTIFICATION
 		for (UserNotification notification : userNotificationRepo.findByUserFrom(user)) {
 			User u = notification.getUserTo();
-			u.getNotificationsFrom().remove(notification);
-			userRepo.save(u);
 
+			if (u.getNotificationsFrom() != null) {
+				u.getNotificationsFrom().remove(notification);
+				userRepo.save(u);
+			}
 			notification.setUserTo(null);
 			userNotificationRepo.save(notification);
 		}
 		for (UserNotification notificaton : userNotificationRepo.findByUserTo(user)) {
 			User u = notificaton.getUserFrom();
-			u.getNotifications().remove(notificaton);
-			userRepo.save(u);
 
+			if (u.getNotifications() != null) {
+				u.getNotifications().remove(notificaton);
+				userRepo.save(u);
+			}
 			notificaton.setUserFrom(null);
 			userNotificationRepo.save(notificaton);
 		}
@@ -289,16 +297,19 @@ public class UserService {
 		// DELETE USER HIDE
 		for (UserHide hide : userHideRepo.findByUserFrom(user)) {
 			User u = hide.getUserTo();
-			u.getHiddenByUsers().remove(hide);
-			userRepo.save(u);
-
+			if (u.getHiddenByUsers() != null) {
+				u.getHiddenByUsers().remove(hide);
+				userRepo.save(u);
+			}
 			hide.setUserTo(null);
 			userHideRepo.save(hide);
 		}
 		for (UserHide hide : userHideRepo.findByUserTo(user)) {
 			User u = hide.getUserFrom();
-			u.getHiddenUsers().remove(hide);
-			userRepo.save(u);
+			if (u.getHiddenUsers() != null) {
+				u.getHiddenUsers().remove(hide);
+				userRepo.save(u);
+			}
 
 			hide.setUserFrom(null);
 			userHideRepo.save(hide);
@@ -317,9 +328,10 @@ public class UserService {
 		}
 		for (UserBlock block : userBlockRepo.findByUserTo(user)) {
 			User u = block.getUserFrom();
-			u.getBlockedUsers().remove(block);
-			userRepo.save(u);
-
+			if (u.getBlockedUsers() != null) {
+				u.getBlockedUsers().remove(block);
+				userRepo.save(u);
+			}
 			block.setUserFrom(null);
 			userBlockRepo.save(block);
 		}
@@ -329,17 +341,19 @@ public class UserService {
 		// DELETE USER REPORT
 		for (UserReport report : userReportRepo.findByUserFrom(user)) {
 			User u = report.getUserTo();
-			u.getReportedByUsers().remove(report);
-			userRepo.save(u);
-
+			if (u.getReportedByUsers() != null) {
+				u.getReportedByUsers().remove(report);
+				userRepo.save(u);
+			}
 			report.setUserTo(null);
 			userReportRepo.save(report);
 		}
 		for (UserReport report : userReportRepo.findByUserTo(user)) {
 			User u = report.getUserFrom();
-			u.getReported().remove(report);
-			userRepo.save(u);
-
+			if (u.getReported() != null) {
+				u.getReported().remove(report);
+				userRepo.save(u);
+			}
 			report.setUserFrom(null);
 			userReportRepo.save(report);
 		}
@@ -348,12 +362,12 @@ public class UserService {
 
 		// DELETE USER CONVERSATION
 		for (Conversation c : conversationRepo.findByUsers_Id(user.getId())) {
-
 			for (User u : c.getUsers()) {
-				u.getConversations().remove(c);
-				userRepo.save(u);
+				if (u.getConversations() != null) {
+					u.getConversations().remove(c);
+					userRepo.save(u);
+				}
 			}
-
 			conversationRepo.delete(c);
 		}
 
@@ -627,8 +641,8 @@ public class UserService {
 		if (currUser.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
 			throw new AlovoaException("is_blocked");
 		}
-		
-		if(!User.isCompatible(currUser, user)) {
+
+		if (!User.isCompatible(currUser, user)) {
 			throw new AlovoaException("users_not_compatible");
 		}
 
