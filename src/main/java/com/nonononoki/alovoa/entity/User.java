@@ -198,6 +198,15 @@ public class User implements UserDetails {
 	@Transient
 	public static final String ACCENT_COLOR_PURPLE = "purple";
 
+	@Deprecated
+	public User() {
+		email = null;
+	}
+
+	public User(String email) {
+		this.email = email;
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> authorities = new ArrayList<>();
