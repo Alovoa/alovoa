@@ -22,11 +22,11 @@ import lombok.Setter;
 public class UserIntention {
 	
 	@Transient
-	public static final int MEET = 1;
+	public static final long MEET = 1;
 	@Transient
-	public static final int DATE = 2;
+	public static final long DATE = 2;
 	@Transient
-	public static final int SEX = 3;
+	public static final long SEX = 3;
 
 	@JsonIgnore
 	@Id

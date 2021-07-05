@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.entity.User;
@@ -20,6 +21,13 @@ import lombok.Setter;
 @Setter
 @Entity
 public class Gender {
+	
+	@Transient
+	public static final long MALE = 1;
+	@Transient
+	public static final long FEMALE = 2;
+	@Transient
+	public static final long OTHER = 3;
 
 	@JsonIgnore
 	@Id

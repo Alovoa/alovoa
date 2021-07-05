@@ -13,7 +13,6 @@ public class RegisterDto {
 	private Date dateOfBirth;
 	
 	private long gender;
-	private long intention;
 	
 	private String captchaText;
 	private long captchaId;	

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
@@ -19,7 +20,9 @@ import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.Gender;
 import com.nonononoki.alovoa.entity.user.UserDates;
+import com.nonononoki.alovoa.entity.user.UserIntention;
 import com.nonononoki.alovoa.entity.user.UserRegisterToken;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.BaseRegisterDto;
@@ -251,8 +254,9 @@ public class RegisterService {
 		user.setPreferedMinAge(userMinAge);
 		user.setPreferedMaxAge(userMaxAge);
 		user.setGender(genderRepo.findById(dto.getGender()).orElse(null));
-		user.setIntention(userIntentionRepo.findById(dto.getIntention()).orElse(null));
-
+		user.setIntention(userIntentionRepo.findById(UserIntention.MEET).orElse(null));
+		user.setPreferedGenders(new HashSet<Gender>(genderRepo.findAll()));
+		
 		UserDates dates = new UserDates();
 		Date today = new Date();
 		dates.setActiveDate(today);
