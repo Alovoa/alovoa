@@ -253,5 +253,10 @@
     "name": "app.login.remember.key",
     "type": "java.lang.String",
     "description": "A description for 'app.login.remember.key'"
+  },
+  {
+    "name": "app.mail.plus-addressing",
+    "type": "java.lang.String",
+    "description": "A description for 'app.mail.plus-addressing'"
   }
 ]}

@@ -151,11 +151,6 @@ public class RegisterServiceTest {
 				Assert.assertThrows(Exception.class, () -> {
 					registerService.register(user1Dto);
 				});
-
-				user1Dto.setEmail("nono.nono.ki+test@gmail.com");
-				Assert.assertThrows(Exception.class, () -> {
-					registerService.register(user1Dto);
-				});
 			}
 
 			Captcha c3 = captchaService.generate();

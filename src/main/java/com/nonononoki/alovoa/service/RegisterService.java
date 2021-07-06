@@ -58,7 +58,10 @@ public class RegisterService {
 
 	@Value("${app.first-name.length-min}")
 	private long firstNameLengthMin;
-
+	
+	@Value("${app.mail.plus-addressing}")
+	private boolean plusAddressing;
+	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -115,7 +118,7 @@ public class RegisterService {
 				String cleanEmail = parts[0].replace(".", "") + "@" + parts[1];
 				dto.setEmail(cleanEmail);
 			}
-			if (dto.getEmail().contains("+")) {
+			if (plusAddressing && dto.getEmail().contains("+")) {
 				dto.setEmail(dto.getEmail().split("[+]")[0] + "@" + dto.getEmail().split("@")[1]);
 			}
 		}
