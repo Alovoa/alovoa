@@ -36,13 +36,33 @@ $(function() {
 	if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.register('/sw.js');
 	};
-	
+
 	if (document.referrer.includes(twa_playstore)) {
 		docCookies.setItem("twa_playstore", "true");
 	}
+
+	showIosPwaBanner();
 });
 
 function cookieClick() {
 	localStorage.setItem('cookie', true);
 	$('#cookie-banner').css("visibility", "hidden");
+}
+
+function showIosPwaBanner() {
+	let userAgent = window.navigator.userAgent;
+	let isIos = /iPhone|iPad|iPod/.test(userAgent);
+	console.log("isIos:" + isIos);
+	if (isIos) {
+		let isPwa = window.location.href.includes("?pwa");
+		if (isPwa) {
+			localStorage.setItem("pwa", true);
+		} else {
+			isPwa = localStorage.getItem("pwa");
+		}
+		console.log("isPwa:" + isPwa);
+		if (!isPwa) {
+			openModal("ios-pwa-modal");
+		}
+	}
 }

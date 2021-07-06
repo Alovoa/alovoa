@@ -1,4 +1,4 @@
-//https://github.com/naturalprogrammer/webpush-java-demo/blob/master/src/main/resources/static/sw.js
+// Based on https://github.com/naturalprogrammer/webpush-java-demo/blob/master/src/main/resources/static/sw.js
 /**
  * Created by thihara on 8/29/16.
  * 
@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '5';
+const cacheName = '6';
 const staticAssets = [
 
 	'/',
@@ -33,14 +33,14 @@ const staticAssets = [
 	'/js/lib/swiper.all.js',
 	'/js/lib/leaflet.min.js',
 	'/js/lib/cookies.js',
-	
+
 	'/js/tools/check-password.js',
 	'/js/tools/get-notification.js',
 	'/js/tools/get-text.js',
 	'/js/tools/loader.js',
 	'/js/tools/modal.js',
 	'/js/tools/refresh-captcha.js',
-	
+
 	'/js/alovoa.js',
 	'/js/admin.js',
 	'/js/delete-account.js',
@@ -71,9 +71,9 @@ const staticAssets = [
 	'/css/lib/pulse-button.css',
 	'/css/lib/swiper.min.css',
 	'/css/lib/leaflet.min.css',
-	
+
 	'/css/snips/ui-angular.css',
-	
+
 	'/css/alovoa.css',
 	'/css/donate.css',
 	'/css/donate-list.css',
@@ -87,11 +87,12 @@ const staticAssets = [
 
 	'/img/search-cover.webp',
 	'/img/banner.webp',
+	'/img/ios-pwa.webp',
 	'/img/android-chrome-192x192.png',
 	'/img/android-chrome-512x512.png',
 	'/img/apple-touch-icon.png',
-	'/img/facebook-icon.svg',
-	'/img/google-icon.svg',
+	'/img/fb-icon.svg',
+	'/img/gg-icon.svg',
 	'/img/icon.png'
 ];
 
@@ -135,5 +136,5 @@ self.addEventListener('install', async event => {
 });
 
 self.addEventListener('fetch', async event => {
-//	console.log('fetch event')
+	//	console.log('fetch event')
 });

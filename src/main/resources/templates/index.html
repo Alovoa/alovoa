@@ -167,6 +167,14 @@
 			</div>
 		</section>
 
+		<div id="ios-pwa-modal" class="modal">
+			<div class="modal-background" onclick="closeModal()"></div>
+			<div class="modal-content">
+				<!-- https://blog.expo.io/enabling-ios-splash-screens-for-progressive-web-apps-34f06f096e5c -->
+				<img id="ios-pwa" src="/img/ios-pwa.webp" style="width: 100%">
+			</div>
+		</div>
+
 		<footer th:replace="fragments.html::footer"></footer>
 	</div>
 
@@ -175,6 +183,7 @@
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/bulma-collapsible.min.js"></script>
 	<script src="/js/tools/get-text.js"></script>
+	<script src="/js/tools/modal.js"></script>
 	<script src="/sw.js"></script>
 	<script src="/js/alovoa.js"></script>
 	<script src="/js/index.js"></script>
