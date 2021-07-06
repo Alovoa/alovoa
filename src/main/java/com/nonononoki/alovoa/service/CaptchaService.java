@@ -40,7 +40,7 @@ public class CaptchaService {
 	private static final int HEIGHT = 70;
 
 	private static final Color BG_COLOR = new Color(0, 0, 0, 0);
-	private static final Color FG_COLOR = new Color(130, 130, 130);
+	private static final Color FG_COLOR = new Color(118, 118, 118);
 
 	public Captcha generate() throws NoSuchAlgorithmException, IOException {
 
