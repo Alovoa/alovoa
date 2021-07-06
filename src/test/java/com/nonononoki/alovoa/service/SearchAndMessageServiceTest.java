@@ -188,11 +188,11 @@ class SearchAndMessageServiceTest {
 		userService.updateMinAge(minAge);
 		Assert.assertEquals(minAge, user3.getPreferedMinAge());
 		userService.updatePreferedGender(1, true);
-		Assert.assertEquals(1, user3.getPreferedGenders().size());
+		Assert.assertEquals(3, user3.getPreferedGenders().size());
 		userService.updatePreferedGender(2, true);
-		Assert.assertEquals(2, user3.getPreferedGenders().size());
+		Assert.assertEquals(3, user3.getPreferedGenders().size());
 		userService.updatePreferedGender(2, false);
-		Assert.assertEquals(1, user3.getPreferedGenders().size());
+		Assert.assertEquals(2, user3.getPreferedGenders().size());
 
 		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getId());
 		Assert.assertEquals(0, authService.getCurrentUser().getInterests().size());
