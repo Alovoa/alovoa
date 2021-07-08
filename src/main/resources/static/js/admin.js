@@ -37,6 +37,44 @@ function deleteReport(id) {
 	});
 }
 
+function removeDescription(id) {
+	if (confirm("Remove description??")) {
+		$.ajax({
+			type: "POST",
+			url: "/admin/remove-description/" + id,
+			headers: {
+				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
+			},
+			success: function() {
+				alert(getText("success.submit.generic"));
+			},
+			error: function(e) {
+				console.log(e);
+				alert(getGenericErrorText());
+			}
+		});
+	}
+}
+
+function removeImages(id) {
+	if (confirm("Remove all images?")) {
+		$.ajax({
+			type: "POST",
+			url: "/admin/remove-images/" + id,
+			headers: {
+				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
+			},
+			success: function() {
+				alert(getText("success.submit.generic"));
+			},
+			error: function(e) {
+				console.log(e);
+				alert(getGenericErrorText());
+			}
+		});
+	}
+}
+
 function banUser(id, idReal) {
 	if (confirm(getText("admin.ban-user.confirm"))) {
 		$.ajax({

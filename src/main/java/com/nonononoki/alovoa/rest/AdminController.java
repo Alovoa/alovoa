@@ -40,6 +40,20 @@ public class AdminController {
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
 		adminService.banUser(id);
 	}
+	
+	@PostMapping("/remove-images/{id}")
+	public void removeImages(@PathVariable String id)
+			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
+		adminService.removeImages(id);
+	}
+	
+	@PostMapping("/remove-description/{id}")
+	public void removeDescription(@PathVariable String id)
+			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
+		adminService.removeDescription(id);
+	}
 
 	@PostMapping("/contact/hide/{id}")
 	public void hideContact(@PathVariable long id) throws AlovoaException {

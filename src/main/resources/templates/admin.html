@@ -46,6 +46,10 @@
 						class="fa fa-user"></i></button>
 				<button class="button" th:text="#{admin.delete-report}"
 					th:onclick="deleteReport([[${report.id}]])"></button>
+				<button class="button" th:text="#{admin.remove-description}"
+					th:onclick="removeDescription([[${report.userToIdEnc}]])"></button>
+				<button class="button" th:text="#{admin.remove-images}"
+					th:onclick="removeImages([[${report.userToIdEnc}]])"></button>
 				<button class="button" th:text="#{admin.ban-user}"
 					th:onclick="banUser([[${report.userToIdEnc}]], [[${report.userTo.id}]])"></button>
 			</div>
@@ -74,7 +78,7 @@
 				<button class="button" th:text="#{submit}"></button>
 			</form>
 		</div>
-		
+
 		<div id="delete-account" class="box">
 			<h3 th:text="#{profile.account.delete}"></h3>
 			<form id="delete-account-form" th:action="@{/admin/delete-account}" method="POST">
