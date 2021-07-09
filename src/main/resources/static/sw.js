@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '6';
+const cacheName = '7';
 const staticAssets = [
 
 	'/',
@@ -91,8 +91,10 @@ const staticAssets = [
 	'/img/android-chrome-192x192.png',
 	'/img/android-chrome-512x512.png',
 	'/img/apple-touch-icon.png',
-	'/img/fb-icon.svg',
-	'/img/gg-icon.svg',
+	'/img/f-icon.svg',
+	'/img/g-icon.svg',
+	'/img/m-icon.svg',
+	'/img/t-icon.svg',
 	'/img/icon.png'
 ];
 
