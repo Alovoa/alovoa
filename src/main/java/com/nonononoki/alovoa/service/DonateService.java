@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.Tools;
-import com.nonononoki.alovoa.component.AuthProvider;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserDonation;

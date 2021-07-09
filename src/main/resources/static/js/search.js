@@ -7,8 +7,8 @@ var long;
 $(function() {
 	bulmaSlider.attach();
 
-	lat = 52.5;
-	lon = 13.5;
+	lat = 52.3;
+	lon = 4.9;
 	map = L.map('map').setView({ lon: lon, lat: lat }, 4);
 
 	// add the OpenStreetMap tiles
