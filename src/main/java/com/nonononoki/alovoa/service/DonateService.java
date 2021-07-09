@@ -16,11 +16,15 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.component.AuthProvider;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserDonation;
@@ -50,6 +54,9 @@ public class DonateService {
 	private AuthService authService;
 
 	@Autowired
+	private ObjectMapper objectMapper;
+
+	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
 	@Value("${app.donate.users.max}")
@@ -57,6 +64,8 @@ public class DonateService {
 
 	@Value("${spring.profiles.active}")
 	private String profile;
+
+	private static final Logger logger = LoggerFactory.getLogger(DonateService.class);
 
 	private static final String KOFI_URL = "https://ko-fi.com/";
 	private static final String KOFI_TEST_TRANSACTION_ID = "1234-1234-1234-1234";
@@ -88,6 +97,12 @@ public class DonateService {
 	public void donationReceivedKofi(DonationKofi donation) throws UnknownHostException, MalformedURLException {
 		String kofiIp = InetAddress.getByName(new URL(KOFI_URL).getHost()).getHostAddress().trim();
 		String ip = request.getRemoteAddr().trim();
+
+		try {
+			logger.info(objectMapper.writeValueAsString(donation));
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 
 		if (kofiIp.equals(ip) || !profile.equals(Tools.PROD)) {
 
@@ -131,6 +146,12 @@ public class DonateService {
 	public void donationReceivedBmac(DonationBmac data) throws UnknownHostException, MalformedURLException {
 		String bmacIp = InetAddress.getByName(new URL(BMAC_URL).getHost()).getHostAddress().trim();
 		String ip = request.getRemoteAddr().trim();
+		
+		try {
+			logger.info(objectMapper.writeValueAsString(data));
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 
 		if (bmacIp.equals(ip) || !profile.equals(Tools.PROD)) {
 
