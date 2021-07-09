@@ -74,7 +74,7 @@ public class SearchService {
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 
-		Sort sort = Sort.by(Sort.Direction.DESC, "dates.latestDonationDate");
+		Sort sort = Sort.by(Sort.Direction.DESC, "dates.latestDonationDate", "dates.activeDate");
 		switch (sortId) {
 		case SORT_ACTIVE_DATE:
 			sort = Sort.by(Sort.Direction.DESC, "dates.activeDate");
