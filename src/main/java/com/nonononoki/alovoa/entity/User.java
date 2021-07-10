@@ -80,6 +80,8 @@ public class User implements UserDetails {
 
 	private String accentColor;
 
+	private int units;
+
 	private String uiDesign;
 
 	private int preferedMinAge;
@@ -197,6 +199,10 @@ public class User implements UserDetails {
 	public static final String ACCENT_COLOR_ORANGE = "orange";
 	@Transient
 	public static final String ACCENT_COLOR_PURPLE = "purple";
+	@Transient
+	public static final int UNIT_SI = 0;
+	@Transient
+	public static final int UNIT_IMPERIAL = 1;
 
 	@Deprecated
 	public User() {

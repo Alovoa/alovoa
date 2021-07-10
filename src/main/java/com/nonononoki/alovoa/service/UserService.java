@@ -524,6 +524,12 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
+	public void updateUnits(int units) throws AlovoaException {
+		User user = authService.getCurrentUser();
+		user.setUnits(units);
+		userRepo.saveAndFlush(user);
+	}
+
 	public void addImage(String imgB64) throws AlovoaException, IOException {
 		User user = authService.getCurrentUser();
 		if (user.getImages() != null && user.getImages().size() < imageMax) {

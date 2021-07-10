@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.nonononoki.alovoa.model.AlovoaException;
+import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.SearchService;
 
 @Controller
@@ -25,6 +26,9 @@ public class SearchController {
 
 	@Autowired
 	private SearchService searchService;
+	
+	@Autowired
+	private AuthService authService;
 
 	@GetMapping("/users/{latitude}/{longitude}/{distance}/{search}")
 	public String getUsers(Model model, @PathVariable Double latitude, @PathVariable Double longitude,
@@ -32,6 +36,7 @@ public class SearchController {
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		model.addAttribute("dto", searchService.search(latitude, longitude, distance, search));
+		model.addAttribute("currUser", authService.getCurrentUser());
 		return "fragments :: search-users";
 	}
 }

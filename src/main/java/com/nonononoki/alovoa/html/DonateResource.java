@@ -35,7 +35,7 @@ public class DonateResource {
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		ModelAndView mav = new ModelAndView("donate");
 		User user = authService.getCurrentUser();
-		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
+		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;
 	}
 }

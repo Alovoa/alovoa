@@ -251,7 +251,9 @@ oc
 														</div>
 														<div class="right" style="font-size: 1.2em; padding-top: 6px;">
 															<i class="fa fa-map-marker-alt"></i>
-															<span th:text="${user.distanceToUser}"></span><span> </span><span th:text="#{km}"></span>
+															<span th:text="${user.distanceToUser}"></span><span> </span>
+															<span th:if="${currUser.units == 0}" th:text="#{km}"></span>
+															<span th:if="${currUser.units == 1}" th:text="#{mi}"></span>
 														</div>
 													</div>
 												</div>
@@ -346,7 +348,9 @@ oc
 							</div>
 							<div class="right" style="font-size: 1.2em; padding-top: 6px;">
 								<i class="fa fa-map-marker-alt"></i>
-								<span th:text="${donation.user.distanceToUser}"></span><span> </span><span th:text="#{km}"></span>
+								<span th:text="${donation.user.distanceToUser}"></span><span> </span>
+								<span th:if="${user.units == 0}" th:text="#{km}"></span>
+								<span th:if="${user.units == 1}" th:text="#{mi}"></span>
 							</div>
 						</div>
 					</div>

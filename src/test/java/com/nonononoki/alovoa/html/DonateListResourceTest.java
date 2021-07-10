@@ -16,6 +16,6 @@ class DonateListResourceTest {
 
 	@Test
 	void test() throws Exception {
-		donateListResource.donate();
+		donateListResource.donateList();
 	}
 }

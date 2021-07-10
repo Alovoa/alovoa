@@ -138,6 +138,11 @@ public class UserController {
 	public void updateUiDesign(@PathVariable String uiDesign) throws AlovoaException {
 		userService.updateUiDesign(uiDesign);
 	}
+	
+	@PostMapping("/units/update/{units}")
+	public void updateUnits(@PathVariable int units) throws AlovoaException {
+		userService.updateUnits(units);
+	}
 
 	@PostMapping(value = "/image/add", consumes = "text/plain")
 	public void addImage(@RequestBody String imageB64) throws AlovoaException, IOException {

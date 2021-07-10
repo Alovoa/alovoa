@@ -32,6 +32,7 @@ import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.DonationBmac;
 import com.nonononoki.alovoa.model.DonationDto;
 import com.nonononoki.alovoa.model.DonationKofi;
+import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.DonateService;
 
 @Controller
@@ -43,6 +44,9 @@ public class DonateController {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	@Autowired
+	private AuthService authService;
 
 	private static final Logger logger = LoggerFactory.getLogger(DonateController.class);
 
@@ -53,6 +57,7 @@ public class DonateController {
 		List<DonationDto> donations = donateService.filter(filter);
 		model.addAttribute("donations", donations);
 		model.addAttribute("filter", filter);
+		model.addAttribute("user", authService.getCurrentUser());
 		return "fragments :: donate-filter";
 	}
 

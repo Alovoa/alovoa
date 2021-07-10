@@ -283,6 +283,22 @@
 						</div>
 					</div>
 				</div>
+				
+				<div class="box">
+					<div class="field">
+						<label class="label" th:text="#{units}"></label>
+						<div class="select">
+							<select id="ui-units-select" onchange="updateUnits()">
+								<option value="0"
+									th:selected="${user.units == 0}"
+									th:text="#{si}"></option>
+								<option value="1"
+									th:selected="${user.units == 1}"
+									th:text="#{imperial}"></option>
+							</select>
+						</div>
+					</div>
+				</div>
 
 				<div class="box">
 					<div class="field">

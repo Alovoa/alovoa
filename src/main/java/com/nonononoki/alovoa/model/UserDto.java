@@ -45,6 +45,7 @@ public class UserDto {
 
 	private String accentColor;
 	private String uiDesign;
+	private int units;
 
 	private int preferedMinAge;
 	private int preferedMaxAge;
@@ -77,13 +78,15 @@ public class UserDto {
 
 	private long numberProfileViews;
 	private long numberSearches;
-	
+
 	private boolean compatible;
 
 	public static final int ALL = 0;
 	public static final int PROFILE_PICTURE_ONLY = 1;
 	public static final int NO_AUDIO = 2;
 	public static final int NO_MEDIA = 3;
+
+	private static final double MILES_TO_KM = 0.6214;
 
 	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
@@ -109,6 +112,7 @@ public class UserDto {
 		dto.setGender(user.getGender());
 		dto.setAccentColor(user.getAccentColor());
 		dto.setUiDesign(user.getUiDesign());
+		dto.setUnits(user.getUnits());
 		dto.setPreferedGenders(user.getPreferedGenders());
 		dto.setPreferedMinAge(user.getPreferedMinAge());
 		dto.setPreferedMaxAge(user.getPreferedMaxAge());
@@ -154,10 +158,13 @@ public class UserDto {
 			int dist = 0;
 			if (!currentUser.isAdmin()) {
 				dist = Tools.getDistanceToUser(user, currentUser);
+				if (currentUser.getUnits() == User.UNIT_IMPERIAL) {
+					dist = (int) (dist * MILES_TO_KM);
+				}
 			}
 			dto.setDistanceToUser(dist);
 		}
-		dto.setCompatible(User.isCompatible(currentUser, user));		
+		dto.setCompatible(User.isCompatible(currentUser, user));
 		return dto;
 	}
 
