@@ -52,7 +52,7 @@ function cookieClick() {
 function showIosPwaBanner() {
 	let userAgent = window.navigator.userAgent;
 	let isIos = /iPhone|iPad|iPod/.test(userAgent);
-	console.log("isIos:" + isIos);
+	//console.log("isIos:" + isIos);
 	if (isIos) {
 		let isPwa = window.location.href.includes("?pwa");
 		if (isPwa) {

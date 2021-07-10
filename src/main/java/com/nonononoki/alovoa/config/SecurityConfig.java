@@ -64,8 +64,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/register/**").permitAll().antMatchers("/captcha/**").permitAll()
 				.antMatchers("/donate-list").permitAll().antMatchers("/donate/received/**").permitAll()
 				.antMatchers("/password/**").permitAll().antMatchers("/favicon.ico").permitAll().antMatchers("/sw.js")
-				.permitAll().antMatchers("/.well-known/assetlinks.json").permitAll().antMatchers("/text/*").permitAll()
-				.antMatchers("/manifest/**").permitAll().antMatchers("/fonts/**").permitAll()
+				.permitAll().antMatchers("/robots.txt").permitAll().antMatchers("/.well-known/assetlinks.json")
+				.permitAll().antMatchers("/text/*").permitAll().antMatchers("/manifest/**").permitAll()
+				.antMatchers("/fonts/**").permitAll()
 
 				.anyRequest().authenticated().and().formLogin().loginPage("/login").and().logout()
 				.deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER).logoutUrl("/logout").logoutSuccessUrl("/?logout").and()
