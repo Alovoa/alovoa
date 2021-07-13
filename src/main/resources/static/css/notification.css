@@ -1,3 +1,7 @@
+#main-container {
+	padding-bottom: 52px;
+}
+
 .card-image:first-child img {
     border-top-left-radius:12px;
     border-top-right-radius: 12px;
