@@ -98,6 +98,19 @@ const staticAssets = [
 	'/img/icon.png'
 ];
 
+if ('serviceWorker' in navigator) {
+	console.log('Loading Service Worker...')
+	window.addEventListener('load', function() {
+		navigator.serviceWorker.register('/sw.js').then(function(registration) {
+			// Registration was successful
+			console.log('ServiceWorker registration successful with scope: ', registration.scope);
+		}, function(err) {
+			// registration failed :(
+			console.log('ServiceWorker registration failed: ', err);
+		});
+	});
+}
+
 self.addEventListener('push', function(event) {
 	if (!(self.Notification && self.Notification.permission === 'granted')) {
 		return;
@@ -138,5 +151,9 @@ self.addEventListener('install', async event => {
 });
 
 self.addEventListener('fetch', async event => {
-	//	console.log('fetch event')
+	event.respondWith(
+		caches.match(event.request).then(function(response) {
+			return response || fetch(event.request);
+		})
+	);
 });
