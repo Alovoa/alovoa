@@ -38,7 +38,7 @@ $(function() {
 	};
 
 	if (document.referrer.includes(twa_playstore)) {
-		docCookies.setItem("twa_playstore", "true");
+		localStorage.setItem("twa_playstore", true);
 	}
 
 	showIosPwaBanner();

@@ -32,7 +32,6 @@ const staticAssets = [
 	'/js/lib/notification.js',
 	'/js/lib/swiper.all.js',
 	'/js/lib/leaflet.min.js',
-	'/js/lib/cookies.js',
 
 	'/js/tools/check-password.js',
 	'/js/tools/get-notification.js',
@@ -99,11 +98,11 @@ const staticAssets = [
 ];
 
 if ('serviceWorker' in navigator) {
-	console.log('Loading Service Worker...')
+	// console.log('Loading Service Worker...')
 	window.addEventListener('load', function() {
 		navigator.serviceWorker.register('/sw.js').then(function(registration) {
 			// Registration was successful
-			console.log('ServiceWorker registration successful with scope: ', registration.scope);
+			// console.log('ServiceWorker registration successful with scope: ', registration.scope);
 		}, function(err) {
 			// registration failed :(
 			console.log('ServiceWorker registration failed: ', err);
