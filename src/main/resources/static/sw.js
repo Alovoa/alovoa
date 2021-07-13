@@ -145,8 +145,14 @@ self.addEventListener('notificationclick', function(event) {
 
 self.addEventListener('install', async event => {
 	console.log('install event')
-	const cache = await caches.open(cacheName);
-	await cache.addAll(staticAssets);
+	// Perform install steps
+	event.waitUntil(
+		caches.open(cacheName)
+			.then(function(cache) {
+				console.log('Opened cache');
+				return cache.addAll(staticAssets);
+			})
+	);
 });
 
 self.addEventListener('fetch', async event => {
