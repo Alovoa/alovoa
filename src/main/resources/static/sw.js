@@ -12,13 +12,6 @@
 const cacheName = '8';
 const staticAssets = [
 
-	'/',
-	'/donate-list',
-	'/privacy',
-	'/tos',
-	'/imprint',
-	'/faq',
-
 	'/sw.js',
 	'/favicon.ico',
 	'/manifest/manifest.json',
