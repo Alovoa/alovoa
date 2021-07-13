@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '7';
+const cacheName = '8';
 const staticAssets = [
 
 	'/',
