@@ -83,9 +83,16 @@
 			<h3 th:text="#{profile.account.delete}"></h3>
 			<form id="delete-account-form" th:action="@{/admin/delete-account}" method="POST">
 				<input class="input" name="email" th:placeholder="#{email}" required>
+				<div style="padding-top: 4px;"></div>
 				<button class="button" th:text="#{submit}"></button>
 			</form>
 		</div>
+		
+		<div id="links" class="box">
+			<a href="/search">Search</a>
+		</div>
+		
+		<div style="padding-bottom: 24px;"></div>
 
 	</div>
 	<footer th:replace="fragments.html::footer"></footer>

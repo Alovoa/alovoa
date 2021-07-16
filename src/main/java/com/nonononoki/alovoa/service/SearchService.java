@@ -74,7 +74,13 @@ public class SearchService {
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 
-		Sort sort = Sort.by(Sort.Direction.DESC, "dates.latestDonationDate", "dates.activeDate");
+		User user = authService.getCurrentUser();
+
+		if (user.isAdmin()) {
+			return SearchDto.builder().users(searchResultstoUserDto(userRepo.adminSearch(), 0, user)).build();
+		}
+
+		Sort sort = Sort.by(Sort.Direction.DESC, "dates.latestDonationDate", "dates.creationDate");
 		switch (sortId) {
 		case SORT_ACTIVE_DATE:
 			sort = Sort.by(Sort.Direction.DESC, "dates.activeDate");
@@ -96,7 +102,6 @@ public class SearchService {
 			throw new AlovoaException("max_distance_exceeded");
 		}
 
-		User user = authService.getCurrentUser();
 		user.getDates().setActiveDate(new Date());
 		// rounding to improve privacy
 		DecimalFormat df = new DecimalFormat("#.##");

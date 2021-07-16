@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	User findByEmail(String email);
 
 	long countByConfirmed(boolean confirmed);
-	
+
 	long countByConfirmedAndGenderId(boolean confirmed, long genderId);
 
 	default List<User> usersSearch(UserSearchRequest request, Sort sort) {
@@ -57,8 +57,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 		return findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullOrderByTotalDonationsDesc();
 	}
 
+	default List<User> adminSearch() {
+		return findTop100ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullOrderByDatesCreationDateDesc();
+	}
+
 	// used for sending mails to all
 	List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrue();
+
+	List<User> findTop100ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullOrderByDatesCreationDateDesc();
 
 	List<User> findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetweenAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 			Date min, Date max, Double latitudeFrom, Double latitudeTo, Double longitudeFrom, Double longitudeTo,
