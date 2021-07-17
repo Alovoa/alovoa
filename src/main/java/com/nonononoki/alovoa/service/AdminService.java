@@ -213,6 +213,10 @@ public class AdminService {
 
 		User user = userRepo.findByEmail(dto.getEmail());
 
+		if (user == null) {
+			throw new AlovoaException("user_not_found");
+		}
+
 		if (user.isAdmin()) {
 			throw new AlovoaException("cannot_delete_admin");
 		}
@@ -226,8 +230,6 @@ public class AdminService {
 			userRepo.delete(userRepo.findByEmail(user.getEmail()));
 			userRepo.flush();
 		}
-
-		throw new AlovoaException("user_not_found");
 	}
 
 	private void checkRights() throws AlovoaException {
