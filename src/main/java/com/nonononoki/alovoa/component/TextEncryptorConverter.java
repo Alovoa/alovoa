@@ -87,7 +87,7 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		try {
 			return encode(attribute);
 		} catch (Exception e) {
-			return null;
+			return attribute;
 		}
 	}
 
@@ -96,7 +96,7 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		try {
 			return decode(dbData);
 		} catch (Exception e) {
-			return null;
+			return dbData;
 		}
 	}
 }
