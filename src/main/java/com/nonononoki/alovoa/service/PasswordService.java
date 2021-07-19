@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class PasswordService {
 			if (u == null) {
 				throw new DisabledException("user_not_found");
 			}
-			
+
 			if (u.isDisabled()) {
 				throw new DisabledException("user_disabled");
 			}
@@ -77,7 +78,7 @@ public class PasswordService {
 		return u.getPasswordToken();
 	}
 
-	public void changePasword(PasswordChangeDto dto) throws AlovoaException {
+	public void changePasword(PasswordChangeDto dto, HttpSession session) throws AlovoaException {
 		UserPasswordToken token = userPasswordTokenRepo.findByContent(dto.getToken());
 		if (token == null) {
 			throw new AlovoaException("token_not_found");
@@ -98,5 +99,6 @@ public class PasswordService {
 		}
 
 		userRepo.saveAndFlush(user);
+		session.invalidate();
 	}
 }

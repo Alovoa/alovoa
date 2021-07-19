@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,7 @@ public class PasswordController {
 	}
 
 	@PostMapping(value = "/change", consumes = "application/json")
-	public void changePasword(@RequestBody PasswordChangeDto dto) throws AlovoaException {
-		passwordService.changePasword(dto);
+	public void changePasword(@RequestBody PasswordChangeDto dto, HttpSession session) throws AlovoaException {
+		passwordService.changePasword(dto, session);
 	}
 }
