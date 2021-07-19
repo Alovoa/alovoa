@@ -136,7 +136,9 @@
 			function onChangeLocal(e) {
 				let val = e.options[e.selectedIndex].value;
 				console.log(val);
-				window.location.search = val;
+				if (val.includes('?lang=') && val.length == 8) {
+					window.location.search = val;
+				}
 			}
 		</script>
 	</footer>
