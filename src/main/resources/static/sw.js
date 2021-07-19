@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '9';
+const cacheName = '10';
 const staticAssets = [
 
 	'/sw.js',
@@ -86,6 +86,7 @@ const staticAssets = [
 	'/img/f-icon.svg',
 	'/img/g-icon.svg',
 	'/img/m-icon.svg',
+	'/img/r-icon.svg',
 	'/img/t-icon.svg',
 	'/img/icon.png'
 ];
