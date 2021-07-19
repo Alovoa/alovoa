@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '8';
+const cacheName = '9';
 const staticAssets = [
 
 	'/sw.js',
