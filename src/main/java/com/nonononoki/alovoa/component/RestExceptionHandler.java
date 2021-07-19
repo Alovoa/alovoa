@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.util.HtmlUtils;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -19,7 +20,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler
 	protected ResponseEntity<Object> handleConflict(Exception ex, WebRequest request) {
 		LOGGER.error(ExceptionUtils.getStackTrace(ex));
-		return handleExceptionInternal(ex, ex.getMessage() /* ExceptionUtils.getStackTrace(ex) */, new HttpHeaders(),
+		return handleExceptionInternal(ex, HtmlUtils.htmlEscape(ex.getMessage()), new HttpHeaders(),
 				HttpStatus.CONFLICT, request);
 	}
 }
