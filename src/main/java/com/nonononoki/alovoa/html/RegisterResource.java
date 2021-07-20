@@ -24,13 +24,13 @@ public class RegisterResource {
 
 	@Autowired
 	private UserIntentionRepository userIntentionRepo;
-	
+
 	@Autowired
 	private AuthService authService;
-	
+
 	@GetMapping("/register")
 	public ModelAndView register() throws AlovoaException {
-		
+
 		User user = authService.getCurrentUser();
 		if (user != null) {
 			return new ModelAndView("redirect:" + ProfileResource.getUrl());
@@ -40,11 +40,12 @@ public class RegisterResource {
 		mav.addObject("intentions", userIntentionRepo.findAll());
 		return mav;
 	}
-	
-	public ModelAndView registerOauth() {
+
+	public ModelAndView registerOauth(String firstName) {
 		ModelAndView mav = new ModelAndView("register-oauth");
 		mav.addObject("genders", genderRepo.findAll());
 		mav.addObject("intentions", userIntentionRepo.findAll());
+		mav.addObject("firstName", firstName);
 		return mav;
 	}
 

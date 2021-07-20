@@ -11,6 +11,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -49,6 +50,9 @@ public class Oauth2Controller {
 	@Autowired
 	private LoginResource loginResource;
 
+	@Value("${app.first-name.length-max}")
+	private int firstNameMaxLength;
+
 	@SuppressWarnings("rawtypes")
 	@GetMapping("/login/oauth2/success")
 	public ModelAndView oauth2Success()
@@ -79,6 +83,17 @@ public class Oauth2Controller {
 					throw new AlovoaException("oauth_attributes_not_found");
 				}
 
+				String firstName = (String) attributes.get("given_name"); // Google
+				if (firstName == null) {
+					firstName = (String) attributes.get("name"); // Facebook
+					if (firstName.contains(" ")) {
+						firstName = firstName.split(" ")[0];
+						if (firstName.length() > firstNameMaxLength) {
+							firstName.substring(0, firstNameMaxLength);
+						}
+					}
+				}
+
 				String email = (String) attributes.get("email");
 				email = email.toLowerCase();
 
@@ -94,7 +109,7 @@ public class Oauth2Controller {
 				}
 
 				if (!user.isConfirmed()) {
-					return registerResource.registerOauth();
+					return registerResource.registerOauth(firstName);
 				} else {
 					return new ModelAndView("redirect:" + ProfileResource.getUrl());
 				}
