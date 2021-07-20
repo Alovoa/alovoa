@@ -21,33 +21,33 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Message{
-	
+public class Message {
+
 	@JsonIgnore
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	@JsonIgnore
 	@ManyToOne
 	private Conversation conversation;
-	
+
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn
 	private User userFrom;
-	
+
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn
 	private User userTo;
-	
+
 	@Convert(converter = TextEncryptorConverter.class)
-	@Column(columnDefinition="mediumtext")
+	@Column(columnDefinition = "mediumtext", updatable = false)
 	private String content;
-	
+
 	private Date date;
-	
+
 	private boolean allowedFormatting = false;
-	
+
 }

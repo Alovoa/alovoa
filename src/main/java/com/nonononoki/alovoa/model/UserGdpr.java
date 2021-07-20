@@ -3,9 +3,6 @@ package com.nonononoki.alovoa.model;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Convert;
-
-import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Gender;
 import com.nonononoki.alovoa.entity.user.Message;
@@ -35,7 +32,6 @@ public class UserGdpr {
 	
 	private double totalDonations;
 	
-	@Convert(converter = TextEncryptorConverter.class)
 	private String email;
 
 	private String firstName;

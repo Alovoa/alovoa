@@ -21,11 +21,12 @@ public class Contact {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
+	@Column(updatable = false)
 	@Convert(converter = TextEncryptorConverter.class)
 	private String email;
 	
 	@Convert(converter = TextEncryptorConverter.class)
-	@Column(columnDefinition="mediumtext")
+	@Column(columnDefinition="mediumtext", updatable = false)
 	private String message;
 	
 	private Date date;

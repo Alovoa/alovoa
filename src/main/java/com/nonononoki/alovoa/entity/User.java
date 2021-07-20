@@ -69,6 +69,7 @@ public class User implements UserDetails {
 
 	private String password;
 
+	@Column(nullable = false, updatable = false)
 	@Convert(converter = TextEncryptorConverter.class)
 	private String firstName;
 
