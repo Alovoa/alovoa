@@ -72,7 +72,7 @@ public class EventListenerConfig {
 		setDefaultAdmin();
 		setDefaultGenders();
 		setDefaulIntentions();
-		removeInvalidUsers();
+//		removeInvalidUsers();
 	}
 
 	public void setDefaultAdmin() {
