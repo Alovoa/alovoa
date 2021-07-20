@@ -13,8 +13,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
  
 @Configuration
 @EnableWebMvc
@@ -30,9 +30,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	
 	@Bean(name = "localeResolver")
 	public LocaleResolver getLocaleResolver()  {
-	    SessionLocaleResolver slr = new SessionLocaleResolver();
-	    slr.setDefaultLocale(Locale.ENGLISH);
-	    return slr;
+		CookieLocaleResolver clr = new CookieLocaleResolver();
+		clr.setDefaultLocale(Locale.ENGLISH);
+	    return clr;
 	} 
 	
     @Bean(name = "messageSource")
