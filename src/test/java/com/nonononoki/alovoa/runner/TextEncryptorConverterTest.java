@@ -26,8 +26,8 @@ class TextEncryptorConverterTest {
 	@Autowired
 	private TextEncryptorConverter textEncryptorConverter;
 	
-	private final String encryptedString = "";
-	private final String unencryptedString = "";
+	private final String encryptedString = "JdCvwiAFOqyxMWRNwuuF1Q==";
+	private final String unencryptedString = "Monty";
 	
 	@Test
 	public void decrypt() throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {

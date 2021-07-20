@@ -164,7 +164,7 @@ public class UserDto {
 			}
 			dto.setDistanceToUser(dist);
 		}
-		dto.setCompatible(User.isCompatible(currentUser, user));
+		dto.setCompatible(Tools.usersCompatible(currentUser, user));
 		return dto;
 	}
 

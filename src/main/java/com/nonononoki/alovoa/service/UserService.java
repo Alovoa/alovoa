@@ -647,7 +647,7 @@ public class UserService {
 			throw new AlovoaException("is_blocked");
 		}
 
-		if (!User.isCompatible(currUser, user)) {
+		if (!Tools.usersCompatible(currUser, user)) {
 			throw new AlovoaException("users_not_compatible");
 		}
 

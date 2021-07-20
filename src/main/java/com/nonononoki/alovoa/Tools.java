@@ -161,4 +161,21 @@ public class Tools {
 		return -0.000000487305676 * Math.pow(lat, 4) - 0.0033668574 * Math.pow(lat, 3) + 0.4601181791 * lat * lat
 				- 1.4558127346 * lat + 110579.25662316;
 	}
+
+	public static boolean usersCompatible(User user1, User user2) {
+		if (user2.getPreferedGenders() == null || user1.getPreferedGenders() == null || user1.getDates() == null
+				|| user2.getDates() == null) {
+			return false;
+		}
+		
+		int user1Age = calcUserAge(user1);
+		int user2Age = calcUserAge(user2);
+		
+		return user2Age < AGE_LEGAL == user1Age < AGE_LEGAL
+				&& user2.getPreferedGenders().contains(user1.getGender())
+				&& user1.getPreferedGenders().contains(user2.getGender())
+				&& user1.getPreferedMaxAge() >= user2Age
+				&& user1.getPreferedMinAge() <= user2Age
+				&& user2.getIntention().getText().equals(user1.getIntention().getText());
+	}
 }

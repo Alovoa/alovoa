@@ -29,7 +29,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.user.Conversation;
@@ -259,16 +258,4 @@ public class User implements UserDetails {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		throw new IOException();
 	}
-
-	public static boolean isCompatible(User user1, User user2) {
-		if (user2.getPreferedGenders() == null || user1.getPreferedGenders() == null || user1.getDates() == null
-				|| user2.getDates() == null) {
-			return false;
-		}
-		return Tools.calcUserAge(user2) < Tools.AGE_LEGAL == Tools.calcUserAge(user1) < Tools.AGE_LEGAL
-				&& user2.getPreferedGenders().contains(user1.getGender())
-				&& user1.getPreferedGenders().contains(user2.getGender())
-				&& user2.getIntention().getText().equals(user1.getIntention().getText());
-	}
-
 }

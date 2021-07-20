@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AlovoaException;
@@ -68,7 +69,7 @@ public class UserProfileResource {
 			mav.addObject("user", userDto);
 			mav.addObject("currUser", currUserDto);
 
-			mav.addObject("compatible", User.isCompatible(user, userView));
+			mav.addObject("compatible", Tools.usersCompatible(user, userView));
 
 			return mav;
 
