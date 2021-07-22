@@ -19,13 +19,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.user.UserLike;
+import com.nonononoki.alovoa.entity.user.UserHide;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.service.AuthService;
 
 @Controller
-public class LikedUsersResource {
+public class DislikedUsersResource {
 
 	@Autowired
 	private AuthService authService;
@@ -33,17 +33,17 @@ public class LikedUsersResource {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
-	@GetMapping("/liked-users")
-	public ModelAndView likedUsers() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
+	@GetMapping("/disliked-users")
+	public ModelAndView dislikedUsers() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException {
 
 		User user = authService.getCurrentUser();
-		ModelAndView mav = new ModelAndView("liked-users");
-		List<UserLike> userLikes = user.getLikes();
-		List<User> likedUsers = userLikes.stream().map(b -> b.getUserTo()).collect(Collectors.toList());
+		ModelAndView mav = new ModelAndView("disliked-users");
+		List<UserHide> userDislikes = user.getHiddenUsers();
+		List<User> dislikedUsers = userDislikes.stream().map(b -> b.getUserTo()).collect(Collectors.toList());
 		List<UserDto> users = new ArrayList<>();
-		for (User u : likedUsers) {
+		for (User u : dislikedUsers) {
 			users.add(UserDto.userToUserDto(u, user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
 		}
 		mav.addObject("users", users);
