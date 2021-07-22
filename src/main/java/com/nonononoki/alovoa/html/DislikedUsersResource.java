@@ -33,7 +33,7 @@ public class DislikedUsersResource {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
-	@GetMapping("/disliked-users")
+	@GetMapping("/user/disliked-users")
 	public ModelAndView dislikedUsers() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException {

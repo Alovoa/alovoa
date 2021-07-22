@@ -33,7 +33,7 @@ public class LikedUsersResource {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
-	@GetMapping("/liked-users")
+	@GetMapping("/user/liked-users")
 	public ModelAndView likedUsers() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException {
