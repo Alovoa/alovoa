@@ -9,10 +9,9 @@
  */
 
 
-const cacheName = '10';
+const cacheName = '11';
 const staticAssets = [
 
-	'/sw.js',
 	'/favicon.ico',
 	'/manifest/manifest.json',
 
