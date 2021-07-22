@@ -667,8 +667,11 @@ public class UserService {
 			notificationService.newLike(user);
 
 			user.getDates().setNotificationDate(new Date());
-			userRepo.saveAndFlush(currUser);
+			
+			currUser.getHiddenUsers().removeIf(hide -> hide.getUserTo().getId().equals(user.getId()));
+			
 			userRepo.saveAndFlush(user);
+			userRepo.saveAndFlush(currUser);
 
 			if (user.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
 				Conversation convo = new Conversation();
