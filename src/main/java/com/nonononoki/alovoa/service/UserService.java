@@ -547,9 +547,8 @@ public class UserService {
 
 	public void deleteImage(long id) throws AlovoaException {
 		User user = authService.getCurrentUser();
-		UserImage img = userImageRepo.getOne(id);
-
-		if (user.getImages().contains(img)) {
+		UserImage img = userImageRepo.findById(id).orElse(null);
+		if (img != null && user.getImages().contains(img)) {
 			user.getImages().remove(img);
 			userRepo.saveAndFlush(user);
 		}
@@ -667,9 +666,9 @@ public class UserService {
 			notificationService.newLike(user);
 
 			user.getDates().setNotificationDate(new Date());
-			
+
 			currUser.getHiddenUsers().removeIf(hide -> hide.getUserTo().getId().equals(user.getId()));
-			
+
 			userRepo.saveAndFlush(user);
 			userRepo.saveAndFlush(currUser);
 
