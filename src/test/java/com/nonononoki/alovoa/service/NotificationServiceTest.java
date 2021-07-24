@@ -1,11 +1,11 @@
 package com.nonononoki.alovoa.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -99,16 +99,16 @@ class NotificationServiceTest {
 		for (int i = 0; i < vapidMax; i++) {
 			notificationService.subscribe(wp);
 		}
-		Assert.assertEquals(vapidMax, userWebPushRepository.count());
+		assertEquals(vapidMax, userWebPushRepository.count());
 
 		Date newDate = new Date();
 		wp.setDate(newDate);
 		notificationService.subscribe(wp);
-		Assert.assertEquals(vapidMax, userWebPushRepository.count());
+		assertEquals(vapidMax, userWebPushRepository.count());
 
 		user1 = userRepo.findByEmail(user1.getEmail());
 		UserWebPush newWebPush = user1.getWebPush().get(vapidMax - 1);
-		Assert.assertEquals(newDate, newWebPush.getDate());
+		assertEquals(newDate, newWebPush.getDate());
 
 	}
 

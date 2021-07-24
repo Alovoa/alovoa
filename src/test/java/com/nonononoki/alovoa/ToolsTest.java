@@ -1,9 +1,12 @@
 package com.nonononoki.alovoa;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.time.LocalDate;
 import java.util.Collections;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import com.nonononoki.alovoa.entity.User;
@@ -16,15 +19,15 @@ class ToolsTest {
 	@Test
 	void test() throws Exception {
 		int dist = (int) Math.round(Tools.calcDistanceKm(0, 0, 0, 0));
-		Assert.assertEquals(0, dist);
+		assertEquals(0, dist);
 
 		int dist2 = (int) Math.round(Tools.calcDistanceKm(0.45, 0, 0, 0));
-		Assert.assertEquals(49, dist2);
+		assertEquals(49, dist2);
 
 		int dist3 = (int) Math.round(Tools.calcDistanceKm(0.46, 0, 0, 0));
-		Assert.assertEquals(50, dist3);
+		assertEquals(50, dist3);
 
-		Assert.assertTrue(Tools.isTextContainingLineFromFile(Tools.TEMP_EMAIL_FILE_NAME, "jmpant.com"));
+		assertTrue(Tools.isTextContainingLineFromFile(Tools.TEMP_EMAIL_FILE_NAME, "jmpant.com"));
 	}
 
 //	return user2Age < AGE_LEGAL == user1Age < AGE_LEGAL
@@ -66,30 +69,30 @@ class ToolsTest {
 		user1.setPreferedMaxAge(20);
 		user1.setPreferedMinAge(20);
 
-		Assert.assertTrue(Tools.usersCompatible(user1, user2));
+		assertTrue(Tools.usersCompatible(user1, user2));
 
 		user1.setPreferedMaxAge(19);
-		Assert.assertFalse(Tools.usersCompatible(user1, user2));
+		assertFalse(Tools.usersCompatible(user1, user2));
 		user1.setPreferedMaxAge(20);
 
 		user1.setGender(female);
-		Assert.assertFalse(Tools.usersCompatible(user1, user2));
+		assertFalse(Tools.usersCompatible(user1, user2));
 		user1.setGender(male);
 
 		user1.setPreferedMaxAge(19);
-		Assert.assertFalse(Tools.usersCompatible(user1, user2));
+		assertFalse(Tools.usersCompatible(user1, user2));
 		user1.setPreferedMaxAge(20);
 
 		user1.setPreferedMinAge(21);
-		Assert.assertFalse(Tools.usersCompatible(user1, user2));
+		assertFalse(Tools.usersCompatible(user1, user2));
 		user1.setPreferedMinAge(20);
 
 		user1.setIntention(date);
-		Assert.assertFalse(Tools.usersCompatible(user1, user2));
+		assertFalse(Tools.usersCompatible(user1, user2));
 		user1.setIntention(meet);
 
 		userDates1.setDateOfBirth(Tools.localDateToDate(LocalDate.now().minusYears(16)));
 		user1.setDates(userDates1);
-		Assert.assertFalse(Tools.usersCompatible(user1, user2));
+		assertFalse(Tools.usersCompatible(user1, user2));
 	}
 }

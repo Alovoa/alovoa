@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
@@ -7,7 +8,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -103,11 +103,11 @@ class PasswordServiceTest {
 		passwordResetDto.setCaptchaText(captcha.getText());
 		passwordResetDto.setEmail(user1.getEmail());
 
-		Assert.assertEquals(0, userPasswordTokenRepository.count());
+		assertEquals(0, userPasswordTokenRepository.count());
 
 		UserPasswordToken userPasswordToken = passwordService.resetPasword(passwordResetDto);
 
-		Assert.assertEquals(1, userPasswordTokenRepository.count());
+		assertEquals(1, userPasswordTokenRepository.count());
 
 		String newPassword = "newPassword";
 		PasswordChangeDto passwordChangeDto = new PasswordChangeDto();
@@ -124,7 +124,7 @@ class PasswordServiceTest {
 			throw new BadCredentialsException("");
 		}
 
-		Assert.assertEquals(0, userPasswordTokenRepository.count());
+		assertEquals(0, userPasswordTokenRepository.count());
 	}
 
 }

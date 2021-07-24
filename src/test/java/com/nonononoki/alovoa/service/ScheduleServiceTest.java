@@ -1,11 +1,11 @@
 package com.nonononoki.alovoa.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -135,9 +135,9 @@ class ScheduleServiceTest {
 		captchaNew.setDate(new Date(currentDateTime - captchaDelay));
 		catchaRepo.saveAndFlush(captchaNew);
 
-		Assert.assertEquals(2, catchaRepo.count());
+		assertEquals(2, catchaRepo.count());
 		scheduleService.cleanCaptcha(currentDate);
-		Assert.assertEquals(1, catchaRepo.count());
+		assertEquals(1, catchaRepo.count());
 
 		// CONTACT
 		Contact contactOld = new Contact();
@@ -154,9 +154,9 @@ class ScheduleServiceTest {
 		contactNew.setDate(new Date(currentDateTime - contactDelay));
 		contactRepo.saveAndFlush(contactNew);
 
-		Assert.assertEquals(2, contactRepo.count());
+		assertEquals(2, contactRepo.count());
 		scheduleService.cleanContact(currentDate);
-		Assert.assertEquals(1, contactRepo.count());
+		assertEquals(1, contactRepo.count());
 
 		// USERHIDE
 		User user1 = testUsers.get(1);
@@ -176,9 +176,9 @@ class ScheduleServiceTest {
 		user2.getHiddenUsers().add(hideNew);
 		userRepo.saveAndFlush(user2);
 
-		Assert.assertEquals(2, userHideRepo.count());
+		assertEquals(2, userHideRepo.count());
 		scheduleService.cleanUserHide(currentDate);
-		Assert.assertEquals(1, userHideRepo.count());
+		assertEquals(1, userHideRepo.count());
 
 		// USERPASSWORDTOKEN
 		Captcha captcha1 = captchaService.generate();
@@ -201,9 +201,9 @@ class ScheduleServiceTest {
 		user2.setPasswordToken(passwordTokenNew);
 		userRepo.saveAndFlush(user2);
 
-		Assert.assertEquals(2, passwordTokenRepository.count());
+		assertEquals(2, passwordTokenRepository.count());
 		scheduleService.cleanUserPasswordToken(currentDate);
-		Assert.assertEquals(1, passwordTokenRepository.count());
+		assertEquals(1, passwordTokenRepository.count());
 
 		// USERDELETETOKEN
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
@@ -211,7 +211,7 @@ class ScheduleServiceTest {
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		UserDeleteToken deleteTokenNew = userService.deleteAccountRequest();
 
-		Assert.assertEquals(2, userDeleteTokenRepository.count());
+		assertEquals(2, userDeleteTokenRepository.count());
 		deleteTokenOld.setDate(new Date(currentDateTime - passwordResetDelay - 1));
 		user1.setDeleteToken(deleteTokenNew);
 		userRepo.saveAndFlush(user1);
@@ -221,7 +221,7 @@ class ScheduleServiceTest {
 		userRepo.saveAndFlush(user2);
 
 		scheduleService.cleanUserDeleteToken(currentDate);
-		Assert.assertEquals(1, userDeleteTokenRepository.count());
+		assertEquals(1, userDeleteTokenRepository.count());
 
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}

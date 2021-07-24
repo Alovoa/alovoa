@@ -1,10 +1,11 @@
 package com.nonononoki.alovoa.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,8 +91,8 @@ class DonateServiceTest {
 
 		double doubleDelta = 0.001;
 
-		Assert.assertEquals(0, user1.getTotalDonations(), doubleDelta);
-		Assert.assertEquals(0, userDonationRepository.count());
+		assertEquals(0, user1.getTotalDonations(), doubleDelta);
+		assertEquals(0, userDonationRepository.count());
 
 		String donationString = "10.00";
 		double donationAmount = Double.valueOf(donationString);
@@ -101,8 +102,8 @@ class DonateServiceTest {
 		donationKofi.setMessage(user1.getEmail());
 		donateService.donationReceivedKofi(donationKofi);
 
-		Assert.assertEquals(donationAmount, user1.getTotalDonations(), doubleDelta);
-		Assert.assertEquals(1, userDonationRepository.count());
+		assertEquals(donationAmount, user1.getTotalDonations(), doubleDelta);
+		assertEquals(1, userDonationRepository.count());
 
 		double donationAmount2 = 15;
 
@@ -113,9 +114,9 @@ class DonateServiceTest {
 		donationBmac.setResponse(bmacResponse);
 		donateService.donationReceivedBmac(donationBmac);
 
-		Assert.assertTrue(user1.getTotalDonations() < donationAmount + donationAmount2
+		assertTrue(user1.getTotalDonations() < donationAmount + donationAmount2
 				&& user1.getTotalDonations() > donationAmount);
-		Assert.assertEquals(2, userDonationRepository.count());
+		assertEquals(2, userDonationRepository.count());
 
 	}
 

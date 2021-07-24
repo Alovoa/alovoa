@@ -1,12 +1,14 @@
 package com.nonononoki.alovoa.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,19 +98,19 @@ public class RegisterServiceTest {
 	void test() throws Exception {
 
 		// one default admin user
-		Assert.assertEquals(1, userRepo.count());
+		assertEquals(1, userRepo.count());
 		
 		RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax,
 				firstNameLengthMin);
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 
-		Assert.assertEquals(0, conversationRepo.count());
-		Assert.assertEquals(0, messageRepo.count());
-		Assert.assertEquals(0, userHideRepo.count());
-		Assert.assertEquals(0, userReportRepo.count());
-		Assert.assertEquals(0, userLikeRepo.count());
-		Assert.assertEquals(0, userBlockRepo.count());
-		Assert.assertEquals(1, userRepo.count());
+		assertEquals(0, conversationRepo.count());
+		assertEquals(0, messageRepo.count());
+		assertEquals(0, userHideRepo.count());
+		assertEquals(0, userReportRepo.count());
+		assertEquals(0, userLikeRepo.count());
+		assertEquals(0, userBlockRepo.count());
+		assertEquals(1, userRepo.count());
 
 	}
 
@@ -131,24 +133,24 @@ public class RegisterServiceTest {
 			// test multiple email copies with slight variations
 			{
 				user1Dto.setFirstName(StringUtils.repeat("*", firstNameLengthMin - 1));
-				Assert.assertThrows(Exception.class, () -> {
+				assertThrows(Exception.class, () -> {
 					registerService.register(user1Dto);
 				});
 
 				user1Dto.setFirstName(StringUtils.repeat("*", firstNameLengthMax + 1));
-				Assert.assertThrows(Exception.class, () -> {
+				assertThrows(Exception.class, () -> {
 					registerService.register(user1Dto);
 				});
 
 				user1Dto.setFirstName("test");
 
 				user1Dto.setEmail("nono.nono.ki@gmail.com");
-				Assert.assertThrows(Exception.class, () -> {
+				assertThrows(Exception.class, () -> {
 					registerService.register(user1Dto);
 				});
 
 				user1Dto.setEmail("nonononoki+test@gmail.com");
-				Assert.assertThrows(Exception.class, () -> {
+				assertThrows(Exception.class, () -> {
 					registerService.register(user1Dto);
 				});
 			}

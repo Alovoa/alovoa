@@ -1,12 +1,14 @@
 package com.nonononoki.alovoa.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -147,7 +149,7 @@ class SearchAndMessageServiceTest {
 		userRepo.saveAndFlush(user2);
 		userRepo.saveAndFlush(user3);
 
-		Assert.assertEquals(4, userRepo.count());
+		assertEquals(4, userRepo.count());
 
 		String imgMimePng = "png";
 		// setup settings
@@ -174,41 +176,41 @@ class SearchAndMessageServiceTest {
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		String img3 = Tools.imageToB64("img/profile3.png", imgMimePng);
 		userService.updateProfilePicture(img3);
-		Assert.assertNotNull(user3.getProfilePicture());
+		assertNotNull(user3.getProfilePicture());
 		userService.addInterest(INTEREST);
-		Assert.assertEquals(1, user3.getInterests().size());
+		assertEquals(1, user3.getInterests().size());
 		String description = "description3";
 		userService.updateDescription(description);
-		Assert.assertEquals(description, user3.getDescription());
+		assertEquals(description, user3.getDescription());
 		userService.updateIntention(INTENTION_TEST);
-		Assert.assertEquals(INTENTION_TEST, user3.getIntention().getId());
+		assertEquals(INTENTION_TEST, user3.getIntention().getId());
 		userService.updateMaxAge(maxAge);
-		Assert.assertEquals(maxAge, user3.getPreferedMaxAge());
+		assertEquals(maxAge, user3.getPreferedMaxAge());
 
 		userService.updateMinAge(minAge);
-		Assert.assertEquals(minAge, user3.getPreferedMinAge());
+		assertEquals(minAge, user3.getPreferedMinAge());
 		userService.updatePreferedGender(1, true);
-		Assert.assertEquals(3, user3.getPreferedGenders().size());
+		assertEquals(3, user3.getPreferedGenders().size());
 		userService.updatePreferedGender(2, true);
-		Assert.assertEquals(3, user3.getPreferedGenders().size());
+		assertEquals(3, user3.getPreferedGenders().size());
 		userService.updatePreferedGender(2, false);
-		Assert.assertEquals(2, user3.getPreferedGenders().size());
+		assertEquals(2, user3.getPreferedGenders().size());
 
 		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getId());
-		Assert.assertEquals(0, authService.getCurrentUser().getInterests().size());
+		assertEquals(0, authService.getCurrentUser().getInterests().size());
 		userService.addInterest(INTEREST);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		List<UserDto> searchDtos1 = searchService.search(0.0, 0.0, 50, 1).getUsers();
-		Assert.assertEquals(2, searchDtos1.size());
+		assertEquals(2, searchDtos1.size());
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		List<UserDto> searchDtos2 = searchService.search(0.0, 0.0, 50, 1).getUsers();
-		Assert.assertEquals(1, searchDtos2.size());
+		assertEquals(1, searchDtos2.size());
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		List<UserDto> searchDtos3 = searchService.search(0.0, 0.0, 50, 1).getUsers();
-		Assert.assertEquals(1, searchDtos3.size());
+		assertEquals(1, searchDtos3.size());
 
 		// Tip: 1 degree equals roughly 111km
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
@@ -227,20 +229,20 @@ class SearchAndMessageServiceTest {
 		userService.updatePreferedGender(3, true);
 
 		List<UserDto> searchDtos4 = searchService.search(0.0, 0.0, 50, 1).getUsers();
-		Assert.assertEquals(2, searchDtos4.size());
+		assertEquals(2, searchDtos4.size());
 
 		List<UserDto> searchDtos5 = searchService.search(0.45, 0.0, 50, 1).getUsers();
-		Assert.assertEquals(2, searchDtos5.size());
+		assertEquals(2, searchDtos5.size());
 
 		List<UserDto> searchDtos6 = searchService.search(0.46, 0.0, 50, 1).getUsers();
-		Assert.assertEquals(2, searchDtos6.size());
+		assertEquals(2, searchDtos6.size());
 
 		// search filtered by interest
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		userService.deleteInterest(user1.getInterests().get(0).getId());
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		List<UserDto> interestSearchDto1 = searchService.search(0.0, 0.0, 50, SearchService.SORT_INTEREST).getUsers();
-		Assert.assertEquals(1, interestSearchDto1.size());
+		assertEquals(1, interestSearchDto1.size());
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		userService.addInterest(INTEREST);
 
@@ -248,117 +250,117 @@ class SearchAndMessageServiceTest {
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		userService.updateMinAge(USER1_AGE + 1);
 		List<UserDto> ageSearchDto1 = searchService.search(0.0, 0.0, 50, 1).getUsers();
-		Assert.assertEquals(1, ageSearchDto1.size());
+		assertEquals(1, ageSearchDto1.size());
 		userService.updateMaxAge(USER3_AGE - 1);
 		List<UserDto> ageSearchDto2 = searchService.search(0.0, 0.0, 50, 1).getUsers();
-		Assert.assertEquals(2, ageSearchDto2.size()); // TODO check for incompatible
+		assertEquals(2, ageSearchDto2.size()); // TODO check for incompatible
 
 		user2.getDates().setDateOfBirth(Tools.localDateToDate(LocalDateTime.now().minusYears(minAge).toLocalDate()));
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		userService.updateMinAge(minAge);
 		userService.updateMaxAge(maxAge);
 		List<UserDto> ageSearchDto3 = searchService.search(0.0, 0.0, 50, 1).getUsers();
-		Assert.assertEquals(0, ageSearchDto3.size());
+		assertEquals(0, ageSearchDto3.size());
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		List<UserDto> ageSearchDto4 = searchService.search(0.0, 0.0, 50, 1).getUsers();
-		Assert.assertEquals(1, ageSearchDto4.size());
+		assertEquals(1, ageSearchDto4.size());
 		user2.getDates().setDateOfBirth(Tools.ageToDate(USER2_AGE));
 
 		// likeUser
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		userService.likeUser(UserDto.encodeId(user1.getId(), textEncryptor));
-		Assert.assertEquals(1, userLikeRepo.count());
-		Assert.assertEquals(1, user3.getLikes().size());
-		Assert.assertEquals(1, userNotificationRepo.count());
+		assertEquals(1, userLikeRepo.count());
+		assertEquals(1, user3.getLikes().size());
+		assertEquals(1, userNotificationRepo.count());
 		List<UserDto> searchDtos7 = searchService.search(0.0, 0.0, 50, 1).getUsers();
-		Assert.assertEquals(1, searchDtos7.size());
+		assertEquals(1, searchDtos7.size());
 
 		// hideUser
 		userService.hideUser(UserDto.encodeId(user2.getId(), textEncryptor));
-		Assert.assertEquals(1, userHideRepo.count());
-		Assert.assertEquals(1, user3.getHiddenUsers().size());
+		assertEquals(1, userHideRepo.count());
+		assertEquals(1, user3.getHiddenUsers().size());
 		List<UserDto> searchDtos8 = searchService.search(0.0, 0.0, 50, 1).getUsers();
-		Assert.assertEquals(0, searchDtos8.size());
+		assertEquals(0, searchDtos8.size());
 
 		user3.getHiddenUsers().clear();
 		userRepo.saveAndFlush(user3);
-		Assert.assertEquals(0, userHideRepo.count());
+		assertEquals(0, userHideRepo.count());
 
 		// blockUser
 		userService.blockUser(UserDto.encodeId(user2.getId(), textEncryptor));
-		Assert.assertEquals(1, userBlockRepo.count());
-		Assert.assertEquals(1, user3.getBlockedUsers().size());
+		assertEquals(1, userBlockRepo.count());
+		assertEquals(1, user3.getBlockedUsers().size());
 
 		String user2IdEnc = UserDto.encodeId(user2.getId(), textEncryptor);
-		Assert.assertThrows(Exception.class, () -> {
+		assertThrows(Exception.class, () -> {
 			// cannot like user when blocked
 			userService.likeUser(user2IdEnc);
 		});
 
 		userService.unblockUser(UserDto.encodeId(user2.getId(), textEncryptor));
-		Assert.assertEquals(0, userBlockRepo.count());
+		assertEquals(0, userBlockRepo.count());
 
 		// like back
 		String user3IdEnc = UserDto.encodeId(user3.getId(), textEncryptor);
-		Assert.assertThrows(Exception.class, () -> {
+		assertThrows(Exception.class, () -> {
 			userService.likeUser(user3IdEnc);
 		});
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		userService.likeUser(UserDto.encodeId(user3.getId(), textEncryptor));
 
-		Assert.assertEquals(2, userLikeRepo.count());
-		Assert.assertEquals(2, userNotificationRepo.count());
-		Assert.assertEquals(1, conversationRepo.count());
-		Assert.assertEquals(1, user1.getConversations().size());
+		assertEquals(2, userLikeRepo.count());
+		assertEquals(2, userNotificationRepo.count());
+		assertEquals(1, conversationRepo.count());
+		assertEquals(1, user1.getConversations().size());
 
 		messageService.send(user1.getConversations().get(0).getId(), "Hello");
-		Assert.assertEquals(1, messageRepo.count());
+		assertEquals(1, messageRepo.count());
 
 		String verylongString = StringUtils.repeat("*", maxMessageSize);
 		messageService.send(user1.getConversations().get(0).getId(), verylongString);
 
-		Assert.assertEquals(2, messageRepo.count());
+		assertEquals(2, messageRepo.count());
 
-		Assert.assertThrows(Exception.class, () -> {
+		assertThrows(Exception.class, () -> {
 			messageService.send(user1.getConversations().get(0).getId(), verylongString + "a");
 		});
 
-		Assert.assertEquals(2, messageRepo.count());
+		assertEquals(2, messageRepo.count());
 
 		// test sending message to blocked users
 		userService.blockUser(UserDto.encodeId(user3.getId(), textEncryptor));
-		Assert.assertEquals(1, userBlockRepo.count());
-		Assert.assertThrows(Exception.class, () -> {
+		assertEquals(1, userBlockRepo.count());
+		assertThrows(Exception.class, () -> {
 			messageService.send(user3.getConversations().get(0).getId(), "Hello");
 		});
 
-		Assert.assertEquals(2, messageRepo.count());
+		assertEquals(2, messageRepo.count());
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
-		Assert.assertThrows(Exception.class, () -> {
+		assertThrows(Exception.class, () -> {
 			messageService.send(user1.getConversations().get(0).getId(), "Hello");
 		});
 
-		Assert.assertEquals(2, messageRepo.count());
+		assertEquals(2, messageRepo.count());
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		userService.unblockUser(UserDto.encodeId(user3.getId(), textEncryptor));
-		Assert.assertEquals(0, userBlockRepo.count());
+		assertEquals(0, userBlockRepo.count());
 
 		messageService.send(user1.getConversations().get(0).getId(), verylongString);
-		Assert.assertEquals(3, messageRepo.count());
+		assertEquals(3, messageRepo.count());
 
 		for (int i = 0; i < maxConvoMessages; i++) {
 			messageService.send(user1.getConversations().get(0).getId(), verylongString);
 		}
-		Assert.assertEquals(maxConvoMessages, messageRepo.count());
+		assertEquals(maxConvoMessages, messageRepo.count());
 
-		Assert.assertEquals(0, userReportRepo.count());
+		assertEquals(0, userReportRepo.count());
 		Captcha captchaReport = captchaService.generate();
 		userService.reportUser(UserDto.encodeId(user3.getId(), textEncryptor), captchaReport.getId(),
 				captchaReport.getText(), "report");
-		Assert.assertEquals(1, userReportRepo.count());
+		assertEquals(1, userReportRepo.count());
 	}
 
 }

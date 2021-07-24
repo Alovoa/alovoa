@@ -1,5 +1,9 @@
 package com.nonononoki.alovoa.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.io.BufferedReader;
@@ -9,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -121,7 +124,7 @@ class UserServiceTest {
 		userRepo.saveAndFlush(user2);
 		userRepo.saveAndFlush(user3);
 
-		Assert.assertEquals(4, userRepo.count());
+		assertEquals(4, userRepo.count());
 
 		String imgMimePng = "png";
 		// setup settings
@@ -137,23 +140,23 @@ class UserServiceTest {
 
 		// check for urls
 		{
-			Assert.assertThrows(Exception.class, () -> {
+			assertThrows(Exception.class, () -> {
 				userService.updateDescription("hidden url example.com");
 			});
 
-			Assert.assertThrows(Exception.class, () -> {
+			assertThrows(Exception.class, () -> {
 				userService.updateDescription("hidden url test.example.com");
 			});
 
-			Assert.assertThrows(Exception.class, () -> {
+			assertThrows(Exception.class, () -> {
 				userService.updateDescription("hidden url test.bit.ly/fdsfasdgadrsfgafgfdsaf13");
 			});
 
-			Assert.assertThrows(Exception.class, () -> {
+			assertThrows(Exception.class, () -> {
 				userService.updateDescription("hidden email test.test@test.com");
 			});
 
-			Assert.assertThrows(Exception.class, () -> {
+			assertThrows(Exception.class, () -> {
 				userService.updateDescription("hidden email test.test+1234@test.net");
 			});
 		}
@@ -171,43 +174,43 @@ class UserServiceTest {
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		String img3 = Tools.imageToB64("img/profile3.png", imgMimePng);
 		userService.updateProfilePicture(img3);
-		Assert.assertNotNull(user3.getProfilePicture());
+		assertNotNull(user3.getProfilePicture());
 		userService.addInterest(INTEREST);
-		Assert.assertEquals(1, user3.getInterests().size());
+		assertEquals(1, user3.getInterests().size());
 		String description = "description3";
 		userService.updateDescription(description);
-		Assert.assertEquals(description, user3.getDescription());
+		assertEquals(description, user3.getDescription());
 		userService.updateIntention(INTENTION_TEST);
-		Assert.assertEquals(INTENTION_TEST, user3.getIntention().getId());
+		assertEquals(INTENTION_TEST, user3.getIntention().getId());
 		userService.updateMaxAge(maxAge);
-		Assert.assertEquals(maxAge, user3.getPreferedMaxAge());
+		assertEquals(maxAge, user3.getPreferedMaxAge());
 
 		userService.updateMinAge(minAge);
-		Assert.assertEquals(minAge, user3.getPreferedMinAge());
+		assertEquals(minAge, user3.getPreferedMinAge());
 		userService.updatePreferedGender(1, true);
-		Assert.assertEquals(3, user3.getPreferedGenders().size());
+		assertEquals(3, user3.getPreferedGenders().size());
 		userService.updatePreferedGender(2, true);
-		Assert.assertEquals(3, user3.getPreferedGenders().size());
+		assertEquals(3, user3.getPreferedGenders().size());
 		userService.updatePreferedGender(2, false);
-		Assert.assertEquals(2, user3.getPreferedGenders().size());
+		assertEquals(2, user3.getPreferedGenders().size());
 
 		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getId());
-		Assert.assertEquals(0, authService.getCurrentUser().getInterests().size());
+		assertEquals(0, authService.getCurrentUser().getInterests().size());
 		userService.addInterest(INTEREST);
 		userService.addImage(img3);
-		Assert.assertEquals(1, authService.getCurrentUser().getImages().size());
+		assertEquals(1, authService.getCurrentUser().getImages().size());
 		userService.deleteImage(authService.getCurrentUser().getImages().get(0).getId());
-		Assert.assertEquals(0, authService.getCurrentUser().getImages().size());
+		assertEquals(0, authService.getCurrentUser().getImages().size());
 		userService.deleteProfilePicture();
-		Assert.assertNull(authService.getCurrentUser().getProfilePicture());
+		assertNull(authService.getCurrentUser().getProfilePicture());
 		userService.updateProfilePicture(img3);
-		Assert.assertNotNull(authService.getCurrentUser().getProfilePicture());
+		assertNotNull(authService.getCurrentUser().getProfilePicture());
 		userService.updateAudio(Tools.resourceToB64("audio/file_example_MP3_700KB.mp3"), "mpeg");
-		Assert.assertNotNull(user3.getAudio());
+		assertNotNull(user3.getAudio());
 		userService.deleteAudio();
-		Assert.assertNull(user3.getAudio());
+		assertNull(user3.getAudio());
 
-		Assert.assertThrows(Exception.class, () -> {
+		assertThrows(Exception.class, () -> {
 			deleteTest(user1);
 		});
 
@@ -217,31 +220,31 @@ class UserServiceTest {
 		String userDataString = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines()
 				.collect(Collectors.joining("\n"));
 		UserGdpr gdpr = objectMapper.readValue(userDataString, UserGdpr.class);
-		Assert.assertEquals(authService.getCurrentUser().getDescription(), gdpr.getDescription());
-		Assert.assertEquals(authService.getCurrentUser().getEmail(), gdpr.getEmail());
-		Assert.assertEquals(authService.getCurrentUser().getFirstName(), gdpr.getFirstName());
-		Assert.assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getDates()),
+		assertEquals(authService.getCurrentUser().getDescription(), gdpr.getDescription());
+		assertEquals(authService.getCurrentUser().getEmail(), gdpr.getEmail());
+		assertEquals(authService.getCurrentUser().getFirstName(), gdpr.getFirstName());
+		assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getDates()),
 				objectMapper.writeValueAsString(gdpr.getDates()));
-		Assert.assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getDonations()),
+		assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getDonations()),
 				objectMapper.writeValueAsString(gdpr.getDonations()));
-		Assert.assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getGender()),
+		assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getGender()),
 				objectMapper.writeValueAsString(gdpr.getGender()));
-		Assert.assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getIntention()),
+		assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getIntention()),
 				objectMapper.writeValueAsString(gdpr.getIntention()));
-		Assert.assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getPreferedGenders()),
+		assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getPreferedGenders()),
 				objectMapper.writeValueAsString(gdpr.getPreferedGenders()));
-		Assert.assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getInterests()),
+		assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getInterests()),
 				objectMapper.writeValueAsString(gdpr.getInterests()));
-		Assert.assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getMessageSent()),
+		assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getMessageSent()),
 				objectMapper.writeValueAsString(gdpr.getMessageSent()));
-		Assert.assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getWebPush()),
+		assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getWebPush()),
 				objectMapper.writeValueAsString(gdpr.getWebPush()));
-		Assert.assertEquals(authService.getCurrentUser().getLocationLatitude(), gdpr.getLocationLatitude());
-		Assert.assertEquals(authService.getCurrentUser().getLocationLongitude(), gdpr.getLocationLongitude());
-		Assert.assertEquals(authService.getCurrentUser().getNumberProfileViews(), gdpr.getNumberProfileViews());
-		Assert.assertEquals(authService.getCurrentUser().getNumberSearches(), gdpr.getNumberSearches());
-		Assert.assertEquals(authService.getCurrentUser().getPreferedMaxAge(), gdpr.getPreferedMaxAge());
-		Assert.assertEquals(authService.getCurrentUser().getTotalDonations(), gdpr.getTotalDonations(), 0.001);
+		assertEquals(authService.getCurrentUser().getLocationLatitude(), gdpr.getLocationLatitude());
+		assertEquals(authService.getCurrentUser().getLocationLongitude(), gdpr.getLocationLongitude());
+		assertEquals(authService.getCurrentUser().getNumberProfileViews(), gdpr.getNumberProfileViews());
+		assertEquals(authService.getCurrentUser().getNumberSearches(), gdpr.getNumberSearches());
+		assertEquals(authService.getCurrentUser().getPreferedMaxAge(), gdpr.getPreferedMaxAge());
+		assertEquals(authService.getCurrentUser().getTotalDonations(), gdpr.getTotalDonations(), 0.001);
 	}
 
 	private void deleteTest(User user) throws Exception {

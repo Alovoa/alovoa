@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.service;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +26,6 @@ class CaptchaServiceTest {
 	void test() throws Exception {
 		captchaService.generate();
 		captchaService.generate();
-		Assert.assertEquals(1, captchaRepo.count());
+		assertEquals(1, captchaRepo.count());
 	}
 }

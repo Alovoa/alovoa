@@ -1,10 +1,10 @@
 package com.nonononoki.alovoa.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -124,12 +124,12 @@ class AdminServiceTest {
 
 		adminService.banUser(UserDto.encodeId(user1.getId(), textEncryptor));
 		User bannedUser = userRepo.findById(user1.getId()).get();
-		Assert.assertEquals(true, bannedUser.isDisabled());
+		assertEquals(true, bannedUser.isDisabled());
 
 	}
 
 	private Contact contactTest() throws Exception {
-		Assert.assertEquals(0, contactRepo.count());
+		assertEquals(0, contactRepo.count());
 		ContactDto contact = new ContactDto();
 		Captcha captcha = captchaService.generate();
 		contact.setCaptchaId(captcha.getId());
@@ -137,7 +137,7 @@ class AdminServiceTest {
 		String email = "test" + Tools.MAIL_TEST_DOMAIN;
 		contact.setEmail(email);
 		Contact c = imprintService.contact(contact);
-		Assert.assertEquals(1, contactRepo.count());
+		assertEquals(1, contactRepo.count());
 
 		return c;
 	}
@@ -149,11 +149,11 @@ class AdminServiceTest {
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 
-		Assert.assertEquals(0, userReportRepo.count());
+		assertEquals(0, userReportRepo.count());
 		Captcha captchaReport = captchaService.generate();
 		UserReport report = userService.reportUser(UserDto.encodeId(user2.getId(), textEncryptor),
 				captchaReport.getId(), captchaReport.getText(), "report");
-		Assert.assertEquals(1, userReportRepo.count());
+		assertEquals(1, userReportRepo.count());
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(adminUser);
 
