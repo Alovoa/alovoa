@@ -11,7 +11,6 @@ import com.nonononoki.alovoa.entity.user.UserDonation;
 import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserIntention;
 import com.nonononoki.alovoa.entity.user.UserInterest;
-import com.nonononoki.alovoa.entity.user.UserWebPush;
 
 import lombok.Data;
 
