@@ -83,7 +83,7 @@
 								<div class="notification is-danger" id="password-info"
 									th:text="#{password-change.warning}">
 								</div>
-
+								
 								<div class="field">
 									<label class="label" th:text="#{gender}" style="float: left;"></label><span
 										class="asterisk">*</span>
@@ -101,6 +101,14 @@
 										</select>
 									</div>
 								</div>
+								
+								<div class="field">
+									<label class="label" th:text="#{register.referrer-email}" style="float: left;"></label>
+									<div class="control">
+										<input class="input" type="email" name="referrerEmail">
+									</div>
+								</div>
+								
 								<div th:replace="fragments.html::captcha"></div>
 
 								<div style="height: 24px"></div>

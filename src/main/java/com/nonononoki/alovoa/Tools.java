@@ -46,6 +46,8 @@ public class Tools {
 	public static final long GENDER_MALE_ID = 1;
 	public static final long GENDER_FEMALE_ID = 2;
 	public static final long GENDER_OTHER_ID = 3;
+	
+	public static final double REFERRED_AMOUNT = 0.5;
 
 	public static Locale getUserLocale(User user) {
 		String language = user.getLanguage();

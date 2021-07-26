@@ -58,10 +58,13 @@ public class RegisterService {
 
 	@Value("${app.first-name.length-min}")
 	private long firstNameLengthMin;
-	
+
 	@Value("${app.mail.plus-addressing}")
 	private boolean plusAddressing;
-	
+
+	@Value("${app.referral.max}")
+	private int referralMax;
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -143,6 +146,10 @@ public class RegisterService {
 		BaseRegisterDto baseRegisterDto = registerBase(dto, false);
 		user = baseRegisterDto.getUser();
 
+		if (isValidEmailAddress(dto.getReferrerEmail())) {
+			user.setReferrerEmail(dto.getReferrerEmail());
+		}
+
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 		user = userRepo.saveAndFlush(user);
 
@@ -166,6 +173,18 @@ public class RegisterService {
 		BaseRegisterDto baseRegisterDto = registerBase(dto, true);
 		user = baseRegisterDto.getUser();
 		user.setConfirmed(true);
+
+		if (isValidEmailAddress(dto.getReferrerEmail())) {
+			User referrer = userRepo.findByEmail(dto.getReferrerEmail());
+
+			if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
+				user.setTotalDonations(Tools.REFERRED_AMOUNT);
+				user.setNumberReferred(1);
+				referrer.setTotalDonations(referrer.getTotalDonations() + Tools.REFERRED_AMOUNT);
+				referrer.setNumberReferred(referrer.getNumberReferred() + 1);
+			}
+		}
+
 		userRepo.saveAndFlush(user);
 
 		userService.updateUserInfo(user);
@@ -206,8 +225,21 @@ public class RegisterService {
 			throw new AlovoaException("user_not_confirmed");
 		}
 
+		if (user.getReferrerEmail() != null) {
+			User referrer = userRepo.findByEmail(user.getReferrerEmail());
+
+			if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
+				user.setTotalDonations(Tools.REFERRED_AMOUNT);
+				user.setNumberReferred(1);
+				referrer.setTotalDonations(referrer.getTotalDonations() + Tools.REFERRED_AMOUNT);
+				referrer.setNumberReferred(referrer.getNumberReferred() + 1);
+			}
+		}
+
 		user.setConfirmed(true);
 		user.setRegisterToken(null);
+		user.setReferrerEmail(null);
+
 		user = userRepo.saveAndFlush(user);
 
 		mailService.sendAccountConfirmed(user);
@@ -259,7 +291,7 @@ public class RegisterService {
 		user.setGender(genderRepo.findById(dto.getGender()).orElse(null));
 		user.setIntention(userIntentionRepo.findById(UserIntention.MEET).orElse(null));
 		user.setPreferedGenders(new HashSet<Gender>(genderRepo.findAll()));
-		
+
 		UserDates dates = new UserDates();
 		Date today = new Date();
 		dates.setActiveDate(today);
@@ -295,6 +327,7 @@ public class RegisterService {
 
 		user.setNumberProfileViews(0);
 		user.setNumberSearches(0);
+		user.setNumberReferred(0);
 
 		user = userRepo.saveAndFlush(user);
 
@@ -307,6 +340,9 @@ public class RegisterService {
 	}
 
 	private static boolean isValidEmailAddress(String email) {
+		if (email == null) {
+			return false;
+		}
 		try {
 			InternetAddress a = new InternetAddress(email);
 			a.validate();

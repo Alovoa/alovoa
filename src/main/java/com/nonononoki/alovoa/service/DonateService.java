@@ -99,7 +99,7 @@ public class DonateService {
 		Date maxDate = Tools.ageToDate(minAge);
 
 		if (filter == FILTER_RECENT) {
-			donationsToDtos = DonationDto.donationsToDtos(userDonationRepo.findTop100ByUserDatesDateOfBirthGreaterThanEqualAndUserDatesDateOfBirthLessThanEqualOrderByDateDesc(minDate, maxDate), user,
+			donationsToDtos = DonationDto.donationsToDtos(userDonationRepo.findTop20ByUserDatesDateOfBirthGreaterThanEqualAndUserDatesDateOfBirthLessThanEqualOrderByDateDesc(minDate, maxDate), user,
 					textEncryptor, maxEntries);
 		} else if (filter == FILTER_AMOUNT) {
 			donationsToDtos = DonationDto.usersToDtos(userRepo.usersDonate(minDate, maxDate), user, textEncryptor, maxEntries);

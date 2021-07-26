@@ -81,6 +81,11 @@ public class User implements UserDetails {
 	private String accentColor;
 
 	private int units;
+	
+	private int numberReferred;
+	
+	//no need to encrypt, as it will be deleted anyway
+	private String referrerEmail;
 
 	private String uiDesign;
 

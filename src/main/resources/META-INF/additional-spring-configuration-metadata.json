@@ -258,5 +258,45 @@
     "name": "app.mail.plus-addressing",
     "type": "java.lang.String",
     "description": "A description for 'app.mail.plus-addressing'"
+  },
+  {
+    "name": ".referral.max",
+    "type": "java.lang.String",
+    "description": "A description for '.referral.max'"
+  },
+  {
+    "name": ".referral.max",
+    "type": "java.lang.String",
+    "description": "A description for '.referral.max'"
+  },
+  {
+    "name": ".referral.max",
+    "type": "java.lang.String",
+    "description": "A description for '.referral.max'"
+  },
+  {
+    "name": ".referral.max",
+    "type": "java.lang.String",
+    "description": "A description for '.referral.max'"
+  },
+  {
+    "name": ".referral.max",
+    "type": "java.lang.String",
+    "description": "A description for '.referral.max'"
+  },
+  {
+    "name": ".referral.max",
+    "type": "java.lang.String",
+    "description": "A description for '.referral.max'"
+  },
+  {
+    "name": ".referral.max",
+    "type": "java.lang.String",
+    "description": "A description for '.referral.max'"
+  },
+  {
+    "name": "app.referral.max",
+    "type": "java.lang.String",
+    "description": "A description for 'app.referral.max'"
   }
 ]}
