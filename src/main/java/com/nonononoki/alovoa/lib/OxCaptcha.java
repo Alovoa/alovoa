@@ -479,7 +479,6 @@ public class OxCaptcha {
 	}
 
 	public void noiseStrokes(int strokes, float width) {
-		RAND.setSeed(49);
 		_img_g.setStroke(new BasicStroke(width));
 		_img_g.setColor(_fg_color);
 		for (int i = 0; i < strokes; i++) {
@@ -820,7 +819,6 @@ public class OxCaptcha {
 	}
 
 	public void distortionElastic(double alpha, int kernelSize, double sigma) {
-		RAND.setSeed(3);
 		int s[][] = getImageArray2D();
 		double source[][] = new double[_height][_width];
 		double dxField[][] = new double[_height][_width];
