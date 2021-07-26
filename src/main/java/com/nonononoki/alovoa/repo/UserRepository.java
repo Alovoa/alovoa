@@ -53,8 +53,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 				request.getBlockIds(), sort);
 	}
 
-	default List<User> usersDonate() {
-		return findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullOrderByTotalDonationsDesc();
+	default List<User> usersDonate(Date minDate, Date maxDate) {
+		return findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualOrderByTotalDonationsDesc(
+				minDate, maxDate);
 	}
 
 	default List<User> adminSearch() {
@@ -76,7 +77,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			String intentionText, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds,
 			Collection<String> genderTexts, Sort sort);
 
-	List<User> findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullOrderByTotalDonationsDesc();
+	List<User> findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualOrderByTotalDonationsDesc(
+			Date minDate, Date maxDate);
 
 	List<User> findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 			Date min, Date max, String intentionText, Collection<Long> likeIds, Collection<Long> hideIds,

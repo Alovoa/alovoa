@@ -79,13 +79,30 @@ public class DonateService {
 			UnsupportedEncodingException {
 		List<DonationDto> donationsToDtos = null;
 
-		User currentUser = authService.getCurrentUser();
+		User user = authService.getCurrentUser();
+		
+		int ageLegal = Tools.AGE_LEGAL;
+		
+		int age = Tools.calcUserAge(user);
+		boolean isLegalAge = age >= ageLegal;
+		int minAge = user.getPreferedMinAge();
+		int maxAge = user.getPreferedMaxAge();
+
+		if (isLegalAge && minAge < ageLegal) {
+			minAge = ageLegal;
+		}
+		if (!isLegalAge && maxAge >= ageLegal) {
+			maxAge = ageLegal - 1;
+		}
+
+		Date minDate = Tools.ageToDate(maxAge);
+		Date maxDate = Tools.ageToDate(minAge);
 
 		if (filter == FILTER_RECENT) {
-			donationsToDtos = DonationDto.donationsToDtos(userDonationRepo.findAllByOrderByDateDesc(), currentUser,
+			donationsToDtos = DonationDto.donationsToDtos(userDonationRepo.findTop100ByUserDatesDateOfBirthGreaterThanEqualAndUserDatesDateOfBirthLessThanEqualOrderByDateDesc(minDate, maxDate), user,
 					textEncryptor, maxEntries);
 		} else if (filter == FILTER_AMOUNT) {
-			donationsToDtos = DonationDto.usersToDtos(userRepo.usersDonate(), currentUser, textEncryptor, maxEntries);
+			donationsToDtos = DonationDto.usersToDtos(userRepo.usersDonate(minDate, maxDate), user, textEncryptor, maxEntries);
 		} else {
 			throw new AlovoaException("filter_not_found");
 		}
