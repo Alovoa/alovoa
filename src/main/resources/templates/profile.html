@@ -299,6 +299,14 @@
 						</div>
 					</div>
 				</div>
+				
+				<div class="box" th:if="${referralsLeft > 0}">
+					<div class="field">
+						<div class="notification is-info"><span th:text="#{profile.referrer.info}"></span> <a id="referrer-anchor" th:href="${domain} + '/register?referrer=' + ${user.email}" th:text="${domain} + '/register?referrer=' + ${user.email}"></a></div>
+						<div class="notification is-info"><span th:text="#{profile.referrer.amount}"></span> <span th:text="${referralsLeft}"></span></div>	
+						<button class="button is-primary" th:onclick="copyClipboard([[${domain} + '/register?referrer=' + ${user.email}]])"><i class="fa fa-copy"></i></button>
+					</div>
+				</div>
 
 				<div class="box">
 					<div class="field">
@@ -367,6 +375,7 @@
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/bulma-slider.min.js"></script>
 	<script src="/js/lib/bulma-collapsible.min.js"></script>
+	<script src="/js/lib/bulma-toast.min.js"></script>
 	<script src="/js/lib/swiper.min.js"></script>
 	<script src="/js/lib/notification.js"></script>
 	<script src="/js/lib/Mp3LameEncoder.min.js"></script>
@@ -374,6 +383,7 @@
 	<script src="/js/tools/get-notification.js"></script>
 	<script src="/js/tools/get-text.js"></script>
 	<script src="/js/tools/loader.js"></script>
+	<script src="/js/tools/copy-clipboard.js"></script>
 	<script src="/js/alovoa.js"></script>
 	<script src="/js/profile.js"></script>
 </body>

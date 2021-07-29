@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '11';
+const cacheName = '12';
 const staticAssets = [
 
 	'/favicon.ico',
@@ -17,6 +17,7 @@ const staticAssets = [
 
 	'/js/lib/bulma-collapsible.min.js',
 	'/js/lib/bulma-slider.min.js',
+	'/js/lib/bulma-toast.min.js',
 	'/js/lib/cutter.min.js',
 	'/js/lib/fontawesome.all.js',
 	'/js/lib/jquery.min.js',
@@ -31,6 +32,8 @@ const staticAssets = [
 	'/js/tools/loader.js',
 	'/js/tools/modal.js',
 	'/js/tools/refresh-captcha.js',
+	'/js/tools/validate-email.js',
+	'/js/tools/copy-clipboard.js',
 
 	'/js/alovoa.js',
 	'/js/admin.js',

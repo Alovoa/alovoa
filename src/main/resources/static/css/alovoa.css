@@ -266,6 +266,10 @@ input[type=range].slider {
 	color: #0D47A1;
 }
 
+.toast-container {
+	margin-bottom: 68px;
+}
+
 @media screen and (max-width: 1024px) {
 	* {
 		scrollbar-width: none;

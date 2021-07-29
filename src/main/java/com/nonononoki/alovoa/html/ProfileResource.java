@@ -59,6 +59,12 @@ public class ProfileResource {
 
 	@Value("${app.intention.delay}")
 	private long intentionDelay;
+	
+	@Value("${app.domain}")
+	private String domain;
+	
+	@Value("${app.referral.max}")
+	private int maxReferrals;
 
 	public static final String URL = "/profile";
 
@@ -77,6 +83,7 @@ public class ProfileResource {
 		} else {
 			int age = Tools.calcUserAge(user);
 			boolean isLegal = age >= Tools.AGE_LEGAL;
+			int referralsLeft = maxReferrals - user.getNumberReferred();
 			ModelAndView mav = new ModelAndView("profile");
 			mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.ALL));
 			mav.addObject("genders", genderRepo.findAll());
@@ -86,6 +93,8 @@ public class ProfileResource {
 			mav.addObject("isLegal", isLegal);
 			mav.addObject("mediaMaxSize", mediaMaxSize);
 			mav.addObject("interestMaxSize", interestMaxSize);
+			mav.addObject("domain", domain);
+			mav.addObject("referralsLeft", referralsLeft);
 
 			boolean showIntention = false;
 			Date now = new Date();

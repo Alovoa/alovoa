@@ -13,6 +13,11 @@ $(function() {
 	dobInput.attr('max', startDate);
 	dobInput.attr('min', endDate);
 
+	const referrer = localStorage.getItem("referrer");
+	if (validateEmail(referrer)) {
+		$("#referrer").val(referrer);
+	}
+
 	$("#register-form").submit(
 		function(e) {
 			e.preventDefault();
@@ -33,6 +38,7 @@ $(function() {
 				data: JSON.stringify(formdata),
 				contentType: "application/json",
 				success: function(data) {
+					localStorage.removeItem("referrer");
 					window.location = "/profile";
 				},
 				error: function(e) {

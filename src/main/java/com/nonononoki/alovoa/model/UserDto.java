@@ -35,6 +35,8 @@ public class UserDto {
 
 	private String idEncoded;
 
+	private String email;
+
 	private String firstName;
 	private int age;
 	private float donationAmount;
@@ -76,6 +78,7 @@ public class UserDto {
 	private boolean likedByCurrentUser;
 	private boolean hiddenByCurrentUser;
 
+	private long numberReferred;
 	private long numberProfileViews;
 	private long numberSearches;
 
@@ -102,6 +105,7 @@ public class UserDto {
 		}
 		UserDto dto = new UserDto();
 		dto.setId(user.getId());
+		dto.setEmail(user.getEmail());
 		dto.setIdEncoded(encodeId(user.getId(), textEncryptor));
 		if (user.getDates() != null) {
 			dto.setActiveDate(user.getDates().getActiveDate());
@@ -133,6 +137,7 @@ public class UserDto {
 			dto.setAudio(user.getAudio().getData());
 		}
 		dto.setHasAudio(user.getAudio() != null);
+		dto.setNumberReferred(user.getNumberReferred());
 		dto.setNumberProfileViews(user.getNumberProfileViews());
 		dto.setNumberSearches(user.getNumberSearches());
 
