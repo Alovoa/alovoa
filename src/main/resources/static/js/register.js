@@ -18,10 +18,10 @@ $(function() {
 	const queryString = window.location.search;
 	const urlParams = new URLSearchParams(queryString);
 	const referrer = urlParams.get('referrer');
-	if (validateEmail(referrer)) {
+	if (referrer) {
 		localStorage.setItem("referrer", referrer);
 		$("#referrer").val(referrer);
-	} else if (validateEmail(localStorage.getItem("referrer"))) {
+	} else if (localStorage.getItem("referrer")) {
 		$("#referrer").val(localStorage.getItem("referrer"));
 	}
 

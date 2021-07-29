@@ -1,11 +1,16 @@
 package com.nonononoki.alovoa.service;
 
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -19,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Gender;
 import com.nonononoki.alovoa.entity.user.UserDates;
@@ -27,6 +33,7 @@ import com.nonononoki.alovoa.entity.user.UserRegisterToken;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.BaseRegisterDto;
 import com.nonononoki.alovoa.model.RegisterDto;
+import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserRegisterTokenRepository;
@@ -95,6 +102,9 @@ public class RegisterService {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private TextEncryptorConverter textEncryptor;
+
 	private static final String GMAIL_EMAIL = "@gmail";
 
 	private static final int MIN_PASSWORD_SIZE = 7;
@@ -145,10 +155,7 @@ public class RegisterService {
 
 		BaseRegisterDto baseRegisterDto = registerBase(dto, false);
 		user = baseRegisterDto.getUser();
-
-		if (isValidEmailAddress(dto.getReferrerEmail())) {
-			user.setReferrerEmail(dto.getReferrerEmail());
-		}
+		user.setReferrerCode(dto.getReferrerCode());
 
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 		user = userRepo.saveAndFlush(user);
@@ -157,7 +164,9 @@ public class RegisterService {
 		return token.getContent();
 	}
 
-	public void registerOauth(RegisterDto dto) throws MessagingException, IOException, AlovoaException {
+	public void registerOauth(RegisterDto dto) throws MessagingException, IOException, AlovoaException,
+			NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 
 		String email = authService.getOauth2Email().toLowerCase();
 		if (email == null) {
@@ -174,8 +183,9 @@ public class RegisterService {
 		user = baseRegisterDto.getUser();
 		user.setConfirmed(true);
 
-		if (isValidEmailAddress(dto.getReferrerEmail())) {
-			User referrer = userRepo.findByEmail(dto.getReferrerEmail());
+		if (dto.getReferrerCode() != null) {
+			long id = UserDto.decodeId(dto.getReferrerCode(), textEncryptor);
+			User referrer = userRepo.findById(id).orElse(null);
 
 			if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
 				user.setTotalDonations(Tools.REFERRED_AMOUNT);
@@ -208,7 +218,9 @@ public class RegisterService {
 		return registerTokenRepo.saveAndFlush(token);
 	}
 
-	public User registerConfirm(String tokenString) throws MessagingException, IOException, AlovoaException {
+	public User registerConfirm(String tokenString) throws MessagingException, IOException, AlovoaException,
+			NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 		UserRegisterToken token = registerTokenRepo.findByContent(tokenString);
 
 		if (token == null) {
@@ -225,8 +237,9 @@ public class RegisterService {
 			throw new AlovoaException("user_not_confirmed");
 		}
 
-		if (user.getReferrerEmail() != null) {
-			User referrer = userRepo.findByEmail(user.getReferrerEmail());
+		if (user.getReferrerCode() != null) {
+			long id = UserDto.decodeId(user.getReferrerCode(), textEncryptor);
+			User referrer = userRepo.findById(id).orElse(null);
 
 			if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
 				user.setTotalDonations(Tools.REFERRED_AMOUNT);
@@ -238,7 +251,7 @@ public class RegisterService {
 
 		user.setConfirmed(true);
 		user.setRegisterToken(null);
-		user.setReferrerEmail(null);
+		user.setReferrerCode(null);
 
 		user = userRepo.saveAndFlush(user);
 

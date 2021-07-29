@@ -14,7 +14,7 @@ $(function() {
 	dobInput.attr('min', endDate);
 
 	const referrer = localStorage.getItem("referrer");
-	if (validateEmail(referrer)) {
+	if (referrer) {
 		$("#referrer").val(referrer);
 	}
 

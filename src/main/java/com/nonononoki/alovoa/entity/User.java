@@ -84,8 +84,7 @@ public class User implements UserDetails {
 	
 	private int numberReferred;
 	
-	//no need to encrypt, as it will be deleted anyway
-	private String referrerEmail;
+	private String referrerCode;
 
 	private String uiDesign;
 

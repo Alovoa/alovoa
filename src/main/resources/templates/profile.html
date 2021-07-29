@@ -302,9 +302,9 @@
 				
 				<div class="box" th:if="${referralsLeft > 0}">
 					<div class="field">
-						<div class="notification is-info"><span th:text="#{profile.referrer.info}"></span> <a id="referrer-anchor" th:href="${domain} + '/register?referrer=' + ${user.email}" th:text="${domain} + '/register?referrer=' + ${user.email}"></a></div>
+						<div class="notification is-info"><span th:text="#{profile.referrer.info}"></span> <a id="referrer-anchor" th:href="${domain} + '/register?referrer=' + ${user.idEncoded}" th:text="${domain} + '/register?referrer=' + ${user.idEncoded}"></a></div>
 						<div class="notification is-info"><span th:text="#{profile.referrer.amount}"></span> <span th:text="${referralsLeft}"></span></div>	
-						<button class="button is-primary" th:onclick="copyClipboard([[${domain} + '/register?referrer=' + ${user.email}]])"><i class="fa fa-copy"></i></button>
+						<button class="button is-primary" th:onclick="copyClipboard([[${domain} + '/register?referrer=' + ${user.idEncoded}]])"><i class="fa fa-copy"></i></button>
 					</div>
 				</div>
 
