@@ -32,7 +32,6 @@ const staticAssets = [
 	'/js/tools/loader.js',
 	'/js/tools/modal.js',
 	'/js/tools/refresh-captcha.js',
-	'/js/tools/validate-email.js',
 	'/js/tools/copy-clipboard.js',
 
 	'/js/alovoa.js',
