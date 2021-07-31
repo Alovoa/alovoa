@@ -34,8 +34,8 @@
 				</div>
 
 				<div class="field">
-					<button class="button is-info colored" id="btnPushNotifications" name="btnPushNotifications"
-						style="width: 100%;" th:text="#{profile.webpush}"></button>
+					<div class="button is-info is-outlined button-wrap-text" id="btnPushNotifications" name="btnPushNotifications"
+						style="width: 100%;"><span th:text="#{profile.webpush}"></span></div>
 				</div>
 
 				<div style="padding-bottom: 24px;"></div>
@@ -209,12 +209,12 @@
 						</div>
 						<div style="display: flex; float: left;">
 							<div class="notification is-info" style="height: 40px; margin-right: 4px; opacity: 0.75; font-size: 0.9em;">.mp3 .wav</div>
-							<div class="colored button is-info" id="audio-upload-button" style="margin-right: 4px;">
+							<div class="button is-info is-outlined" id="audio-upload-button" style="margin-right: 4px;">
 								<i class="fa fa-microphone"></i>
 							</div>
 							<input type="file" accept="audio/*" id="audio-file"
 								style="display: none">
-							<div class="colored button is-danger" onclick="deleteAudio()"
+							<div class="button is-danger is-outlined" onclick="deleteAudio()"
 								th:if="${user.audio}">
 								<i class="fa fa-trash"></i>
 							</div>
@@ -245,9 +245,9 @@
 								<input class="input" pattern="[a-zA-Z0-9-]{3,30}" name="value"
 									style="flex: 1" th:placeholder="#{interest}" required>
 								<div style="padding-top: 4px;"></div>
-								<button class="button is-info colored" style="margin-left: 4px;">
-									<i class="fa fa-plus" style="color: white;"></i>
-								</button>
+								<div class="button is-info is-outlined" style="margin-left: 4px;">
+									<i class="fa fa-plus"></i>
+								</div>
 							</div>
 						</form>
 					</div>
@@ -305,7 +305,7 @@
 						<label class="label" th:text="#{register.referral-code}"></label>
 						<div class="notification is-info"><span th:text="#{profile.referrer.info}"></span> <a id="referrer-anchor" th:href="${domain} + '/register?referrer=' + ${user.idEncoded}" th:text="${domain} + '/register?referrer=' + ${user.idEncoded}"></a></div>
 						<div class="notification is-info"><span th:text="#{profile.referrer.amount}"></span> <span th:text="${referralsLeft}"></span></div>	
-						<button class="button is-primary colored" th:onclick="copyClipboard([[${domain} + '/register?referrer=' + ${user.idEncoded}]])"><i class="fa fa-copy"></i></button>
+						<button class="button is-primary is-outlined" style="width: 100%;" th:onclick="copyClipboard([[${domain} + '/register?referrer=' + ${user.idEncoded}]])"><i class="fa fa-copy"></i></button>
 					</div>
 				</div>
 
