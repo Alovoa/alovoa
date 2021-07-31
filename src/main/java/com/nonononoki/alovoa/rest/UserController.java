@@ -53,10 +53,10 @@ public class UserController {
 		userService.deleteAccountConfirm(dto);
 	}
 
-	@GetMapping(value = "/userdata")
-	public ResponseEntity<Resource> getUserdata()
-			throws JsonProcessingException, UnsupportedEncodingException, AlovoaException {
-		return userService.getUserdata();
+	@GetMapping(value = "/userdata/{idEnc}")
+	public ResponseEntity<Resource> getUserdata(@PathVariable String idEnc)
+			throws JsonProcessingException, UnsupportedEncodingException, AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+		return userService.getUserdata(idEnc);
 	}
 
 	@PostMapping(value = "/delete/profile-picture")

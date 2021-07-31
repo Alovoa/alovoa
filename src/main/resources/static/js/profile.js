@@ -286,11 +286,6 @@ $(function() {
 		});
 	});
 
-	$("#userdata-submit").click(function(e) {
-		let url = "/user/userdata";
-		window.open(url);
-	});
-
 	$("#delete-acc-submit").click(function(e) {
 
 		$.ajax({
@@ -517,6 +512,11 @@ function updateProfileWarning() {
 function viewProfile(idEnc) {
 	let url = 'profile/view/' + idEnc;
 	window.open(url, '_blank').focus();
+}
+
+function getUserData(idEnc) {
+	let url = "/user/userdata/" + idEnc;
+	window.open(url);
 }
 
 function resizeAudio(file, callback) {

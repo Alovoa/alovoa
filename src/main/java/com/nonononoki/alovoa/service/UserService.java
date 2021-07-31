@@ -803,21 +803,27 @@ public class UserService {
 		}
 	}
 
-	public ResponseEntity<Resource> getUserdata()
-			throws AlovoaException, JsonProcessingException, UnsupportedEncodingException {
+	public ResponseEntity<Resource> getUserdata(String idEnc) throws AlovoaException, JsonProcessingException,
+			UnsupportedEncodingException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 
 		User user = authService.getCurrentUser();
+		User userFromIdEnc = encodedIdToUser(idEnc);
+		if (!user.getId().equals(userFromIdEnc.getId())) {
+			throw new AlovoaException("wrong_id_enc");
+		}
+
 		UserGdpr ug = UserGdpr.userToUserGdpr(user);
 		String json = objectMapper.writeValueAsString(ug);
 		ByteArrayResource resource = new ByteArrayResource(json.getBytes(StandardCharsets.UTF_8.name()));
 
-		ContentDisposition contentDisposition = ContentDisposition.builder("inline").filename("alovoa_userdata.json").build();
+		ContentDisposition contentDisposition = ContentDisposition.builder("inline").filename("alovoa_userdata.json")
+				.build();
 
 		MediaType mediaType = MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(mediaType);
 		headers.setContentDisposition(contentDisposition);
-
 
 		return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 	}

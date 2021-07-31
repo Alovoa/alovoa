@@ -35,7 +35,7 @@
 
 				<div class="field">
 					<div class="button is-info is-outlined button-wrap-text" id="btnPushNotifications" name="btnPushNotifications"
-						style="width: 100%; height: 100%;  white-space: normal;"><span th:text="#{profile.webpush}"></span></div>
+						style="width: 100%; height: 100%; white-space: normal;"><span th:text="#{profile.webpush}"></span></div>
 				</div>
 
 				<div style="padding-bottom: 24px;"></div>
@@ -337,7 +337,7 @@
 						<a th:text="#{password-change.title}" id="password-change-submit"></a>
 					</div>
 					<div class="field">
-						<a th:text="#{profile.userdata.request}" id="userdata-submit"></a>
+						<a th:text="#{profile.userdata.request}" id="userdata-submit" th:onclick="getUserData([[${user.idEncoded}]])"></a>
 					</div>
 					<div class="field">
 						<a th:text="#{profile.account.delete}" id="delete-acc-submit"></a>
