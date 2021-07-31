@@ -41,6 +41,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -810,9 +811,13 @@ public class UserService {
 		String json = objectMapper.writeValueAsString(ug);
 		ByteArrayResource resource = new ByteArrayResource(json.getBytes(StandardCharsets.UTF_8.name()));
 
+		ContentDisposition contentDisposition = ContentDisposition.builder("inline").filename("alovoa_userdata.json").build();
+
 		MediaType mediaType = MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(mediaType);
+		headers.setContentDisposition(contentDisposition);
+
 
 		return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 	}
