@@ -184,7 +184,7 @@ public class RegisterService {
 		user.setConfirmed(true);
 
 		try {
-			if (dto.getReferrerCode() != null) {
+			if (dto.getReferrerCode() != null && !dto.getReferrerCode().isEmpty()) {
 				long id = UserDto.decodeId(dto.getReferrerCode(), textEncryptor);
 				User referrer = userRepo.findById(id).orElse(null);
 
@@ -241,7 +241,7 @@ public class RegisterService {
 		}
 
 		try {
-			if (user.getReferrerCode() != null) {
+			if (user.getReferrerCode() != null && !user.getReferrerCode().isEmpty()) {
 				long id = UserDto.decodeId(user.getReferrerCode(), textEncryptor);
 				User referrer = userRepo.findById(id).orElse(null);
 
