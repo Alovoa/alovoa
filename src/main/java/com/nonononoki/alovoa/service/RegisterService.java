@@ -183,16 +183,19 @@ public class RegisterService {
 		user = baseRegisterDto.getUser();
 		user.setConfirmed(true);
 
-		if (dto.getReferrerCode() != null) {
-			long id = UserDto.decodeId(dto.getReferrerCode(), textEncryptor);
-			User referrer = userRepo.findById(id).orElse(null);
+		try {
+			if (dto.getReferrerCode() != null) {
+				long id = UserDto.decodeId(dto.getReferrerCode(), textEncryptor);
+				User referrer = userRepo.findById(id).orElse(null);
 
-			if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
-				user.setTotalDonations(Tools.REFERRED_AMOUNT);
-				user.setNumberReferred(1);
-				referrer.setTotalDonations(referrer.getTotalDonations() + Tools.REFERRED_AMOUNT);
-				referrer.setNumberReferred(referrer.getNumberReferred() + 1);
+				if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
+					user.setTotalDonations(Tools.REFERRED_AMOUNT);
+					user.setNumberReferred(1);
+					referrer.setTotalDonations(referrer.getTotalDonations() + Tools.REFERRED_AMOUNT);
+					referrer.setNumberReferred(referrer.getNumberReferred() + 1);
+				}
 			}
+		} catch (Exception e) {
 		}
 
 		userRepo.saveAndFlush(user);
@@ -237,16 +240,19 @@ public class RegisterService {
 			throw new AlovoaException("user_not_confirmed");
 		}
 
-		if (user.getReferrerCode() != null) {
-			long id = UserDto.decodeId(user.getReferrerCode(), textEncryptor);
-			User referrer = userRepo.findById(id).orElse(null);
+		try {
+			if (user.getReferrerCode() != null) {
+				long id = UserDto.decodeId(user.getReferrerCode(), textEncryptor);
+				User referrer = userRepo.findById(id).orElse(null);
 
-			if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
-				user.setTotalDonations(Tools.REFERRED_AMOUNT);
-				user.setNumberReferred(1);
-				referrer.setTotalDonations(referrer.getTotalDonations() + Tools.REFERRED_AMOUNT);
-				referrer.setNumberReferred(referrer.getNumberReferred() + 1);
+				if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
+					user.setTotalDonations(Tools.REFERRED_AMOUNT);
+					user.setNumberReferred(1);
+					referrer.setTotalDonations(referrer.getTotalDonations() + Tools.REFERRED_AMOUNT);
+					referrer.setNumberReferred(referrer.getNumberReferred() + 1);
+				}
 			}
+		} catch (Exception e) {
 		}
 
 		user.setConfirmed(true);

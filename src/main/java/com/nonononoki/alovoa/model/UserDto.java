@@ -182,7 +182,7 @@ public class UserDto {
 
 	public static long decodeId(String id, TextEncryptorConverter textEncryptor)
 			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, NumberFormatException {
 		String en = new String(Base64.getDecoder().decode(id));
 		return Long.parseLong(textEncryptor.decode(en));
 	}
