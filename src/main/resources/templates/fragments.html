@@ -251,7 +251,7 @@
 															th:classappend="${user.gender.text == 'male' ? 'male' : user.gender.text == 'female' ? 'female' : 'other'}"></div>
 														<div class="left" style="font-size: 1.5em; padding-top: 6px;">
 															<span>, </span><span
-																th:text="${user.age}"></span>
+																th:text="${user.age}"></span> <th:block th:insert="fragments.html :: zodiac"></th:block>
 														</div>
 														<div class="right" style="font-size: 1.2em; padding-top: 6px;">
 															<i class="fa fa-map-marker-alt"></i>
@@ -348,7 +348,7 @@
 								th:classappend="${donation.user.gender.text == 'male' ? 'male' : donation.user.gender.text == 'female' ? 'female' : 'other'}"></div>
 							<div class="left" style="font-size: 1.5em; padding-top: 6px;">
 								<span>, </span><span
-									th:text="${donation.user.age}"></span>
+									th:text="${donation.user.age}"></span><th:block th:insert="fragments.html :: zodiac"></th:block>
 							</div>
 							<div class="right" style="font-size: 1.2em; padding-top: 6px;">
 								<i class="fa fa-map-marker-alt"></i>
@@ -373,6 +373,23 @@
 			</div>
 		</div>
 	</div>
+	
+	<span th:fragment="zodiac" style="opacity: 0.5;">
+		 <th:block th:if="${user.zodiac}">
+		 	<span th:if="${user.zodiac == 'aries'}">♈︎</span>
+		 	<span th:if="${user.zodiac == 'taurus'}">♉︎</span>
+		 	<span th:if="${user.zodiac == 'gemini'}">♊︎</span>
+		 	<span th:if="${user.zodiac == 'cancer'}">♋︎</span>
+		 	<span th:if="${user.zodiac == 'leo'}">♌︎</span>
+		 	<span th:if="${user.zodiac == 'virgo'}">♍︎</span>
+		 	<span th:if="${user.zodiac == 'libra'}">♎︎</span>
+		 	<span th:if="${user.zodiac == 'scorpio'}">♏︎</span>
+		 	<span th:if="${user.zodiac == 'sagittarius'}">♐︎</span>
+		 	<span th:if="${user.zodiac == 'capricorn'}">♑︎</span>
+		 	<span th:if="${user.zodiac == 'aquarius'}">♒︎</span>
+		 	<span th:if="${user.zodiac == 'pisces'}">♓︎</span>
+		 </th:block>
+	</span>
 
 	<div th:fragment="profile-warning">
 		<div th:if="${hasWarning}">

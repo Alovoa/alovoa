@@ -87,6 +87,8 @@ public class User implements UserDetails {
 	private String referrerCode;
 
 	private String uiDesign;
+	
+	private String zodiac;
 
 	private int preferedMinAge;
 

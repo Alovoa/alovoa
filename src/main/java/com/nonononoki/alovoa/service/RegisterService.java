@@ -5,6 +5,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -108,6 +109,19 @@ public class RegisterService {
 	private static final String GMAIL_EMAIL = "@gmail";
 
 	private static final int MIN_PASSWORD_SIZE = 7;
+
+//	public static String ZODIAC_AQUARIUS = "aquarius";
+//	public static String ZODIAC_ARIES = "aries";
+//	public static String ZODIAC_CANCER = "cancer";
+//	public static String ZODIAC_CAPRICORN = "capricorn";
+//	public static String ZODIAC_GEMINI = "gemini";
+//	public static String ZODIAC_LEO = "leo";
+//	public static String ZODIAC_LIBRA = "libra";
+//	public static String ZODIAC_PISCES = "pisces";
+//	public static String ZODIAC_SAGITTARIUS= "sagittarious";
+//	public static String ZODIAC_SCORPION = "scorpion";
+//	public static String ZODIAC_TAURUS = "taurus";
+//	public static String ZODIAC_VIRGO = "virgo";
 
 	private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
 
@@ -348,6 +362,8 @@ public class RegisterService {
 		user.setNumberSearches(0);
 		user.setNumberReferred(0);
 
+		setUserZodiac(user, dto.getDateOfBirth());
+
 		user = userRepo.saveAndFlush(user);
 
 		userService.updateUserInfo(user);
@@ -356,6 +372,37 @@ public class RegisterService {
 		baseRegisterDto.setRegisterDto(dto);
 		baseRegisterDto.setUser(user);
 		return baseRegisterDto;
+	}
+
+	public static void setUserZodiac(User user, Date dob) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dob);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		if ((month == 12 && day >= 22 && day <= 31) || (month == 1 && day >= 1 && day <= 19))
+			user.setZodiac("capricorn");
+		else if ((month == 1 && day >= 20 && day <= 31) || (month == 2 && day >= 1 && day <= 17))
+			user.setZodiac("aquarius");
+		else if ((month == 2 && day >= 18 && day <= 29) || (month == 3 && day >= 1 && day <= 19))
+			user.setZodiac("pisces");
+		else if ((month == 3 && day >= 20 && day <= 31) || (month == 4 && day >= 1 && day <= 19))
+			user.setZodiac("aries");
+		else if ((month == 4 && day >= 20 && day <= 30) || (month == 5 && day >= 1 && day <= 20))
+			user.setZodiac("taurus");
+		else if ((month == 5 && day >= 21 && day <= 31) || (month == 6 && day >= 1 && day <= 20))
+			user.setZodiac("gemini");
+		else if ((month == 6 && day >= 21 && day <= 30) || (month == 7 && day >= 1 && day <= 22))
+			user.setZodiac("cancer");
+		else if ((month == 7 && day >= 23 && day <= 31) || (month == 8 && day >= 1 && day <= 22))
+			user.setZodiac("leo");
+		else if ((month == 8 && day >= 23 && day <= 31) || (month == 9 && day >= 1 && day <= 22))
+			user.setZodiac("virgo");
+		else if ((month == 9 && day >= 23 && day <= 30) || (month == 10 && day >= 1 && day <= 22))
+			user.setZodiac("libra");
+		else if ((month == 10 && day >= 23 && day <= 31) || (month == 11 && day >= 1 && day <= 21))
+			user.setZodiac("scorpio");
+		else if ((month == 11 && day >= 22 && day <= 30) || (month == 12 && day >= 1 && day <= 21))
+			user.setZodiac("sagittarius");
 	}
 
 	private static boolean isValidEmailAddress(String email) {

@@ -20,6 +20,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	long countByConfirmedAndGenderId(boolean confirmed, long genderId);
 
+	List<User> findByZodiacNull();
+
 	default List<User> usersSearch(UserSearchRequest request, Sort sort) {
 		return findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndLocationLatitudeBetweenAndLocationLongitudeBetweenAndIntentionTextEqualsAndIdNotInAndIdNotInAndIdNotInAndGenderTextIn(
 				request.getMinDate(), request.getMaxDate(), request.getMinLat(), request.getMaxLat(),
