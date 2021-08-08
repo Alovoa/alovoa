@@ -98,6 +98,14 @@ if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.register('/sw.js').then(function(registration) {
 			// Registration was successful
 			console.log('ServiceWorker registration successful with scope: ', registration.scope);
+
+			caches.keys().then(function(names) {
+				for (let name of names) {
+					if (name != cacheName)
+						caches.delete(name);
+				}
+			});
+
 		}, function(err) {
 			// registration failed :(
 			console.log('ServiceWorker registration failed: ', err);
