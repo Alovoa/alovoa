@@ -392,11 +392,6 @@ input[type=range].slider {
 		font-size: 0.8em ! important;
 	}
 }
-
-@media screen and (max-width: 290px) {
-
-}
-
 @media screen and (max-width: 280px) {
 	#navbar-item-language {
 		display: none;
@@ -429,6 +424,9 @@ input[type=range].slider {
 	}
 	.content-background {
 		display: none;
+	}
+	.notification-like {
+		display: none !important;
 	}
 	#main-logged-in {
 		min-height: calc(100vh - 52px);

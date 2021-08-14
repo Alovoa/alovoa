@@ -39,7 +39,7 @@
 
 .notification-div {
 	text-align: center;
-	min-width: 240px;
+	/*min-width: 240px;*/
 }
 
 .messages-name {
@@ -98,7 +98,7 @@
 		padding: 0;
 	}
 	.notification-div {
-		font-size: 1.2em !important; 
+		font-size: 1.0em !important; 
 	}
 	.card {
 		border-radius: 0px;

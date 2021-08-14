@@ -25,24 +25,25 @@
 		<section class="container" id="main-container">
 			<div class="section">
 				<div class="container" style="width: 100%;">
-					<div class="card is-horizontal notification-card" th:each="notification : ${notifications}"
-						style="width: 100%;" th:onclick="viewProfile([[${notification.userFromDto.idEncoded}]])">
-						<div class="card-image">
-							<figure class="image">
-								<img th:src="${notification.userFromDto.profilePicture}" class="profile-pic"
-									style="margin: 0;">
-							</figure>
-						</div>
-						<div class="card-content">
-							<div class="notification-div full-width"
-								style="height: 100%; display: flex; line-height: initial; align-items: center; justify-content: center;">
-								<div>
-									<span th:text="#{notification.liked-by}"></span><span
-										th:text="${notification.userFromDto.firstName}"></span>
-								</div>
+					<div class="card is-horizontal notification-card" th:each="notification : ${notifications}">
+						<div style="width: 100%; display: flex; line-height: initial; align-items: center;">
+							<div class="card-image" style="margin-right: 4px;" th:onclick="viewProfile([[${notification.userFromDto.idEncoded}]])">
+								<figure class="image">
+									<img th:src="${notification.userFromDto.profilePicture}" class="profile-pic"
+										style="margin: 0;">
+								</figure>
+							</div>
+							<div class="notification-div full-width" th:onclick="viewProfile([[${notification.userFromDto.idEncoded}]])">
+									<span th:text="#{notification.liked-by} + ${notification.userFromDto.firstName}"></span>
+							</div>
+							<div class="notification-like" th:if="${!notification.userFromDto.likedByCurrentUser and !notification.userFromDto.hiddenByCurrentUser}" 
+									style="margin-left: 4px; display: flex; height: 100%; align-items: center; justify-content: center;"> 
+								<button class="button colored is-success" style="height: 50px;"
+										th:onclick="likeUser(this, [[${notification.userFromDto.idEncoded}]])">
+										<i class="fa fa-thumbs-up"></i>
+									</button>
 							</div>
 						</div>
-
 					</div>
 				</div>
 			</div>
@@ -66,6 +67,22 @@
 		function viewProfile(idEnc) {
 			let url = 'profile/view/' + idEnc;
 			window.open(url, '_blank').focus();
+		}
+		function likeUser(btn, idEnc) {
+			$.ajax({
+				type: "POST",
+				url: "/user/like/" + idEnc,
+				headers: {
+					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
+				},
+				success: function () {
+					$(btn).hide();
+				},
+				error: function (e) {
+					console.log(e);
+				}
+			});
+
 		}
 	</script>
 </body>
