@@ -5,6 +5,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,8 @@ public class BlockedUsersResource {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
+	private final long MAX_RESULTS = 50;
+
 	@GetMapping("/blocked-users")
 	public ModelAndView blockedUsers() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
@@ -41,7 +44,8 @@ public class BlockedUsersResource {
 		User user = authService.getCurrentUser();
 		ModelAndView mav = new ModelAndView("blocked-users");
 		List<UserBlock> userBlocks = user.getBlockedUsers();
-		List<User> blockedUsers = userBlocks.stream().map(b -> b.getUserTo()).collect(Collectors.toList());
+		List<User> blockedUsers = userBlocks.stream().sorted(Comparator.comparing(UserBlock::getDate).reversed())
+				.limit(MAX_RESULTS).map(b -> b.getUserTo()).collect(Collectors.toList());
 		List<UserDto> users = new ArrayList<>();
 		for (User u : blockedUsers) {
 			users.add(UserDto.userToUserDto(u, user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));

@@ -5,6 +5,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,8 @@ public class DislikedUsersResource {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
+	private final long MAX_RESULTS = 50;
+
 	@GetMapping("/user/disliked-users")
 	public ModelAndView dislikedUsers() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
@@ -41,7 +44,8 @@ public class DislikedUsersResource {
 		User user = authService.getCurrentUser();
 		ModelAndView mav = new ModelAndView("disliked-users");
 		List<UserHide> userDislikes = user.getHiddenUsers();
-		List<User> dislikedUsers = userDislikes.stream().map(b -> b.getUserTo()).collect(Collectors.toList());
+		List<User> dislikedUsers = userDislikes.stream().sorted(Comparator.comparing(UserHide::getDate).reversed())
+				.limit(MAX_RESULTS).map(b -> b.getUserTo()).collect(Collectors.toList());
 		List<UserDto> users = new ArrayList<>();
 		for (User u : dislikedUsers) {
 			users.add(UserDto.userToUserDto(u, user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));

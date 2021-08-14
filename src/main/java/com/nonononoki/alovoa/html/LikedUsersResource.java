@@ -5,6 +5,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,8 @@ public class LikedUsersResource {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
+	private final long MAX_RESULTS = 50;
+
 	@GetMapping("/user/liked-users")
 	public ModelAndView likedUsers() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
@@ -41,7 +44,8 @@ public class LikedUsersResource {
 		User user = authService.getCurrentUser();
 		ModelAndView mav = new ModelAndView("liked-users");
 		List<UserLike> userLikes = user.getLikes();
-		List<User> likedUsers = userLikes.stream().map(b -> b.getUserTo()).collect(Collectors.toList());
+		List<User> likedUsers = userLikes.stream().sorted(Comparator.comparing(UserLike::getDate).reversed())
+				.limit(MAX_RESULTS).map(b -> b.getUserTo()).collect(Collectors.toList());
 		List<UserDto> users = new ArrayList<>();
 		for (User u : likedUsers) {
 			users.add(UserDto.userToUserDto(u, user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
