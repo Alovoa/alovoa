@@ -91,7 +91,6 @@ public class User implements UserDetails {
 	private String zodiac;
 
 	private int preferedMinAge;
-
 	private int preferedMaxAge;
 
 	private Double locationLatitude;

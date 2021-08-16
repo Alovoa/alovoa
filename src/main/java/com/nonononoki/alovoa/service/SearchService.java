@@ -132,8 +132,8 @@ public class SearchService {
 		double minLong = longitude - deltaLong;
 		double maxLong = longitude + deltaLong;
 
-		UserSearchRequest request = UserSearchRequest.builder().minLat(minLat).minLong(minLong).maxLat(maxLat)
-				.maxLong(maxLong).maxDate(maxDate).minDate(minDate).intentionText(user.getIntention().getText())
+		UserSearchRequest request = UserSearchRequest.builder().age(age).minLat(minLat).minLong(minLong).maxLat(maxLat)
+				.maxLong(maxLong).maxDateDob(maxDate).minDateDob(minDate).intentionText(user.getIntention().getText())
 				.likeIds(user.getLikes().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
 				.blockIds(user.getBlockedUsers().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
 				.hideIds(user.getHiddenUsers().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
@@ -187,8 +187,8 @@ public class SearchService {
 			maxDate = Tools.ageToDate(ageMin);
 			minDate = Tools.ageToDate(ageLegal - 1);
 		}
-		request.setMinDate(minDate);
-		request.setMaxDate(maxDate);
+		request.setMinDateDob(minDate);
+		request.setMaxDateDob(maxDate);
 
 		filteredUsers.clear();
 		users = userRepo.usersSearchAllIgnoreLocationAndIntention(request, sort);

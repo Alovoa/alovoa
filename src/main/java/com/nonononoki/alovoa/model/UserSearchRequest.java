@@ -13,8 +13,9 @@ public class UserSearchRequest {
 	private double maxLat ;
 	private double minLong;
 	private double maxLong;
-	private Date minDate;
-	private Date maxDate;
+	private int age;
+	private Date minDateDob;
+	private Date maxDateDob;
 	private String intentionText;
 	private Collection<Long> likeIds;
 	private Collection<Long> hideIds;
