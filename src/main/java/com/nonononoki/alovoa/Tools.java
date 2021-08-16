@@ -178,6 +178,8 @@ public class Tools {
 				&& user1.getPreferedGenders().contains(user2.getGender())
 				&& user1.getPreferedMaxAge() >= user2Age
 				&& user1.getPreferedMinAge() <= user2Age
+				&& user2.getPreferedMaxAge() >= user1Age
+				&& user2.getPreferedMinAge() <= user1Age
 				&& user2.getIntention().getText().equals(user1.getIntention().getText());
 	}
 }
