@@ -74,7 +74,6 @@ public class ScheduleService {
 		Date date = new Date();
 		cleanUserHide(date);
 		cleanUserDeleteToken(date);
-		cleanContact(date);
 	}
 	
 	public void cleanCaptcha(Date date) {
@@ -85,16 +84,7 @@ public class ScheduleService {
 		List<Captcha> captchas = captchaRepo.findByDateBefore(d);
 		captchaRepo.deleteAll(captchas);
 	}
-	
-	public void cleanContact(Date date) {
-		long ms = date.getTime();
-		ms -= contactDelay;
-		Date d = new Date(ms);
-		
-		List<Contact> contacts = contactRepo.findByDateBefore(d);
-		contactRepo.deleteAll(contacts);
-	}
-	
+
 	public void cleanUserHide(Date date) {
 		long ms = date.getTime();
 		ms -= hideDelay;

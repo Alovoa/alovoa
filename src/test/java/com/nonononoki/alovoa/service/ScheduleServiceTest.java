@@ -155,8 +155,7 @@ class ScheduleServiceTest {
 		contactRepo.saveAndFlush(contactNew);
 
 		assertEquals(2, contactRepo.count());
-		scheduleService.cleanContact(currentDate);
-		assertEquals(1, contactRepo.count());
+
 
 		// USERHIDE
 		User user1 = testUsers.get(1);
