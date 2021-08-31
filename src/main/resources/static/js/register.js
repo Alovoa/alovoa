@@ -9,7 +9,7 @@ $(function() {
 	let endDate = new Date(today.setFullYear(today.getFullYear() - maxAge)).toISOString().split('T')[0];
 
 	let dobInput = $("#dob-input");
-	dobInput.val(startDate);
+	//dobInput.val(startDate);
 	dobInput.attr('max', startDate);
 	dobInput.attr('min', endDate);
 
