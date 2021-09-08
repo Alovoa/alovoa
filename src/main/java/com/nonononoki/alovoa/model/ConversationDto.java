@@ -30,11 +30,15 @@ public class ConversationDto {
 	private boolean read;
 
 	public static ConversationDto conversationToDto(Conversation c, User currentUser,
-			TextEncryptorConverter textEncryptor) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+			TextEncryptorConverter textEncryptor)
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		ConversationDto dto = new ConversationDto();
 		dto.setId(c.getId());
 		dto.setLastUpdated(c.getLastUpdated());
-		dto.setLastMessage(c.getLastMessage());
+		if(c.getMessages() != null && c.getMessages().size() > 0) {
+			dto.setLastMessage(c.getMessages().get(c.getMessages().size() - 1).getContent());
+		}
 		User u = c.getPartner(currentUser);
 		dto.setUserName(u.getFirstName());
 		if (u.getProfilePicture() != null) {

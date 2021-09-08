@@ -98,7 +98,6 @@ public class MessageService {
 			c.getMessages().remove(msg);
 		}
 
-		c.setLastMessage(lastMessage);
 		c.setLastUpdated(new Date());
 		conversationRepo.saveAndFlush(c);
 
