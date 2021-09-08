@@ -70,6 +70,9 @@ public class SearchService {
 	private static final double LATITUDE = 111.1;
 	private static final double LONGITUDE = 111.320;
 
+	private static final int SEARCH_STEP_1 = 500;
+	private static final int SEARCH_STEP_2 = 1000;
+
 	public SearchDto search(Double latitude, Double longitude, int distance, int sortId) throws AlovoaException,
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
@@ -164,6 +167,47 @@ public class SearchService {
 			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user)).build();
 		}
 		filteredUsers.clear();
+
+		// NO COMPATIBLE USERS FOUND, SEARCH AROUND THE WORLD!
+
+		distance = SEARCH_STEP_1;
+		deltaLat = distance / LATITUDE;
+		deltaLong = distance / (LONGITUDE * Math.cos(latitude / 180.0 * Math.PI));
+		minLat = latitude - deltaLat;
+		maxLat = latitude + deltaLat;
+		minLong = longitude - deltaLong;
+		maxLong = longitude + deltaLong;
+		request.setMinLat(minLat);
+		request.setMaxLat(maxLat);
+		request.setMinLong(minLong);
+		request.setMaxLong(maxLong);
+		users = userRepo.usersSearch(request, sort);
+		filteredUsers = filterUsers(users, ignoreIds, user, false);
+		if (!filteredUsers.isEmpty()) {
+			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
+					.message(publicService.text("search.warning.global")).global(true).build();
+		}
+		filteredUsers.clear();
+
+		distance = SEARCH_STEP_2;
+		deltaLat = distance / LATITUDE;
+		deltaLong = distance / (LONGITUDE * Math.cos(latitude / 180.0 * Math.PI));
+		minLat = latitude - deltaLat;
+		maxLat = latitude + deltaLat;
+		minLong = longitude - deltaLong;
+		maxLong = longitude + deltaLong;
+		request.setMinLat(minLat);
+		request.setMaxLat(maxLat);
+		request.setMinLong(minLong);
+		request.setMaxLong(maxLong);
+		users = userRepo.usersSearch(request, sort);
+		filteredUsers = filterUsers(users, ignoreIds, user, false);
+		if (!filteredUsers.isEmpty()) {
+			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
+					.message(publicService.text("search.warning.global")).global(true).build();
+		}
+		filteredUsers.clear();
+
 		users = userRepo.usersSearchAllIgnoreLocation(request, sort);
 		filteredUsers = filterUsers(users, ignoreIds, user, false);
 
