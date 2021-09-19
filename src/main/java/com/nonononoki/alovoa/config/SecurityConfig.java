@@ -1,5 +1,8 @@
 package com.nonononoki.alovoa.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -7,10 +10,18 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
+import org.springframework.security.web.session.SimpleRedirectSessionInformationExpiredStrategy;
 
 import com.nonononoki.alovoa.component.AuthFilter;
 import com.nonononoki.alovoa.component.AuthProvider;
@@ -74,6 +85,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class).rememberMe()
 				.rememberMeServices(rememberMeServices()).key(rememberKey);
 
+		http.sessionManagement().maximumSessions(10).expiredSessionStrategy(getSessionInformationExpiredStrategy())
+				.sessionRegistry(sessionRegistry());
 		http.csrf().ignoringAntMatchers("/donate/received/**");
 		http.requiresChannel().anyRequest().requiresSecure();
 	}
@@ -90,7 +103,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		filter.setAuthenticationSuccessHandler(successHandler);
 		filter.setAuthenticationFailureHandler(failureHandler);
 		filter.setRememberMeServices(rememberMeServices());
+		filter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy());
 		return filter;
+	}
+
+	// cf.
+	// https://stackoverflow.com/questions/32463022/sessionregistry-is-empty-when-i-use-concurrentsessioncontrolauthenticationstrate
+	public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+		List<SessionAuthenticationStrategy> stratList = new ArrayList<>();
+		SessionFixationProtectionStrategy concStrat = new SessionFixationProtectionStrategy();
+		stratList.add(concStrat);
+		RegisterSessionAuthenticationStrategy regStrat = new RegisterSessionAuthenticationStrategy(sessionRegistry());
+		stratList.add(regStrat);
+		CompositeSessionAuthenticationStrategy compStrat = new CompositeSessionAuthenticationStrategy(stratList);
+		return compStrat;
+	}
+
+	public SessionInformationExpiredStrategy getSessionInformationExpiredStrategy() {
+		SessionInformationExpiredStrategy strat = new SimpleRedirectSessionInformationExpiredStrategy("/logout");
+		return strat;
+	}
+
+	@Bean
+	public SessionRegistry sessionRegistry() {
+		return new SessionRegistryImpl();
 	}
 
 	@Bean

@@ -3,6 +3,8 @@ package com.nonononoki.alovoa.service;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
@@ -11,7 +13,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.entity.User;
@@ -42,6 +46,9 @@ public class PasswordService {
 
 	@Autowired
 	private MailService mailService;
+
+	@Autowired
+	private SessionRegistry sessionRegistry;
 
 	@Value("${app.password-token.length}")
 	private int tokenLength;
@@ -98,7 +105,31 @@ public class PasswordService {
 			user.setRegisterToken(null);
 		}
 
+		List<Object> principals = sessionRegistry.getAllPrincipals().stream().filter(auth -> {
+			try {
+				String email;
+				if (auth instanceof DefaultOAuth2User) {
+					DefaultOAuth2User oauth2User = (DefaultOAuth2User) auth;
+					email = oauth2User.getAttribute("email");
+				} else {
+					email = (String) auth;
+				}
+				if (user.getEmail().equals(email)) {
+					return true;
+				} else {
+					return false;
+				}
+			} catch (Exception e) {
+				return false;
+			}
+		}).collect(Collectors.toList());
+
+		for (Object p : principals) {
+			sessionRegistry.getAllSessions(p, false).forEach(sessionInfo -> {
+				sessionInfo.expireNow();
+			});
+		}
+
 		userRepo.saveAndFlush(user);
-		session.invalidate();
 	}
 }
