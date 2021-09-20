@@ -28,6 +28,7 @@
       "sizes": "512x512"
     }
   ],
+  "id": "com.alovoa.alovoa",
   "start_url": "/?pwa",
   "background_color": "#ec407a",
   "display": "standalone",
