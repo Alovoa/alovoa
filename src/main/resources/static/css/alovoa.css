@@ -270,6 +270,10 @@ input[type=range].slider {
 	margin-bottom: 68px;
 }
 
+.navigation-item-span-bottom {
+	display: none;
+}
+
 @media screen and (max-width: 1024px) {
 	* {
 		scrollbar-width: none;
@@ -293,7 +297,7 @@ input[type=range].slider {
 
 @media screen and (max-width: 700px) {
 	.navigation-item span {
-		display: none;
+		font-size: 0.6em;
 	}
 }
 
@@ -366,6 +370,28 @@ input[type=range].slider {
 @media screen and (max-width: 510px) {
 	#navbar-text {
 		display: none;
+	}
+}
+
+@media screen and (max-width: 460px) {
+	
+	.navigation-item {
+		padding: 2px;
+	}
+	.navigation-item span {
+		font-size: 0.4em;
+	}
+	
+	.navigation-item {
+		flex-direction: column;
+	}
+	
+	.navigation-item-span-right {
+		display: none;
+	}
+	
+	.navigation-item-span-bottom {
+		display: block;
 	}
 }
 
@@ -485,6 +511,9 @@ input[type=range].slider {
 		display: none;
 	}
 	#oauth-div span, #email-auth span {
+		display: none;
+	}
+	.navigation-item span {
 		display: none;
 	}
 }
