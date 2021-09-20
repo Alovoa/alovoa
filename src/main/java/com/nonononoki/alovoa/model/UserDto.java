@@ -48,6 +48,7 @@ public class UserDto {
 	private String accentColor;
 	private String uiDesign;
 	private String zodiac;
+	private boolean showZodiac;
 	private int units;
 
 	private int preferedMinAge;
@@ -118,6 +119,7 @@ public class UserDto {
 		dto.setAccentColor(user.getAccentColor());
 		dto.setUiDesign(user.getUiDesign());
 		dto.setZodiac(user.getZodiac());
+		dto.setShowZodiac(user.isShowZodiac());
 		dto.setUnits(user.getUnits());
 		dto.setPreferedGenders(user.getPreferedGenders());
 		dto.setPreferedMinAge(user.getPreferedMinAge());

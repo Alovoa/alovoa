@@ -374,7 +374,7 @@
 		</div>
 	</div>
 	
-	<span th:fragment="zodiac" style="opacity: 0.8;">
+	<span th:fragment="zodiac" th:if="${ (currUser != null and currUser.showZodiac) or (user != null and user.showZodiac) }" style="opacity: 0.8;">
 		 <th:block th:if="${user.zodiac}">
 		 	<span th:if="${user.zodiac == 'aries'}">♈︎</span>
 		 	<span th:if="${user.zodiac == 'taurus'}">♉︎</span>

@@ -524,6 +524,12 @@ public class UserService {
 		user.setUiDesign(uiDesign);
 		userRepo.saveAndFlush(user);
 	}
+	
+	public void updateShowZodiac(int showZodiac) throws AlovoaException {
+		User user = authService.getCurrentUser();
+		user.setShowZodiac(showZodiac == 1);
+		userRepo.saveAndFlush(user);
+	}
 
 	public void updateUnits(int units) throws AlovoaException {
 		User user = authService.getCurrentUser();

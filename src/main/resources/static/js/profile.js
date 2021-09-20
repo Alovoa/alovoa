@@ -435,6 +435,24 @@ function updateUiDesign() {
 	});
 }
 
+function updateShowZodiac() {
+	let val = $("#show-zodiac-select").val();
+	$.ajax({
+		type: "POST",
+		url: "/user/show-zodiac/update/" + val,
+		headers: {
+			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
+		},
+		success: function(e) {
+			location.reload();
+		},
+		error: function(e) {
+			console.log(e);
+			alert(getGenericErrorText());
+		}
+	});
+}
+
 function updateUnits() {
 	let val = $("#ui-units-select").val();
 	$.ajax({

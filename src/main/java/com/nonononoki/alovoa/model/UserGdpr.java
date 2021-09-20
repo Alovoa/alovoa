@@ -70,6 +70,10 @@ public class UserGdpr {
 	long numberProfileViews;
 
 	long numberSearches;
+	
+	private String zodiac;
+	
+	private boolean showZodiac;
 
 	public static UserGdpr userToUserGdpr(User user) {
 		UserGdpr u = new UserGdpr();
@@ -108,6 +112,9 @@ public class UserGdpr {
 
 		u.setNumberProfileViews(user.getNumberProfileViews());
 		u.setNumberSearches(user.getNumberSearches());
+		
+		u.setZodiac(user.getZodiac());
+		u.setShowZodiac(user.isShowZodiac());
 
 		return u;
 	}

@@ -286,6 +286,22 @@
 				
 				<div class="box">
 					<div class="field">
+						<label class="label" th:text="#{profile.show-zodiac}"></label>
+						<div class="select">
+							<select id="show-zodiac-select" onchange="updateShowZodiac()">
+								<option value="0"
+									th:selected="${!user.showZodiac}"
+									th:text="#{no}"></option>
+								<option value="1"
+									th:selected="${user.showZodiac}"
+									th:text="#{yes}"></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				
+				<div class="box">
+					<div class="field">
 						<label class="label" th:text="#{units}"></label>
 						<div class="select">
 							<select id="ui-units-select" onchange="updateUnits()">

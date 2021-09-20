@@ -139,6 +139,11 @@ public class UserController {
 		userService.updateUiDesign(uiDesign);
 	}
 	
+	@PostMapping("/show-zodiac/update/{showZodiac}")
+	public void updateUiDesign(@PathVariable int showZodiac) throws AlovoaException {
+		userService.updateShowZodiac(showZodiac);
+	}
+	
 	@PostMapping("/units/update/{units}")
 	public void updateUnits(@PathVariable int units) throws AlovoaException {
 		userService.updateUnits(units);

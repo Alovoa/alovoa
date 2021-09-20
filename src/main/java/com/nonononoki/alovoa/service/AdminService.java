@@ -205,7 +205,7 @@ public class AdminService {
 		user.setProfilePicture(null);
 		user.getWebPush().clear();
 		user.setZodiac(null);
-
+		user.setShowZodiac(false);
 		userRepo.saveAndFlush(user);
 	}
 
