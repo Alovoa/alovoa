@@ -123,6 +123,9 @@
 .leaflet-popup-content {
 	width: 56px !important;
 }
+.search-button-padding {
+	padding-right: 24px;
+}
 
 @media screen and (max-width: 1024px) {
 	.card.is-horizontal {
@@ -224,8 +227,13 @@
 	.image img {
 		max-height: initial;
 		max-width: initial;
+	    border-top-left-radius: 0px !important;
+    	border-top-right-radius: 0px !important;
 	}
 	.user-search-div {
 		margin-bottom: 0px;
+	}
+	.search-button-padding {
+		padding-right: 12px;
 	}
 }
