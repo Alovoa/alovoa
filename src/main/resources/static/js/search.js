@@ -78,7 +78,8 @@ function searchBase() {
 			$(this).addClass('s' + index);
 			let slider = new Swiper('.s' + index, {
 				initialSlide: 1,
-				shortSwipes: false
+				shortSwipes: true,
+				simulateTouch: false
 			});
 
 
@@ -158,7 +159,7 @@ function toggleCardContent() {
 
 function hideProfileTile(id) {
 	let tile = $("#" + id);
-	$(tile).fadeOut(200, function() {
+	$(tile).fadeOut(80, function() {
 		tile.hide();
 		searchAgain();
 	});

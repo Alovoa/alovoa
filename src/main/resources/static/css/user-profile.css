@@ -7,6 +7,17 @@
 	width: 56px;
 }
 
+#like-hide-bottom {
+	margin-bottom: 24px; 
+	position: fixed; 
+	display: flex; 
+	left: 0; 
+	bottom: 0; 
+	width: 100%; 
+	align-items: center;
+  	justify-content: center;
+}
+
 @media screen and (max-width: 338px) {
 	#audio-play-button {
 		width: 100%;

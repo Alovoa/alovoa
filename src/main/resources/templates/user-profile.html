@@ -87,7 +87,6 @@
 					<div style="padding-top: 24px;"></div>
 
 					<div class="field">
-						<label class="label" th:text="#{description}"></label>
 						<textarea class="textarea" id="description"
 							th:text="${user.description}" readOnly></textarea>
 					</div>
@@ -179,31 +178,35 @@
 							<i class="fa fa-flag"></i>
 						</button>
 					</div>
-					<div class="right" th:if="${compatible}" style="margin-bottom: 12px;">
-						<button class="button colored is-danger"
-							th:unless="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
-							th:onclick="hideUser([[${user.idEncoded}]])">
-							<i class="fa fa-thumbs-down"></i>
-						</button>
-						<button class="button colored is-danger"
-							th:if="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
-							th:onclick="hideUser([[${user.idEncoded}]])" disabled>
-							<i class="fa fa-thumbs-down"></i>
-						</button>
-						<button class="button colored is-success"
-							th:unless="${user.likedByCurrentUser}"
-							th:onclick="likeUser([[${user.idEncoded}]])">
-							<i class="fa fa-thumbs-up"></i>
-						</button>
-						<button class="button colored is-success"
-							th:if="${user.likedByCurrentUser}"
-							th:onclick="likeUser([[${user.idEncoded}]])" disabled>
-							<i class="fa fa-thumbs-up"></i>
-						</button>
-					</div>
 				</div>
 			</div>
+			
+			<div style="margin-bottom: 36px;"></div>
 		</div>
+	</div>
+	
+	<div id="like-hide-bottom" th:if="${compatible}" >
+			<button class="button colored is-danger" style="height: 56px; width: 56px;"
+				th:unless="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
+				th:onclick="hideUser([[${user.idEncoded}]])">
+				<i class="fa fa-thumbs-down"></i>
+			</button>
+			<button class="button colored is-danger" style="height: 56px; width: 56px;"
+				th:if="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
+				th:onclick="hideUser([[${user.idEncoded}]])" disabled>
+				<i class="fa fa-thumbs-down"></i>
+			</button>
+			<div style="padding-right: 24px;"></div>
+			<button class="button colored is-success" style="height: 56px; width: 56px;"
+				th:unless="${user.likedByCurrentUser}"
+				th:onclick="likeUser([[${user.idEncoded}]])">
+				<i class="fa fa-thumbs-up"></i>
+			</button>
+			<button class="button colored is-success" style="height: 56px; width: 56px;"
+				th:if="${user.likedByCurrentUser}"
+				th:onclick="likeUser([[${user.idEncoded}]])" disabled>
+				<i class="fa fa-thumbs-up"></i>
+			</button>
 	</div>
 
 	<div id="modals">
