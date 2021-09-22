@@ -138,6 +138,10 @@ button, .button, .input, .select, select {
 	font-size: 1.5em;
 }
 
+.navigation-item {
+	flex: 1 1 0px
+}
+
 .navigation-item.new * {
 	color: #FFA000 !important;
 }
@@ -274,6 +278,12 @@ input[type=range].slider {
 	display: none;
 }
 
+@media screen and (max-width: 1050px) {
+	.navigation-item span {
+		font-size: 0.8em;
+	}
+}
+
 @media screen and (max-width: 1024px) {
 	* {
 		scrollbar-width: none;
@@ -295,9 +305,15 @@ input[type=range].slider {
 	}
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 900px) {
 	.navigation-item span {
 		font-size: 0.6em;
+	}
+}
+
+@media screen and (max-width: 725px) {
+	.navigation-item span {
+		font-size: 0.5em;
 	}
 }
 
@@ -373,13 +389,13 @@ input[type=range].slider {
 	}
 }
 
-@media screen and (max-width: 460px) {
+@media screen and (max-width: 600px) {
 	
 	.navigation-item {
 		padding: 2px;
 	}
 	.navigation-item span {
-		font-size: 0.4em;
+		font-size: 0.5em;
 	}
 	
 	.navigation-item {
