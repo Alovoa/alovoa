@@ -16,6 +16,7 @@ function getText(param) {
 		}
 	});
 	
+	console.log(res);
 	return res;
 }
 
@@ -38,8 +39,6 @@ function getTextAsync(param, callback) {
 			callback(res);
 		}
 	});
-	
-	return res;
 }
 
 function getGenericErrorText() {

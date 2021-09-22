@@ -38,7 +38,7 @@
 							</div>
 							<div class="notification-like" th:if="${!notification.userFromDto.likedByCurrentUser and !notification.userFromDto.hiddenByCurrentUser}" 
 									style="margin-left: 4px; display: flex; height: 100%; align-items: center; justify-content: center;"> 
-								<button class="button colored is-success is-outlined" style="height: 50px;"
+								<button class="button is-success is-outlined" style="height: 50px;"
 										th:onclick="likeUser(this, [[${notification.userFromDto.idEncoded}]])">
 										<i class="fa fa-thumbs-up"></i>
 									</button>

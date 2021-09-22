@@ -21,7 +21,7 @@
 	cursor: pointer;
 }
 
-.button svg {
+.button:not(.is-outlined) svg {
 	color: white;
 }
 

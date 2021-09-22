@@ -67,6 +67,12 @@
 	}
 }
 
+@media screen and (max-height: 600px) {
+	#hero .hero-body {
+		padding: 1.5rem 1.5rem;
+	}
+}
+
 @media screen and (max-width: 374px) {
 	#banner {
 		 height: 300px;
@@ -77,8 +83,11 @@
 	}
 }
 
-@media screen and (max-height: 600px) {
+@media screen and (max-width: 260px) {
 	#hero .hero-body {
-		padding: 1.5rem 1.5rem;
+		padding: 0.5rem 0.5rem;
 	}
+	#hero-register-button {
+    	margin-bottom: 12px;
+    }
 }

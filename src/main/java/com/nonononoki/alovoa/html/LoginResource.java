@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Locale;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -12,8 +11,6 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,9 +28,6 @@ public class LoginResource {
 	@Autowired
 	private ProfileResource profileResource;
 
-	@Autowired
-	private MessageSource messageSource;
-
 	@Value("${app.privacy.update-date}")
 	private String privacyDate;
 
@@ -48,10 +42,6 @@ public class LoginResource {
 		}
 
 		ModelAndView mav = new ModelAndView("login");
-
-		Locale locale = LocaleContextHolder.getLocale();
-		mav.addObject("privacyPolicyDate",
-				messageSource.getMessage("login.privacy-policy", new String[] { privacyDate }, locale));
 		return mav;
 	}
 }

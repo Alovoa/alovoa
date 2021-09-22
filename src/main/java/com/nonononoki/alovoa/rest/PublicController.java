@@ -16,7 +16,7 @@ public class PublicController {
 	@Autowired
 	private PublicService publicService;
 
-	@GetMapping("/text/{value:.+}")
+	@GetMapping(value="/text/{value:.+}", produces = "text/plain; charset=UTF-8")
 	public String text(Model model, @PathVariable String value) {
 		return publicService.text(value);
 	}

@@ -4,8 +4,8 @@ Author: Wifeo
 MIT License
 */
 .pulse-button-container {
-	width: 200px;
-	height: 200px;
+	/*width: 200px;
+	height: 200px;*/
 	margin: 0 auto 0;
 	perspective: 1000;
 	backface-visibility: hidden;

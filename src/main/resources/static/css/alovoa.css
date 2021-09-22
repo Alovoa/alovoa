@@ -441,7 +441,7 @@ input[type=range].slider {
 }
 
 /* KAIOS Screns are very small */
-@media screen and (max-width: 302px) {
+@media screen and (max-width: 302px) {	
 	#audio {
 		width: 208px;
 	}
@@ -533,6 +533,17 @@ input[type=range].slider {
 		display: none;
 	}
 	.search-audio {
+		display: none;
+	}
+}
+@media screen and (max-width: 260px) {
+	.title {
+		font-size: 1.2em !important;
+	}
+	.subtitle {
+		font-size: 1.0em !important;
+	}
+	.message-preview {
 		display: none;
 	}
 }

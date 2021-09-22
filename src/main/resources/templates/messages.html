@@ -36,8 +36,18 @@
 						<div class="card-content" style="display: flex; justify-items: center; align-items: center;">
 							<div class="full-width profile-bottom">
 								<div class="messages-name" th:text="${convo.userName}"></div>
+								
 								<span style="overflow-wrap: normal; background-color: initial;" class="message-preview"
-									th:text="${#strings.abbreviate(convo.lastMessage,60)}" th:if="${convo.lastMessage != null}"></span>
+									th:if="${convo.lastMessage != null}">
+									
+									<th:block th:unless="convo.lastMessage.allowedFormatting" 
+									th:text="${#strings.abbreviate(convo.lastMessage,60)}" ></th:block>
+									
+									<th:block th:if="convo.lastMessage.allowedFormatting" 
+									th:text="#{message.video-chat}" ></th:block>
+									
+								</span>
+							
 								<span style="overflow-wrap: normal;" class="message-preview"
 									th:unless="${convo.lastMessage != null}" th:text="#{message.match}"></span>
 							</div>
