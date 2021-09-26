@@ -68,6 +68,8 @@ class ToolsTest {
 		user2.setPreferedGenders(Collections.singleton(male));
 		user1.setPreferedMaxAge(20);
 		user1.setPreferedMinAge(20);
+		user2.setPreferedMaxAge(20);
+		user2.setPreferedMinAge(20);
 
 		assertTrue(Tools.usersCompatible(user1, user2));
 
