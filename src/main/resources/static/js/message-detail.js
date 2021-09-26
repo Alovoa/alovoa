@@ -88,7 +88,7 @@ function startVideoChat() {
 	if (answer) {
 	    let rand = randomString();
 	    let url = "https://meet.jit.si/" + rand;
-	    let link = `<a href="${url}" target="_blank">${url}</a>`;
+	    let link = '<a href="' + url + '" target="_blank">' + url + '</a>';
 	    $("#message-send-input").val(link);
 	    sendMessage();
 	    window.open(url);

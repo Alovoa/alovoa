@@ -505,7 +505,7 @@ function updateProfileWarning() {
 				$("#" + warning).removeClass("disabled");
 			}
 			warning = "no-gender";
-			if (!res.includes(`${warning}`)) {
+			if (!res.includes(warning)) {
 				console.log("gender")
 				$("#" + warning).addClass("disabled");
 			} else {

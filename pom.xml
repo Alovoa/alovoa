@@ -162,6 +162,36 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>com.github.buckelieg</groupId>
+				<artifactId>minify-maven-plugin</artifactId>
+				<version>2.0.1</version>
+				<executions>
+					<execution>
+						<id>default-minify</id>
+						<phase>prepare-package</phase>
+						<configuration>
+							<charset>UTF-8</charset>
+							<skipMerge>true</skipMerge> <!-- do not create one big file -->
+							<nosuffix>true</nosuffix> <!-- do not use suffix like 'min' -->
+							<webappTargetDir>${project.build.directory}/classes/static</webappTargetDir>
+							<webappSourceDir>src/main/resources/static</webappSourceDir>
+							<cssSourceDir>css</cssSourceDir>
+							<cssSourceIncludes>
+								<cssSourceInclude>*.css</cssSourceInclude>
+							</cssSourceIncludes>
+							<jsSourceDir>js</jsSourceDir>
+							<jsSourceIncludes>
+								<jsSourceInclude>*.js</jsSourceInclude>
+							</jsSourceIncludes>
+
+						</configuration>
+						<goals>
+							<goal>minify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>

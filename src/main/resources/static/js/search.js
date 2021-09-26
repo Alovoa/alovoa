@@ -1,29 +1,31 @@
 var locationFound = false;
-var map;
+var mymap;
 var popup;
 var lat;
-var long;
+var lon;
 
 $(function() {
 	bulmaSlider.attach();
 
 	lat = 52.3;
 	lon = 4.9;
-	map = L.map('map').setView({ lon: lon, lat: lat }, 4);
+	mymap = L.map('map').setView({ lon: lon, lat: lat }, 4);
 
 	// add the OpenStreetMap tiles
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 8,
 		attribution: '<a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-	}).addTo(map);
-	L.control.scale().addTo(map);
+	}).addTo(mymap);
+	L.control.scale().addTo(mymap);
 	popup = L.popup();
-	map.on('click', onMapClick);
+	mymap.on('click', onMapClick);
 });
 
-window.addEventListener('resize', () => {
-	map.invalidateSize(true);
-})
+window.addEventListener('resize', resize);
+
+function resize() {
+		mymap.invalidateSize(true);
+}
 
 
 function onMapClick(e) {
@@ -32,7 +34,7 @@ function onMapClick(e) {
 		.setContent('<input style="display: none;" id="map-lat" value="' + e.latlng.lat +
 			'"><input style="display: none;" id="map-lon" value="' + e.latlng.lng +
 			'"><button id="map-search-btn" class="button colored is-rounded is-primary" style="height: 56px;" onclick="mapSearchButtonClicked()"><i class="fa fa-search"></i></button>')
-		.openOn(map);
+		.openOn(mymap);
 }
 
 function mapSearchButtonClicked() {
@@ -51,14 +53,14 @@ function search() {
 		}, function() {
 			$(".loader-parent").css("display", "none");
 			openModal("map-modal");
-			map.invalidateSize(true);
+			mymap.invalidateSize(true);
 			alert(getText("search.js.error.no-location"));
 		});
 	} else {
 		$(".loader-parent").css("display", "none");
 		alert(getText("search.js.error.no-geolocation"));
 		openModal("map-modal");
-		map.invalidateSize(true);
+		mymap.invalidateSize(true);
 	}
 }
 

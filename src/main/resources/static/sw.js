@@ -47,7 +47,6 @@ const staticAssets = [
 	'/js/password-change.js',
 	'/js/password-reset.js',
 	'/js/profile.js',
-	'/js/pwa-install.js',
 	'/js/register.js',
 	'/js/register-oauth.js',
 	'/js/search.js',
