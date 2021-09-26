@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
+import com.nonononoki.alovoa.entity.user.Message;
 
 import lombok.Data;
 
@@ -22,10 +23,11 @@ public class ConversationDto {
 
 	@JsonIgnore
 	private long id;
+	
 	private Date lastUpdated;
 	private String userName;
 	private String userProfilePicture;
-	private String lastMessage;
+	private Message lastMessage;
 	private String userIdEncoded;
 	private boolean read;
 
@@ -36,8 +38,8 @@ public class ConversationDto {
 		ConversationDto dto = new ConversationDto();
 		dto.setId(c.getId());
 		dto.setLastUpdated(c.getLastUpdated());
-		if(c.getMessages() != null && c.getMessages().size() > 0) {
-			dto.setLastMessage(c.getMessages().get(c.getMessages().size() - 1).getContent());
+		if(c.getMessages() != null && !c.getMessages().isEmpty()) {
+			dto.setLastMessage(c.getMessages().get(c.getMessages().size()-1));
 		}
 		User u = c.getPartner(currentUser);
 		dto.setUserName(u.getFirstName());

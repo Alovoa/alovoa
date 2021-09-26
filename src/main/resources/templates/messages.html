@@ -40,10 +40,10 @@
 								<span style="overflow-wrap: normal; background-color: initial;" class="message-preview"
 									th:if="${convo.lastMessage != null}">
 									
-									<th:block th:unless="convo.lastMessage.allowedFormatting" 
-									th:text="${#strings.abbreviate(convo.lastMessage,60)}" ></th:block>
+									<th:block th:unless="${convo.lastMessage.allowedFormatting}" 
+									th:text="${#strings.abbreviate(convo.lastMessage.content,60)}" ></th:block>
 									
-									<th:block th:if="convo.lastMessage.allowedFormatting" 
+									<th:block th:if="${convo.lastMessage.allowedFormatting}" 
 									th:text="#{message.video-chat}" ></th:block>
 									
 								</span>
