@@ -159,11 +159,10 @@
 
 		<div style="margin-top: 1.5em"></div>
 
-		<section>
+		<section class="container">
 			<div class="box" id="cookie-banner" onclick="cookieClick()" style="display: none;">
-				<div class="has-text-centered" th:text="#{index.cookie.notice}">
-					<a href="/privacy#cookies" th:text="#{index.cookie.more}"></a>
-				</div>
+				<span th:text="#{index.cookie.notice}"></span>
+				<span><a href="/privacy#cookies" th:text="#{index.cookie.more}"></a></span>
 			</div>
 		</section>
 
