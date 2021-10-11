@@ -2,6 +2,13 @@
     height: initial;
 }
 
+#webpush-button {
+	display: none;
+	width: 100%; 
+	height: 100%; 
+	white-space: normal;
+}
+
 .notification:not(:last-child) {
 	margin-bottom: 0.5rem;
 }
