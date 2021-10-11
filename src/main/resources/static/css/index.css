@@ -1,10 +1,26 @@
+#hero-gravity {
+	position: absolute;
+	opacity: 0.8;
+}
+
+#hero-gravity > canvas {
+	background: #161616 !important;
+}
+
+#matter {
+position: absolute;
+bottom:0;
+
+}
+
 #hero {
+	z-index: 2;
+		background-color: black;
+}
+
+#hero, #hero-gravity {
 	height: calc(100vh - 56px);
 	height: calc(100 * var(--vh) - 56px);
-	/*Pexels License for profile images*/
-	background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 59%, rgba(0, 0, 0, 0.80) 100%)
-		,linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 59%, rgba(0, 0, 0, 0.80) 100%)
-		, url('/img/banner.webp');
 }
 
 #hero-padding {
@@ -15,6 +31,10 @@
 #hero-register-button {
 	margin-bottom: 48px;
 	font-size: 1.5em;
+}
+
+.hero-text {
+	text-shadow: 0px 0px 12px rgba(0,0,0,1);
 }
 
 .cards {
@@ -56,13 +76,6 @@
 }
 
 @media screen and (max-width: 600px) {
-	#banner {
-		 height: 300px;
-	}
-	
-	#hero {
-		background-size: 600px;
-	}
 	#hero-register-button {
 		width: 100%;
 	}

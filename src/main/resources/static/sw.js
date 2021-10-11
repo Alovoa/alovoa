@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '19';
+const cacheName = '20';
 const staticAssets = [
 
 	'/favicon.ico',
@@ -21,6 +21,7 @@ const staticAssets = [
 	'/js/lib/cutter.min.js',
 	'/js/lib/fontawesome.all.js',
 	'/js/lib/jquery.min.js',
+	'/js/lib/matter.min.js',
 	'/js/lib/Mp3LameEncoder.min.js',
 	'/js/lib/notification.js',
 	'/js/lib/swiper.min.js',
@@ -88,7 +89,19 @@ const staticAssets = [
 	'/img/m-icon.svg',
 	'/img/r-icon.svg',
 	'/img/t-icon.svg',
-	'/img/icon.png'
+	'/img/icon.png',
+	
+	'/img/profile/1.png',
+	'/img/profile/2.png',
+	'/img/profile/3.png',
+	'/img/profile/4.png',
+	'/img/profile/5.png',
+	'/img/profile/6.png',
+	'/img/profile/7.png',
+	'/img/profile/8.png',
+	'/img/profile/9.png',
+	'/img/profile/10.png'
+	
 ];
 
 if ('serviceWorker' in navigator) {

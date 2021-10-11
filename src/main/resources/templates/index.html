@@ -37,21 +37,24 @@
 <body>
 	<div id="main">
 		<header th:replace="fragments.html::header-logged-out"></header>
+		<div id="hero-gravity"></div>
+		
 		<section id="hero">
 			<div class="hero-body">
 				<div class="container has-text-centered">
-					<h1 class="title is-size-2" th:text="#{app.name}" style="color: white;"></h1>
-					<h2 class="subtitle is-size-4" th:text="#{index.subtitle}" style="color: white;"></h2>
+					<h1 class="title is-size-2 hero-text" th:text="#{app.name}" style="color: white;"></h1>
+					<h2 class="subtitle is-size-4 hero-text" th:text="#{index.subtitle}" style="color: white;"></h2>
 					<div id="hero-padding"></div>
 					<a class="button is-info colored" id="hero-register-button" th:utext="#{index.sign-up-now}"
 						href="/register"></a>
-					<div th:text="#{index.subtitle-2}" style="color: white;"></div>
-					<div th:text="#{index.notice}" style="font-size: 0.6em; color: white;"></div>
+					<div class="hero-text" th:text="#{index.subtitle-2}" style="color: white;"></div>
+					<div class="hero-text" th:text="#{index.notice}" style="font-size: 0.6em; color: white;"></div>
 				</div>
 			</div>
 		</section>
 
 		<div style="padding-top: 24px;"></div>
+		
 		<header class="card-header collapsible-header">
 			<a href="#collapsible-card" data-action="collapse" class="card-header-icon is-hidden-fullscreen full-width"
 				aria-label="more options" style="padding: 1.25rem; display: flex; justify-content: space-between;">
@@ -181,6 +184,7 @@
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/bulma-collapsible.min.js"></script>
+	<script src="/js/lib/matter.min.js"></script>
 	<script src="/js/tools/get-text.js"></script>
 	<script src="/js/tools/modal.js"></script>
 	<script src="/js/alovoa.js"></script>
