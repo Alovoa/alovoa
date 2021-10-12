@@ -73,7 +73,7 @@ function hero() {
 
 	let width = window.innerWidth;
 	let height = window.innerHeight - 56;
-	let isMobile = width <= 500;
+	let isMobile = width <= 500 || height <= 500;
 	let multiplicator = 1;
 	if (isMobile) {
 		multiplicator = 0.6;
@@ -83,7 +83,6 @@ function hero() {
 		Render = Matter.Render,
 		Runner = Matter.Runner,
 		Composites = Matter.Composites,
-		Common = Matter.Common,
 		Composite = Matter.Composite,
 		Bodies = Matter.Bodies;
 
