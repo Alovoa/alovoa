@@ -111,7 +111,7 @@ public class Oauth2Controller {
 				if (!user.isConfirmed()) {
 					return registerResource.registerOauth(firstName);
 				} else {
-					return new ModelAndView("redirect:" + ProfileResource.getUrl());
+					return new ModelAndView("redirect:/");
 				}
 			}
 

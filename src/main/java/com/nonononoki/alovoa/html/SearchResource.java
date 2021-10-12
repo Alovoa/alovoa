@@ -44,8 +44,14 @@ public class SearchResource {
 
 	@Value("${app.donation.popup.time}")
 	private int donationPopupTime;
+	
+	public static final String URL = "/search";
 
-	@GetMapping("/search")
+	public static String getUrl() {
+		return URL;
+	}
+
+	@GetMapping(URL)
 	public ModelAndView search() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException {

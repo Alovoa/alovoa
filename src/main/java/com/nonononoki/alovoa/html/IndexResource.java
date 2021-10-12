@@ -36,7 +36,13 @@ public class IndexResource {
 
 		User user = authService.getCurrentUser();
 		if (user != null) {
-			return new ModelAndView("redirect:" + ProfileResource.getUrl());
+			
+			if(user.getProfilePicture() != null
+					&& user.getDescription() != null) {
+				return new ModelAndView("redirect:" + SearchResource.getUrl());
+			} else {
+				return new ModelAndView("redirect:" + ProfileResource.getUrl());
+			}
 		}
 
 		ModelAndView mav = new ModelAndView("index");
