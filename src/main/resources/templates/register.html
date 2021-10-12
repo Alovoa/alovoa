@@ -103,7 +103,7 @@
 								</div>
 								
 								<div class="field">
-									<label class="label" th:text="#{register.referral-code}" style="float: left;"></label>
+									<label class="label" th:text="#{register.referral-code} + ' (' + #{optional} +')'" style="float: left;"></label>
 									<div class="control">
 										<input class="input" name="referrerCode" id="referrer">
 									</div>
@@ -128,11 +128,13 @@
 
 								<div class="register-warning" th:text="#{register.asterisk-warning}"></div>
 
-								<div class="field is-grouped" style="height: 42px; display: block;">
-									<button style="float: right;" class="button colored is-link" type="submit"
-										th:text="#{submit}"></button>
-									<button style="float: left;" class="button is-danger is-outlined" type="button"
-										onclick="window.location = '/'" th:text="#{cancel}"></button>
+								<div class="field is-grouped" style="display: flex; justify-content: flex-start;">
+									<div class="control">
+										<button class="button is-danger is-outlined" type="button" onclick="window.location = '/'" th:text="#{cancel}"></button>
+									</div>
+									<div class="control">
+										<button class="button colored is-link" type="submit" th:text="#{submit}"></button>
+									</div>
 								</div>
 							</form>
 						</div>
