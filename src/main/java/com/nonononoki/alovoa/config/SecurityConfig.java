@@ -25,6 +25,7 @@ import org.springframework.security.web.session.SimpleRedirectSessionInformation
 
 import com.nonononoki.alovoa.component.AuthFilter;
 import com.nonononoki.alovoa.component.AuthProvider;
+import com.nonononoki.alovoa.component.CustomTokenBasedRememberMeServices;
 import com.nonononoki.alovoa.component.CustomUserDetailsService;
 import com.nonononoki.alovoa.component.FailureHandler;
 import com.nonononoki.alovoa.component.SuccessHandler;
@@ -83,7 +84,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER).logoutUrl("/logout").logoutSuccessUrl("/?logout").and()
 				.oauth2Login().loginPage("/login").defaultSuccessUrl("/login/oauth2/success").and()
 				.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class).rememberMe()
-				.rememberMeServices(rememberMeServices()).key(rememberKey);
+				.rememberMeServices(oAuthRememberMeServices()).key(rememberKey);
 
 		http.sessionManagement().maximumSessions(10).expiredSessionStrategy(getSessionInformationExpiredStrategy())
 				.sessionRegistry(sessionRegistry());
@@ -132,6 +133,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public TokenBasedRememberMeServices rememberMeServices() throws Exception {
 		return new TokenBasedRememberMeServices(rememberKey, customUserDetailsService);
+	}
+	
+	@Bean
+	public TokenBasedRememberMeServices oAuthRememberMeServices() throws Exception {
+		CustomTokenBasedRememberMeServices rememberMeService = new CustomTokenBasedRememberMeServices(rememberKey, customUserDetailsService);
+		rememberMeService.setAlwaysRemember(true);
+		return rememberMeService;
 	}
 
 	@Bean
