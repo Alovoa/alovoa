@@ -71,8 +71,6 @@ public class UserGdpr {
 
 	long numberSearches;
 	
-	private String zodiac;
-	
 	private boolean showZodiac;
 
 	public static UserGdpr userToUserGdpr(User user) {

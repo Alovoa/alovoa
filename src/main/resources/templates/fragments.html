@@ -341,49 +341,51 @@
 	<div th:fragment="donate-filter" id="donate-cards-div">
 		<div class="card is-horizontal" th:each="donation : ${donations}"
 			style="scroll-snap-align: end;">
-			<div class="card-image">
-				<figure class="image">
-					<th:block th:if="${donation.user.profilePicture}">
-						<img th:src="${donation.user.profilePicture}" class="profile-pic"
-							th:onclick="viewProfile([[${donation.user.idEncoded}]])">
-					</th:block>
-				</figure>
-			</div>
-			<div class="card-content">
-				<div class="content">
-					<div class="media">
-						<div class="full-width">
-							<div class="left first-name" style="font-size: 2em" th:text="${donation.user.firstName}"
-								th:classappend="${donation.user.gender.text == 'male' ? 'male' : donation.user.gender.text == 'female' ? 'female' : 'other'}"></div>
-							<div class="left" style="font-size: 1.5em; padding-top: 6px;">
-								<span>, </span><span
-									th:text="${donation.user.age}"></span><th:block th:insert="fragments.html :: zodiac"></th:block>
-							</div>
-							<div class="right" style="font-size: 1.2em; padding-top: 6px;">
-								<i class="fa fa-map-marker-alt"></i>
-								<span th:text="${donation.user.distanceToUser}"></span><span> </span>
-								<span th:if="${user.units == 0}" th:text="#{km}"></span>
-								<span th:if="${user.units == 1}" th:text="#{mi}"></span>
+			<th:block th:with="user=${donation.user}">
+				<div class="card-image">
+					<figure class="image">
+						<th:block th:if="${user.profilePicture}">
+							<img th:src="${user.profilePicture}" class="profile-pic"
+								th:onclick="viewProfile([[${user.idEncoded}]])">
+						</th:block>
+					</figure>
+				</div>
+				<div class="card-content">
+					<div class="content">
+						<div class="media">
+							<div class="full-width">
+								<div class="left first-name" style="font-size: 2em" th:text="${user.firstName}"
+									th:classappend="${user.gender.text == 'male' ? 'male' : user.gender.text == 'female' ? 'female' : 'other'}"></div>
+								<div class="left" style="font-size: 1.5em; padding-top: 6px;">
+									<span>, </span><span
+										th:text="${user.age}"></span><th:block th:insert="fragments.html :: zodiac"></th:block>
+								</div>
+								<div class="right" style="font-size: 1.2em; padding-top: 6px;">
+									<i class="fa fa-map-marker-alt"></i>
+									<span th:text="${user.distanceToUser}"></span><span> </span>
+									<span th:if="${user.units == 0}" th:text="#{km}"></span>
+									<span th:if="${user.units == 1}" th:text="#{mi}"></span>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="media">
-						<div class="full-width">
-							<div class="left" style="font-size: 1.2em">
-								<span th:text="#{donated}"></span><span> </span> <span
-									th:text="${#numbers.formatDecimal(donation.amount, 1, 2, 'POINT') + ' €'}"
-									th:if="${filter == 1}"></span> <span
-									th:text="${#numbers.formatDecimal(donation.user.totalDonations, 1, 2, 'POINT') + ' €'}"
-									th:if="${filter == 2}"></span>
+						<div class="media">
+							<div class="full-width">
+								<div class="left" style="font-size: 1.2em">
+									<span th:text="#{donated}"></span><span> </span> <span
+										th:text="${#numbers.formatDecimal(donation.amount, 1, 2, 'POINT') + ' €'}"
+										th:if="${filter == 1}"></span> <span
+										th:text="${#numbers.formatDecimal(user.totalDonations, 1, 2, 'POINT') + ' €'}"
+										th:if="${filter == 2}"></span>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			</th:block>
 		</div>
 	</div>
 	
-	<span th:fragment="zodiac" th:if="${ (currUser != null and currUser.showZodiac) or (user != null and user.showZodiac) }" style="opacity: 0.8;">
+	<span th:fragment="zodiac" th:if="${(currUser != null and currUser.showZodiac)}" style="opacity: 0.8;">
 		 <th:block th:if="${user.zodiac}">
 		 	<span th:if="${user.zodiac == 'aries'}">♈︎</span>
 		 	<span th:if="${user.zodiac == 'taurus'}">♉︎</span>
