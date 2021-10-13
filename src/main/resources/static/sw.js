@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '20';
+const cacheName = '21';
 const staticAssets = [
 
 	'/favicon.ico',
