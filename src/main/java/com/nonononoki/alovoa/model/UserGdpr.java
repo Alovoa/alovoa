@@ -113,7 +113,6 @@ public class UserGdpr {
 		u.setNumberProfileViews(user.getNumberProfileViews());
 		u.setNumberSearches(user.getNumberSearches());
 		
-		u.setZodiac(user.getZodiac());
 		u.setShowZodiac(user.isShowZodiac());
 
 		return u;

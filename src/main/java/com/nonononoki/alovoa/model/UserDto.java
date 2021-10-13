@@ -6,6 +6,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -118,7 +119,9 @@ public class UserDto {
 		dto.setGender(user.getGender());
 		dto.setAccentColor(user.getAccentColor());
 		dto.setUiDesign(user.getUiDesign());
-		dto.setZodiac(user.getZodiac());
+		if (currentUser.isShowZodiac()) {
+			dto.setZodiac(getUserZodiac(user));
+		}
 		dto.setShowZodiac(user.isShowZodiac());
 		dto.setUnits(user.getUnits());
 		dto.setPreferedGenders(user.getPreferedGenders());
@@ -184,10 +187,46 @@ public class UserDto {
 				.encodeToString(textEncryptor.encode(Long.toString(id)).getBytes(StandardCharsets.UTF_8.name()));
 	}
 
-	public static long decodeId(String id, TextEncryptorConverter textEncryptor)
-			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, NumberFormatException {
+	public static long decodeId(String id, TextEncryptorConverter textEncryptor) throws NumberFormatException,
+			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, NumberFormatException {
 		String en = new String(Base64.getDecoder().decode(id));
 		return Long.parseLong(textEncryptor.decode(en));
+	}
+
+	public static String getUserZodiac(User user) {
+		try {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(user.getDates().getDateOfBirth());
+			int month = cal.get(Calendar.MONTH) + 1;
+			int day = cal.get(Calendar.DAY_OF_MONTH);
+			if ((month == 12 && day >= 22 && day <= 31) || (month == 1 && day >= 1 && day <= 19))
+				return "capricorn";
+			else if ((month == 1 && day >= 20 && day <= 31) || (month == 2 && day >= 1 && day <= 17))
+				return "aquarius";
+			else if ((month == 2 && day >= 18 && day <= 29) || (month == 3 && day >= 1 && day <= 19))
+				return "pisces";
+			else if ((month == 3 && day >= 20 && day <= 31) || (month == 4 && day >= 1 && day <= 19))
+				return "aries";
+			else if ((month == 4 && day >= 20 && day <= 30) || (month == 5 && day >= 1 && day <= 20))
+				return "taurus";
+			else if ((month == 5 && day >= 21 && day <= 31) || (month == 6 && day >= 1 && day <= 20))
+				return "gemini";
+			else if ((month == 6 && day >= 21 && day <= 30) || (month == 7 && day >= 1 && day <= 22))
+				return "cancer";
+			else if ((month == 7 && day >= 23 && day <= 31) || (month == 8 && day >= 1 && day <= 22))
+				return "leo";
+			else if ((month == 8 && day >= 23 && day <= 31) || (month == 9 && day >= 1 && day <= 22))
+				return "virgo";
+			else if ((month == 9 && day >= 23 && day <= 30) || (month == 10 && day >= 1 && day <= 22))
+				return "libra";
+			else if ((month == 10 && day >= 23 && day <= 31) || (month == 11 && day >= 1 && day <= 21))
+				return "scorpio";
+			else if ((month == 11 && day >= 22 && day <= 30) || (month == 12 && day >= 1 && day <= 21))
+				return "sagittarius";
+		} finally {
+		}
+		return null;
+
 	}
 }

@@ -204,7 +204,6 @@ public class AdminService {
 		user.setNumberSearches(0);
 		user.setProfilePicture(null);
 		user.getWebPush().clear();
-		user.setZodiac(null);
 		user.setShowZodiac(false);
 		userRepo.saveAndFlush(user);
 	}

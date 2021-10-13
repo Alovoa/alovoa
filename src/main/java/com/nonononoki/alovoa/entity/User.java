@@ -88,8 +88,6 @@ public class User implements UserDetails {
 
 	private String uiDesign;
 	
-	private String zodiac;
-	
 	private boolean showZodiac;
 
 	private int preferedMinAge;

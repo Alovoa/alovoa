@@ -25,7 +25,6 @@ import com.nonononoki.alovoa.repo.UserLikeRepository;
 import com.nonononoki.alovoa.repo.UserNotificationRepository;
 import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
-import com.nonononoki.alovoa.service.RegisterService;
 import com.nonononoki.alovoa.service.UserService;
 
 @Component
@@ -73,8 +72,6 @@ public class EventListenerConfig {
 		setDefaultAdmin();
 		setDefaultGenders();
 		setDefaulIntentions();
-//		removeInvalidUsers();
-		setZodiac();
 	}
 
 	public void setDefaultAdmin() {
@@ -147,14 +144,4 @@ public class EventListenerConfig {
 			}
 		}
 	}
-
-	public void setZodiac() {
-		List<User> users = userRepo.findByZodiacNull();
-		for (User u : users) {
-			if (u.getDates() != null && u.getDates().getDateOfBirth() != null)
-				RegisterService.setUserZodiac(u, u.getDates().getDateOfBirth());
-		}
-		userRepo.saveAll(users);
-	}
-
 }
