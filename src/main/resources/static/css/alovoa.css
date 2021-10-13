@@ -216,19 +216,19 @@ input[type=range].slider {
 	max-width: 206px;;
 }
 
-#nav-search {
+#nav-profile {
 	background-color: #ec417a;
 }
-#nav-donate {
+#nav-chats {
 	background-color: #f4511e;
 }
-#nav-alerts {
+#nav-search {
 	background-color: #e53935;
 }
-#nav-chats {
+#nav-alerts {
 	background-color: #43a047;
 }
-#nav-profile {
+#nav-donate {
 	background-color: #00897b;
 }
 /*

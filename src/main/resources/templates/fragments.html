@@ -148,27 +148,31 @@
 	<div th:fragment="navigation">
 		<nav class="navbar is-link is-fixed-bottom" role="navigation" style="display: block;">
 			<div class="navbar-brand">
-				<a class="navbar-item is-expanded navigation-item" href="/search" id="nav-search">
+				<a class="navbar-item is-expanded navigation-item" href="/profile" id="nav-profile">
 					<div>
-						<i class="fa fa-search"></i><span th:text="#{search}" class="navigation-item-span-right"></span>
-					</div><span th:text="#{search}" class="navigation-item-span-bottom"></span>
-				</a> <a class="navbar-item is-expanded navigation-item" href="/donate" id="nav-donate">
-					<div>
-						<i class="fa fa-coins"></i><span th:text="#{donate}" class="navigation-item-span-right"></span>
-					</div><span th:text="#{donate}" class="navigation-item-span-bottom"></span>
-				</a> <a class="navbar-item is-expanded navigation-item" id="nav-alerts" href="/alerts">
-					<div>
-						<i class="fa fa-bell"></i><span th:text="#{alerts}" class="navigation-item-span-right"></span>
-					</div><span th:text="#{alerts}" class="navigation-item-span-bottom"></span>
-				</a> <a class="navbar-item is-expanded navigation-item" id="nav-chats" href="/chats">
+						<i class="fa fa-user"></i><span th:text="#{profile}" class="navigation-item-span-right"></span>
+					</div><span th:text="#{profile}" class="navigation-item-span-bottom"></span>
+				</a>
+				<a class="navbar-item is-expanded navigation-item" id="nav-chats" href="/chats">
 					<div>
 						<i class="fa fa-comments"></i><span th:text="#{chats}"
 							class="navigation-item-span-right"></span>
 					</div><span th:text="#{chats}" class="navigation-item-span-bottom"></span>
-				</a> <a class="navbar-item is-expanded navigation-item" href="/profile" id="nav-profile">
+				</a>
+				<a class="navbar-item is-expanded navigation-item" href="/search" id="nav-search">
 					<div>
-						<i class="fa fa-user"></i><span th:text="#{profile}" class="navigation-item-span-right"></span>
-					</div><span th:text="#{profile}" class="navigation-item-span-bottom"></span>
+						<i class="fa fa-search"></i><span th:text="#{search}" class="navigation-item-span-right"></span>
+					</div><span th:text="#{search}" class="navigation-item-span-bottom"></span>
+				</a>
+				<a class="navbar-item is-expanded navigation-item" id="nav-alerts" href="/alerts">
+					<div>
+						<i class="fa fa-bell"></i><span th:text="#{alerts}" class="navigation-item-span-right"></span>
+					</div><span th:text="#{alerts}" class="navigation-item-span-bottom"></span>
+				</a>
+				<a class="navbar-item is-expanded navigation-item" href="/donate" id="nav-donate">
+					<div>
+						<i class="fa fa-coins"></i><span th:text="#{donate}" class="navigation-item-span-right"></span>
+					</div><span th:text="#{donate}" class="navigation-item-span-bottom"></span>
 				</a>
 			</div>
 		</nav>
