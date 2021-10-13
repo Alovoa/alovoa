@@ -29,7 +29,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.html.LoginResource;
-import com.nonononoki.alovoa.html.ProfileResource;
 import com.nonononoki.alovoa.html.RegisterResource;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.repo.UserRepository;

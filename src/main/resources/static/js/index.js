@@ -121,8 +121,8 @@ function hero() {
 
 	Composite.add(world, [
 		Bodies.rectangle(width, 0, width * 2, 1, options),
-		Bodies.rectangle(width, 0, 1, height * 2, options),
-		Bodies.rectangle(0, 0, 1, height * 2, options)
+		Bodies.rectangle(width+1, 0, 1, height * 2, options),
+		Bodies.rectangle(0-1, 0, 1, height * 2, options)
 	]);
 
 	var stack = Composites.stack(10, height, //xx,yy
