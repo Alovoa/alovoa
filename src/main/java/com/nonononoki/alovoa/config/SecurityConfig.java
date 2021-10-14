@@ -78,7 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/password/**").permitAll().antMatchers("/favicon.ico").permitAll().antMatchers("/sw.js")
 				.permitAll().antMatchers("/robots.txt").permitAll().antMatchers("/.well-known/assetlinks.json")
 				.permitAll().antMatchers("/text/*").permitAll().antMatchers("/manifest/**").permitAll()
-				.antMatchers("/fonts/**").permitAll()
+				.antMatchers("/fonts/**").permitAll().antMatchers("/error").permitAll()
 
 				.anyRequest().authenticated().and().formLogin().loginPage("/login").and().logout()
 				.deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER).logoutUrl("/logout").logoutSuccessUrl("/?logout").and()

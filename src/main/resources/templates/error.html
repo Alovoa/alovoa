@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html th:with="lang=${#locale.language}" th:lang="${lang}">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-title" content="Alovoa">
+	<link rel="manifest" href="/manifest/manifest.json">
+
+	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
+	<link rel="stylesheet" href="/css/alovoa.css" />
+	<title>Error</title>
+</head>
+
+<body style="height: 100vh;">
+
+	<div style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100%;">
+		<div>
+			<!-- https://github.com/RobertBroersma/bigheads MIT license -->
+			<img onclick="location.reload()" src="/img/error.svg" style="height: 50vh; cursor: pointer;"></div>
+			<button class="button colored is-info" style="height: 55px; font-size: 1.2em; width: 170px; margin-top: 4px;" 
+				onclick="location.reload()" >Reload</button>
+		</div>
+	</div>
+	<script src="/sw.js"></script>
+	<script src="/js/alovoa.js"></script>
+</body>
+
+</html>

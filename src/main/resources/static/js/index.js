@@ -130,7 +130,7 @@ function hero() {
 		50, 200, //colGap, rowGap
 		function(x, y) {
 			let rand = Math.random();
-			console.log(rand);
+			// console.log(rand);
 			if (rand < 0.1) {
 				return Bodies.circle(x, y, 80 * multiplicator, {
 					render: {
