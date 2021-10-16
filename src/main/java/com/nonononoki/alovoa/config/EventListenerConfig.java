@@ -2,6 +2,7 @@ package com.nonononoki.alovoa.config;
 
 import java.util.List;
 
+import com.nonononoki.alovoa.Tools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,6 +142,20 @@ public class EventListenerConfig {
 				} catch (Exception e) {
 					logger.error(e.getMessage());
 				}
+			}
+		}
+	}
+
+	public void updateAllUsersAgePreferences() throws AlovoaException {
+		List<User> users = userRepo.findAll();
+
+		for (User user : users) {
+			try {
+				Tools.getUserPrefAgeDiff(user, user.getPreferedMinAge());
+				Tools.getUserPrefAgeDiff(user, user.getPreferedMaxAge());
+				userRepo.saveAndFlush(user);
+			} catch (Exception e) {
+				logger.error(e.getMessage());
 			}
 		}
 	}
