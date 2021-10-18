@@ -97,4 +97,30 @@ class ToolsTest {
 		user1.setDates(userDates1);
 		assertFalse(Tools.usersCompatible(user1, user2));
 	}
+
+	@Test
+	void testMinMaxAgePreferences() {
+		User user1 = new User("test@test.com");
+
+		UserDates userDates1 = new UserDates();
+		userDates1.setDateOfBirth(Tools.localDateToDate(LocalDate.now().minusYears(20)));
+		user1.setDates(userDates1);
+
+		user1.setPreferedMinAge(18);
+		user1.setPreferedMaxAge(45);
+
+		assertEquals(user1.getPreferedMinAge(),18);
+		assertEquals(user1.getPreferedMaxAge(),45);
+
+		userDates1.setDateOfBirth(Tools.localDateToDate(LocalDate.now().minusYears(21)));
+
+		assertEquals(user1.getPreferedMinAge(),19);
+		assertEquals(user1.getPreferedMaxAge(),46);
+
+		user1.setPreferedMinAge(25);
+		user1.setPreferedMaxAge(55);
+
+		assertEquals(user1.getPreferedMinAge(),25);
+		assertEquals(user1.getPreferedMaxAge(),55);
+	}
 }

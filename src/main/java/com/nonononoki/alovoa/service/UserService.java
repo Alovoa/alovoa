@@ -431,10 +431,7 @@ public class UserService {
 		if (userMinAge < minAge) {
 			userMinAge = minAge;
 		}
-
 		User user = authService.getCurrentUser();
-		userMinAge = Tools.getUserPrefAgeDiff(user, userMinAge);
-
 		user.setPreferedMinAge(userMinAge);
 		userRepo.saveAndFlush(user);
 	}
@@ -444,8 +441,6 @@ public class UserService {
 			userMaxAge = maxAge;
 		}
 		User user = authService.getCurrentUser();
-		userMaxAge = Tools.getUserPrefAgeDiff(user, userMaxAge);
-
 		user.setPreferedMaxAge(userMaxAge);
 		userRepo.saveAndFlush(user);
 	}

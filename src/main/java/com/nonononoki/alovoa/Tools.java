@@ -183,9 +183,14 @@ public class Tools {
 				&& user2.getIntention().getText().equals(user1.getIntention().getText());
 	}
 
-	//This method subtracts user age with passed preferred min/max age
-	public static int getUserPrefAgeDiff(User user,int prefAge) {
+	//This method subtracts user date of birth with passed preferred min/max age
+	public static int convertPrefAgeToRelativeYear(Date userDateOfBirth, int prefAge) {
 		LocalDate currentDate = LocalDate.now();
-		return prefAge - Period.between(Tools.dateToLocalDate(user.getDates().getDateOfBirth()), currentDate).getYears();
+		return prefAge - Period.between(Tools.dateToLocalDate(userDateOfBirth), currentDate).getYears();
+	}
+
+	public static int convertPrefAgeToExactYear(Date userDateOfBirth,int prefAge) {
+		LocalDate currentDate = LocalDate.now();
+		return Period.between(Tools.dateToLocalDate(userDateOfBirth), currentDate).getYears() + prefAge;
 	}
 }
