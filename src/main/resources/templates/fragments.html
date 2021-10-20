@@ -30,7 +30,7 @@
 
 			<div style="width: 100%; display: flex;">
 				<div class="navbar-end">
-					<div class="navbar-item" id="navbar-item-language" style="padding-right: 0px;">
+					<div class="navbar-item navbar-item-icon" id="navbar-item-language" style="padding-right: 0px;">
 						<a class="button is-white is-outlined" onclick="onLanguageButtonClicked()"
 							style="width: 40px; height: 40px;"><i style="padding-right: 0px; color: white;"
 								class="fas fa-globe"></i></a>
@@ -76,9 +76,35 @@
 		</nav>
 	</div>
 
+	<div th:fragment="header-search" id="header-logged-in" class="header">
+		<nav class="navbar is-info">
+			<div class="navbar-brand">
+				<a class="navbar-item"> <img src="/img/icon.png" width="40" height="40">
+				</a> <a id="navbar-text" class="navbar-item" th:text="#{app.name}"></a>
+			</div>
+
+			<div style="width: 100%; display: flex;">
+				<div class="navbar-end">
+					<span class="navbar-item" style="padding-right: 0px;">
+						<a class="button is-white is-outlined navbar-item-icon" onclick="searchSettingsClicked()"
+							style="width: 40px; height: 40px;"><i style="padding-right: 0px; color: white;"
+								class="fas fa-cog"></i></a>
+					</span>
+					<span class="navbar-item">
+						<form th:action="@{/logout}" method="post">
+							<button class="button is-white is-outlined" href="/logout" id="logout">
+								<span th:text="#{logout}"></span>
+							</button>
+						</form>
+					</span>
+				</div>
+			</div>
+		</nav>
+	</div>
+
 	<footer class="footer" th:fragment="footer" id="footer">
 		<div class="container">
-			<div class="columns">
+			<div class="columns">		min-height: calc(100 * var(--vh) - 52px);
 				<div class="column">
 					<div class="control has-icons-left" style="margin-top: -8px;">
 						<div class="select">

@@ -86,6 +86,8 @@ public class UserDto {
 	private long numberSearches;
 
 	private boolean compatible;
+	
+	private boolean hasLocation;
 
 	public static final int ALL = 0;
 	public static final int PROFILE_PICTURE_ONLY = 1;
@@ -113,6 +115,9 @@ public class UserDto {
 		if (user.getDates() != null) {
 			dto.setActiveDate(user.getDates().getActiveDate());
 			dto.setAge(Tools.calcUserAge(user));
+		}
+		if(user.getLocationLatitude() != null) {
+			dto.setHasLocation(true);
 		}
 		dto.setDescription(user.getDescription());
 		dto.setFirstName(user.getFirstName());

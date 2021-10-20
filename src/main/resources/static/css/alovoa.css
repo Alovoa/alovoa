@@ -158,8 +158,8 @@ button, .button, .input, .select, select {
 	color: white;
 }
 
-#navbar-item-language:hover path {
-	color: #0a0a0a;;
+.navbar-item-icon:hover path {
+	color: #0a0a0a;
 }
 
 .notification {

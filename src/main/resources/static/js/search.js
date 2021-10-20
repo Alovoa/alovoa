@@ -19,12 +19,14 @@ $(function() {
 	L.control.scale().addTo(mymap);
 	popup = L.popup();
 	mymap.on('click', onMapClick);
+
+	search(true);
 });
 
 window.addEventListener('resize', resize);
 
 function resize() {
-		mymap.invalidateSize(true);
+	mymap.invalidateSize(true);
 }
 
 
@@ -43,24 +45,29 @@ function mapSearchButtonClicked() {
 	searchBase();
 }
 
-function search() {
-	$(".loader-parent").css("display", "flex");
-	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(function(position) {
-			lat = position.coords.latitude;
-			lon = position.coords.longitude;
-			searchBase();
-		}, function() {
+function search(defaultSearch) {
+
+	if (defaultSearch && document.getElementById("has-location")) {
+		mainContainerLoadCards("/search/users/default");
+	} else {
+		$(".loader-parent").css("display", "flex");
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(function(position) {
+				lat = position.coords.latitude;
+				lon = position.coords.longitude;
+				searchBase();
+			}, function() {
+				$(".loader-parent").css("display", "none");
+				openModal("map-modal");
+				mymap.invalidateSize(true);
+				alert(getText("search.js.error.no-location"));
+			});
+		} else {
 			$(".loader-parent").css("display", "none");
+			alert(getText("search.js.error.no-geolocation"));
 			openModal("map-modal");
 			mymap.invalidateSize(true);
-			alert(getText("search.js.error.no-location"));
-		});
-	} else {
-		$(".loader-parent").css("display", "none");
-		alert(getText("search.js.error.no-geolocation"));
-		openModal("map-modal");
-		mymap.invalidateSize(true);
+		}
 	}
 }
 
@@ -69,10 +76,15 @@ function searchBase() {
 	let sort = $("#sort").val();
 	let url = "/search/users/" + lat + "/"
 		+ lon + "/" + distance + "/" + sort;
+	mainContainerLoadCards(url);
 
+}
+
+function mainContainerLoadCards(url) {
 	$("#main-container").load(url, function() {
 
 		closeModal();
+		showDonatePopup();
 
 		var sliders = [];
 
@@ -101,8 +113,16 @@ function searchBase() {
 		$(".loader-parent").css("display", "none");
 
 	});
-	$("#filter-div").addClass("searched");
-	$("#search-div").addClass("searched");
+}
+
+function searchSettingsClicked() {
+	let searchModal = document.getElementById("search-settings-modal");
+	let isActive = searchModal.classList.contains("is-active");
+	if (isActive) {
+		closeModal();
+	} else {
+		openModal("search-settings-modal")
+	}
 }
 
 function likeUser(idEnc) {
@@ -118,7 +138,7 @@ function likeUser(idEnc) {
 		error: function(e) {
 			console.log(e);
 			hideProfileTile(idEnc);
-			//alert(getGenericErrorText());
+			alert(getGenericErrorText());
 		}
 	});
 
@@ -137,7 +157,7 @@ function hideUser(idEnc) {
 		error: function(e) {
 			console.log(e);
 			hideProfileTile(idEnc);
-			//alert(getGenericErrorText());
+			alert(getGenericErrorText());
 		}
 	});
 }
@@ -203,6 +223,14 @@ function playPauseAudio(userIdEnc) {
 				alert(getGenericErrorText());
 			}
 		});
+	}
+}
+
+function showDonatePopup() {
+	let donationPopup = document.getElementById("show-donation-popup");
+	if (donationPopup) {
+		$('#donate-modal').addClass('is-active');
+		donationPopup.remove();
 	}
 }
 

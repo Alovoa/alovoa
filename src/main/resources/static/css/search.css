@@ -51,10 +51,6 @@
 	height: auto;
 }
 
-.searched {
-	display: none;
-}
-
 .card.is-horizontal {
 	flex-direction: row;
 	display: flex;
@@ -112,7 +108,7 @@
 	position: absolute;
 	bottom: 0;
 	right: 0;
-	margin-bottom: 64px;
+	margin-bottom: 18px;
 	margin-right: 12px;
 }
 

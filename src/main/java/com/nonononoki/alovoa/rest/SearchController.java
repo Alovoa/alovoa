@@ -39,4 +39,13 @@ public class SearchController {
 		model.addAttribute("currUser", authService.getCurrentUser());
 		return "fragments :: search-users";
 	}
+	
+	@GetMapping("/users/default")
+	public String getUsersDefault(Model model)
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		model.addAttribute("dto", searchService.searchDefault());
+		model.addAttribute("currUser", authService.getCurrentUser());
+		return "fragments :: search-users";
+	}
 }

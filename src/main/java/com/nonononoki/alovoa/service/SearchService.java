@@ -73,6 +73,18 @@ public class SearchService {
 	private static final int SEARCH_STEP_1 = 500;
 	private static final int SEARCH_STEP_2 = 1000;
 
+	private static final int DEFAULT_DISTANCE = 50;
+
+	public SearchDto searchDefault() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+			UnsupportedEncodingException {
+		User user = authService.getCurrentUser();
+		if (user.isAdmin()) {
+			return SearchDto.builder().users(searchResultstoUserDto(userRepo.adminSearch(), 0, user)).build();
+		}
+		return search(user.getLocationLatitude(), user.getLocationLongitude(), DEFAULT_DISTANCE, SORT_DONATION_LATEST);
+	}
+
 	public SearchDto search(Double latitude, Double longitude, int distance, int sortId) throws AlovoaException,
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {

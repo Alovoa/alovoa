@@ -23,93 +23,107 @@
 </head>
 
 <body>
+	<div id="has-location" th:if="${user.hasLocation}"></div>
 	<div id="main-logged-in">
-		<header th:insert="fragments.html::header-logged-in"></header>
-		<div class="section" id="filter-div">
-			<div class="container is-small">
-				<div style="display: flex">
-					<div style="flex-grow: 1">
-						<label class="label" th:text="#{search.max-distance}"></label>
-						<div class="slider-container" style="padding-top: 8px; padding-bottom: 8px;">
-							<input class="slider has-output " step="1" min="1" max="100" value="50" type="range"
-								id="max-distance-slider">
-							<output for="max-distance-slider">50</output>
-							<div style="padding-left: 4px"></div>
-							<span th:text="#{km}"></span>
-						</div>
-					</div>
-					<div id="distance-spacing" style="padding-left: 24px;"></div>
-				</div>
-				<div id="search-right" style="display: flex; width: 100%; margin-bottom: 12px;">
-					<div style="flex: 1;">
-						<label class="label" th:text="#{sort}"></label>
-						<div class="select">
-							<select id="sort">
-								<option value="4" th:text="#{default}"></option>
-								<option value="6" th:text="#{search.sort.filter.new-users}"></option>
-								<option value="1" th:text="#{search.sort.filter.distance}"></option>
-								<option value="3" th:text="#{search.sort.filter.interests}"></option>
-								<option value="2" th:text="#{search.sort.filter.active}"></option>
-								<option value="5" th:text="#{search.sort.filter.total-donation}"></option>
-							</select>
-						</div>
-					</div>
-					<div id="sort-search-spacing" style="padding-left: 24px;"></div>
-				</div>
-			</div>
-
-			<div class="section" id="search-button-section">
-				<div class="container">
-					<div class="pulse-button-container">
-						<button class="button colored is-info is-rounded pulse-button" onclick="search()"
-							id="search-button">
-							<i class="fa fa-search"></i>
-						</button>
-					</div>
-				</div>
-			</div>
-
-		</div>
-
+		<header th:insert="fragments.html::header-search"></header>
+	
 		<section class="container" id="main-container"></section>
-
-		<div id="donate-modal" class="modal is-active" th:if="${showDonationPopup}">
-			<div class="modal-background"></div>
-			<div class="modal-content">
-				<div class="box">
-					<article class="media">
-						<div class="media-left">
-							<i class="fa fa-coins fa-2x"></i>
-						</div>
-						<div class="media-content">
-							<div>
-								<strong th:text="#{donate.donate-now}"></strong> <br> <span
-									th:text="#{search.donation.popup}"></span>
-								<div style="padding-top: 12px;"></div>
-
-								<button class="button right is-info colored" onclick="onDonateModalClicked()"
-									th:text="#{donate}"></button>
-
-								<button class="button is-danger is-outlined" th:text="#{cancel}"
-									style="margin-right: 4px;"
-									onclick="$('#donate-modal').removeClass('is-active')"></button>
-
-							</div>
-						</div>
-					</article>
-				</div>
-			</div>
-		</div>
-
-		<div id="map-modal" class="modal">
-			<div class="modal-background" onclick="closeModal()"></div>
-			<div class="modal-content">
-				<div id="map"></div>
-			</div>
-		</div>
-
+		
+		<div id="show-donation-popup" th:if="${showDonationPopup}">
 	</div>
 
+	<div id="donate-modal" class="modal">
+		<div class="modal-background"></div>
+		<div class="modal-content">
+			<div class="box">
+				<article class="media">
+					<div class="media-left">
+						<i class="fa fa-coins fa-2x"></i>
+					</div>
+					<div class="media-content">
+						<div>
+							<strong th:text="#{donate.donate-now}"></strong> <br> <span
+								th:text="#{search.donation.popup}"></span>
+							<div style="padding-top: 12px;"></div>
+
+							<button class="button right is-info colored" onclick="onDonateModalClicked()"
+								th:text="#{donate}"></button>
+
+							<button class="button is-danger is-outlined" th:text="#{cancel}"
+								style="margin-right: 4px;"
+								onclick="$('#donate-modal').removeClass('is-active')"></button>
+
+						</div>
+					</div>
+				</article>
+			</div>
+		</div>
+	</div>
+	
+	<div id="search-settings-modal" class="modal">
+		<div class="modal-background" onclick="closeModal()"></div>
+		<div class="modal-content">
+			<div class="box" style="height: 280px;">
+				<article class="media">
+					<div class="media-content">							
+						<div class="section" id="filter-div">
+							<div class="container is-small">
+								<div style="display: flex">
+									<div style="flex-grow: 1">
+										<label class="label" th:text="#{search.max-distance}"></label>
+										<div class="slider-container" style="padding-top: 8px; padding-bottom: 8px;">
+											<input class="slider has-output " step="1" min="1" max="100" value="50" type="range"
+												id="max-distance-slider">
+											<output for="max-distance-slider">50</output>
+											<div style="padding-left: 4px"></div>
+											<span th:text="#{km}"></span>
+										</div>
+									</div>
+									<div id="distance-spacing" style="padding-left: 24px;"></div>
+								</div>
+								<div id="search-right" style="display: flex; width: 100%; margin-bottom: 12px;">
+									<div style="flex: 1;">
+										<label class="label" th:text="#{sort}"></label>
+										<div class="select">
+											<select id="sort">
+												<option value="4" th:text="#{default}"></option>
+												<option value="6" th:text="#{search.sort.filter.new-users}"></option>
+												<option value="1" th:text="#{search.sort.filter.distance}"></option>
+												<option value="3" th:text="#{search.sort.filter.interests}"></option>
+												<option value="2" th:text="#{search.sort.filter.active}"></option>
+												<option value="5" th:text="#{search.sort.filter.total-donation}"></option>
+											</select>
+										</div>
+									</div>
+									<div id="sort-search-spacing" style="padding-left: 24px;"></div>
+								</div>
+							</div>
+				
+							<div class="section" id="search-button-section">
+								<div class="container">
+									<div class="pulse-button-container">
+										<button class="button colored is-info is-rounded pulse-button" onclick="search(false)"
+											id="search-button">
+											<i class="fa fa-search"></i>
+										</button>
+									</div>
+								</div>
+							</div>
+				
+						</div>
+					</div>
+				</article>
+			</div>
+		</div>
+	</div>
+
+	<div id="map-modal" class="modal">
+		<div class="modal-background" onclick="closeModal()"></div>
+		<div class="modal-content">
+			<div id="map"></div>
+		</div>
+	</div>
+		
 	<div class="loader-parent">
 		<div class="loader"></div>
 	</div>
