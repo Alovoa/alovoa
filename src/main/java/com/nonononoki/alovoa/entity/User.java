@@ -24,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import com.nonononoki.alovoa.Tools;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -257,6 +258,22 @@ public class User implements UserDetails {
 		return !disabled;
 	}
 
+	public int getPreferedMinAge() {
+		return Tools.convertPrefAgeToExactYear(this.getDates().getDateOfBirth(),preferedMinAge);
+	}
+
+	public void setPreferedMinAge(int preferedMinAge) {
+		this.preferedMinAge = Tools.convertPrefAgeToRelativeYear(this.getDates().getDateOfBirth(),preferedMinAge);
+	}
+
+	public int getPreferedMaxAge() {
+		return Tools.convertPrefAgeToExactYear(this.getDates().getDateOfBirth(),preferedMaxAge);
+	}
+
+	public void setPreferedMaxAge(int preferedMaxAge) {
+		this.preferedMaxAge = Tools.convertPrefAgeToRelativeYear(this.getDates().getDateOfBirth(),preferedMaxAge);
+	}
+
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		throw new IOException();
 	}
@@ -264,4 +281,5 @@ public class User implements UserDetails {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		throw new IOException();
 	}
+
 }
