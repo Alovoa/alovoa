@@ -318,8 +318,8 @@ public class RegisterService {
 			userMaxAge = maxAge;
 		}
 
-		user.setPreferedMinAge(userMinAge);
-		user.setPreferedMaxAge(userMaxAge);
+		user.setPreferedMinAge(dto.getDateOfBirth(), userMinAge);
+		user.setPreferedMaxAge(dto.getDateOfBirth(), userMaxAge);
 		user.setGender(genderRepo.findById(dto.getGender()).orElse(null));
 		user.setIntention(userIntentionRepo.findById(UserIntention.MEET).orElse(null));
 		user.setPreferedGenders(new HashSet<Gender>(genderRepo.findAll()));

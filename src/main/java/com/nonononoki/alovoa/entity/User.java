@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -24,12 +25,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
-import com.nonononoki.alovoa.Tools;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.user.Conversation;
@@ -280,6 +281,14 @@ public class User implements UserDetails {
 
 	public void setPreferedMaxAge(int preferedMaxAge) {
 		this.preferedMaxAge = Tools.convertPrefAgeToRelativeYear(this.getDates().getDateOfBirth(), preferedMaxAge);
+	}
+	
+	public void setPreferedMinAge(Date dob, int preferedMinAge) {
+		this.preferedMinAge = Tools.convertPrefAgeToRelativeYear(dob, preferedMinAge);
+	}
+	
+	public void setPreferedMaxAge(Date dob, int preferedMaxAge) {
+		this.preferedMaxAge = Tools.convertPrefAgeToRelativeYear(dob, preferedMaxAge);
 	}
 
 	private void writeObject(ObjectOutputStream out) throws IOException {

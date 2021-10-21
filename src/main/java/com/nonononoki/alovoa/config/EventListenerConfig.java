@@ -145,18 +145,22 @@ public class EventListenerConfig {
 			}
 		}
 	}
-	
+
 	public void updateAllUsersAgePreferences() throws AlovoaException {
-			List<User> users = userRepo.findAll();
-	
-			for (User user : users) {
+		List<User> users = userRepo.findAll();
+
+		for (User user : users) {
+			if (user.getId() > 78) {
 				try {
-					user.setPreferedMinAge(user.getPreferedMinAge() - Tools.calcUserAge(user));
-					user.setPreferedMaxAge(user.getPreferedMaxAge() - Tools.calcUserAge(user));
+					user.setPreferedMinAge(Tools.convertPrefAgeToRelativeYear(user.getDates().getDateOfBirth(),
+							user.getPreferedMinAge()));
+					user.setPreferedMaxAge(Tools.convertPrefAgeToRelativeYear(user.getDates().getDateOfBirth(),
+							user.getPreferedMaxAge()));
 					userRepo.saveAndFlush(user);
 				} catch (Exception e) {
 					logger.error(e.getMessage());
 				}
 			}
 		}
+	}
 }
