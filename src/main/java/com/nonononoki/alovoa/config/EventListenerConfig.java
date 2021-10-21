@@ -73,6 +73,7 @@ public class EventListenerConfig {
 		setDefaultAdmin();
 		setDefaultGenders();
 		setDefaulIntentions();
+		updateAllUsersAgePreferences();
 	}
 
 	public void setDefaultAdmin() {

@@ -82,13 +82,13 @@ public class User implements UserDetails {
 	private String accentColor;
 
 	private int units;
-	
+
 	private int numberReferred;
-	
+
 	private String referrerCode;
 
 	private String uiDesign;
-	
+
 	private boolean showZodiac;
 
 	private int preferedMinAge;
@@ -259,19 +259,27 @@ public class User implements UserDetails {
 	}
 
 	public int getPreferedMinAge() {
-		return Tools.convertPrefAgeToExactYear(this.getDates().getDateOfBirth(),preferedMinAge);
+		try {
+			return Tools.convertPrefAgeToExactYear(this.getDates().getDateOfBirth(), preferedMinAge);
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 	public void setPreferedMinAge(int preferedMinAge) {
-		this.preferedMinAge = Tools.convertPrefAgeToRelativeYear(this.getDates().getDateOfBirth(),preferedMinAge);
+		this.preferedMinAge = Tools.convertPrefAgeToRelativeYear(this.getDates().getDateOfBirth(), preferedMinAge);
 	}
 
 	public int getPreferedMaxAge() {
-		return Tools.convertPrefAgeToExactYear(this.getDates().getDateOfBirth(),preferedMaxAge);
+		try {
+			return Tools.convertPrefAgeToExactYear(this.getDates().getDateOfBirth(), preferedMaxAge);
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 	public void setPreferedMaxAge(int preferedMaxAge) {
-		this.preferedMaxAge = Tools.convertPrefAgeToRelativeYear(this.getDates().getDateOfBirth(),preferedMaxAge);
+		this.preferedMaxAge = Tools.convertPrefAgeToRelativeYear(this.getDates().getDateOfBirth(), preferedMaxAge);
 	}
 
 	private void writeObject(ObjectOutputStream out) throws IOException {
