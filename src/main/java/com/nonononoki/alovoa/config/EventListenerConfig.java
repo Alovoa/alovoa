@@ -73,7 +73,6 @@ public class EventListenerConfig {
 		setDefaultAdmin();
 		setDefaultGenders();
 		setDefaulIntentions();
-		updateAllUsersAgePreferences();
 	}
 
 	public void setDefaultAdmin() {
@@ -143,20 +142,6 @@ public class EventListenerConfig {
 				} catch (Exception e) {
 					logger.error(e.getMessage());
 				}
-			}
-		}
-	}
-
-	public void updateAllUsersAgePreferences() throws AlovoaException {
-		List<User> users = userRepo.findAll();
-
-		for (User user : users) {
-			try {
-				user.setPreferedMinAge(Tools.convertPrefAgeToRelativeYear(user.getDates().getDateOfBirth(), user.getPreferedMinAge()));
-				user.setPreferedMaxAge(Tools.convertPrefAgeToRelativeYear(user.getDates().getDateOfBirth(), user.getPreferedMaxAge()));
-				userRepo.saveAndFlush(user);
-			} catch (Exception e) {
-				logger.error(e.getMessage());
 			}
 		}
 	}
