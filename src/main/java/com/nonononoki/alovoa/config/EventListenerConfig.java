@@ -2,7 +2,6 @@ package com.nonononoki.alovoa.config;
 
 import java.util.List;
 
-import com.nonononoki.alovoa.Tools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Gender;
 import com.nonononoki.alovoa.entity.user.UserIntention;
@@ -145,4 +145,18 @@ public class EventListenerConfig {
 			}
 		}
 	}
+	
+	public void updateAllUsersAgePreferences() throws AlovoaException {
+			List<User> users = userRepo.findAll();
+	
+			for (User user : users) {
+				try {
+					user.setPreferedMinAge(Tools.calcUserAge(user) - user.getPreferedMinAge());
+					user.setPreferedMaxAge(Tools.calcUserAge(user) - user.getPreferedMaxAge());
+					userRepo.saveAndFlush(user);
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+				}
+			}
+		}
 }
