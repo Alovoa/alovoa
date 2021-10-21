@@ -151,8 +151,8 @@ public class EventListenerConfig {
 	
 			for (User user : users) {
 				try {
-					user.setPreferedMinAge(Tools.calcUserAge(user) - user.getPreferedMinAge());
-					user.setPreferedMaxAge(Tools.calcUserAge(user) - user.getPreferedMaxAge());
+					user.setPreferedMinAge(user.getPreferedMinAge() - Tools.calcUserAge(user));
+					user.setPreferedMaxAge(user.getPreferedMaxAge() - Tools.calcUserAge(user));
 					userRepo.saveAndFlush(user);
 				} catch (Exception e) {
 					logger.error(e.getMessage());
