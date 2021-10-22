@@ -268,7 +268,10 @@ public class User implements UserDetails {
 	}
 
 	public void setPreferedMinAge(int preferedMinAge) {
-		this.preferedMinAge = Tools.convertPrefAgeToRelativeYear(this.getDates().getDateOfBirth(), preferedMinAge);
+		try {
+			this.preferedMinAge = Tools.convertPrefAgeToRelativeYear(this.getDates().getDateOfBirth(), preferedMinAge);
+		} catch (Exception e) {
+		}
 	}
 
 	public int getPreferedMaxAge() {
@@ -280,13 +283,16 @@ public class User implements UserDetails {
 	}
 
 	public void setPreferedMaxAge(int preferedMaxAge) {
-		this.preferedMaxAge = Tools.convertPrefAgeToRelativeYear(this.getDates().getDateOfBirth(), preferedMaxAge);
+		try {
+			this.preferedMaxAge = Tools.convertPrefAgeToRelativeYear(this.getDates().getDateOfBirth(), preferedMaxAge);
+		} catch (Exception e) {
+		}
 	}
-	
+
 	public void setPreferedMinAge(Date dob, int preferedMinAge) {
 		this.preferedMinAge = Tools.convertPrefAgeToRelativeYear(dob, preferedMinAge);
 	}
-	
+
 	public void setPreferedMaxAge(Date dob, int preferedMaxAge) {
 		this.preferedMaxAge = Tools.convertPrefAgeToRelativeYear(dob, preferedMaxAge);
 	}
