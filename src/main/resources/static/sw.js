@@ -1,5 +1,5 @@
-// Based on https://github.com/naturalprogrammer/webpush-java-demo/blob/master/src/main/resources/static/sw.js
 /**
+ * Based on: 
  * Created by thihara on 8/29/16.
  * 
  * The service worker for displaying push notifications.
@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '22';
+const cacheName = '23';
 const staticAssets = [
 
 	'/favicon.ico',
@@ -26,6 +26,7 @@ const staticAssets = [
 	'/js/lib/notification.js',
 	'/js/lib/swiper.min.js',
 	'/js/lib/leaflet.min.js',
+	'/js/lib/modal-fx.min.js',
 
 	'/js/tools/check-password.js',
 	'/js/tools/get-notification.js',
@@ -61,9 +62,9 @@ const staticAssets = [
 	'/css/lib/bulma-slider.min.css',
 	'/css/lib/bulma-switch.min.css',
 	'/css/lib/css-loaders.css',
-	'/css/lib/pulse-button.css',
 	'/css/lib/swiper.min.css',
 	'/css/lib/leaflet.min.css',
+	'/css/lib/modal-fx.min.css',
 
 	'/css/snips/ui-angular.css',
 

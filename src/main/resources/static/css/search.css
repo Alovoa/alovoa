@@ -81,10 +81,6 @@
 	visibility: hidden;
 }
 
-#search-right {
-	float: right;
-}
-
 .user-search-card {
 	scroll-snap-align: start;
 }
@@ -93,23 +89,6 @@
 	margin-bottom: 24px;
 	overflow-y: scroll;
 	scrollbar-width: thin;
-}
-
-#search-button-section {
-	z-index: 2;
-	margin-top: -150px;
-	position: absolute;
-	bottom: 0;
-	right: 0;
-}
-
-#search-button {
-	height: 56px;
-	position: absolute;
-	bottom: 0;
-	right: 0;
-	margin-bottom: 18px;
-	margin-right: 12px;
 }
 
 .content-background {
@@ -191,12 +170,6 @@
 	}
 	.section {
 		padding: 0.5rem 0.5rem;
-	}
-	#distance-spacing {
-		padding-left: 4px !important;
-	}
-	#sort-search-spacing {
-		padding-left: 4px !important;
 	}
 	.media {
 		margin-top: 0.2em !important;

@@ -15,6 +15,7 @@
 	<th:block th:replace="fragments.html::bulma"></th:block>
 	<th:block th:replace="fragments.html::ui-design"></th:block>
 	<link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
+	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<link rel="stylesheet" href="/css/index.css" />
 
@@ -169,7 +170,7 @@
 			</div>
 		</section>
 
-		<div id="ios-pwa-modal" class="modal">
+		<div id="ios-pwa-modal" class="modal modal-fx-fadeInScale">
 			<div class="modal-background" onclick="closeModal()"></div>
 			<div class="modal-content">
 				<!-- https://blog.expo.io/enabling-ios-splash-screens-for-progressive-web-apps-34f06f096e5c -->
@@ -185,6 +186,7 @@
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/bulma-collapsible.min.js"></script>
 	<script src="/js/lib/matter.min.js"></script>
+	<script src="/js/lib/modal-fx.min.js"></script>
 	<script src="/js/tools/get-text.js"></script>
 	<script src="/js/tools/modal.js"></script>
 	<script src="/js/alovoa.js"></script>

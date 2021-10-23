@@ -15,6 +15,7 @@
 	<th:block th:replace="fragments.html::ui-design"></th:block>
 	<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 	<link rel="stylesheet" href="/css/lib/swiper.min.css" />
+	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<link rel="stylesheet" href="/css/user-profile.css" />
 	<title th:value="${user.firstName}"></title>
@@ -210,7 +211,7 @@
 	</div>
 
 	<div id="modals">
-		<div class="modal" id="report-user-modal">
+		<div class="modal modal-fx-fadeInScale" id="report-user-modal">
 			<div class="modal-background" onclick="closeModal()"></div>
 			<div class="modal-content">
 				<div class="box">
@@ -246,6 +247,7 @@
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/swiper.min.js"></script>
+	<script src="/js/lib/modal-fx.min.js"></script>
 	<script src="/js/tools/refresh-captcha.js"></script>
 	<script src="/js/tools/modal.js"></script>
 	<script src="/js/tools/get-notification.js"></script>

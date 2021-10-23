@@ -16,7 +16,7 @@
 	<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 	<link rel="stylesheet" href="/css/lib/swiper.min.css" />
 	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
-	<link rel="stylesheet" href="/css/lib/pulse-button.css" />
+	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<link rel="stylesheet" href="/css/search.css" />
 	<title th:text="#{search.title}"></title>
@@ -32,7 +32,7 @@
 		<div id="show-donation-popup" th:if="${showDonationPopup}">
 	</div>
 
-	<div id="donate-modal" class="modal">
+	<div id="donate-modal" class="modal modal-fx-fadeInScale">
 		<div class="modal-background"></div>
 		<div class="modal-content">
 			<div class="box">
@@ -60,10 +60,10 @@
 		</div>
 	</div>
 	
-	<div id="search-settings-modal" class="modal">
+	<div id="search-settings-modal" class="modal modal-fx-fadeInScale">
 		<div class="modal-background" onclick="closeModal()"></div>
 		<div class="modal-content">
-			<div class="box" style="height: 280px;">
+			<div class="box">
 				<article class="media">
 					<div class="media-content">							
 						<div class="section" id="filter-div">
@@ -79,9 +79,8 @@
 											<span th:text="#{km}"></span>
 										</div>
 									</div>
-									<div id="distance-spacing" style="padding-left: 24px;"></div>
 								</div>
-								<div id="search-right" style="display: flex; width: 100%; margin-bottom: 12px;">
+								<div style="display: flex; width: 100%; margin-bottom: 12px;">
 									<div style="flex: 1;">
 										<label class="label" th:text="#{sort}"></label>
 										<div class="select">
@@ -95,21 +94,12 @@
 											</select>
 										</div>
 									</div>
-									<div id="sort-search-spacing" style="padding-left: 24px;"></div>
+								</div>
+								<div style="display: flex; justify-content: flex-end;">
+									<button class="button colored is-info is-rounded" onclick="search(false)" style="margin-top: 12px;">
+										<i class="fa fa-search" style="font-size: 1.2em; padding-right: 4px;"></i><span th:text="#{search}"></span>
 								</div>
 							</div>
-				
-							<div class="section" id="search-button-section">
-								<div class="container">
-									<div class="pulse-button-container">
-										<button class="button colored is-info is-rounded pulse-button" onclick="search(false)"
-											id="search-button">
-											<i class="fa fa-search"></i>
-										</button>
-									</div>
-								</div>
-							</div>
-				
 						</div>
 					</div>
 				</article>
@@ -117,7 +107,7 @@
 		</div>
 	</div>
 
-	<div id="map-modal" class="modal">
+	<div id="map-modal" class="modal modal-fx-fadeInScale">
 		<div class="modal-background" onclick="closeModal()"></div>
 		<div class="modal-content">
 			<div id="map"></div>
@@ -136,6 +126,7 @@
 	<script src="/js/lib/swiper.min.js"></script>
 	<script src="/js/lib/bulma-slider.min.js"></script>
 	<script src="/js/lib/leaflet.min.js"></script>
+	<script src="/js/lib/modal-fx.min.js"></script>
 	<script src="/js/tools/get-notification.js"></script>
 	<script src="/js/tools/get-text.js"></script>
 	<script src="/js/tools/loader.js"></script>

@@ -28,13 +28,13 @@
       "sizes": "512x512"
     }
   ],
-  "id": "com.alovoa.alovoa",
+  "id": "Alovoa",
   "start_url": "/?pwa",
   "background_color": "#ec407a",
   "display": "standalone",
   "scope": "/",
   "theme_color": "#ec407a",
-  "description" : "Meet new, exciting people!",
+  "description" : "Meet new, exciting people! 100% free and open-source.",
   "orientation" : "portrait",
-  "lang" : "English"
+  "lang" : "en-US"
 }
