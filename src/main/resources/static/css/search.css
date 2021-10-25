@@ -1,4 +1,5 @@
-#main-logged-in {
+body {
+	height: 100vh;
 	background-image: url(/img/search-cover.webp);
 }
 

@@ -303,6 +303,11 @@ input[type=range].slider {
 	.collapsible-mobile {
 		display: none;
 	}
+	.navbar.is-fixed-bottom {
+	    width: 1024px;
+	    left: 50%;
+	    transform: translateX(-50%);
+	}
 }
 
 @media screen and (max-width: 900px) {
