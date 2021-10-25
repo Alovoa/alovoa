@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '23';
+const cacheName = '24';
 const staticAssets = [
 
 	'/favicon.ico',
@@ -89,6 +89,8 @@ const staticAssets = [
 	'/img/m-icon.svg',
 	'/img/r-icon.svg',
 	'/img/t-icon.svg',
+	'/img/github.svg',
+	'/img/github-dark.svg',
 	'/img/icon.png',
 	
 	'/img/profile/1.png',
