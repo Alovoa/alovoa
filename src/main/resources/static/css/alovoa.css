@@ -12,6 +12,11 @@ html {
 	min-width: 240px;
 }
 
+body {
+	min-height: 100vh;
+	height: max-content;
+}
+
 * {
 	overflow-wrap: anywhere;
 	scrollbar-width: thin;

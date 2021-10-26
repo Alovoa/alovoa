@@ -1,7 +1,5 @@
 body {
-	min-height: 100vh;
 	background-image: url(/img/search-cover.webp);
-	height: max-content;
 }
 
 #map {
