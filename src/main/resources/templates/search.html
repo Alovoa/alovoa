@@ -22,7 +22,7 @@
 	<title th:text="#{search.title}"></title>
 </head>
 
-<body>
+<body class="preload">
 	<div id="has-location" th:if="${user.hasLocation}"></div>
 	<div id="main-logged-in">
 		<header th:insert="fragments.html::header-search"></header>

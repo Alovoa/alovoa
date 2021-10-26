@@ -81,8 +81,9 @@ function searchBase() {
 }
 
 function mainContainerLoadCards(url) {
-	$("#main-container").load(url, function() {
 
+
+	$("#main-container").load(url, function() {
 		closeModal();
 		showDonatePopup();
 
@@ -111,6 +112,13 @@ function mainContainerLoadCards(url) {
 		});
 
 		$(".loader-parent").css("display", "none");
+
+		let searchMessageDiv = $("#search-message");
+		if (searchMessageDiv) {
+			if (searchMessageDiv.text()) {
+				alert(searchMessageDiv.text());
+			}
+		}
 
 	});
 }
