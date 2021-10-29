@@ -66,6 +66,9 @@ $(function() {
 						console.log(e);
 						hideLoader();
 						alert(getGenericErrorText());
+						if(e.status == 403) {
+							location.reload();
+						}
 					}
 				});
 			}
@@ -97,6 +100,10 @@ $(function() {
 						console.log(e);
 						hideLoader();
 						alert(getGenericErrorText());
+						if(e.status == 403) {
+							location.reload();
+						}
+						
 					}
 				});
 			}
@@ -136,6 +143,9 @@ $(function() {
 						error: function(e) {
 							console.log(e);
 							alert(getGenericErrorText());
+							if(e.status == 403) {
+								location.reload();
+							}
 						}
 					});
 				}, timeoutDescription);
@@ -186,6 +196,9 @@ $(function() {
 				error: function(e) {
 					console.log(e);
 					alert(getGenericErrorText());
+					if(e.status == 403) {
+						location.reload();
+					}
 				}
 			});
 		}
@@ -211,6 +224,9 @@ $(function() {
 				error: function(e) {
 					console.log(e);
 					alert(getGenericErrorText());
+					if(e.status == 403) {
+						location.reload();
+					}
 				}
 			});
 		}
@@ -240,6 +256,9 @@ $(function() {
 				error: function(e) {
 					console.log(e);
 					alert(getGenericErrorText());
+					if(e.status == 403) {
+						location.reload();
+					}
 				}
 			});
 		}
@@ -262,6 +281,9 @@ $(function() {
 			error: function() {
 				console.log(e);
 				alert(getGenericErrorText());
+				if(e.status == 403) {
+					location.reload();
+				}
 			}
 		});
 	});
@@ -282,6 +304,9 @@ $(function() {
 			error: function(e) {
 				console.log(e);
 				alert(getGenericErrorText());
+				if(e.status == 403) {
+					location.reload();
+				}
 			}
 		});
 	});
@@ -301,6 +326,9 @@ $(function() {
 			error: function(e) {
 				console.log(e);
 				alert(getGenericErrorText());
+				if(e.status == 403) {
+					location.reload();
+				}
 			}
 		});
 	});
@@ -338,6 +366,9 @@ $(function() {
 						console.log(e);
 						hideLoader();
 						alert(getGenericErrorText());
+						if(e.status == 403) {
+							location.reload();
+						}
 					}
 				});
 			}
@@ -359,6 +390,9 @@ function deleteAudio() {
 			error: function(e) {
 				console.log(e);
 				alert(getGenericErrorText());
+				if(e.status == 403) {
+					location.reload();
+				}
 			}
 		});
 	}
@@ -377,6 +411,9 @@ function deleteInterest(id) {
 		error: function(e) {
 			console.log(e);
 			alert(getGenericErrorText());
+			if(e.status == 403) {
+				location.reload();
+			}
 		}
 	});
 }
@@ -395,6 +432,9 @@ function deleteImage(id) {
 			error: function(e) {
 				console.log(e);
 				alert(getGenericErrorText());
+				if(e.status == 403) {
+					location.reload();
+				}
 			}
 		});
 	}
@@ -413,6 +453,9 @@ function updateAccentColor(color) {
 		error: function(e) {
 			console.log(e);
 			alert(getGenericErrorText());
+			if(e.status == 403) {
+				location.reload();
+			}
 		}
 	});
 }
@@ -431,6 +474,9 @@ function updateUiDesign() {
 		error: function(e) {
 			console.log(e);
 			alert(getGenericErrorText());
+			if(e.status == 403) {
+				location.reload();
+			}
 		}
 	});
 }
@@ -449,6 +495,9 @@ function updateShowZodiac() {
 		error: function(e) {
 			console.log(e);
 			alert(getGenericErrorText());
+			if(e.status == 403) {
+				location.reload();
+			}
 		}
 	});
 }
@@ -467,6 +516,9 @@ function updateUnits() {
 		error: function(e) {
 			console.log(e);
 			alert(getGenericErrorText());
+			if(e.status == 403) {
+				location.reload();
+			}
 		}
 	});
 }
@@ -522,6 +574,9 @@ function updateProfileWarning() {
 		error: function(e) {
 			console.log(e);
 			alert(getGenericErrorText());
+			if(e.status == 403) {
+				location.reload();
+			}
 		}
 	});
 

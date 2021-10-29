@@ -44,7 +44,8 @@ public class CaptchaService {
 
 	public Captcha generate() throws NoSuchAlgorithmException, IOException {
 
-		Captcha oldCaptcha = captchaRepo.findByHashCode(getIpHash(request.getRemoteAddr()));
+		String ipHash = getIpHash(request.getRemoteAddr());
+		Captcha oldCaptcha = captchaRepo.findByHashCode(ipHash);
 		if (oldCaptcha != null) {
 			captchaRepo.delete(oldCaptcha);
 			captchaRepo.flush();
@@ -59,7 +60,7 @@ public class CaptchaService {
 		captcha.setDate(new Date());
 		captcha.setImage(encoded);
 		captcha.setText(ox.getText());
-		captcha.setHashCode(getIpHash(request.getRemoteAddr()));
+		captcha.setHashCode(ipHash);
 		captcha = captchaRepo.saveAndFlush(captcha);
 		return captcha;
 	}

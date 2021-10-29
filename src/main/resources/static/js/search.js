@@ -147,6 +147,9 @@ function likeUser(idEnc) {
 			console.log(e);
 			hideProfileTile(idEnc);
 			alert(getGenericErrorText());
+			if(e.status == 403) {
+				location.reload();
+			}
 		}
 	});
 
@@ -166,6 +169,9 @@ function hideUser(idEnc) {
 			console.log(e);
 			hideProfileTile(idEnc);
 			alert(getGenericErrorText());
+			if(e.status == 403) {
+				location.reload();
+			}
 		}
 	});
 }
