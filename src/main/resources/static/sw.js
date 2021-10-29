@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '24';
+const cacheName = '25';
 const staticAssets = [
 
 	'/favicon.ico',
@@ -27,6 +27,7 @@ const staticAssets = [
 	'/js/lib/swiper.min.js',
 	'/js/lib/leaflet.min.js',
 	'/js/lib/modal-fx.min.js',
+	'/js/lib/swup.min.js',
 
 	'/js/tools/check-password.js',
 	'/js/tools/get-notification.js',
