@@ -120,7 +120,7 @@ public class DonateService {
 			logger.error(e.getMessage());
 		}
 
-		if (!kofiIp.equals(ip) || !profile.equals(Tools.PROD)) {
+		if (kofiIp.equals(ip) || !profile.equals(Tools.PROD)) {
 
 			Date now = new Date();
 
@@ -169,7 +169,7 @@ public class DonateService {
 			logger.error(e.getMessage());
 		}
 
-		if (!bmacIp.equals(ip) || !profile.equals(Tools.PROD)) {
+		if (bmacIp.equals(ip) || !profile.equals(Tools.PROD)) {
 
 			Date now = new Date();
 			DonationBmac.DonationBmacResponse donation = data.getResponse();
