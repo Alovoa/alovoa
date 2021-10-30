@@ -8,6 +8,4 @@ document.addEventListener("DOMContentLoaded", function(){
 	.setProperty('--vh', window.innerHeight / 100 + 'px');
 
 	window.addEventListener('resize', rootResize);
-	
-	const swup = new Swup();
 });

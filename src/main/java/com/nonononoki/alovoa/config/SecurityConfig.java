@@ -108,7 +108,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return filter;
 	}
 
-	// cf.
 	// https://stackoverflow.com/questions/32463022/sessionregistry-is-empty-when-i-use-concurrentsessioncontrolauthenticationstrate
 	public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
 		List<SessionAuthenticationStrategy> stratList = new ArrayList<>();

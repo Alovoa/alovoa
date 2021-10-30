@@ -40,6 +40,11 @@ public class UserController {
 
 	@Value("${app.media.max-size}")
 	private int mediaMaxSize;
+	
+	//simple post to test session
+	@PostMapping("/post")
+	public void post(){
+	}
 
 	// GDPR
 	@PostMapping(value = "/delete-account", consumes = "text/plain")
