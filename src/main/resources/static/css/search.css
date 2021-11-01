@@ -162,7 +162,6 @@ body {
 		height: calc(100 * var(--vh) - 108px);
 	}
 }
-/*very small screens*/
 @media screen and (max-width: 600px) {
 	.card.is-horizontal {
 		margin-top: 0px;
@@ -205,4 +204,14 @@ body {
 	.search-button-padding {
 		padding-right: 12px;
 	}
+	.profile-bottom .button-small {
+		height: 48px;
+		width: 48px;
+	}
 }
+@media screen and (max-width: 350px) {
+	#donate-modal .media-left {
+		display: none;
+	}
+}
+	

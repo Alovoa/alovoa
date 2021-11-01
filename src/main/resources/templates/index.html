@@ -35,7 +35,7 @@
 
 </head>
 
-<body>
+<body class="preload">
 	<div id="main">
 		<header th:replace="fragments.html::header-logged-out"></header>
 		<div id="hero-gravity"></div>
@@ -169,6 +169,9 @@
 				<span><a href="/privacy#cookies" th:text="#{index.cookie.more}"></a></span>
 			</div>
 		</section>
+		
+		<!-- for preview purposes -->
+		<img src="/img/android-chrome-512x512.png" style="display: none;">
 
 		<div id="ios-pwa-modal" class="modal modal-fx-fadeInScale">
 			<div class="modal-background" onclick="closeModal()"></div>
@@ -177,7 +180,6 @@
 				<img id="ios-pwa" src="/img/ios-pwa.webp" style="width: 100%">
 			</div>
 		</div>
-
 		<footer th:replace="fragments.html::footer"></footer>
 	</div>
 

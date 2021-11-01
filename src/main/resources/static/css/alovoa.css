@@ -164,7 +164,7 @@ button, .button, .input, .select, select {
 }
 
 .navbar-item-icon:hover path {
-	color: #0a0a0a;
+	color: #0a0a0a !important;
 }
 
 .notification {
@@ -281,6 +281,10 @@ input[type=range].slider {
 
 .navigation-item-span-bottom {
 	display: none;
+}
+
+#lang-modal .button {
+	margin-bottom: 4px;
 }
 
 @media screen and (max-width: 1050px) {
@@ -400,7 +404,6 @@ input[type=range].slider {
 }
 
 @media screen and (max-width: 600px) {
-	
 	.navigation-item {
 		padding: 2px;
 	}
@@ -418,6 +421,9 @@ input[type=range].slider {
 	
 	.navigation-item-span-bottom {
 		display: block;
+	}
+	.modal-content {
+		max-height: 100%;
 	}
 }
 
@@ -464,9 +470,6 @@ input[type=range].slider {
 	}
 	#donate-modal svg {
 		display: none;
-	}
-	.modal-content {
-		max-height: 100%;
 	}
 	.modal-content .box {
 		border-radius: 0px;

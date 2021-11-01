@@ -63,6 +63,10 @@
 	#donate-now-text {
 		display: none;
 	}
+	#donate-bottom {
+		padding: 0.3em;
+	}
+	
 }
 
 /* KAIOS Screns are very small */

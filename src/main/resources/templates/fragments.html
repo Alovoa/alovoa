@@ -31,7 +31,7 @@
 			<div style="width: 100%; display: flex;">
 				<div class="navbar-end">
 					<div class="navbar-item" id="navbar-item-language" style="padding-right: 0px;">
-						<a class="button is-white is-outlined navbar-item-icon" onclick="onLanguageButtonClicked()"
+						<a class="button is-white is-outlined navbar-item-icon" onclick="openModal('lang-modal')"
 							style="width: 40px; height: 40px;"><i style="padding-right: 0px; color: white;"
 								class="fas fa-globe"></i></a>
 					</div>
@@ -106,26 +106,9 @@
 		<div class="container">
 			<div class="columns">
 				<div class="column">
-					<div class="control has-icons-left" style="margin-top: -8px;">
-						<div class="select">
-							<select id="locale" onchange="onChangeLocal(this)">
-								<option th:text="#{language}" hidden></option>
-								<option value="?lang=en">English</option>
-								<option value="?lang=de">Deutsch</option>
-								<option value="?lang=es">Español (beta)</option>
-								<option value="?lang=fr">Français (beta)</option>
-								<option value="?lang=pt">Português (beta)</option>
-								<option value="?lang=it">Italiano (beta)</option>
-								<option value="?lang=cz">Čeština (beta)</option>
-								<option value="?lang=ru">русский (beta)</option>
-								<option value="?lang=ja">日本語 (beta)</option>
-								<option value="?lang=zh">中文 (beta)</option>
-								<option value="?lang=ko">한국어 (beta)</option>
-							</select>
-						</div>
-						<span class="icon is-left"> <i class="fas fa-globe"></i>
-						</span>
-					</div>
+					<div class="button" onclick="openModal('lang-modal')" style="margin-top: -8px;">
+						<i class="fas fa-globe" style="margin-right: 6px;"></i>
+					<span th:text="#{language}"></span></div>
 				</div>
 				<div class="column">
 					<div class="has-text-centered">
@@ -165,10 +148,29 @@
 				</div>
 			</div>
 		</div>
-
+		
+		<div id="lang-modal" class="modal modal-fx-fadeInScale">
+			<div class="modal-background" onclick="closeModal()"></div>
+			<div class="modal-content">
+				<div style="margin-left: 4px;">
+					<div onclick="closeModal()" style="padding-bottom: 4px;"><i class="fa fa-times fa-2x" style="cursor: pointer; color: white"></i></div>
+					<button class="button colored is-primary" value="?lang=en" onclick="onChangeLocal(this.value)">English</button>
+					<button class="button colored is-primary" value="?lang=de" onclick="onChangeLocal(this.value)">Deutsch</button>
+					<button class="button colored is-primary" value="?lang=es" onclick="onChangeLocal(this.value)">Español*</button>
+					<button class="button colored is-primary" value="?lang=fr" onclick="onChangeLocal(this.value)">Français*</button>
+					<button class="button colored is-primary" value="?lang=pt" onclick="onChangeLocal(this.value)">Português*</button>
+					<button class="button colored is-primary" value="?lang=it" onclick="onChangeLocal(this.value)">Italiano*</button>
+					<button class="button colored is-primary" value="?lang=cz" onclick="onChangeLocal(this.value)">Čeština*</button>
+					<button class="button colored is-primary" value="?lang=ru" onclick="onChangeLocal(this.value)">русский*</button>
+					<button class="button colored is-primary" value="?lang=ja" onclick="onChangeLocal(this.value)">日本語*</button>
+					<button class="button colored is-primary" value="?lang=zh" onclick="onChangeLocal(this.value)">中文*</button>
+					<button class="button colored is-primary" value="?lang=ko" onclick="onChangeLocal(this.value)">한국어*</button>
+					<div style="color: white"><span style="float:right; margin-right: 4px;">* beta</span></div>
+				</div>
+			</div>
+		</div>
 		<script>
-			function onChangeLocal(e) {
-				let val = e.options[e.selectedIndex].value;
+			function onChangeLocal(val) {
 				console.log(val);
 				if (val.includes('?lang=') && val.length == 8) {
 					window.location.search = val;
@@ -306,7 +308,7 @@
 									<div class="profile-bottom full-width dimmed"
 										style="display: flex; justify-content: space-between;">
 
-										<button class="button colored is-info search-audio" th:if="${user.hasAudio}"
+										<button class="button colored is-info search-audio button-small" th:if="${user.hasAudio}"
 											th:onclick="playPauseAudio([[${user.idEncoded}]]);">
 											<i class="fa fa-headphones"></i>
 										</button>
@@ -326,7 +328,7 @@
 										</div>
 										<div th:unless="${user.compatible}"></div>
 										
-										<button class="button colored is-info"
+										<button class="button colored is-info button-small"
 											th:onclick="viewProfile([[${user.idEncoded}]]);" style="margin-right: 4px;">
 											<i class="fa fa-user"></i>
 										</button>
