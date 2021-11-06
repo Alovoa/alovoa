@@ -139,3 +139,9 @@ function reportUserSubmit(idEncoded) {
 		}
 	});
 }
+
+$(window).on("popstate", function(e) {
+	if(!document.getElementById("user-profile-modal")) {
+		location.reload();
+	}
+});
