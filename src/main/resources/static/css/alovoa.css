@@ -205,6 +205,10 @@ button, .button, .input, .select, select {
 	margin-right: 4px;
 }
 
+.display-none {
+	display: none;
+}
+
 .hidden {
 	visibility: hidden;
 }

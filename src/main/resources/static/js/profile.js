@@ -581,12 +581,6 @@ function updateProfileWarning() {
 	});
 
 }
-
-function viewProfile(idEnc) {
-	let url = 'profile/view/' + idEnc;
-	window.open(url, '_blank').focus();
-}
-
 function getUserData(idEnc) {
 	let url = "/user/userdata/" + idEnc;
 	window.open(url);

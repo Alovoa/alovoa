@@ -8,8 +8,8 @@
 }
 
 #like-hide-bottom {
-	margin-bottom: 24px; 
-	position: fixed; 
+	padding-bottom: 24px; 
+	position: sticky; 
 	display: flex; 
 	left: 0; 
 	bottom: 0; 

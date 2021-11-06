@@ -14,7 +14,9 @@
 	<th:block th:replace="fragments.html::ui-design"></th:block>
 	<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
+	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
 	<link rel="stylesheet" href="/css/alovoa.css" />
+	<link rel="stylesheet" href="/css/user-profile.css" />
 	<link rel="stylesheet" href="/css/notification.css" />
 	<title th:text="#{notification.title}"></title>
 </head>
@@ -53,6 +55,9 @@
 	<div class="loader-parent">
 		<div class="loader"></div>
 	</div>
+	
+	<form></form>
+	<div id="user-profile-container"></div>
 
 	<footer th:replace="fragments.html::navigation"></footer>
 
@@ -62,29 +67,9 @@
 	<script src="/js/tools/get-notification.js"></script>
 	<script src="/js/tools/get-text.js"></script>
 	<script src="/js/tools/loader.js"></script>
+	<script src="/js/tools/modal.js"></script>
 	<script src="/js/alovoa.js"></script>
-	<script>
-		function viewProfile(idEnc) {
-			let url = 'profile/view/' + idEnc;
-			window.open(url, '_blank').focus();
-		}
-		function likeUser(btn, idEnc) {
-			$.ajax({
-				type: "POST",
-				url: "/user/like/" + idEnc,
-				headers: {
-					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-				},
-				success: function () {
-					$(btn).hide();
-				},
-				error: function (e) {
-					console.log(e);
-				}
-			});
-
-		}
-	</script>
+	<script src="/js/user-profile-modal.js"></script>
 </body>
 
 </html>

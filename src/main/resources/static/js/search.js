@@ -147,7 +147,7 @@ function likeUser(idEnc) {
 			console.log(e);
 			hideProfileTile(idEnc);
 			alert(getGenericErrorText());
-			if(e.status == 403) {
+			if (e.status == 403) {
 				location.reload();
 			}
 		}
@@ -169,7 +169,7 @@ function hideUser(idEnc) {
 			console.log(e);
 			hideProfileTile(idEnc);
 			alert(getGenericErrorText());
-			if(e.status == 403) {
+			if (e.status == 403) {
 				location.reload();
 			}
 		}
@@ -194,8 +194,9 @@ function toggleCardContent() {
 }
 
 function hideProfileTile(id) {
+	closeModal();
 	let tile = $("#" + id);
-	$(tile).fadeOut(80, function() {
+	$(tile).fadeOut(100, function() {
 		tile.hide();
 		searchAgain();
 	});
@@ -246,11 +247,6 @@ function showDonatePopup() {
 		$('#donate-modal').addClass('is-active');
 		donationPopup.remove();
 	}
-}
-
-function viewProfile(idEnc) {
-	let url = 'profile/view/' + idEnc;
-	window.open(url, '_blank').focus();
 }
 
 function searchAgain() {

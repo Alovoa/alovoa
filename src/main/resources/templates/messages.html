@@ -14,6 +14,8 @@
 	<th:block th:replace="fragments.html::ui-design"></th:block>
 	<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
+	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
+	<link rel="stylesheet" href="/css/user-profile.css" />
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<link rel="stylesheet" href="/css/notification.css" />
 	<title th:text="#{message.title}"></title>
@@ -61,17 +63,22 @@
 	<div class="loader-parent">
 		<div class="loader"></div>
 	</div>
+	
+	<div id="user-profile-container"></div>
 
 	<footer th:replace="fragments.html::navigation"></footer>
 
 	<script src="/sw.js"></script>
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
+	<script src="/js/lib/modal-fx.min.js"></script>
 	<script src="/js/tools/get-notification.js"></script>
 	<script src="/js/tools/get-text.js"></script>
 	<script src="/js/tools/loader.js"></script>
+	<script src="/js/tools/modal.js"></script>
 	<script src="/js/alovoa.js"></script>
 	<script src="/js/message.js"></script>
+	<script src="/js/user-profile-modal.js"></script>
 </body>
 
 </html>

@@ -11,6 +11,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
@@ -54,8 +55,8 @@ public class UserProfileResource {
 			if (userView.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
 				throw new AlovoaException("blocked");
 			}
-			
-			if(userView.isDisabled()) {
+
+			if (userView.isDisabled()) {
 				throw new AlovoaException("disabled");
 			}
 
@@ -76,5 +77,44 @@ public class UserProfileResource {
 		} else {
 			throw new AlovoaException("user_not_found");
 		}
+	}
+
+	@GetMapping("/profile/view/modal/{idEncoded}")
+	public String warning(Model model, @PathVariable String idEncoded) throws AlovoaException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException {
+
+		long id = UserDto.decodeId(idEncoded, textEncryptor);
+		User userView = userRepo.findById(id).orElse(null);
+		User user = authService.getCurrentUser();
+
+		if (user.getId().equals(id)) {
+			return "";
+		}
+
+		if (userView != null) {
+			if (userView.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
+				throw new AlovoaException("blocked");
+			}
+
+			if (userView.isDisabled()) {
+				throw new AlovoaException("disabled");
+			}
+
+			userView.setNumberProfileViews(userView.getNumberProfileViews() + 1);
+			userView = userRepo.saveAndFlush(userView);
+
+			UserDto userDto = UserDto.userToUserDto(userView, user, textEncryptor, UserDto.NO_AUDIO);
+			UserDto currUserDto = UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA);
+
+			model.addAttribute("user", userDto);
+			model.addAttribute("currUser", currUserDto);
+			model.addAttribute("compatible", Tools.usersCompatible(user, userView));
+
+		} else {
+			throw new AlovoaException("user_not_found");
+		}
+
+		return "fragments::user-profile-modal";
 	}
 }

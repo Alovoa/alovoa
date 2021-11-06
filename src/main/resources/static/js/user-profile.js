@@ -114,7 +114,9 @@ function unblockUser(idEnc) {
 }
 
 function reportUser() {
-	openModal("report-user-modal");
+	var element = document.getElementById("report-user-div");
+	element.classList.toggle("display-none");
+	window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
 }
 
 function reportUserSubmit(idEncoded) {

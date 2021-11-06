@@ -472,6 +472,233 @@
 			</script>
 		</div>
 	</div>
+	
+	<div th:fragment="user-profile-modal">
+		<div id="user-profile-modal" class="modal modal-fx-fadeInScale">
+		<div class="modal-background" onclick="history.back()"></div>
+		<div class="modal-content">
+			<div class="box">
+				<i class="fa fa-times fa-2x" style="cursor:pointer;" onclick="history.back()" ></i>
+				<th:block th:replace="fragments.html::user-profile"></th:block>
+			</div>
+		</div>
+		</div>
+	</div>
+	
+	<div th:fragment="user-profile">
+		<div>
+			<div class="section">
+				<div class="container">
+					<div class="field">
+						<div class="swiper-container">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide">
+									<div class="center-parent">
+										<img id="profilePicture" style="cursor: pointer;" height=400 width="400"
+											th:if="${user.profilePicture}" th:src="${user.profilePicture}"
+											class="profile-pic" />
+									</div>
+								</div>
+								<div th:each="img : ${user.images}" class="swiper-slide">
+									<div class="center-parent">
+										<img style="cursor: pointer;" height=400 width="400" class="profile-pic"
+											th:src="${img.content}" th:onclick="deleteImage([[${img.id}]])" />
+									</div>
+								</div>
+							</div>
+	
+							<!-- Add Arrows -->
+							<div class="swiper-button-next"></div>
+							<div class="swiper-button-prev"></div>
+						</div>
+					</div>
+				</div>
+				<div style="padding-top: 24px;"></div>
+				<div class="container">
+					<div class="content">
+						<div class="media">
+							<div class="full-width">
+								<div class="left first-name" style="font-size: 2em" th:text="${user.firstName}"
+									th:classappend="${user.gender.text == 'male' ? 'male' : user.gender.text == 'female' ? 'female' : 'other'}">
+								</div>
+								<div class="left" style="font-size: 1.5em; padding-top: 8px;">
+									<span>, </span><span th:text="${user.age}"></span>  <th:block th:insert="fragments.html :: zodiac"></th:block>
+								</div>
+								<div class="right" style="font-size: 1.2em; padding-top: 8px;">
+									<i class="fa fa-map-marker-alt"></i>
+									<span th:text="${user.distanceToUser}"></span><span> </span><span
+										th:text="#{km}"></span>
+								</div>
+							</div>
+						</div>
+						<div class="media">
+							<div class="full-width">
+								<div class="left">
+									<span th:text="#{last-active}"></span><span>: </span><span th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
+								</div>
+							</div>
+						</div>
+	
+						<th:block th:if="${#lists.size(user.interests) > 0}">
+							<div style="padding-top: 24px;" th:if="${user.interests}"></div>
+							<div class="field">
+								<label class="label" th:text="#{interests}"></label>
+								<div th:each="interest : ${user.interests}" 
+									class="notification is-info" th:text="${interest.text}" style=" display: inline-block; margin-bottom: 4px;">
+								</div>
+							</div>
+						</th:block>
+	
+						<div style="padding-top: 24px;"></div>
+	
+						<div class="field">
+							<textarea class="textarea" id="description"
+								th:text="${user.description}" readOnly></textarea>
+						</div>
+	
+						<div class="field" th:if="${user.hasAudio}"
+							style="padding-top: 24px; padding-bottom: 24px;">
+							<label class="label" th:text="#{profile.audio}"></label>
+							<audio id="audio" th:if="${user.audio}" controls hidden></audio>
+							<div class="colored button is-info" id="audio-play-button"
+								th:if="${user.audio}" onclick="downloadAndPlayAudio()">
+								<i class="fa fa-play"></i>
+							</div>
+						</div>
+	
+						<table class="table" style="width: 100%">
+							<tbody>
+								<tr>
+									<th th:text="#{gender}"></th>
+									<td th:if="${user.gender.text == 'male'}"
+										th:text="#{profile.gender.male}"></td>
+									<td th:if="${user.gender.text == 'female'}"
+										th:text="#{profile.gender.female}"></td>
+									<td th:if="${user.gender.text == 'other'}"
+										th:text="#{profile.gender.other}"></td>
+								</tr>
+								<tr>
+									<th th:text="#{profile.intention}"></th>
+									<td th:if="${user.intention.text == 'meet'}"
+										th:text="#{profile.intention.meet}"></td>
+									<td th:if="${user.intention.text == 'date'}"
+										th:text="#{profile.intention.date}"></td>
+									<td th:if="${user.intention.text == 'sex'}"
+										th:text="#{profile.intention.sex}"></td>
+								</tr>
+								<tr>
+									<th th:text="#{profile.gender}">
+										<td>
+											<th:block th:each="gender : ${user.preferedGenders}">
+												<span th:if="${gender.text == 'male'}" style="padding-right: 4px;"
+													th:text="#{profile.gender.male}"></span>
+												<span th:if="${gender.text == 'female'}" style="padding-right: 4px;"
+													th:text="#{profile.gender.female}"></span>
+												<span th:if="${gender.text == 'other'}" style="padding-right: 4px;"
+													th:text="#{profile.gender.other}"></span>
+											</th:block>
+										</td>
+									</th>
+								</tr>
+								<tr>
+									<th th:text="#{profile.pref-age-range}"></th>
+									<td
+										th:text="${user.preferedMinAge + ' - ' + user.preferedMaxAge}"></td>
+								</tr>
+								<tr>
+									<th th:text="#{donated}"></th>
+									<td
+										th:text="${#numbers.formatDecimal(user.totalDonations, 1, 2, 'POINT') + ' €'}"></td>
+								</tr>
+								<tr>
+									<th th:text="#{userprofile.num-blocks}"></th>
+									<td th:text="${#lists.size(user.blockedByUsers)}"></td>
+								</tr>
+								<tr>
+									<th th:text="#{userprofile.num-reports}"></th>
+									<td th:text="${#lists.size(user.reportedByUsers)}"></td>
+								</tr>
+							</tbody>
+						</table>
+						<div style="padding-top: 8px;"></div>
+					</div>
+				</div>
+				<div class="container">
+					<div class="profile-bottom full-width"
+						style="display: inline-block;">
+						<div class="left" style="margin-bottom: 12px;">
+							<button class="button colored is-danger"
+								th:unless="${user.blockedByCurrentUser}"
+								th:onclick="blockUser([[${user.idEncoded}]])">
+								<i class="fa fa-ban"></i>
+							</button>
+							<button class="button colored is-success"
+								th:if="${user.blockedByCurrentUser}"
+								th:onclick="unblockUser([[${user.idEncoded}]])">
+								<i class="fa fa-ban"></i>
+							</button>
+							<button class="button colored is-info"
+								th:unless="${user.reportedByCurrentUser}"
+								th:onclick="reportUser()">
+								<i class="fa fa-flag"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+				
+				<div id="report-user-div" class="display-none">
+					<div class="box">
+						<div style="margin-bottom: 24px"
+							th:utext="#{userprofile.report.confirm}"></div>
+		
+						<div class="field">
+							<textarea class="textarea" id="report-comment"
+								th:placeholder="#{comment}" maxlength=255></textarea>
+						</div>
+		
+						<div class="field">
+							<div th:replace="fragments.html::captcha"></div>
+							<div class="field" style="height: 42px">
+		
+								<button class="button is-info colored" style="float: right;"
+									th:onclick="reportUserSubmit([[${user.idEncoded}]])"
+									th:text="#{submit}"></button>
+								<button class="button is-danger is-outlined"
+									style="margin-right: 4px;" onclick="closeModal()"
+									th:text="#{cancel}"></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="like-hide-bottom" th:if="${compatible}" >
+				<button class="button colored is-danger" style="height: 56px; width: 56px;"
+					th:unless="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
+					th:onclick="hideUser([[${user.idEncoded}]])">
+					<i class="fa fa-thumbs-down"></i>
+				</button>
+				<button class="button colored is-danger" style="height: 56px; width: 56px;"
+					th:if="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
+					th:onclick="hideUser([[${user.idEncoded}]])" disabled>
+					<i class="fa fa-thumbs-down"></i>
+				</button>
+				<div style="padding-right: 24px;"></div>
+				<button class="button colored is-success" style="height: 56px; width: 56px;"
+					th:unless="${user.likedByCurrentUser}"
+					th:onclick="likeUser([[${user.idEncoded}]])">
+					<i class="fa fa-thumbs-up"></i>
+				</button>
+				<button class="button colored is-success" style="height: 56px; width: 56px;"
+					th:if="${user.likedByCurrentUser}"
+					th:onclick="likeUser([[${user.idEncoded}]])" disabled>
+					<i class="fa fa-thumbs-up"></i>
+				</button>
+		</div>
+			
+		<input id="user-id-enc" th:value="${user.idEncoded}" hidden>	
+	</div>
 
 </body>
 </html>
