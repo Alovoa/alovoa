@@ -559,7 +559,7 @@
 						<div class="field" th:if="${user.hasAudio}"
 							style="padding-top: 24px; padding-bottom: 24px;">
 							<label class="label" th:text="#{profile.audio}"></label>
-							<audio id="audio" th:if="${user.audio}" controls hidden></audio>
+							<audio id="audio-profile" th:if="${user.audio}" controls hidden></audio>
 							<div class="colored button is-info" id="audio-play-button"
 								th:if="${user.audio}" onclick="downloadAndPlayAudio()">
 								<i class="fa fa-play"></i>

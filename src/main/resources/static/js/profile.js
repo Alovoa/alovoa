@@ -587,6 +587,7 @@ function getUserData(idEnc) {
 }
 
 function resizeAudio(file, callback) {
+	console.log(file.type);
 	if (file.type == "audio/mpeg") {
 		try {
 			let cutter = new mp3cutter();
@@ -597,7 +598,7 @@ function resizeAudio(file, callback) {
 			console.log(e);
 			getBase64(file, callback);
 		}
-	} else if (file.type == "audio/x-wav") {
+	} else if (file.type == "audio/x-wav" || file.type == "audio/wav" ) {
 		getBase64(file, callback);
 	} else {
 		hideLoader();

@@ -20,8 +20,8 @@ function downloadAndPlayAudio() {
 			"X-CSRF-TOKEN" : csrf
 		},
 		success : function(res) {
-		 	let audio = document.getElementById('audio');
-		 	$("#audio").show();
+		 	let audio = document.getElementById('audio-profile');
+		 	$("#audio-profile").show();
 		 	$("#audio-play-button").hide();
 			audio.src = res;
 			audio.load();
