@@ -176,18 +176,16 @@ function hideUser(idEnc) {
 	});
 }
 
-var cardContentVisible = false;
+var cardContentVisible = true;
 function toggleCardContent() {
 
 	let width = document.documentElement.clientWidth;
 
 	if (cardContentVisible) {
-		$(".content-background").removeClass("hidden");
-		$(".profile-bottom").addClass("dimmed");
+		$(".description").addClass("display-none");
 	} else {
 		if (width < 1024) {
-			$(".content-background").addClass("hidden");
-			$(".profile-bottom").removeClass("dimmed");
+			$(".description").removeClass("display-none");
 		}
 	}
 	cardContentVisible = !cardContentVisible;

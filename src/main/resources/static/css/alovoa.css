@@ -549,7 +549,7 @@ input[type=range].slider {
 	.navigation-item span {
 		display: none;
 	}
-	.search-audio {
+	.search-audio, .search-visibility {
 		display: none;
 	}
 }

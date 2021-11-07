@@ -266,13 +266,13 @@
 						<div class="swiper-slide">
 							<div class="card is-horizontal"
 								style="width: 100%; height: 100%;">
-								<div class="card-image" onclick="toggleCardContent()">
+								<div class="card-image" th:onclick="viewProfile([[${user.idEncoded}]])">
 									<figure class="image">
 										<img th:src="${user.profilePicture}" class="profile-pic">
 									</figure>
 								</div>
 								<div class="card-content">
-									<div onclick="toggleCardContent()">
+									<div th:onclick="viewProfile([[${user.idEncoded}]])">
 										<div class="content-background">
 											<div class="content">
 												<div class="media">
@@ -288,14 +288,6 @@
 															<span th:text="${user.distanceToUser}"></span><span> </span>
 															<span th:if="${currUser.units == 0}" th:text="#{km}"></span>
 															<span th:if="${currUser.units == 1}" th:text="#{mi}"></span>
-														</div>
-													</div>
-												</div>
-												<div class="media" style="padding-bottom: 8px; padding-top: 8px; font-size: 0.9em;">
-													<div class="full-width">
-														<div class="left">
-															<span th:text="#{last-active}"></span><span>: </span><span
-																th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
 														</div>
 													</div>
 												</div>
@@ -328,9 +320,8 @@
 										</div>
 										<div th:unless="${user.compatible}"></div>
 										
-										<button class="button colored is-info button-small"
-											th:onclick="viewProfile([[${user.idEncoded}]]);" style="margin-right: 4px;">
-											<i class="fa fa-user"></i>
+										<button class="button colored is-info button-small search-visibility" onclick="toggleCardContent()" style="margin-right: 4px;">
+											<i class="fa fa-low-vision"></i>
 										</button>
 									</div>
 								</div>
