@@ -14,7 +14,7 @@ $(function() {
 		localStorage.setItem("twa_playstore", true);
 	}
 
-	var mediaMaxSize = $("#mediaMaxSize").val();
+	var mediaMaxSize = $("#mediaMaxSize").val() / 1000000;
 
 	var swiper = new Swiper('.swiper-container', {
 		centeredSlides: true,
@@ -587,7 +587,6 @@ function getUserData(idEnc) {
 }
 
 function resizeAudio(file, callback) {
-	console.log(file.type);
 	if (file.type == "audio/mpeg") {
 		try {
 			let cutter = new mp3cutter();
