@@ -1,5 +1,5 @@
 #audio-play-button {
-	width: 300px;
+	width: 115px;
 }
 
 .profile-bottom .button {
@@ -16,10 +16,4 @@
 	width: 100%; 
 	align-items: center;
   	justify-content: center;
-}
-
-@media screen and (max-width: 338px) {
-	#audio-play-button {
-		width: 100%;
-	}
 }
