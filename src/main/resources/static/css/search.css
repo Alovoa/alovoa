@@ -214,4 +214,13 @@ body {
 		display: none;
 	}
 }
+
+@media screen and (min-width: 1024px) {
+	.description {
+		display: initial !important;
+	}
+	.search-visibility {
+		display: none;
+	}
+}
 	

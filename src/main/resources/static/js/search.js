@@ -176,19 +176,8 @@ function hideUser(idEnc) {
 	});
 }
 
-var cardContentVisible = true;
 function toggleCardContent() {
-
-	let width = document.documentElement.clientWidth;
-
-	if (cardContentVisible) {
-		$(".description").addClass("display-none");
-	} else {
-		if (width < 1024) {
-			$(".description").removeClass("display-none");
-		}
-	}
-	cardContentVisible = !cardContentVisible;
+	$(".description").toggleClass("display-none");
 }
 
 function hideProfileTile(id) {
