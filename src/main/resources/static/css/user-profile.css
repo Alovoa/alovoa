@@ -19,7 +19,7 @@
   	z-index: 1;
 }
 @media screen and (max-width: 768px) {
-	#main-logged-in .box, #main-logged-in .section {
+	#user-profile-content .box, #user-profile-content .section {
 		padding: 0px;
 	}
 	.container .content {

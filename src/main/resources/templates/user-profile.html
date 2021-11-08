@@ -23,7 +23,9 @@
 
 <body>
 	<div id="main-logged-in">
-		<th:block th:replace="fragments.html::user-profile"></th:block>
+		<div id="user-profile-content">
+			<th:block th:replace="fragments.html::user-profile"></th:block>
+		</div>
 	</div>
 
 	<script src="/sw.js"></script>
