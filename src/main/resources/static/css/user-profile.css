@@ -18,3 +18,11 @@
   	justify-content: center;
   	z-index: 1;
 }
+@media screen and (max-width: 768px) {
+	#main-logged-in .box, #main-logged-in .section {
+		padding: 0px;
+	}
+	.container .content {
+		padding: 1.5rem 1.5rem;
+	}
+}

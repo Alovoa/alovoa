@@ -332,6 +332,9 @@ input[type=range].slider {
 	.modal-content .box {
 		border-radius: 0px;
 	}
+	#user-profile-modal .box, #user-profile-modal .section {
+		padding: 0px;
+	}
 }
 @media screen and (max-width: 725px) {
 	.navigation-item span {

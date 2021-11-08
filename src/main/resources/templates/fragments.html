@@ -469,7 +469,7 @@
 		<div class="modal-background" onclick="history.back()"></div>
 		<div class="modal-content">
 			<div class="box">
-				<i class="fa fa-times fa-2x" style="cursor:pointer;" onclick="history.back()" ></i>
+				<i class="fa fa-times fa-2x" style="cursor:pointer; margin-left: 8px; margin-top: 4px" onclick="history.back()" ></i>
 				<th:block th:replace="fragments.html::user-profile"></th:block>
 			</div>
 		</div>
@@ -504,7 +504,6 @@
 						</div>
 					</div>
 				</div>
-				<div style="padding-top: 24px;"></div>
 				<div class="container">
 					<div class="content">
 						<div class="media">
@@ -602,51 +601,48 @@
 							</tbody>
 						</table>
 						<div style="padding-top: 8px;"></div>
-					</div>
-				</div>
-				<div class="container">
-					<div class="profile-bottom full-width"
+						<div class="profile-bottom full-width"
 						style="display: inline-block;">
-						<div class="left" style="margin-bottom: 12px;">
-							<button class="button colored is-danger"
-								th:unless="${user.blockedByCurrentUser}"
-								th:onclick="blockUser([[${user.idEncoded}]])">
-								<i class="fa fa-ban"></i>
-							</button>
-							<button class="button colored is-success"
-								th:if="${user.blockedByCurrentUser}"
-								th:onclick="unblockUser([[${user.idEncoded}]])">
-								<i class="fa fa-ban"></i>
-							</button>
-							<button class="button colored is-info"
-								th:unless="${user.reportedByCurrentUser}"
-								th:onclick="reportUser()">
-								<i class="fa fa-flag"></i>
-							</button>
+							<div class="left" style="margin-bottom: 12px;">
+								<button class="button colored is-danger"
+									th:unless="${user.blockedByCurrentUser}"
+									th:onclick="blockUser([[${user.idEncoded}]])">
+									<i class="fa fa-ban"></i>
+								</button>
+								<button class="button colored is-success"
+									th:if="${user.blockedByCurrentUser}"
+									th:onclick="unblockUser([[${user.idEncoded}]])">
+									<i class="fa fa-ban"></i>
+								</button>
+								<button class="button colored is-info"
+									th:unless="${user.reportedByCurrentUser}"
+									th:onclick="reportUser()">
+									<i class="fa fa-flag"></i>
+								</button>
+							</div>
 						</div>
-					</div>
-				</div>
+						<div id="report-user-div" class="display-none">
+							<div class="box">
+								<div style="margin-bottom: 24px"
+									th:utext="#{userprofile.report.confirm}"></div>
 				
-				<div id="report-user-div" class="display-none">
-					<div class="box">
-						<div style="margin-bottom: 24px"
-							th:utext="#{userprofile.report.confirm}"></div>
-		
-						<div class="field">
-							<textarea class="textarea" id="report-comment"
-								th:placeholder="#{comment}" maxlength=255></textarea>
-						</div>
-		
-						<div class="field">
-							<div th:replace="fragments.html::captcha"></div>
-							<div class="field" style="height: 42px">
-		
-								<button class="button is-info colored" style="float: right;"
-									th:onclick="reportUserSubmit([[${user.idEncoded}]])"
-									th:text="#{submit}"></button>
-								<button class="button is-danger is-outlined"
-									style="margin-right: 4px;" onclick="closeModal()"
-									th:text="#{cancel}"></button>
+								<div class="field">
+									<textarea class="textarea" id="report-comment"
+										th:placeholder="#{comment}" maxlength=255></textarea>
+								</div>
+				
+								<div class="field">
+									<div th:replace="fragments.html::captcha"></div>
+									<div class="field" style="height: 42px">
+				
+										<button class="button is-info colored" style="float: right;"
+											th:onclick="reportUserSubmit([[${user.idEncoded}]])"
+											th:text="#{submit}"></button>
+										<button class="button is-danger is-outlined"
+											style="margin-right: 4px;" onclick="closeModal()"
+											th:text="#{cancel}"></button>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
