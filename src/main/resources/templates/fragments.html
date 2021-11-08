@@ -522,33 +522,24 @@
 								</div>
 							</div>
 						</div>
-						<div class="media">
-							<div class="full-width">
-								<div class="left">
-									<span th:text="#{last-active}"></span><span>: </span><span th:text="${#dates.format(user.activeDate, 'yyyy-MM-dd')}"></span>
-								</div>
-							</div>
-						</div>
 	
+						<div style="padding-top: 12px;"></div>
+	
+						<div class="field">
+							<div id="description"
+								th:text="${user.description}" style="font-size: 1.2em;"></div>
+						</div>
 						<th:block th:if="${#lists.size(user.interests) > 0}">
-							<div style="padding-top: 24px;" th:if="${user.interests}"></div>
+							<div style="padding-top: 12px;" th:if="${user.interests}"></div>
 							<div class="field">
-								<label class="label" th:text="#{interests}"></label>
 								<div th:each="interest : ${user.interests}" 
 									class="notification is-info" th:text="${interest.text}" style=" display: inline-block; margin-bottom: 4px;">
 								</div>
 							</div>
+							<div style="padding-top: 12px;" th:if="${user.interests}"></div>
 						</th:block>
-	
-						<div style="padding-top: 24px;"></div>
-	
-						<div class="field">
-							<textarea class="textarea" id="description"
-								th:text="${user.description}" readOnly></textarea>
-						</div>
-	
 						<div class="field" th:if="${user.hasAudio}"
-							style="padding-top: 24px; padding-bottom: 24px;">
+							style="padding-bottom: 24px;">
 							<label class="label" th:text="#{profile.audio}"></label>
 							<audio id="audio-profile" th:if="${user.audio}" controls hidden></audio>
 							<div class="colored button is-info" id="audio-play-button"
@@ -556,7 +547,6 @@
 								<i class="fa fa-play"></i>
 							</div>
 						</div>
-	
 						<table class="table" style="width: 100%">
 							<tbody>
 								<tr>

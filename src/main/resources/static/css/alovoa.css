@@ -328,7 +328,11 @@ input[type=range].slider {
 		font-size: 0.6em;
 	}
 }
-
+@media screen and (max-width: 768px) {
+	.modal-content .box {
+		border-radius: 0px;
+	}
+}
 @media screen and (max-width: 725px) {
 	.navigation-item span {
 		font-size: 0.5em;
@@ -474,9 +478,6 @@ input[type=range].slider {
 	}
 	#donate-modal svg {
 		display: none;
-	}
-	.modal-content .box {
-		border-radius: 0px;
 	}
 	#search-right {
 		display: block;

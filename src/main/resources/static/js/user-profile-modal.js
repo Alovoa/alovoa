@@ -53,10 +53,6 @@ function unblockUser(idEnc) {
 	}
 }
 
-function reportUser() {
-	openModal("report-user-modal");
-}
-
 function reportUserSubmit(idEncoded) {
 	$.ajax({
 		type: "POST",
