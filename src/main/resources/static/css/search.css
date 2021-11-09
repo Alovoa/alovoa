@@ -102,6 +102,10 @@ body {
 	padding-right: 24px;
 }
 
+.card-image {
+	cursor: pointer;
+}
+
 @media screen and (max-width: 1024px) {
 	.card.is-horizontal {
 		flex-direction: column !important;

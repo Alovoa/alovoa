@@ -287,8 +287,28 @@ input[type=range].slider {
 	display: none;
 }
 
+.flex-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
 #lang-modal .button {
 	margin-bottom: 4px;
+}
+
+.active-state-icon {
+	font-size: 0.7em;
+}
+
+.active-state-1 path, .active-state-2 path {
+	color: #68bb6c !important;
+}
+.active-state-3 path, .active-state-4 path {
+	color: #FDD835 !important;
+}
+.active-state-5 path {
+	color: #9E9E9E !important;
 }
 
 @media screen and (max-width: 1050px) {

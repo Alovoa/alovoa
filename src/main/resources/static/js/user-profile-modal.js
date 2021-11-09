@@ -1,7 +1,7 @@
 var csrf = $("input[name='_csrf']").val();
 
 function viewProfile(idEnc) {
-	history.pushState(null, null, 'profile/view/' + idEnc);
+	history.pushState(null, null, '/profile/view/' + idEnc);
 	let url = '/profile/view/modal/' + idEnc;
 	$("#user-profile-container").load(url, function() {
 		setTimeout(function() { openModal("user-profile-modal") }, 1);

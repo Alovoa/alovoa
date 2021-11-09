@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
@@ -88,11 +89,20 @@ public class UserDto {
 	private boolean compatible;
 	
 	private boolean hasLocation;
+	
+	private int lastActiveState = 5;
 
 	public static final int ALL = 0;
 	public static final int PROFILE_PICTURE_ONLY = 1;
 	public static final int NO_AUDIO = 2;
 	public static final int NO_MEDIA = 3;
+	
+	//in minutes
+	public static final int LA_STATE_ACTIVE_1 = 5;
+	public static final int LA_STATE_ACTIVE_2 = 1;
+	public static final int LA_STATE_ACTIVE_3 = 3;
+	public static final int LA_STATE_ACTIVE_4 = 7;
+	
 
 	private static final double MILES_TO_KM = 0.6214;
 
@@ -152,6 +162,18 @@ public class UserDto {
 		dto.setNumberReferred(user.getNumberReferred());
 		dto.setNumberProfileViews(user.getNumberProfileViews());
 		dto.setNumberSearches(user.getNumberSearches());
+		
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime activeDateTime = Tools.dateToLocalDateTime(user.getDates().getActiveDate());
+		if(activeDateTime.isAfter(now.minusMinutes(LA_STATE_ACTIVE_1))) {
+			dto.setLastActiveState(1);
+		} else if(activeDateTime.isAfter(now.minusDays(LA_STATE_ACTIVE_2))) {
+			dto.setLastActiveState(2);
+		} else if(activeDateTime.isAfter(now.minusDays(LA_STATE_ACTIVE_3))) {
+			dto.setLastActiveState(3);
+		} else if(activeDateTime.isAfter(now.minusDays(LA_STATE_ACTIVE_4))) {
+			dto.setLastActiveState(4);
+		}
 
 		if (!user.equals(currentUser)) {
 			dto.blockedByCurrentUser = currentUser.getBlockedUsers().stream()

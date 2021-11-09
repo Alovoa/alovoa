@@ -105,7 +105,7 @@
 	<footer class="footer" th:fragment="footer" id="footer">
 		<div class="container">
 			<div class="columns">
-				<div class="column">
+				<div class="column flex-center">
 					<div class="button" onclick="openModal('lang-modal')" style="margin-top: -8px;">
 						<i class="fas fa-globe" style="margin-right: 6px;"></i>
 					<span th:text="#{language}"></span></div>
@@ -281,7 +281,7 @@
 															th:classappend="${user.gender.text == 'male' ? 'male' : user.gender.text == 'female' ? 'female' : 'other'}"></div>
 														<div class="left" style="font-size: 1.5em; padding-top: 6px;">
 															<span>, </span><span
-																th:text="${user.age}"></span> <th:block th:insert="fragments.html :: zodiac"></th:block>
+																th:text="${user.age}"></span> <th:block th:insert="fragments.html :: zodiac"></th:block> <th:block th:insert="fragments.html :: last-active-state"></th:block>
 														</div>
 														<div class="right" style="font-size: 1.2em; padding-top: 6px;">
 															<i class="fa fa-map-marker-alt"></i>
@@ -374,7 +374,7 @@
 									th:classappend="${user.gender.text == 'male' ? 'male' : user.gender.text == 'female' ? 'female' : 'other'}"></div>
 								<div class="left" style="font-size: 1.5em; padding-top: 6px;">
 									<span>, </span><span
-										th:text="${user.age}"></span><th:block th:insert="fragments.html :: zodiac"></th:block>
+										th:text="${user.age}"></span><th:block th:insert="fragments.html :: zodiac"></th:block> <th:block th:insert="fragments.html :: last-active-state"></th:block>
 								</div>
 								<div class="right" style="font-size: 1.2em; padding-top: 6px;">
 									<i class="fa fa-map-marker-alt"></i>
@@ -401,7 +401,7 @@
 		</div>
 	</div>
 	
-	<span th:fragment="zodiac" th:if="${(currUser != null and currUser.showZodiac)}" style="opacity: 0.8;">
+	<span th:fragment="zodiac" th:if="${(currUser != null and currUser.showZodiac)}">
 		 <th:block th:if="${user.zodiac}">
 		 	<span th:if="${user.zodiac == 'aries'}">♈︎</span>
 		 	<span th:if="${user.zodiac == 'taurus'}">♉︎</span>
@@ -417,6 +417,14 @@
 		 	<span th:if="${user.zodiac == 'pisces'}">♓︎</span>
 		 </th:block>
 	</span>
+	
+	<th:block th:fragment="last-active-state">
+	 	<span th:if="${user.lastActiveState == 1}"><i class="fas fa-circle active-state-icon active-state-1"></i></span>
+	 	<span th:if="${user.lastActiveState == 2}"><i class="far fa-circle active-state-icon active-state-2"></i></span>
+	 	<span th:if="${user.lastActiveState == 3}"><i class="fas fa-circle active-state-icon active-state-3"></i></span>
+	 	<span th:if="${user.lastActiveState == 4}"><i class="far fa-circle active-state-icon active-state-4"></i></span>
+	 	<span th:if="${user.lastActiveState == 5}"><i class="fas fa-circle active-state-icon active-state-5"></i></span>
+	 </th:block>
 
 	<div th:fragment="profile-warning">
 		<div th:if="${hasWarning}">
@@ -512,7 +520,7 @@
 									th:classappend="${user.gender.text == 'male' ? 'male' : user.gender.text == 'female' ? 'female' : 'other'}">
 								</div>
 								<div class="left" style="font-size: 1.5em; padding-top: 8px;">
-									<span>, </span><span th:text="${user.age}"></span>  <th:block th:insert="fragments.html :: zodiac"></th:block>
+									<span>, </span><span th:text="${user.age}"></span>  <th:block th:insert="fragments.html :: zodiac"></th:block> <th:block th:insert="fragments.html :: last-active-state"></th:block>
 								</div>
 								<div class="right" style="font-size: 1.2em; padding-top: 8px;">
 									<i class="fa fa-map-marker-alt"></i>
