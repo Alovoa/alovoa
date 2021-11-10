@@ -165,6 +165,20 @@ button, .button, .input, .select, select {
 	color: white !important;
 }
 
+.navbar.is-fixed-bottom {
+    background-color: white;
+}
+
+.navbar.is-fixed-bottom .button {
+    color: #4a4a4a;
+    height: 56px;
+    border-radius: 0px;
+}
+
+.navbar.is-fixed-bottom svg{
+    font-size: 1.5em;
+}
+
 .notification {
 	padding: 0.5rem 1rem 0.5rem 1rem;
 }
@@ -223,21 +237,6 @@ input[type=range].slider {
 	max-width: 206px;;
 }
 
-#nav-profile {
-	background-color: #ec417a;
-}
-#nav-chats {
-	background-color: #f4511e;
-}
-#nav-search {
-	background-color: #e53935;
-}
-#nav-alerts {
-	background-color: #43a047;
-}
-#nav-donate {
-	background-color: #00897b;
-}
 /*
 .switch[type=checkbox]:checked+label::before,
 .switch[type=checkbox]:checked+label:before {
@@ -362,11 +361,8 @@ input[type=range].slider {
 
 /* DARK THEME */
 
-@media screen and (max-width: 510px) {
-
-}
 @media ( prefers-color-scheme : dark) {
-	body, .card, .box, .textarea, .footer, .select select, select option
+	html, .card, .box, .textarea, .footer, .select select, select option
 		{
 		background-color: #121212;
 	}
@@ -427,6 +423,14 @@ input[type=range].slider {
 	#navbar-text:hover {
 		color: #ec417a;
 	}
+	.navbar.is-fixed-bottom {
+	    background-color: #121212 !important;
+	}
+	.navbar.is-fixed-bottom .button {
+	    color: white;
+	    background-color: #121212 !important;
+	}
+	
 	@media screen and (max-width: 1024px) {
 		.content-background {
 			background: rgba(18, 18, 18, 0.9) !important;

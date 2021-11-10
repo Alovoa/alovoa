@@ -1,4 +1,4 @@
-body {
+html {
 	background-image: url(/img/search-cover.webp);
 }
 
@@ -195,9 +195,6 @@ body {
 		margin: 0;
 		padding: initial !important;
 		width: 100%;
-	}
-	.profile-pic {
-		border-radius: 0px;
 	}
 	.image img {
 		max-height: initial;
