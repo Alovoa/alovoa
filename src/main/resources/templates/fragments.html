@@ -22,29 +22,27 @@
 	</div>
 
 	<div th:fragment="header-logged-out" id="header-logged-out" class="header">
-		<nav class="navbar is-info">
+		<nav class="navbar">
 			<div class="navbar-brand">
-				<a class="navbar-item" href="/"> <img src="/img/icon.png" width="40" height="40" alt="logo">
-				</a> <a class="navbar-item" href="/" id="navbar-text" th:text="#{app.name}"></a>
+				<a class="navbar-item" href="/" id="navbar-text" th:text="#{app.name}"></a>
 			</div>
 
 			<div style="width: 100%; display: flex;">
 				<div class="navbar-end">
 					<div class="navbar-item" id="navbar-item-language" style="padding-right: 0px;">
-						<a class="button is-white is-outlined navbar-item-icon" onclick="openModal('lang-modal')"
-							style="width: 40px; height: 40px;"><i style="padding-right: 0px; color: white;"
+						<a class="button is-info is-outlined navbar-item-icon" onclick="openModal('lang-modal')"
+							style="width: 40px; height: 40px;"><i style="padding-right: 0px;"
 								class="fas fa-globe"></i></a>
 					</div>
 					<div class="navbar-item" id="navbar-item-register">
-						<a class="button is-white is-outlined" href="/register" th:text="#{sign-up}"></a>
+						<a class="button is-info is-outlined" href="/register" th:text="#{sign-up}"></a>
 					</div>
 					<div class="navbar-item">
-						<a class="button is-white is-outlined" href="/login" th:text="#{login}"> </a>
+						<a class="button is-info is-outlined" href="/login" th:text="#{login}"> </a>
 					</div>
 				</div>
 			</div>
 		</nav>
-
 		<script>
 			function onLanguageButtonClicked() {
 				let locale = document.getElementById('locale');
@@ -52,47 +50,75 @@
 				setTimeout(function () {locale.focus()}, 700);
 			}
 		</script>
-
 	</div>
-
-	<div th:fragment="header-logged-in" id="header-logged-in" class="header">
-		<nav class="navbar is-info">
+	
+	<div th:fragment="header-index" id="header-index" class="header">
+		<nav class="navbar">
 			<div class="navbar-brand">
-				<a class="navbar-item"> <img src="/img/icon.png" width="40" height="40">
-				</a> <a id="navbar-text" class="navbar-item" th:text="#{app.name}"></a>
+				<a class="navbar-item" href="/" id="navbar-text" th:text="#{app.name}"></a>
 			</div>
 
 			<div style="width: 100%; display: flex;">
 				<div class="navbar-end">
-					<form th:action="@{/logout}" method="post">
-						<span class="navbar-item">
-							<button class="button is-white is-outlined" href="/logout" id="logout">
+					<div class="navbar-item" id="navbar-item-language" style="padding-right: 0px;">
+						<a class="button is-info is-outlined navbar-item-icon" onclick="openModal('lang-modal')"
+							style="width: 40px; height: 40px;"><i style="padding-right: 0px;"
+								class="fas fa-globe"></i></a>
+					</div>
+					<div class="navbar-item" id="navbar-item-register">
+						<a class="button is-info is-outlined" href="/register" th:text="#{sign-up}"></a>
+					</div>
+					<div class="navbar-item">
+						<a class="button is-info is-outlined" href="/login" th:text="#{login}"> </a>
+					</div>
+				</div>
+			</div>
+		</nav>
+		<script>
+			function onLanguageButtonClicked() {
+				let locale = document.getElementById('locale');
+				locale.scrollIntoView({behavior: 'smooth', block: 'center'});
+				setTimeout(function () {locale.focus()}, 700);
+			}
+		</script>
+	</div>
+
+	<div th:fragment="header-logged-in" id="header-logged-in" class="header">
+		<nav class="navbar">
+			<div class="navbar-brand">
+				<a id="navbar-text" class="navbar-item" th:text="#{app.name}"></a>
+			</div>
+
+			<div style="width: 100%; display: flex;">
+				<div class="navbar-end">
+					<span class="navbar-item">
+						<form th:action="@{/logout}" method="post">
+							<button class="button is-outlined is-info" href="/logout" id="logout">
 								<span th:text="#{logout}"></span>
 							</button>
-						</span>
-					</form>
+						</form>
+					</span>
 				</div>
 			</div>
 		</nav>
 	</div>
 
 	<div th:fragment="header-search" id="header-logged-in" class="header">
-		<nav class="navbar is-info">
+		<nav class="navbar">
 			<div class="navbar-brand">
-				<a class="navbar-item"> <img src="/img/icon.png" width="40" height="40">
-				</a> <a id="navbar-text" class="navbar-item" th:text="#{app.name}"></a>
+				<a id="navbar-text" class="navbar-item" th:text="#{app.name}"></a>
 			</div>
 
 			<div style="width: 100%; display: flex;">
 				<div class="navbar-end">
 					<span class="navbar-item" style="padding-right: 0px;">
-						<a class="button is-white is-outlined navbar-item-icon" onclick="searchSettingsClicked()"
-							style="width: 40px; height: 40px;"><i style="padding-right: 0px; color: white;"
+						<a class="button is-outlined is-info navbar-item-icon" onclick="searchSettingsClicked()"
+							style="width: 40px; height: 40px;"><i style="padding-right: 0px;"
 								class="fas fa-cog"></i></a>
 					</span>
 					<span class="navbar-item">
 						<form th:action="@{/logout}" method="post">
-							<button class="button is-white is-outlined" href="/logout" id="logout">
+							<button class="button is-outlined is-info" href="/logout" id="logout">
 								<span th:text="#{logout}"></span>
 							</button>
 						</form>

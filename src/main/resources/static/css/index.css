@@ -73,6 +73,12 @@
 #icon-for-you path {
 	color: #00897b !important;
 }
+.navbar {
+    background-color: #121212;
+}
+#navbar-text {
+    color: white;
+}
 
 @media screen and (max-width: 600px) {
 	#hero-register-button {

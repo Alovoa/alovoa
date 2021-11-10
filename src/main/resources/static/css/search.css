@@ -165,6 +165,9 @@ body {
 		height: calc(100vh - 108px);
 		height: calc(100 * var(--vh) - 108px);
 	}
+	.card-image {
+		padding: 4px;
+	}
 }
 @media screen and (max-width: 600px) {
 	.card.is-horizontal {
@@ -199,8 +202,6 @@ body {
 	.image img {
 		max-height: initial;
 		max-width: initial;
-	    border-top-left-radius: 0px !important;
-    	border-top-right-radius: 0px !important;
 	}
 	.user-search-div {
 		margin-bottom: 0px;

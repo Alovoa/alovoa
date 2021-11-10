@@ -128,7 +128,6 @@ button, .button, .input, .select, select {
 
 .navbar {
 	display: flex;
-	/*background-image: linear-gradient(141deg, #159dc6 0, #3298dc 71%, #4389e5 100%);*/
 }
 
 .navbar-end {
@@ -138,7 +137,6 @@ button, .button, .input, .select, select {
 }
 
 .navbar-item svg {
-	color: white;
 	padding-right: 4px;
 	font-size: 1.5em;
 }
@@ -160,11 +158,11 @@ button, .button, .input, .select, select {
 }
 
 #navbar-item-language path {
-	color: white;
+	color: #ec417a;
 }
 
 .navbar-item-icon:hover path {
-	color: #0a0a0a !important;
+	color: white !important;
 }
 
 .notification {
@@ -363,6 +361,10 @@ input[type=range].slider {
 }
 
 /* DARK THEME */
+
+@media screen and (max-width: 510px) {
+
+}
 @media ( prefers-color-scheme : dark) {
 	body, .card, .box, .textarea, .footer, .select select, select option
 		{
@@ -413,9 +415,17 @@ input[type=range].slider {
 	.first-name.female {
 		color: #FFD2E1;
 	}
-	
 	.first-name.male {
 		color: #B6E0FF;;
+	}
+	.navbar {
+		background-color: #121212;
+	}
+	#navbar-text {
+		color: white;
+	}
+	#navbar-text:hover {
+		color: #ec417a;
 	}
 	@media screen and (max-width: 1024px) {
 		.content-background {
@@ -424,13 +434,6 @@ input[type=range].slider {
 		.profile-bottom.dimmed {
 			background: rgba(18, 18, 18, 0.9) !important;
 		}
-	}
-}
-
-
-@media screen and (max-width: 510px) {
-	#navbar-text {
-		display: none;
 	}
 }
 
@@ -489,6 +492,9 @@ input[type=range].slider {
 
 /* KAIOS Screns are very small */
 @media screen and (max-width: 302px) {	
+	#navbar-text {
+		display: none;
+	}
 	#audio {
 		width: 208px;
 	}
