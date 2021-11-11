@@ -21,10 +21,6 @@
 	cursor: pointer;
 }
 
-.button:not(.is-outlined) svg {
-	color: white;
-}
-
 .notification-div .button {
 	height: 58px;
 }

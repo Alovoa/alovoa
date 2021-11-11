@@ -11,9 +11,12 @@ html {
 .image img {
 	max-height: 400px;
 	max-width: 400px;
-	border-radius: .25rem;
 }
 
+.card-image:first-child img {
+	border-top-left-radius: 12px;
+	border-top-right-radius: 12px;
+}
 .card {
 	padding: 24px;
 	box-sizing: border-box;
@@ -166,7 +169,8 @@ html {
 		height: calc(100 * var(--vh) - 108px);
 	}
 	.card-image {
-		padding: 4px;
+		padding: 12px;
+		padding-top: 0px;
 	}
 }
 @media screen and (max-width: 600px) {
@@ -223,6 +227,12 @@ html {
 	}
 	.search-visibility {
 		display: none;
+	}
+}
+
+@media screen and (max-width: 302px) {	
+	.card-image {
+		padding: 0px;
 	}
 }
 	

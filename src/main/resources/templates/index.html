@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html th:with="lang=${#locale.language}" th:lang="${lang}">
-
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-title" content="Alovoa">
-	<meta name="theme-color" content="#3298DC" />
+	<meta name="theme-color" content="#121212">
 	<link rel="manifest" href="/manifest/manifest.json">
 	<link rel="apple-touch-icon" href="/img/android-chrome-192x192.png">
 
@@ -171,7 +170,7 @@
 		</section>
 		
 		<!-- for preview purposes -->
-		<img src="/img/android-chrome-512x512.png" style="display: none;">
+		<img src="/img/android-chrome-512x512.png" style="visibility: hidden; z-index: 40;">
 
 		<div id="ios-pwa-modal" class="modal modal-fx-fadeInScale">
 			<div class="modal-background" onclick="closeModal()"></div>
