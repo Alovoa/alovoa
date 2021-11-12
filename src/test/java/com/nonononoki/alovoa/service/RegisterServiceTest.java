@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -177,7 +176,6 @@ public class RegisterServiceTest {
 					user = userRepo.findById(user.getId()).get();
 					Mockito.when(authService.getCurrentUser()).thenReturn(user);
 					UserDeleteToken token = userService.deleteAccountRequest();
-					token.setActiveDate(new Date());
 					user.setDeleteToken(token);
 					userRepo.saveAndFlush(user);
 					UserDeleteAccountDto dto = new UserDeleteAccountDto();

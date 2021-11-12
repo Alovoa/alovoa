@@ -32,7 +32,5 @@ public class UserDeleteToken {
 	private String content;
 
 	private Date date;
-	
-	private Date activeDate;
 
 }

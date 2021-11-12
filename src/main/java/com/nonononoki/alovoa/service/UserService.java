@@ -171,6 +171,9 @@ public class UserService {
 
 	@Value("${app.intention.delay}")
 	private long intentionDelay;
+	
+	@Value("${app.schedule.delay.delete-account}")
+	private long accountDeleteDuration;
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
@@ -185,8 +188,6 @@ public class UserService {
 
 		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
 		token.setDate(currentDate);
-		long ms = currentDate.getTime() + userDeleteDelay;
-		token.setActiveDate(new Date(ms));
 		token.setUser(user);
 		user.setDeleteToken(token);
 		user = userRepo.saveAndFlush(user);
@@ -202,13 +203,13 @@ public class UserService {
 		UserDeleteToken deleteToken = user.getDeleteToken();
 		String userTokenString = deleteToken.getContent();
 
-		if (!dto.isConfirm()) {
+		if (!dto.isConfirm() || deleteToken == null) {
 			throw new AlovoaException("deletion_not_confirmed");
 		}
-
+		
 		long ms = new Date().getTime();
-		if (ms < user.getDeleteToken().getActiveDate().getTime()) {
-			throw new AlovoaException("deletion_not_active_yet");
+		if (user.getDeleteToken().getDate().getTime() + accountDeleteDuration < ms) {
+			throw new AlovoaException("deletion_not_active");
 		}
 
 		if (!dto.getTokenString().equals(userTokenString)) {

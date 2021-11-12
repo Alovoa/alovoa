@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -60,16 +59,14 @@ public class ScheduleService {
 	private long contactDelay;
 	
 	
-	@Scheduled( fixedDelayString = "${app.schedule.short}")
-	@ConditionalOnProperty(value = "app.schedule.enabled", matchIfMissing = true, havingValue = "true")
+	@Scheduled(fixedDelayString = "${app.schedule.short}")
 	public void scheduleShort() {
 		Date date = new Date();
 		cleanCaptcha(date);
 		cleanUserPasswordToken(date);
 	}
 	
-	@Scheduled( fixedDelayString = "${app.schedule.long}")
-	@ConditionalOnProperty(value = "app.schedule.enabled", matchIfMissing = true, havingValue = "true")
+	@Scheduled(fixedDelayString = "${app.schedule.long}")
 	public void scheduleLong() {
 		Date date = new Date();
 		cleanUserHide(date);
@@ -135,10 +132,9 @@ public class ScheduleService {
 	
 	public void cleanUserDeleteToken(Date date) {
 		long ms = date.getTime();
-		ms -= deleteAccountDelay;
+		ms += deleteAccountDelay;
 		Date d = new Date(ms);
-		
-		List<UserDeleteToken> tokens = userDeleteTokenRepository.findByActiveDateBefore(d);
+		List<UserDeleteToken> tokens = userDeleteTokenRepository.findByDateAfter(d);
 		List<User> users = new ArrayList<>();
 		for(UserDeleteToken token : tokens ) {
 			User u = token.getUser();

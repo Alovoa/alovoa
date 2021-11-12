@@ -11,6 +11,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,9 @@ public class DeleteAccountResource {
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
+	
+	@Value("${app.schedule.delay.delete-account}")
+	private long accountDeleteDuration;
 
 	@GetMapping("/delete-account/{tokenString}")
 	public ModelAndView deleteAccount(@PathVariable String tokenString) throws AlovoaException, InvalidKeyException,
@@ -46,7 +50,7 @@ public class DeleteAccountResource {
 		UserDeleteToken token = user.getDeleteToken();
 		boolean active = false;
 		long ms = new Date().getTime();
-		if (token != null && token.getActiveDate().getTime() < ms) {
+		if (token != null && token.getDate().getTime() + accountDeleteDuration >= ms ) {
 			active = true;
 		}
 		mav.addObject("active", active);
