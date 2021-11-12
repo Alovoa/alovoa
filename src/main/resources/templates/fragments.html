@@ -10,13 +10,13 @@
 
 		<div class="field">
 			<img id="captcha-image">
-			<button type="button" id="captcha-refresh-button" class="button is-info colored" onclick="refreshCaptcha()">
-				<i class="fa fa-sync" id="captcha-refresh-icon"></i>
-			</button>
 		</div>
 		<div class="field">
 			<input class="input" id="captcha" name="captchaText" th:placeholder="#{captcha}" autocomplete="off"
 				required>
+			<button type="button" id="captcha-refresh-button" class="button is-info colored" onclick="refreshCaptcha()">
+				<i class="fa fa-sync" id="captcha-refresh-icon"></i>
+			</button>
 		</div>
 		<div style="padding-top: 4px;"></div>
 	</div>
@@ -178,7 +178,7 @@
 		<div id="lang-modal" class="modal modal-fx-fadeInScale">
 			<div class="modal-background" onclick="closeModal()"></div>
 			<div class="modal-content">
-				<div style="margin-left: 4px;">
+				<div style="margin: 8px;">
 					<div onclick="closeModal()" style="padding-bottom: 4px;"><i class="fa fa-times fa-2x" style="cursor: pointer; color: white"></i></div>
 					<button class="button colored is-primary" value="?lang=en" onclick="onChangeLocal(this.value)">English</button>
 					<button class="button colored is-primary" value="?lang=de" onclick="onChangeLocal(this.value)">Deutsch</button>

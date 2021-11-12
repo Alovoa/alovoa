@@ -64,10 +64,7 @@ button, .button, .input, .select, select {
 }
 
 #captcha-refresh-button {
-	height: 70px;
-	width: 70px;
-	font-size: 1.7rem;
-	margin-left: 12px;
+	margin-left: 4px;
 }
 
 #main {
@@ -308,6 +305,15 @@ input[type=range].slider {
 	color: #9E9E9E !important;
 }
 
+#google-auth {
+	background-color: #4285F4; width: 100%; margin-right: 4px; margin-bottom: 8px;
+}
+
+#facebook-auth {
+	background-color: #4267b2; width: 100%;
+}
+
+
 @media screen and (max-width: 1050px) {
 	.navigation-item span {
 		font-size: 0.8em;
@@ -478,8 +484,11 @@ input[type=range].slider {
 	#captcha-image {
 		width: 156px;
 	}
-	#captcha {
-		max-width: 100%;
+	#email-auth svg {
+		font-size: 0.8em;
+	}
+	#facebook-auth img, #google-auth img {
+		height: 20px !important;
 	}
 }
 
@@ -496,9 +505,6 @@ input[type=range].slider {
 
 /* KAIOS Screns are very small */
 @media screen and (max-width: 302px) {	
-	#navbar-text {
-		display: none;
-	}
 	#audio {
 		width: 208px;
 	}
@@ -585,6 +591,9 @@ input[type=range].slider {
 	}
 	.search-audio, .search-visibility {
 		display: none;
+	}
+	.section {
+		padding: 1rem 0.5rem;
 	}
 }
 @media screen and (max-width: 260px) {
