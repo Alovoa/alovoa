@@ -500,13 +500,13 @@
 	
 	<div th:fragment="user-profile-modal">
 		<div id="user-profile-modal" class="modal modal-fx-fadeInScale">
-		<div class="modal-background" onclick="history.back()"></div>
-		<div class="modal-content">
-			<div class="box">
-				<i class="fa fa-times fa-2x" style="cursor:pointer; margin-left: 8px; margin-top: 4px" onclick="history.back()" ></i>
-				<th:block th:replace="fragments.html::user-profile"></th:block>
+			<div class="modal-background" onclick="history.back()"></div>
+			<div class="modal-content">
+				<div class="box">
+					<i class="fa fa-times fa-2x" style="cursor:pointer; margin-left: 8px; margin-top: 4px" onclick="history.back()" ></i>
+					<th:block th:replace="fragments.html::user-profile"></th:block>
+				</div>
 			</div>
-		</div>
 		</div>
 	</div>
 	

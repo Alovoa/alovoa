@@ -7,3 +7,7 @@ function closeModal() {
 	$('.modal').removeClass("is-active");
 	$(document.body).removeClass("is-clipped");
 }
+
+function hideModal() {
+	closeModal();
+}

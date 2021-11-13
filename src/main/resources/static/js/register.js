@@ -13,8 +13,6 @@ $(function() {
 	dobInput.attr('max', startDate);
 	dobInput.attr('min', endDate);
 
-	bulmaCollapsible.attach();
-
 	const queryString = window.location.search;
 	const urlParams = new URLSearchParams(queryString);
 	const referrer = urlParams.get('referrer');
@@ -60,3 +58,7 @@ $(function() {
 
 		});
 });
+
+function emailAuthClick() {
+	openModal("email-register-modal");
+}
