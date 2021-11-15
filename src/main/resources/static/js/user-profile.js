@@ -3,7 +3,7 @@ var csrf = $("meta[name='_csrf']").attr("content");
 
 $(function() {
 
-	var swiper = new Swiper('.swiper-container', {
+	var swiper = new Swiper('.swiper-container-user-profile', {
 		navigation : {
 			nextEl : '.swiper-button-next',
 			prevEl : '.swiper-button-prev',

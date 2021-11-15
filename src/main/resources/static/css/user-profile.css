@@ -1,5 +1,13 @@
 #audio-play-button {
+	margin-top: 12px;
 	width: 115px;
+}
+
+.card-image:first-child img {
+	border-top-left-radius: 12px;
+	border-top-right-radius: 12px;
+	border-bottom-left-radius: 12px;
+	border-bottom-right-radius: 12px;
 }
 
 .profile-bottom .button {
@@ -18,6 +26,21 @@
   	justify-content: center;
   	z-index: 1;
 }
+
+@media screen and (max-width: 600px) {
+	.swiper-container-user-profile img {
+		max-height: initial;
+		max-width: initial;
+		width: 100%;
+	}
+	.swiper-container-user-profile img {
+		border-radius: 0px !important;
+	}
+	.swiper-container-user-profile {
+		margin-top: 0px !important;
+	}
+}
+
 @media screen and (max-width: 768px) {
 	#user-profile-content .box, #user-profile-content .section {
 		padding: 0px;
@@ -25,4 +48,13 @@
 	.container .content {
 		padding: 1.5rem 1.5rem;
 	}
+	#user-profile-modal .swiper-container-user-profile {
+		margin-top: 0px !important;
+	}
+	.swiper-container-user-profile {
+		margin-top: 12px;
+	}
 }
+
+
+

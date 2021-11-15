@@ -48,8 +48,16 @@
 	
 	#main-container {
 		scroll-snap-type: y mandatory;
-	 	height: calc(100vh - 182px);
- 	 	height: calc(100 * var(--vh) - 182px);
+	 	height: calc(100vh - 162px);
+ 	 	height: calc(100 * var(--vh) - 162px);
+	}
+	
+	.card-image {
+		margin-top: 16px;
+	}
+	
+	.donate-user-card .content {
+		padding: 12px;
 	}
 }
 
@@ -66,7 +74,12 @@
 	#donate-bottom {
 		padding: 0.3em;
 	}
-	
+	.donate-user-card .content {
+		padding-top: 0px;
+	}	
+	.description {
+		padding-top: 2px !important;
+	}
 }
 
 /* KAIOS Screns are very small */

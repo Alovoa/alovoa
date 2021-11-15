@@ -381,7 +381,7 @@
 	</div>
 
 	<div th:fragment="donate-filter" id="donate-cards-div">
-		<div class="card is-horizontal" th:each="donation : ${donations}"
+		<div class="card is-horizontal donate-user-card" th:each="donation : ${donations}"
 			style="scroll-snap-align: end;">
 			<th:block th:with="user=${donation.user}">
 				<div class="card-image">
@@ -410,7 +410,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="media">
+						<div class="media description">
 							<div class="full-width">
 								<div class="left" style="font-size: 1.2em">
 									<span th:text="#{donated}"></span><span> </span> <span
@@ -503,11 +503,14 @@
 			<div class="modal-background" onclick="history.back()"></div>
 			<div class="modal-content">
 				<div class="box">
-					<i class="fa fa-times fa-2x" style="cursor:pointer; margin-left: 8px; margin-top: 4px" onclick="history.back()" ></i>
+					<div style="padding: 8px;"><i class="fa fa-times fa-2x" style="cursor:pointer; margin-left: 8px; margin-top: 4px" onclick="history.back()" ></i></div>
 					<th:block th:replace="fragments.html::user-profile"></th:block>
 				</div>
 			</div>
 		</div>
+		<script>
+		$(function() {var swiper = new Swiper('.swiper-container-user-profile', { navigation : {nextEl : '.swiper-button-next',prevEl : '.swiper-button-prev',},});});
+	</script>
 	</div>
 	
 	<div th:fragment="user-profile">
@@ -515,7 +518,7 @@
 			<div class="section">
 				<div class="container">
 					<div class="field">
-						<div class="swiper-container">
+						<div class="swiper-container-user-profile">
 							<div class="swiper-wrapper">
 								<div class="swiper-slide">
 									<div class="center-parent">
@@ -573,7 +576,6 @@
 						</th:block>
 						<div class="field" th:if="${user.hasAudio}"
 							style="padding-bottom: 24px;">
-							<label class="label" th:text="#{profile.audio}"></label>
 							<audio id="audio-profile" th:if="${user.audio}" controls hidden></audio>
 							<div class="colored button is-info" id="audio-play-button"
 								th:if="${user.audio}" onclick="downloadAndPlayAudio()">

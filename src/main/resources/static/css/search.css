@@ -13,10 +13,6 @@ html {
 	max-width: 400px;
 }
 
-.card-image:first-child img {
-	border-top-left-radius: 12px;
-	border-top-right-radius: 12px;
-}
 .card {
 	padding: 24px;
 	box-sizing: border-box;
