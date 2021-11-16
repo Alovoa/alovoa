@@ -451,6 +451,9 @@ input[type=range].slider {
 	    color: white;
 	    background-color: #121212 !important;
 	}
+	.swiper-pagination-bullet {
+	    background: #FFF;
+	}
 	
 	@media screen and (max-width: 1024px) {
 		.content-background {
