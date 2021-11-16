@@ -510,7 +510,7 @@
 			<script src="/js/tools/refresh-captcha.js"></script>
 		</div>
 		<script>
-		$(function() {var swiper = new Swiper('.swiper-container-user-profile', { navigation : {nextEl : '.swiper-button-next',prevEl : '.swiper-button-prev',},});});
+		$(function() {var swiper = new Swiper('.swiper-container-user-profile', { navigation : {nextEl : '.swiper-button-next',prevEl : '.swiper-button-prev'}, pagination: { el : '.swiper-pagination'}});});
 	</script>
 	</div>
 	
@@ -535,11 +535,13 @@
 									</div>
 								</div>
 							</div>
-	
 							<!-- Add Arrows -->
+							<!--
 							<div class="swiper-button-next"></div>
 							<div class="swiper-button-prev"></div>
+							-->
 						</div>
+						<div class="swiper-pagination"></div>
 					</div>
 				</div>
 				<div class="container">

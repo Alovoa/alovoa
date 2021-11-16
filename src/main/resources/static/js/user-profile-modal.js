@@ -53,6 +53,12 @@ function unblockUser(idEnc) {
 	}
 }
 
+function reportUser() {
+	var element = document.getElementById("report-user-div");
+	element.classList.toggle("display-none");
+	window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+}
+
 function reportUserSubmit(idEncoded) {
 	$.ajax({
 		type: "POST",

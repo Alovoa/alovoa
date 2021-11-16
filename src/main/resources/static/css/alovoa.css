@@ -231,7 +231,7 @@ input[type=range].slider {
 }
 
 #captcha {
-	max-width: 206px;;
+	max-width: 168px;
 }
 
 /*
@@ -319,6 +319,14 @@ input[type=range].slider {
 
 #facebook-auth {
 	background-color: #4267b2; width: 100%;
+}
+
+.swiper-pagination {
+	width: 100%;
+}
+
+.swiper-pagination .swiper-pagination-bullet {
+	margin: 0 4px;
 }
 
 @media screen and (max-width: 1050px) {
