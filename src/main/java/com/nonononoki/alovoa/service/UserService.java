@@ -67,6 +67,7 @@ import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserIntention;
 import com.nonononoki.alovoa.entity.user.UserInterest;
 import com.nonononoki.alovoa.entity.user.UserLike;
+import com.nonononoki.alovoa.entity.user.UserMiscInfo;
 import com.nonononoki.alovoa.entity.user.UserNotification;
 import com.nonononoki.alovoa.entity.user.UserProfilePicture;
 import com.nonononoki.alovoa.entity.user.UserReport;
@@ -83,6 +84,7 @@ import com.nonononoki.alovoa.repo.UserImageRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserInterestRepository;
 import com.nonononoki.alovoa.repo.UserLikeRepository;
+import com.nonononoki.alovoa.repo.UserMiscInfoRepository;
 import com.nonononoki.alovoa.repo.UserNotificationRepository;
 import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -99,6 +101,9 @@ public class UserService {
 
 	@Autowired
 	private GenderRepository genderRepo;
+
+	@Autowired
+	private UserMiscInfoRepository userMiscInfoRepo;
 
 	@Autowired
 	private UserIntentionRepository userIntentionRepo;
@@ -171,7 +176,7 @@ public class UserService {
 
 	@Value("${app.intention.delay}")
 	private long intentionDelay;
-	
+
 	@Value("${app.schedule.delay.delete-account}")
 	private long accountDeleteDuration;
 
@@ -206,7 +211,7 @@ public class UserService {
 		if (!dto.isConfirm() || deleteToken == null) {
 			throw new AlovoaException("deletion_not_confirmed");
 		}
-		
+
 		long ms = new Date().getTime();
 		if (user.getDeleteToken().getDate().getTime() + accountDeleteDuration < ms) {
 			throw new AlovoaException("deletion_not_active");
@@ -467,6 +472,38 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
+	public void updateUserMiscInfo(long infoValue, boolean activated) throws AlovoaException {
+		User user = authService.getCurrentUser();
+		Set<UserMiscInfo> list = user.getMiscInfos();
+		if (list == null) {
+			list = new HashSet<>();
+		}
+
+		UserMiscInfo info = userMiscInfoRepo.findByValue(infoValue);
+		if (activated) {
+			if (!list.contains(info)) {
+				list.add(info);
+			}
+
+			if (infoValue >= UserMiscInfo.KIDS_NO && infoValue <= UserMiscInfo.KIDS_YES) {
+				list.removeIf(o -> o.getValue() != infoValue && o.getValue() >= UserMiscInfo.KIDS_NO
+						&& o.getValue() <= UserMiscInfo.KIDS_YES);
+			}
+
+			else if (infoValue >= UserMiscInfo.RELATIONSHIP_SINGLE && infoValue <= UserMiscInfo.RELATIONSHIP_OTHER) {
+				list.removeIf(o -> o.getValue() != infoValue && o.getValue() >= UserMiscInfo.RELATIONSHIP_SINGLE
+						&& o.getValue() <= UserMiscInfo.RELATIONSHIP_OTHER);
+			}
+
+		} else {
+			if (list.contains(info)) {
+				list.remove(info);
+			}
+		}
+		user.setMiscInfos(list);
+		userRepo.saveAndFlush(user);
+	}
+
 	public void addInterest(String value) throws AlovoaException {
 		User user = authService.getCurrentUser();
 
@@ -525,7 +562,7 @@ public class UserService {
 		user.setUiDesign(uiDesign);
 		userRepo.saveAndFlush(user);
 	}
-	
+
 	public void updateShowZodiac(int showZodiac) throws AlovoaException {
 		User user = authService.getCurrentUser();
 		user.setShowZodiac(showZodiac == 1);

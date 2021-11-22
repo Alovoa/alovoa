@@ -22,7 +22,7 @@ $(function() {
 			nextEl: '.swiper-button-next',
 			prevEl: '.swiper-button-prev',
 		},
-		pagination: { el : '.swiper-pagination'}
+		pagination: { el: '.swiper-pagination' }
 	});
 
 	//updateProfileWarning();
@@ -67,7 +67,7 @@ $(function() {
 						console.log(e);
 						hideLoader();
 						alert(getGenericErrorText());
-						if(e.status == 403) {
+						if (e.status == 403) {
 							location.reload();
 						}
 					}
@@ -101,10 +101,10 @@ $(function() {
 						console.log(e);
 						hideLoader();
 						alert(getGenericErrorText());
-						if(e.status == 403) {
+						if (e.status == 403) {
 							location.reload();
 						}
-						
+
 					}
 				});
 			}
@@ -144,7 +144,7 @@ $(function() {
 						error: function(e) {
 							console.log(e);
 							alert(getGenericErrorText());
-							if(e.status == 403) {
+							if (e.status == 403) {
 								location.reload();
 							}
 						}
@@ -197,7 +197,7 @@ $(function() {
 				error: function(e) {
 					console.log(e);
 					alert(getGenericErrorText());
-					if(e.status == 403) {
+					if (e.status == 403) {
 						location.reload();
 					}
 				}
@@ -225,7 +225,7 @@ $(function() {
 				error: function(e) {
 					console.log(e);
 					alert(getGenericErrorText());
-					if(e.status == 403) {
+					if (e.status == 403) {
 						location.reload();
 					}
 				}
@@ -257,7 +257,83 @@ $(function() {
 				error: function(e) {
 					console.log(e);
 					alert(getGenericErrorText());
-					if(e.status == 403) {
+					if (e.status == 403) {
+						location.reload();
+					}
+				}
+			});
+		}
+
+	});
+
+	$(".gender-switch").change(function(e) {
+
+		let obj = e.target;
+		let checked = obj.checked;
+		if (checked) {
+			checked = 1;
+		} else {
+			checked = 0;
+		}
+		let data = obj.value;
+
+		if (data) {
+			$.ajax({
+				type: "POST",
+				url: "/user/update/preferedGender/" + data + "/" + checked,
+				headers: {
+					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
+				},
+				success: function() {
+					updateProfileWarning();
+				},
+				error: function(e) {
+					console.log(e);
+					alert(getGenericErrorText());
+					if (e.status == 403) {
+						location.reload();
+					}
+				}
+			});
+		}
+
+	});
+
+	$(".misc-info-switch").change(function(e) {
+
+		let obj = e.target;
+		let checked = obj.checked;
+		if (checked) {
+			checked = 1;
+		} else {
+			checked = 0;
+		}
+		let data = obj.value;
+
+		if (data) {
+			$.ajax({
+				type: "POST",
+				url: "/user/update/misc-info/" + data + "/" + checked,
+				headers: {
+					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
+				},
+				success: function() {
+					if (obj.classList.contains("misc-info-single")) {
+						let parent = obj.parentNode.parentNode;
+						let inputs = parent.getElementsByTagName('input');
+						if(obj.checked) {
+							for(input of inputs) {
+								if(input.value != obj.value) {
+									input.checked = false;
+								}
+							}
+						}
+					}
+				},
+				error: function(e) {
+					console.log(e);
+					alert(getGenericErrorText());
+					if (e.status == 403) {
 						location.reload();
 					}
 				}
@@ -282,7 +358,7 @@ $(function() {
 			error: function() {
 				console.log(e);
 				alert(getGenericErrorText());
-				if(e.status == 403) {
+				if (e.status == 403) {
 					location.reload();
 				}
 			}
@@ -305,7 +381,7 @@ $(function() {
 			error: function(e) {
 				console.log(e);
 				alert(getGenericErrorText());
-				if(e.status == 403) {
+				if (e.status == 403) {
 					location.reload();
 				}
 			}
@@ -327,7 +403,7 @@ $(function() {
 			error: function(e) {
 				console.log(e);
 				alert(getGenericErrorText());
-				if(e.status == 403) {
+				if (e.status == 403) {
 					location.reload();
 				}
 			}
@@ -367,7 +443,7 @@ $(function() {
 						console.log(e);
 						hideLoader();
 						alert(getGenericErrorText());
-						if(e.status == 403) {
+						if (e.status == 403) {
 							location.reload();
 						}
 					}
@@ -391,7 +467,7 @@ function deleteAudio() {
 			error: function(e) {
 				console.log(e);
 				alert(getGenericErrorText());
-				if(e.status == 403) {
+				if (e.status == 403) {
 					location.reload();
 				}
 			}
@@ -412,7 +488,7 @@ function deleteInterest(id) {
 		error: function(e) {
 			console.log(e);
 			alert(getGenericErrorText());
-			if(e.status == 403) {
+			if (e.status == 403) {
 				location.reload();
 			}
 		}
@@ -433,7 +509,7 @@ function deleteImage(id) {
 			error: function(e) {
 				console.log(e);
 				alert(getGenericErrorText());
-				if(e.status == 403) {
+				if (e.status == 403) {
 					location.reload();
 				}
 			}
@@ -454,7 +530,7 @@ function updateAccentColor(color) {
 		error: function(e) {
 			console.log(e);
 			alert(getGenericErrorText());
-			if(e.status == 403) {
+			if (e.status == 403) {
 				location.reload();
 			}
 		}
@@ -475,7 +551,7 @@ function updateUiDesign() {
 		error: function(e) {
 			console.log(e);
 			alert(getGenericErrorText());
-			if(e.status == 403) {
+			if (e.status == 403) {
 				location.reload();
 			}
 		}
@@ -496,7 +572,7 @@ function updateShowZodiac() {
 		error: function(e) {
 			console.log(e);
 			alert(getGenericErrorText());
-			if(e.status == 403) {
+			if (e.status == 403) {
 				location.reload();
 			}
 		}
@@ -517,7 +593,7 @@ function updateUnits() {
 		error: function(e) {
 			console.log(e);
 			alert(getGenericErrorText());
-			if(e.status == 403) {
+			if (e.status == 403) {
 				location.reload();
 			}
 		}
@@ -575,7 +651,7 @@ function updateProfileWarning() {
 		error: function(e) {
 			console.log(e);
 			alert(getGenericErrorText());
-			if(e.status == 403) {
+			if (e.status == 403) {
 				location.reload();
 			}
 		}
@@ -598,7 +674,7 @@ function resizeAudio(file, callback) {
 			console.log(e);
 			getBase64(file, callback);
 		}
-	} else if (file.type == "audio/x-wav" || file.type == "audio/wav" ) {
+	} else if (file.type == "audio/x-wav" || file.type == "audio/wav") {
 		getBase64(file, callback);
 	} else {
 		hideLoader();

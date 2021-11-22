@@ -25,6 +25,7 @@ import com.nonononoki.alovoa.entity.user.UserBlock;
 import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserIntention;
 import com.nonononoki.alovoa.entity.user.UserInterest;
+import com.nonononoki.alovoa.entity.user.UserMiscInfo;
 import com.nonononoki.alovoa.entity.user.UserReport;
 
 import lombok.Data;
@@ -56,6 +57,7 @@ public class UserDto {
 	private int preferedMinAge;
 	private int preferedMaxAge;
 
+	private Set<UserMiscInfo> miscInfos;
 	private Set<Gender> preferedGenders;
 	private UserIntention intention;
 
@@ -139,6 +141,7 @@ public class UserDto {
 		}
 		dto.setShowZodiac(user.isShowZodiac());
 		dto.setUnits(user.getUnits());
+		dto.setMiscInfos(user.getMiscInfos());
 		dto.setPreferedGenders(user.getPreferedGenders());
 		dto.setPreferedMinAge(user.getPreferedMinAge());
 		dto.setPreferedMaxAge(user.getPreferedMaxAge());

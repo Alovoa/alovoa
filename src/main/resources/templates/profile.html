@@ -101,7 +101,7 @@
 				</div>
 
 
-				<div class="box"  id="description-field">
+				<div class="box" id="description-field">
 					<div class="field">
 						<label class="label" th:text="#{description}"></label>
 						<textarea class="textarea" id="description"
@@ -146,7 +146,7 @@
 						</div>
 					</div>
 
-					<div class="field"  id="gender-field">
+					<div class="field" id="gender-field">
 						<label class="label" th:text="#{profile.gender}"></label>
 						<th:block th:each="gender : ${genders}">
 							<div class="field">
@@ -165,7 +165,7 @@
 									th:text="#{profile.gender.other}"></label>
 							</div>
 						</th:block>
-					</div>
+					</div>			
 				</div>
 				
 				<div style="margin-bottom: 1.5rem;">
@@ -203,6 +203,114 @@
 								</div>
 							</div>
 						</div>
+					</div>
+				</div>
+				
+				<div class="box">
+					<label class="label" th:text="#{profile.misc-info.title}"></label>
+					<div class="field" id="misc-info-field">						
+						
+						
+						<div class="field">
+							<label class="label" th:text="#{profile.misc-info.relationship.title}"></label>
+							<div class="field">
+								<input id="misc-info-relationship-single" type="checkbox"
+									class="switch misc-info-switch misc-info-single" value="11"
+									style="position: absolute"
+									th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 11].isEmpty()}">
+								<label for="misc-info-relationship-single"
+									th:text="#{profile.misc-info.relationship.single}"></label> 
+							</div>
+								
+							<div class="field">
+								<input id="misc-info-relationship-taken" type="checkbox"
+									class="switch misc-info-switch misc-info-single" value="12"
+									style="position: absolute"
+									th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 12].isEmpty()}">
+								<label for="misc-info-relationship-taken"
+									th:text="#{profile.misc-info.relationship.taken}"></label> 
+							</div>
+								
+							<div class="field">
+								<input id="misc-info-relationship-open" type="checkbox"
+									class="switch misc-info-switch misc-info-single" value="13"
+									style="position: absolute"
+									th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 13].isEmpty()}">
+								<label for="misc-info-relationship-open"
+									th:text="#{profile.misc-info.relationship.open}"></label> 
+							</div>
+							
+							<div class="field">
+								<input id="misc-info-relationship-other" type="checkbox"
+									class="switch misc-info-switch misc-info-single" value="14"
+									style="position: absolute"
+									th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 14].isEmpty()}">
+								<label for="misc-info-relationship-other"
+									th:text="#{profile.misc-info.relationship.other}"></label> 
+							</div>
+						</div>
+						
+						<div class="field">
+							<label class="label" th:text="#{profile.misc-info.kids.title}"></label>
+							<div class="field">
+								<input id="misc-info-kids-no" type="checkbox"
+									class="switch misc-info-switch misc-info-single" value="21"
+									style="position: absolute"
+									th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 21].isEmpty()}">
+								<label for="misc-info-kids-no"
+									th:text="#{profile.misc-info.kids.no}"></label> 
+							</div>
+								
+							<div class="field">
+								<input id="misc-info-kids-yes" type="checkbox"
+									class="switch misc-info-switch misc-info-single" value="22"
+									style="position: absolute"
+									th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 22].isEmpty()}">
+								<label for="misc-info-kids-yes"
+									th:text="#{profile.misc-info.kids.yes}"></label> 
+							</div>
+							
+						</div>
+						
+						<div class="field">
+							<label class="label" th:text="#{profile.misc-info.drugs.title}"></label>
+							<div class="field">
+								<input id="misc-info-drugs-tobacco" type="checkbox"
+									class="switch misc-info-switch" value="1"
+									style="position: absolute"
+									th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 1].isEmpty()}">
+								<label for="misc-info-drugs-tobacco"
+									th:text="#{profile.misc-info.drugs.tobacco}"></label> 
+							</div>
+								
+							<div class="field">
+								<input id="misc-info-drugs-alcohol" type="checkbox"
+									class="switch misc-info-switch" value="2"
+									style="position: absolute"
+									th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 2].isEmpty()}">
+								<label for="misc-info-drugs-alcohol"
+									th:text="#{profile.misc-info.drugs.alcohol}"></label> 
+							</div>
+								
+							<div class="field">
+								<input id="misc-info-drugs-cannabis" type="checkbox"
+									class="switch misc-info-switch" value="3"
+									style="position: absolute"
+									th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 3].isEmpty()}">
+								<label for="misc-info-drugs-cannabis"
+									th:text="#{profile.misc-info.drugs.cannabis}"></label> 
+							</div>
+							
+							<div class="field">
+								<input id="misc-info-drugs-other" type="checkbox"
+									class="switch misc-info-switch" value="4"
+									style="position: absolute"
+									th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 4].isEmpty()}">
+								<label for="misc-info-drugs-other"
+									th:text="#{profile.misc-info.drugs.other}"></label> 
+							</div>
+						</div>
+						
 					</div>
 				</div>
 

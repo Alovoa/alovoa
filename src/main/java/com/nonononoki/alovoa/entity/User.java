@@ -46,6 +46,7 @@ import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserIntention;
 import com.nonononoki.alovoa.entity.user.UserInterest;
 import com.nonononoki.alovoa.entity.user.UserLike;
+import com.nonononoki.alovoa.entity.user.UserMiscInfo;
 import com.nonononoki.alovoa.entity.user.UserNotification;
 import com.nonononoki.alovoa.entity.user.UserPasswordToken;
 import com.nonononoki.alovoa.entity.user.UserProfilePicture;
@@ -136,6 +137,9 @@ public class User implements UserDetails {
 	@ManyToMany
 	@JoinTable(name = "user2genders")
 	private Set<Gender> preferedGenders;
+	
+	@ManyToMany
+	private Set<UserMiscInfo> miscInfos;
 
 	@ManyToOne
 	private UserIntention intention;

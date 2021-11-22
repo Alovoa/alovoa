@@ -123,6 +123,12 @@ public class UserController {
 			throws AlovoaException {
 		userService.updatePreferedGender(genderId, Tools.binaryStringToBoolean(activated));
 	}
+	
+	@PostMapping("/update/misc-info/{infoValue}/{activated}")
+	public void updatePreferedGenders(@PathVariable long infoValue, @PathVariable String activated)
+			throws AlovoaException {
+		userService.updateUserMiscInfo(infoValue, Tools.binaryStringToBoolean(activated));
+	}
 
 	@PostMapping("/interest/add/{value}")
 	public void addInterest(@PathVariable String value) throws AlovoaException {
