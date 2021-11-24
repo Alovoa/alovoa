@@ -631,21 +631,25 @@
 								</tr>
 								<tr>
 									<th th:text="#{profile.misc-info.relationship.title}"></th>
-									<td th:if="${user.miscInfos != null and not user.miscInfos.?[value == 11].isEmpty()}"
-										th:text="#{profile.misc-info.relationship.single}"></td>
-									<td th:if="${user.miscInfos != null and not user.miscInfos.?[value == 12].isEmpty()}"
-										th:text="#{profile.misc-info.relationship.taken}"></td>
-									<td th:if="${user.miscInfos != null and not user.miscInfos.?[value == 13].isEmpty()}"
-										th:text="#{profile.misc-info.relationship.open}"></td>
-									<td th:if="${user.miscInfos != null and not user.miscInfos.?[value == 14].isEmpty()}"
-										th:text="#{profile.misc-info.relationship.other}"></td>
+									<td>
+										<span th:if="${user.miscInfos != null and not user.miscInfos.?[value == 11].isEmpty()}"
+											th:text="#{profile.misc-info.relationship.single}"></span>
+										<span th:if="${user.miscInfos != null and not user.miscInfos.?[value == 12].isEmpty()}"
+											th:text="#{profile.misc-info.relationship.taken}"></span>
+										<span th:if="${user.miscInfos != null and not user.miscInfos.?[value == 13].isEmpty()}"
+											th:text="#{profile.misc-info.relationship.open}"></span>
+										<span th:if="${user.miscInfos != null and not user.miscInfos.?[value == 14].isEmpty()}"
+											th:text="#{profile.misc-info.relationship.other}"></span>
+									</td>
 								</tr>
 								<tr>
 									<th th:text="#{profile.misc-info.kids.title}"></th>
-									<td th:if="${user.miscInfos != null and not user.miscInfos.?[value == 21].isEmpty()}"
-										th:text="#{profile.misc-info.kids.no}"></td>
-									<td th:if="${user.miscInfos != null and not user.miscInfos.?[value == 22].isEmpty()}"
-										th:text="#{profile.misc-info.kids.yes}"></td>
+									<td>
+										<span th:if="${user.miscInfos != null and not user.miscInfos.?[value == 21].isEmpty()}"
+											th:text="#{profile.misc-info.kids.no}"></span>
+										<span th:if="${user.miscInfos != null and not user.miscInfos.?[value == 22].isEmpty()}"
+											th:text="#{profile.misc-info.kids.yes}"></span>
+									</td>
 								</tr>
 								<tr>
 									<th th:text="#{profile.misc-info.drugs.title}"></th>
