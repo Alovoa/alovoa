@@ -510,7 +510,7 @@
 			<script src="/js/tools/refresh-captcha.js"></script>
 		</div>
 		<script>
-		$(function() {var swiper = new Swiper('.swiper-container-user-profile', { navigation : {nextEl : '.swiper-button-next',prevEl : '.swiper-button-prev'}, pagination: { el : '.swiper-pagination'}});});
+		$(function() {var swiper = new Swiper('.swiper-container-user-profile', { pagination: { el : '.swiper-pagination'}});});
 	</script>
 	</div>
 	
@@ -519,7 +519,7 @@
 			<div class="section">
 				<div class="container">
 					<div class="field">
-						<div class="swiper-container-user-profile">
+						<div class="swiper-container swiper-container-user-profile">
 							<div class="swiper-wrapper">
 								<div class="swiper-slide">
 									<div class="center-parent">
@@ -628,6 +628,37 @@
 									<th th:text="#{donated}"></th>
 									<td
 										th:text="${#numbers.formatDecimal(user.totalDonations, 1, 2, 'POINT') + ' €'}"></td>
+								</tr>
+								<tr>
+									<th th:text="#{profile.misc-info.relationship.title}"></th>
+									<td th:if="${user.miscInfos != null and not user.miscInfos.?[value == 11].isEmpty()}"
+										th:text="#{profile.misc-info.relationship.single}"></td>
+									<td th:if="${user.miscInfos != null and not user.miscInfos.?[value == 12].isEmpty()}"
+										th:text="#{profile.misc-info.relationship.taken}"></td>
+									<td th:if="${user.miscInfos != null and not user.miscInfos.?[value == 13].isEmpty()}"
+										th:text="#{profile.misc-info.relationship.open}"></td>
+									<td th:if="${user.miscInfos != null and not user.miscInfos.?[value == 14].isEmpty()}"
+										th:text="#{profile.misc-info.relationship.other}"></td>
+								</tr>
+								<tr>
+									<th th:text="#{profile.misc-info.kids.title}"></th>
+									<td th:if="${user.miscInfos != null and not user.miscInfos.?[value == 21].isEmpty()}"
+										th:text="#{profile.misc-info.kids.no}"></td>
+									<td th:if="${user.miscInfos != null and not user.miscInfos.?[value == 22].isEmpty()}"
+										th:text="#{profile.misc-info.kids.yes}"></td>
+								</tr>
+								<tr>
+									<th th:text="#{profile.misc-info.drugs.title}"></th>
+									<td>
+										<span th:if="${user.miscInfos != null and not user.miscInfos.?[value == 1].isEmpty()}"
+											th:text="#{profile.misc-info.drugs.tobacco}"></span>
+										<span th:if="${user.miscInfos != null and not user.miscInfos.?[value == 2].isEmpty()}"
+											th:text="#{profile.misc-info.drugs.alcohol}"></span>
+										<span th:if="${user.miscInfos != null and not user.miscInfos.?[value == 3].isEmpty()}"
+											th:text="#{profile.misc-info.drugs.cannabis}"></span>
+										<span th:if="${user.miscInfos != null and not user.miscInfos.?[value == 4].isEmpty()}"
+											th:text="#{profile.misc-info.drugs.other}"></span>
+									</td>
 								</tr>
 								<tr>
 									<th th:text="#{userprofile.num-blocks}"></th>

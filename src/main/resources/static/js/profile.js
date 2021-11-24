@@ -322,9 +322,9 @@ $(function() {
 						let parent = obj.parentNode.parentNode;
 						let inputs = parent.getElementsByTagName('input');
 						if(obj.checked) {
-							for(input of inputs) {
-								if(input.value != obj.value) {
-									input.checked = false;
+							for(let i in inputs) {
+								if(inputs[i].value != obj.value) {
+									inputs[i].checked = false;
 								}
 							}
 						}

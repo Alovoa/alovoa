@@ -2,12 +2,7 @@ var locationFound = false;
 var csrf = $("meta[name='_csrf']").attr("content");
 
 $(function() {
-
-	var swiper = new Swiper('.swiper-container-user-profile', {
-		navigation : {
-			nextEl : '.swiper-button-next',
-			prevEl : '.swiper-button-prev',
-		},
+	new Swiper('.swiper-container-user-profile', {
 		pagination: { el : '.swiper-pagination'}
 	});
 });
