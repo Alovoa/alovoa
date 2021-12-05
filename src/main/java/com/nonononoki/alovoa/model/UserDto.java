@@ -89,22 +89,21 @@ public class UserDto {
 	private long numberSearches;
 
 	private boolean compatible;
-	
+
 	private boolean hasLocation;
-	
+
 	private int lastActiveState = 5;
 
 	public static final int ALL = 0;
 	public static final int PROFILE_PICTURE_ONLY = 1;
 	public static final int NO_AUDIO = 2;
 	public static final int NO_MEDIA = 3;
-	
-	//in minutes
+
+	// in minutes
 	public static final int LA_STATE_ACTIVE_1 = 5;
 	public static final int LA_STATE_ACTIVE_2 = 1;
 	public static final int LA_STATE_ACTIVE_3 = 3;
 	public static final int LA_STATE_ACTIVE_4 = 7;
-	
 
 	private static final double MILES_TO_KM = 0.6214;
 
@@ -128,7 +127,7 @@ public class UserDto {
 			dto.setActiveDate(user.getDates().getActiveDate());
 			dto.setAge(Tools.calcUserAge(user));
 		}
-		if(user.getLocationLatitude() != null) {
+		if (user.getLocationLatitude() != null) {
 			dto.setHasLocation(true);
 		}
 		dto.setDescription(user.getDescription());
@@ -165,17 +164,19 @@ public class UserDto {
 		dto.setNumberReferred(user.getNumberReferred());
 		dto.setNumberProfileViews(user.getNumberProfileViews());
 		dto.setNumberSearches(user.getNumberSearches());
-		
-		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime activeDateTime = Tools.dateToLocalDateTime(user.getDates().getActiveDate());
-		if(activeDateTime.isAfter(now.minusMinutes(LA_STATE_ACTIVE_1))) {
-			dto.setLastActiveState(1);
-		} else if(activeDateTime.isAfter(now.minusDays(LA_STATE_ACTIVE_2))) {
-			dto.setLastActiveState(2);
-		} else if(activeDateTime.isAfter(now.minusDays(LA_STATE_ACTIVE_3))) {
-			dto.setLastActiveState(3);
-		} else if(activeDateTime.isAfter(now.minusDays(LA_STATE_ACTIVE_4))) {
-			dto.setLastActiveState(4);
+
+		if (!user.isAdmin()) {
+			LocalDateTime now = LocalDateTime.now();
+			LocalDateTime activeDateTime = Tools.dateToLocalDateTime(user.getDates().getActiveDate());
+			if (activeDateTime.isAfter(now.minusMinutes(LA_STATE_ACTIVE_1))) {
+				dto.setLastActiveState(1);
+			} else if (activeDateTime.isAfter(now.minusDays(LA_STATE_ACTIVE_2))) {
+				dto.setLastActiveState(2);
+			} else if (activeDateTime.isAfter(now.minusDays(LA_STATE_ACTIVE_3))) {
+				dto.setLastActiveState(3);
+			} else if (activeDateTime.isAfter(now.minusDays(LA_STATE_ACTIVE_4))) {
+				dto.setLastActiveState(4);
+			}
 		}
 
 		if (!user.equals(currentUser)) {
@@ -197,7 +198,7 @@ public class UserDto {
 			}
 			dto.setSameInterests(sameInterests);
 
-			int dist = 0;
+			int dist = 99999;
 			if (!currentUser.isAdmin()) {
 				dist = Tools.getDistanceToUser(user, currentUser);
 				if (currentUser.getUnits() == User.UNIT_IMPERIAL) {
