@@ -13,6 +13,7 @@ $(function() {
 				
 				formdata.confirm = formdata.confirm == "on";
 			
+				showLoader();
 				$.ajax({
 					url : actionUrl,
 					headers : {
@@ -23,10 +24,12 @@ $(function() {
 					contentType : "application/json",
 					success : function(data) {
 						window.location = "/?confirm-account-deleted";
+						hideLoader();
 					},
 					error : function(e) {
 						console.log(e)
 						refreshCaptcha();
+						hideLoader();
 						alert(getGenericErrorText());
 					}
 				});

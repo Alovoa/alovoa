@@ -76,6 +76,7 @@ function searchBase() {
 	let sort = $("#sort").val();
 	let url = "/search/users/" + lat + "/"
 		+ lon + "/" + distance + "/" + sort;
+	console.log(url);
 	mainContainerLoadCards(url);
 
 }
