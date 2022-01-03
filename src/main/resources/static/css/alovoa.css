@@ -154,10 +154,6 @@ button, .button, .input, .select, select {
 	padding-right: 4px;
 }
 
-#navbar-item-language path {
-	color: #ec417a;
-}
-
 .navbar-item-icon:hover path {
 	color: white !important;
 }
@@ -329,6 +325,10 @@ input[type=range].slider {
 	margin: 0 4px;
 }
 
+#header-index .button.is-info.is-outlined {
+	color: white !important;
+}
+
 @media screen and (max-width: 1050px) {
 	.navigation-item span {
 		font-size: 0.8em;
@@ -412,9 +412,6 @@ input[type=range].slider {
 	.footer {
 		background-color: #000000;
 	}
-	#logout:hover span {
-		color: #0a0a0a;
-	}
 	.input::placeholder {
 		color: #E0E0E0;;
 	}
@@ -453,6 +450,9 @@ input[type=range].slider {
 	}
 	.swiper-pagination-bullet {
 	    background: #FFF;
+	}
+	.header .button.is-info.is-outlined {
+		color: white !important;
 	}
 	
 	@media screen and (max-width: 1024px) {

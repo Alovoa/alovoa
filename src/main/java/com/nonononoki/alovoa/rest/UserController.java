@@ -29,6 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
+import com.nonononoki.alovoa.model.UserOnboardingDto;
 import com.nonononoki.alovoa.service.UserService;
 
 @RestController
@@ -64,6 +65,11 @@ public class UserController {
 		return userService.getUserdata(idEnc);
 	}
 
+	@PostMapping(value = "/onboarding")
+	public void onboardiing(@RequestBody UserOnboardingDto dto) throws AlovoaException {
+		userService.onboarding(dto);
+	}
+	
 	@PostMapping(value = "/delete/profile-picture")
 	public void deleteProfilePicture() throws AlovoaException {
 		userService.deleteProfilePicture();
