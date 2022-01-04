@@ -76,6 +76,7 @@ import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.model.UserDeleteParams;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserGdpr;
+import com.nonononoki.alovoa.model.UserOnboardingDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
@@ -395,7 +396,16 @@ public class UserService {
 
 		userRepo.saveAndFlush(user);
 	}
-
+	
+	public void onboarding(UserOnboardingDto model) throws AlovoaException {
+		User user = authService.getCurrentUser();
+		user.setDescription(model.getDescription());
+		user.setIntention(model.getIntention());
+		user.setPreferedGenders(model.getPreferedGenders());	
+		user.setProfilePicture(model.getProfilePicture());
+		userRepo.saveAndFlush(user);
+	}
+	
 	public void updateDescription(String description) throws AlovoaException {
 		if (description != null) {
 			if (description.length() > descriptionSize) {

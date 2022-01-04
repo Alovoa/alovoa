@@ -47,7 +47,7 @@ public class Tools {
 	public static final long GENDER_MALE_ID = 1;
 	public static final long GENDER_FEMALE_ID = 2;
 	public static final long GENDER_OTHER_ID = 3;
-	
+
 	public static final double REFERRED_AMOUNT = 0.5;
 
 	public static Locale getUserLocale(User user) {
@@ -72,7 +72,7 @@ public class Tools {
 	public static LocalDate dateToLocalDate(Date date) {
 		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
-	
+
 	public static LocalDateTime dateToLocalDateTime(Date date) {
 		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
@@ -174,27 +174,24 @@ public class Tools {
 				|| user2.getDates() == null) {
 			return false;
 		}
-		
+
 		int user1Age = calcUserAge(user1);
 		int user2Age = calcUserAge(user2);
-		
-		return user2Age < AGE_LEGAL == user1Age < AGE_LEGAL
-				&& user2.getPreferedGenders().contains(user1.getGender())
-				&& user1.getPreferedGenders().contains(user2.getGender())
-				&& user1.getPreferedMaxAge() >= user2Age
-				&& user1.getPreferedMinAge() <= user2Age
-				&& user2.getPreferedMaxAge() >= user1Age
+
+		return user2Age < AGE_LEGAL == user1Age < AGE_LEGAL && user2.getPreferedGenders().contains(user1.getGender())
+				&& user1.getPreferedGenders().contains(user2.getGender()) && user1.getPreferedMaxAge() >= user2Age
+				&& user1.getPreferedMinAge() <= user2Age && user2.getPreferedMaxAge() >= user1Age
 				&& user2.getPreferedMinAge() <= user1Age
 				&& user2.getIntention().getText().equals(user1.getIntention().getText());
 	}
 
-	//This method subtracts user date of birth with passed preferred min/max age
+	// This method subtracts user date of birth with passed preferred min/max age
 	public static int convertPrefAgeToRelativeYear(Date userDateOfBirth, int prefAge) {
 		LocalDate currentDate = LocalDate.now();
 		return prefAge - Period.between(Tools.dateToLocalDate(userDateOfBirth), currentDate).getYears();
 	}
 
-	public static int convertPrefAgeToExactYear(Date userDateOfBirth,int prefAge) {
+	public static int convertPrefAgeToExactYear(Date userDateOfBirth, int prefAge) {
 		LocalDate currentDate = LocalDate.now();
 		return Period.between(Tools.dateToLocalDate(userDateOfBirth), currentDate).getYears() + prefAge;
 	}
