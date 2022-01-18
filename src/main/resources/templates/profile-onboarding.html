@@ -15,490 +15,88 @@
 	<th:block th:replace="fragments.html::ui-design"></th:block>
 	<link rel="stylesheet" href="/css/lib/bulma-switch.min.css" />
 	<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
+	<link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
 	<link rel="stylesheet" href="/css/lib/swiper.min.css" />
 	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
+	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
 	<link rel="stylesheet" href="/css/alovoa.css" />
-	<link rel="stylesheet" href="/css/profile.css" />
+	<link rel="stylesheet" href="/css/profile-onboarding.css" />
 	<title th:text="#{profile.title}"></title>
+
 </head>
 
 <body>
-	<div id="main-logged-in">
-		<header th:insert="fragments.html::header-logged-in"></header>
-		<div class="section" style="scrollbar-width: auto !important; ">
-			<div class="container">
-				<div class="field">
-					<div id="profile-warning">
-						<div th:replace="fragments.html::profile-warning"></div>
+
+<header th:insert="fragments.html::header-logged-in"></header>
+	<form th:action="@{/}" method="POST"></form>
+	<div class="swiper onboarding-swiper" id="main">
+		<div class="swiper-wrapper">
+			<div class="swiper-slide center-parent">
+				<div class="center-parent">
+					<label class="label" th:text="#{profile-onboarding.profile-picture}"></label>
+					<div class="center-parent button profile-pic" id="profilePicture"
+						style="min-width: 174px; height: 200px; border-radius: 12px;" th:value=0>
+						<i class="fa fa-plus fa-4x"></i>
+					</div>
+					<input id="profilePictureUpload" type="file" accept="image/*" style="display: none">
+				</div>
+			</div>
+			<div class="swiper-slide center-parent">
+				<div class="center-parent">
+					<label class="label" th:text="#{description}"></label>
+					<textarea class="textarea" id="description"></textarea>
+				</div>
+			</div>
+			<div class="swiper-slide center-parent">
+				<div class="center-parent">
+					<label class="label" th:text="#{profile.intention}"></label>
+					<div class="control radio-parent">
+						<th:block th:each="intention : ${intentions}">
+							<label th:value="${intention.id}"
+								th:if="${intention.text == 'meet'}"><input type="radio" name="answer" th:text="#{profile.intention.meet}"></label>
+							<label th:value="${intention.id}"
+								th:if="${intention.text == 'date'}"><input type="radio" name="answer" th:text="#{profile.intention.date}"></label>
+							<label th:value="${intention.id}"
+								th:if="${intention.text == 'sex' &&  isLegal}"><input type="radio" name="answer" th:text="#{profile.intention.sex}">
+							</label>
+						</th:block>
 					</div>
 				</div>
-
-				<div class="field">
-					<div class="button is-info is-outlined button-wrap-text" id="webpush-button">
-						<span th:text="#{profile.webpush}"></span>
-					</div>
-				</div>
-
-				<div style="padding-bottom: 24px;"></div>
-
-				<div class="field" id="picture-field">
-
-					<div class="swiper-container">
-						<div class="swiper-wrapper">
-							<div class="swiper-slide">
-								<div class="center-parent">
-									<div class="center-parent button profile-pic" id="profilePicture"
-										style="min-width: 174px; min-height: 200px; border-radius: 12px;"
-										th:unless="${user.profilePicture}" th:value=0>
-										<i class="fa fa-plus fa-4x"></i>
-									</div>
-									<th:block th:if="${user.profilePicture}">
-										<img id="profilePicture" style="cursor: pointer;" class="profile-pic "
-											height=300 width=300 th:src="${user.profilePicture}" th:value=1 />
-									</th:block>
-									<input id="profilePictureUpload" type="file" accept="image/*" style="display: none">
-								</div>
-							</div>
-							<div th:each="img : ${user.images}" class="swiper-slide">
-								<div class="center-parent">
-									<img style="cursor: pointer;" class="profile-pic" height=300 width=300
-										th:src="${img.content}" th:onclick="deleteImage([[${img.id}]])" />
-								</div>
-							</div>
-							<th:block th:if="${#lists.size(user.images) != imageMax}">
-							<div class="swiper-slide center-parent" style="height: 100%;"
-								th:if="${user.profilePicture}">
-								<div
-									id="addImageDiv" class="center-parent button"
-									style="min-width: 174px; min-height: 200px;">
-									<i class="fa fa-plus fa-4x"></i>
-								</div>
-							</div>
-							</th:block>
-							<input id="addImageInput" type="file" accept="image/*"
-								style="display: none">
-
-						</div>
-						
-						
-						
-						<!-- Add Arrows -->
-						<!--
-						<div class="swiper-button-next"></div>
-						<div class="swiper-button-prev"></div>
-						-->
-					</div>
-					
-					<div class="swiper-pagination"></div>
-
-				</div>
-				
-				<div class="box" onclick="window.open('/donate-list', '_blank');" id="donate-box">
-					<label class="label" th:text="#{donated}"></label>
-					<label th:text=" ${#numbers.formatDecimal(user.totalDonations, 1, 2, 'POINT') + ' €'}"></td>></label>
-				</div>
-
-
-				<div class="box" id="description-field">
-					<div class="field">
-						<label class="label" th:text="#{description}"></label>
-						<textarea class="textarea" id="description"
-							th:text="${user.description}"></textarea>
-					</div>
-
-					<div class="field" id="intention-field">
-						<label class="label" th:text="#{profile.intention}"></label>
-						<div class="select">
-							<select id="intention">
-								<th:block th:if="${showIntention}">
-									<option th:unless="${user.intention}"></option>
-									<th:block th:each="intention : ${intentions}">
-										<option th:value="${intention.id}"
-											th:selected="${user.intention != null && user.intention.id == intention.id}"
-											th:if="${intention.text == 'meet'}"
-											th:text="#{profile.intention.meet}"></option>
-										<option th:value="${intention.id}"
-											th:selected="${user.intention != null && user.intention.id == intention.id}"
-											th:if="${intention.text == 'date'}"
-											th:text="#{profile.intention.date}"></option>
-										<option th:value="${intention.id}"
-											th:selected="${user.intention != null && user.intention.id == intention.id}"
-											th:if="${intention.text == 'sex' &&  isLegal}"
-											th:text="#{profile.intention.sex}"></option>
-									</th:block>
-								</th:block>
-								<th:block th:if="${user.intention != null}">
-									<th:block th:unless="${showIntention}" th:each="intention : ${intentions}">
-										<option
-											th:if="${user.intention.id == intention.id && intention.text == 'meet'}"
-											th:text="#{profile.intention.meet}"></option>
-										<option
-											th:if="${user.intention.id == intention.id && intention.text == 'date'}"
-											th:text="#{profile.intention.date}"></option>
-										<option
-											th:if="${user.intention.id == intention.id && intention.text == 'sex'}"
-											th:text="#{profile.intention.sex}"></option>
-									</th:block>
-								</th:block>
-							</select>
-						</div>
-					</div>
-
-					<div class="field" id="gender-field">
-						<label class="label" th:text="#{profile.gender}"></label>
+			</div>
+			<div class="swiper-slide center-parent">
+				<div class="center-parent">
+					<label class="label" th:text="#{profile.gender}"></label>
+					<div class="switch-parent">
 						<th:block th:each="gender : ${genders}">
-							<div class="field">
-								<input th:id="${'gender-' + gender.id}" type="checkbox"
-									class="switch gender-switch" th:value="${gender.id}"
-									style="position: absolute"
-									th:checked="${user.preferedGenders != null && not user.preferedGenders.?[id == __${gender.id}__].isEmpty()}">
-								<label th:for="${'gender-' + gender.id}"
-									th:if="${gender.text == 'male'}"
-									th:text="#{profile.gender.male}"></label> <label
-									th:for="${'gender-' + gender.id}"
-									th:if="${gender.text == 'female'}"
-									th:text="#{profile.gender.female}"></label> <label
-									th:for="${'gender-' + gender.id}"
-									th:if="${gender.text == 'other'}"
-									th:text="#{profile.gender.other}"></label>
-							</div>
-						</th:block>
-					</div>			
-				</div>
-				
-				<div style="margin-bottom: 1.5rem;">
-					<div class="card">
-						<header class="card-header collapsible-header">
-							<a href="#collapsible-card" data-action="collapse" class="card-header-icon is-hidden-fullscreen full-width" 
-							aria-label="more options" style="padding: 1.25rem; display: flex; justify-content: space-between;">
-								<span class="label" style="margin-bottom: initial;" th:text="#{profile.pref-age-range}"></span>
-								<div class="navbar-link"></div>
-							</a>
-						</header>
-						<div id="collapsible-card" class="is-collapsible">
-							<div class="card-content">
-								<div class="columns">
-									<div class="column">
-										<label class="label" th:text="#{profile.min-age}"></label>
-										<div class="slider-container">
-											<input class="slider has-output" step="1" min="16" max="99"
-												th:value="${user.preferedMinAge}" type="range"
-												id="min-age-slider" style="margin-right: 8px;">
-											<output for="min-age-slider" id="min-age-slider-output"
-												th:text="${user.preferedMinAge}"></output>
-										</div>
-									</div>
-									<div class="column">
-										<label class="label" th:text="#{profile.max-age}"></label>
-										<div class="slider-container">
-											<input class="slider has-output" step="1" min="16" max="99"
-												th:value="${user.preferedMaxAge}" type="range"
-												id="max-age-slider" style="margin-right: 8px;">
-											<output for="max-age-slider" id="max-age-slider-output"
-												th:text="${user.preferedMaxAge}"></output>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<div class="box">
-					<div class="field" th:fragment="interests">
-						<label class="label" th:text="#{interests}"></label>
-						<th:block th:each="interest : ${user.interests}">
-							<div class="notification is-info" style="display: inline-block; margin-bottom: 0px;">
-								<div class="field" th:text="${interest.text}"
-									style="float: left; font-size: 1.1em; margin-bottom: 0px;"></div>
-								<i class="fa fa-times"
-									style="float: left; margin-top: 4px; margin-left: 4px; font-size: 1.2em; cursor: pointer;"
-									th:onclick="deleteInterest([[${interest.id}]])"></i>
-							</div>
+							<input th:id="${'gender-' + gender.id}" type="checkbox" class="switch gender-switch"
+								th:value="${gender.id}" style="position: absolute">
+							<label th:for="${'gender-' + gender.id}" th:if="${gender.text == 'male'}"
+								th:text="#{profile.gender.male}"></label> <label th:for="${'gender-' + gender.id}"
+								th:if="${gender.text == 'female'}" th:text="#{profile.gender.female}"></label> <label
+								th:for="${'gender-' + gender.id}" th:if="${gender.text == 'other'}"
+								th:text="#{profile.gender.other}"></label>
 						</th:block>
 					</div>
-
-					<th:block th:if="${#lists.size(user.interests) != interestMaxSize}">
-					<div class="field" >
-						<form id="interest-form" th:action="@{/}" method="POST">
-							<div style="display: flex">
-								<input class="input" pattern="[a-zA-Z0-9-]{3,30}" name="value"
-									style="flex: 1" th:placeholder="#{interest}" required>
-								<div style="padding-top: 4px;"></div>
-								<div class="button is-info is-outlined" style="margin-left: 4px;">
-									<i class="fa fa-plus"></i>
-								</div>
-							</div>
-						</form>
-					</div>
-					<div class="notification is-info"
-						th:text="#{profile.interest.info}"></div>
-					</th:block>
 				</div>
-				
-				<div class="box">
-					<label class="label" th:text="#{profile.misc-info.title}"></label>
-					<div class="field" id="misc-info-field">						
-						
-						<div class="columns">
-							<div class="field column">
-								<label class="label" th:text="#{profile.misc-info.relationship.title}"></label>
-								<div class="field">
-									<input id="misc-info-relationship-single" type="checkbox"
-										class="switch misc-info-switch misc-info-single" value="11"
-										style="position: absolute"
-										th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 11].isEmpty()}">
-									<label for="misc-info-relationship-single"
-										th:text="#{profile.misc-info.relationship.single}"></label> 
-								</div>
-									
-								<div class="field">
-									<input id="misc-info-relationship-taken" type="checkbox"
-										class="switch misc-info-switch misc-info-single" value="12"
-										style="position: absolute"
-										th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 12].isEmpty()}">
-									<label for="misc-info-relationship-taken"
-										th:text="#{profile.misc-info.relationship.taken}"></label> 
-								</div>
-									
-								<div class="field">
-									<input id="misc-info-relationship-open" type="checkbox"
-										class="switch misc-info-switch misc-info-single" value="13"
-										style="position: absolute"
-										th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 13].isEmpty()}">
-									<label for="misc-info-relationship-open"
-										th:text="#{profile.misc-info.relationship.open}"></label> 
-								</div>
-								
-								<div class="field">
-									<input id="misc-info-relationship-other" type="checkbox"
-										class="switch misc-info-switch misc-info-single" value="14"
-										style="position: absolute"
-										th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 14].isEmpty()}">
-									<label for="misc-info-relationship-other"
-										th:text="#{profile.misc-info.relationship.other}"></label> 
-								</div>
-							</div>
-							
-							<div class="field column">
-								<label class="label" th:text="#{profile.misc-info.kids.title}"></label>
-								<div class="field">
-									<input id="misc-info-kids-no" type="checkbox"
-										class="switch misc-info-switch misc-info-single" value="21"
-										style="position: absolute"
-										th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 21].isEmpty()}">
-									<label for="misc-info-kids-no"
-										th:text="#{profile.misc-info.kids.no}"></label> 
-								</div>
-									
-								<div class="field">
-									<input id="misc-info-kids-yes" type="checkbox"
-										class="switch misc-info-switch misc-info-single" value="22"
-										style="position: absolute"
-										th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 22].isEmpty()}">
-									<label for="misc-info-kids-yes"
-										th:text="#{profile.misc-info.kids.yes}"></label> 
-								</div>
-								
-							</div>
-							
-							<div class="field column">
-								<label class="label" th:text="#{profile.misc-info.drugs.title}"></label>
-								<div class="field">
-									<input id="misc-info-drugs-tobacco" type="checkbox"
-										class="switch misc-info-switch" value="1"
-										style="position: absolute"
-										th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 1].isEmpty()}">
-									<label for="misc-info-drugs-tobacco"
-										th:text="#{profile.misc-info.drugs.tobacco}"></label> 
-								</div>
-									
-								<div class="field">
-									<input id="misc-info-drugs-alcohol" type="checkbox"
-										class="switch misc-info-switch" value="2"
-										style="position: absolute"
-										th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 2].isEmpty()}">
-									<label for="misc-info-drugs-alcohol"
-										th:text="#{profile.misc-info.drugs.alcohol}"></label> 
-								</div>
-									
-								<div class="field">
-									<input id="misc-info-drugs-cannabis" type="checkbox"
-										class="switch misc-info-switch" value="3"
-										style="position: absolute"
-										th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 3].isEmpty()}">
-									<label for="misc-info-drugs-cannabis"
-										th:text="#{profile.misc-info.drugs.cannabis}"></label> 
-								</div>
-								
-								<div class="field">
-									<input id="misc-info-drugs-other" type="checkbox"
-										class="switch misc-info-switch" value="4"
-										style="position: absolute"
-										th:checked="${user.miscInfos != null && not user.miscInfos.?[value == 4].isEmpty()}">
-									<label for="misc-info-drugs-other"
-										th:text="#{profile.misc-info.drugs.other}"></label> 
-								</div>
-							</div>
+			</div>
+			<div class="swiper-slide center-parent">
+				<div class="center-parent">
+					<label class="label" th:text="#{interests}"></label>
+					<div style="display: flex">
+						<input class="input" pattern="[a-zA-Z0-9-]{3,30}" name="value"
+							style="flex: 1; height: 32px;" th:placeholder="#{interest}" required>
+						<div style="padding-top: 4px;"></div>
+						<div class="button is-info is-outlined" style="margin-left: 4px; height: 32px;">
+							<i class="fa fa-plus"></i>
 						</div>
 					</div>
-				</div>
 
-				<!-- User audio -->
-
-				<div class="box">
-
-					<label class="label" th:text="#{profile.audio}"></label>
-					<div class="field" style="display: inline-block;">
-
-						<div style="display: flex; float: left; margin-right: 4px;">
-							<audio id="audio" th:src="${user.audio}" th:if="${user.audio}" style="height: 40px; margin-bottom: 4px;"
-								controls></audio>
-						</div>
-						<div style="display: flex; float: left;">
-							<div class="notification is-info" style="height: 40px; margin-right: 4px; opacity: 0.75; font-size: 0.9em;">.mp3 .wav</div>
-							<div class="button is-info is-outlined" id="audio-upload-button" style="margin-right: 4px;">
-								<i class="fa fa-microphone"></i>
-							</div>
-							<input type="file" accept="audio/*" id="audio-file"
-								style="display: none">
-							<div class="button is-danger is-outlined" onclick="deleteAudio()"
-								th:if="${user.audio}">
-								<i class="fa fa-trash"></i>
-							</div>
-						</div>
-					</div>
-					<div class="notification is-info" th:text="#{profile.audio.info}"
-						style="margin-top: -6px;" th:unless="${user.audio}"></div>
+				<div id="submit" class="button is-primary" th:text="#{submit}"></div>
 				</div>
-
-				<div class="box">
-					<div class="field" th:fragment="interests">
-						<label class="label" th:text="#{accent-color}"></label>
-						<div>
-							<button class="button" style="width: 40px; background-color: #ec407a" onclick="updateAccentColor('pink')"></button>
-							<button class="button" style="width: 40px; background-color: #ab47bd" onclick="updateAccentColor('purple')"></button>
-							<button class="button" style="width: 40px; background-color: #43a4f4" onclick="updateAccentColor('blue')"></button>
-							<button class="button" style="width: 40px; background-color: #ffa724" onclick="updateAccentColor('orange')"></button>
-						</div>
-					</div>
-				</div>
-				
-				<div class="box">
-					<div class="field">
-						<label class="label" th:text="#{profile.ui-design}"></label>
-						<div class="select">
-							<select id="ui-design-select" onchange="updateUiDesign()">
-								<option value="round"
-									th:selected="${user.uiDesign == null || user.uiDesign == 'rounded'}"
-									th:text="#{profile.ui-design.rounded}"></option>
-								<option value="angular"
-									th:selected="${user.uiDesign != null && user.uiDesign == 'angular'}"
-									th:text="#{profile.ui-design.angular}"></option>
-							</select>
-						</div>
-					</div>
-				</div>
-				
-				<div class="box">
-					<div class="field">
-						<label class="label" th:text="#{profile.show-zodiac}"></label>
-						<div class="select">
-							<select id="show-zodiac-select" onchange="updateShowZodiac()">
-								<option value="0"
-									th:selected="${!user.showZodiac}"
-									th:text="#{no}"></option>
-								<option value="1"
-									th:selected="${user.showZodiac}"
-									th:text="#{yes}"></option>
-							</select>
-						</div>
-					</div>
-				</div>
-				
-				<div class="box">
-					<div class="field">
-						<label class="label" th:text="#{units}"></label>
-						<div class="select">
-							<select id="ui-units-select" onchange="updateUnits()">
-								<option value="0"
-									th:selected="${user.units == 0}"
-									th:text="#{si}"></option>
-								<option value="1"
-									th:selected="${user.units == 1}"
-									th:text="#{imperial}"></option>
-							</select>
-						</div>
-					</div>
-				</div>
-				
-				<div class="box" th:if="${referralsLeft > 0}">
-					<div class="field">
-						<label class="label" th:text="#{register.referral-code}"></label>
-						<div class="notification is-info"><span th:text="#{profile.referrer.info}"></span> <a id="referrer-anchor" th:href="${domain} + '/register?referrer=' + ${user.idEncoded}" th:text="${domain} + '/register?referrer=' + ${user.idEncoded}"></a></div>
-						<div class="notification is-info"><span th:text="#{profile.referrer.amount}"></span> <span th:text="${referralsLeft}"></span></div>	
-						<button class="button is-primary is-outlined" style="width: 100%;" th:onclick="copyClipboard([[${domain} + '/register?referrer=' + ${user.idEncoded}]])"><i class="fa fa-copy"></i></button>
-					</div>
-				</div>
-
-				<div class="box">
-					<div class="field">
-						<button class="button is-info is-outlined"
-							onclick="location.reload()" style="width: 100%;">
-							<i class="fa fa-save" style="padding-right: 4px; font-size: 1.3em;"></i> <span th:text="#{save}"></span>
-						</button>
-					</div>
-				</div>
-
-				<div style="padding-top: 230px;"></div>
-
-				<div class="box">
-					<div class="field">
-						<a th:text="#{profile.webpush}" onclick="subscribe()"></a>
-					</div>
-					<div class="field">
-						<a th:text="#{profile.liked-users}" href="/user/liked-users"></a>
-					</div>
-					<div class="field">
-						<a th:text="#{profile.disliked-users}" href="/user/disliked-users"></a>
-					</div>
-					<div class="field">
-						<a th:text="#{profile.blocked-users}" href="/blocked-users"></a>
-					</div>
-					<div class="field">
-						<a th:text="#{password-change.title}" id="password-change-submit"></a>
-					</div>
-					<div class="field">
-						<a th:text="#{profile.userdata.request}" id="userdata-submit" th:onclick="getUserData([[${user.idEncoded}]])"></a>
-					</div>
-					<div class="field">
-						<a th:text="#{profile.account.delete}" id="delete-acc-submit"></a>
-					</div>
-				</div>
-				
-				<div class="box">
-					<div class="field">
-						<form th:action="@{/logout}" method="post">
-							<button class="button is-danger is-outlined" href="/logout"
-								style="width: 100%;">
-								<span th:text="#{logout}"></span>
-							</button>
-						</form>
-					</div>
-				</div>
-
-				<div style="margin-top: 48px;"></div>
-
 			</div>
 		</div>
+		<div class="swiper-pagination"></div>
 	</div>
-	
-	<div class="loader-parent">
-		<div class="loader"></div>
-	</div>
-
-	<input type="hidden" th:value="${vapidPublicKey}" id="vapidPublicKey"></input>
-	<input type="hidden" th:value="${mediaMaxSize}" id="mediaMaxSize"></input>
 
 	<script src="/sw.js"></script>
 	<script src="/js/lib/fontawesome.all.js"></script>
@@ -506,12 +104,12 @@
 	<script src="/js/lib/bulma-slider.min.js"></script>
 	<script src="/js/lib/bulma-toast.min.js"></script>
 	<script src="/js/lib/swiper.min.js"></script>
-	<script src="/js/lib/Mp3LameEncoder.min.js"></script>
-	<script src="/js/lib/cutter.min.js"></script>
+	<script src="/js/lib/notification.js"></script>
 	<script src="/js/tools/get-notification.js"></script>
 	<script src="/js/tools/get-text.js"></script>
 	<script src="/js/tools/loader.js"></script>
 	<script src="/js/alovoa.js"></script>
-	<script src="/js/profile.js"></script>
+	<script src="/js/profile-onboarding.js"></script>
 </body>
+
 </html>

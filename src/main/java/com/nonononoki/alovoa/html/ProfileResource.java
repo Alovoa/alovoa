@@ -59,10 +59,10 @@ public class ProfileResource {
 
 	@Value("${app.intention.delay}")
 	private long intentionDelay;
-	
+
 	@Value("${app.domain}")
 	private String domain;
-	
+
 	@Value("${app.referral.max}")
 	private int maxReferrals;
 
@@ -80,6 +80,9 @@ public class ProfileResource {
 		User user = authService.getCurrentUser();
 		if (user.isAdmin()) {
 			return adminResource.admin();
+		} 
+		else if (user.getProfilePicture() == null && user.getDescription() == null) {
+			return new ModelAndView("redirect:" + ProfileOnboardingResource.getUrl());
 		} else {
 			int age = Tools.calcUserAge(user);
 			boolean isLegal = age >= Tools.AGE_LEGAL;

@@ -41,7 +41,7 @@ public class IndexResource {
 					&& user.getDescription() != null) {
 				return new ModelAndView("redirect:" + SearchResource.getUrl());
 			} else {
-				return new ModelAndView("redirect:" + ProfileResource.getUrl());
+				return new ModelAndView("redirect:" + ProfileOnboardingResource.getUrl());
 			}
 		}
 

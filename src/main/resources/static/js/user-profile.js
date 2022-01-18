@@ -3,6 +3,10 @@ var csrf = $("meta[name='_csrf']").attr("content");
 
 $(function() {
 	new Swiper('.swiper-container-user-profile', {
+		navigation: {
+			nextEl: '.swiper-button-next',
+			prevEl: '.swiper-button-prev',
+		},
 		pagination: { el : '.swiper-pagination'}
 	});
 });

@@ -317,12 +317,16 @@ input[type=range].slider {
 	background-color: #4267b2; width: 100%;
 }
 
-.swiper-pagination {
+.swiper-pagination:not(.swiper-pagination-vertical) {
 	width: 100%;
 }
 
 .swiper-pagination .swiper-pagination-bullet {
 	margin: 0 4px;
+}
+
+.swiper-horizontal>.swiper-pagination-bullets, .swiper-pagination-bullets.swiper-pagination-horizontal, .swiper-pagination-custom, .swiper-pagination-fraction {
+    bottom: -28px;
 }
 
 #header-index .button.is-info.is-outlined {
@@ -486,6 +490,9 @@ input[type=range].slider {
 	}
 	.modal-content {
 		max-height: 100%;
+	}
+	.swiper-button-next, .swiper-button-prev {
+		display: none;
 	}
 }
 

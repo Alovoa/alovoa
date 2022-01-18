@@ -147,9 +147,9 @@
 			<version>1.0.3</version>
 		</dependency>
 		<dependency>
-			<groupId>org.sejda.imageio</groupId>
-			<artifactId>webp-imageio</artifactId>
-			<version>0.1.6</version>
+		    <groupId>com.github.gotson</groupId>
+		    <artifactId>webp-imageio</artifactId>
+		    <version>0.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.url-detector</groupId>
