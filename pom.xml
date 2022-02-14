@@ -171,6 +171,7 @@
 						<phase>prepare-package</phase>
 						<configuration>
 							<charset>UTF-8</charset>
+							<jsEngine>CLOSURE</jsEngine>
 							<skipMerge>true</skipMerge> <!-- do not create one big file -->
 							<nosuffix>true</nosuffix> <!-- do not use suffix like 'min' -->
 							<webappTargetDir>${project.build.directory}/classes/static</webappTargetDir>
