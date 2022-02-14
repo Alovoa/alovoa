@@ -110,7 +110,7 @@ function hero() {
 	Runner.run(runner, engine);
 
 	// add bodies
-	options = {
+	let options = {
 		isStatic: true,
 		render: {
 			visible: true
