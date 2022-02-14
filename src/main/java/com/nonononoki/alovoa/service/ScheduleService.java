@@ -79,7 +79,7 @@ public class ScheduleService {
 		ms -= captchaDelay;
 		Date d = new Date(ms);
 		
-		List<Captcha> captchas = captchaRepo.findByDateBefore(d);
+		List<Captcha> captchas = captchaRepo.findTop1000ByDateBefore(d);
 		captchaRepo.deleteAll(captchas);
 	}
 	
@@ -88,7 +88,7 @@ public class ScheduleService {
 		ms -= contactDelay;
 		Date d = new Date(ms);
 		
-		List<Contact> contacts = contactRepo.findByDateBefore(d);
+		List<Contact> contacts = contactRepo.findTop100ByDateBefore(d);
 		contactRepo.deleteAll(contacts);
 	}
 	
@@ -97,7 +97,7 @@ public class ScheduleService {
 		ms -= hideDelay;
 		Date d = new Date(ms);
 		
-		List<UserHide> tokens = userHideRepo.findByDateBefore(d);
+		List<UserHide> tokens = userHideRepo.findTop100ByDateBefore(d);
 		List<User> users = new ArrayList<>();
 		for(UserHide hide : tokens ) {
 			User u = hide.getUserFrom();
@@ -118,7 +118,7 @@ public class ScheduleService {
 		ms -= passwordResetDelay;
 		Date d = new Date(ms);
 		
-		List<UserPasswordToken> tokens = passwordTokenRepository.findByDateBefore(d);
+		List<UserPasswordToken> tokens = passwordTokenRepository.findTop100ByDateBefore(d);
 		List<User> users = new ArrayList<>();
 		for(UserPasswordToken token : tokens ) {
 			User u = token.getUser();
@@ -134,7 +134,7 @@ public class ScheduleService {
 		long ms = date.getTime();
 		ms += deleteAccountDelay;
 		Date d = new Date(ms);
-		List<UserDeleteToken> tokens = userDeleteTokenRepository.findByDateAfter(d);
+		List<UserDeleteToken> tokens = userDeleteTokenRepository.findTop100ByDateAfter(d);
 		List<User> users = new ArrayList<>();
 		for(UserDeleteToken token : tokens ) {
 			User u = token.getUser();

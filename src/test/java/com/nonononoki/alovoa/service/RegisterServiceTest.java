@@ -122,7 +122,7 @@ public class RegisterServiceTest {
 			String tokenContent2 = registerService.register(user2Dto);
 			User user2 = registerService.registerConfirm(tokenContent2);
 
-			String user1Email = "nonononoki@gmail.com";
+			String user1Email = "nono" + "nonoki@gmail.com";
 			// register and confirm test users
 			Captcha c1 = captchaService.generate();
 			RegisterDto user1Dto = createTestUserDto(1, c1, user1Email, USER1_AGE);
@@ -143,12 +143,12 @@ public class RegisterServiceTest {
 
 				user1Dto.setFirstName("test");
 
-				user1Dto.setEmail("nono.nono.ki@gmail.com");
+				user1Dto.setEmail("nono" + ".nono.ki@gmail.com");
 				assertThrows(Exception.class, () -> {
 					registerService.register(user1Dto);
 				});
 
-				user1Dto.setEmail("nonononoki+test@gmail.com");
+				user1Dto.setEmail("nono" + "nonoki+test@gmail.com");
 				assertThrows(Exception.class, () -> {
 					registerService.register(user1Dto);
 				});

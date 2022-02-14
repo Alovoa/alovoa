@@ -12,6 +12,6 @@ public interface UserHideRepository extends JpaRepository<UserHide, Long> {
 	UserHide findByUserFromAndUserTo(User userFrom, User userTo);
 	List<UserHide> findByUserFrom(User userFrom);
 	List<UserHide> findByUserTo(User userTo);
-	List<UserHide> findByDateBefore(Date date);
+	List<UserHide> findTop100ByDateBefore(Date date);
 }
 

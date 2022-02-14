@@ -209,6 +209,8 @@ public class UserService {
 		User user = authService.getCurrentUser();
 		UserDeleteToken deleteToken = user.getDeleteToken();
 		String userTokenString = deleteToken.getContent();
+		
+		dto.setEmail(Tools.cleanEmail(dto.getEmail()));
 
 		if (!dto.isConfirm() || deleteToken == null) {
 			throw new AlovoaException("deletion_not_confirmed");

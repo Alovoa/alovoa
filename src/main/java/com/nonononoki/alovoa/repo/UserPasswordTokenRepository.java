@@ -9,6 +9,6 @@ import com.nonononoki.alovoa.entity.user.UserPasswordToken;
 
 public interface UserPasswordTokenRepository extends JpaRepository<UserPasswordToken, Long> {
 	UserPasswordToken findByContent(String content);
-	List<UserPasswordToken> findByDateBefore(Date date);
+	List<UserPasswordToken> findTop100ByDateBefore(Date date);
 }
 

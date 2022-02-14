@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserPasswordToken;
 import com.nonononoki.alovoa.model.AlovoaException;
@@ -62,7 +63,7 @@ public class PasswordService {
 			if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
 				throw new AlovoaException("captcha_invalid");
 			}
-			u = userRepo.findByEmail(dto.getEmail().toLowerCase());
+			u = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
 
 			if (u == null) {
 				throw new DisabledException("user_not_found");
@@ -94,7 +95,7 @@ public class PasswordService {
 			throw new AlovoaException("token_wrong_content");
 		}
 		User user = token.getUser();
-		if (!user.getEmail().equals(dto.getEmail().toLowerCase())) {
+		if (!user.getEmail().equals(Tools.cleanEmail(dto.getEmail()))) {
 			throw new AlovoaException("wrong_email");
 		}
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -114,7 +115,7 @@ public class PasswordService {
 				} else {
 					email = (String) auth;
 				}
-				if (user.getEmail().equals(email)) {
+				if (user.getEmail().equals(Tools.cleanEmail(email))) {
 					return true;
 				} else {
 					return false;

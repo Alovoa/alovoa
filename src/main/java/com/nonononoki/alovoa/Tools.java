@@ -41,6 +41,8 @@ public class Tools {
 	public static final String MAIL_GMAIL_DOMAIN = "@gmail.com";
 
 	public static final String TEMP_EMAIL_FILE_NAME = "temp-mail.txt";
+	
+	private static final String GMAIL_EMAIL = "@gmail";
 
 	public static final int AGE_LEGAL = 18;
 
@@ -49,6 +51,17 @@ public class Tools {
 	public static final long GENDER_OTHER_ID = 3;
 
 	public static final double REFERRED_AMOUNT = 0.5;
+
+	public static String cleanEmail(String email) {
+		if(email == null) {
+			return null;
+		}
+		if (email.contains(GMAIL_EMAIL)) {
+			String[] parts = email.split("@");
+			email = parts[0].replace(".", "") + "@" + parts[1];
+		}
+		return email.toLowerCase();
+	}
 
 	public static Locale getUserLocale(User user) {
 		String language = user.getLanguage();

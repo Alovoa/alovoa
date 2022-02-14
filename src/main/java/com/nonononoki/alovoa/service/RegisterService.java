@@ -105,8 +105,6 @@ public class RegisterService {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
-	private static final String GMAIL_EMAIL = "@gmail";
-
 	private static final int MIN_PASSWORD_SIZE = 7;
 
 //	public static String ZODIAC_AQUARIUS = "aquarius";
@@ -132,18 +130,14 @@ public class RegisterService {
 			throw new AlovoaException(publicService.text("backend.error.captcha.invalid"));
 		}
 
-		dto.setEmail(dto.getEmail().toLowerCase());
+		dto.setEmail(Tools.cleanEmail(dto.getEmail()));
 
 		if (!isValidEmailAddress(dto.getEmail())) {
 			throw new AlovoaException("email_invalid");
 		}
 
 		if (!profile.equals(Tools.DEV)) {
-			if (dto.getEmail().contains(GMAIL_EMAIL)) {
-				String[] parts = dto.getEmail().split("@");
-				String cleanEmail = parts[0].replace(".", "") + "@" + parts[1];
-				dto.setEmail(cleanEmail);
-			}
+			dto.setEmail(Tools.cleanEmail(dto.getEmail()));
 			if (plusAddressing && dto.getEmail().contains("+")) {
 				dto.setEmail(dto.getEmail().split("[+]")[0] + "@" + dto.getEmail().split("@")[1]);
 			}
@@ -181,7 +175,7 @@ public class RegisterService {
 			NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 
-		String email = authService.getOauth2Email().toLowerCase();
+		String email = Tools.cleanEmail(authService.getOauth2Email());
 		if (email == null) {
 			throw new AlovoaException(publicService.text("email_is_null"));
 		}
@@ -305,7 +299,7 @@ public class RegisterService {
 			}
 		}
 
-		User user = new User(dto.getEmail().toLowerCase());
+		User user = new User(Tools.cleanEmail(dto.getEmail()));
 		user.setFirstName(dto.getFirstName());
 
 		// default age bracket, user can change it later in their profile

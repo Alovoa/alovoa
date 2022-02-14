@@ -119,6 +119,8 @@ public class DonateService {
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
+		
+		donation.setEmail(Tools.cleanEmail(donation.getEmail()));
 
 		if (kofiIp.equals(ip) || !profile.equals(Tools.PROD)) {
 
@@ -133,16 +135,16 @@ public class DonateService {
 			User u = null;
 
 			if (donation.getFrom_name() != null) {
-				u = userRepo.findByEmail(donation.getFrom_name().toLowerCase());
+				u = userRepo.findByEmail(Tools.cleanEmail(donation.getFrom_name()));
 			}
 
 			if (u == null && donation.getMessage() != null) {
-				u = userRepo.findByEmail(donation.getMessage().toLowerCase());
+				u = userRepo.findByEmail(Tools.cleanEmail(donation.getMessage()));
 			}
 
 			// in case user forgot, check their Ko-fi email address just in case
 			if (u == null && donation.getEmail() != null) {
-				u = userRepo.findByEmail(donation.getEmail().toLowerCase());
+				u = userRepo.findByEmail(Tools.cleanEmail(donation.getEmail()));
 			}
 
 			if (u != null) {
@@ -181,15 +183,15 @@ public class DonateService {
 			User u = null;
 
 			if (donation.getSupporter_name() != null) {
-				u = userRepo.findByEmail(donation.getSupporter_name().toLowerCase());
+				u = userRepo.findByEmail(Tools.cleanEmail(donation.getSupporter_name()));
 			}
 
 			if (u == null && donation.getSupporter_message() != null) {
-				u = userRepo.findByEmail(donation.getSupporter_message().toLowerCase());
+				u = userRepo.findByEmail(Tools.cleanEmail(donation.getSupporter_message()));
 			}
 
 			if (u == null && donation.getSupporter_email() != null) {
-				u = userRepo.findByEmail(donation.getSupporter_email().toLowerCase());
+				u = userRepo.findByEmail(Tools.cleanEmail(donation.getSupporter_email()));
 			}
 
 			if (u != null) {
