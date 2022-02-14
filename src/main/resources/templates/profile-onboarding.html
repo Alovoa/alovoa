@@ -14,11 +14,10 @@
 	<th:block th:replace="fragments.html::bulma"></th:block>
 	<th:block th:replace="fragments.html::ui-design"></th:block>
 	<link rel="stylesheet" href="/css/lib/bulma-switch.min.css" />
-	<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
-	<link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
 	<link rel="stylesheet" href="/css/lib/swiper.min.css" />
 	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
 	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
+	<link rel="stylesheet" href="/css/lib/animate.min.css" />
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<link rel="stylesheet" href="/css/profile-onboarding.css" />
 	<title th:text="#{profile.title}"></title>
@@ -33,38 +32,26 @@
 		<div class="swiper-wrapper">
 			<div class="swiper-slide center-parent">
 				<div class="center-parent">
+					<img class="onboarding-icon" src="/img/onboarding/profilepic.svg"></img>
 					<label class="label" th:text="#{profile-onboarding.profile-picture}"></label>
-					<div class="center-parent button profile-pic" id="profilePicture"
+					<div class="center-parent button profile-pic" id="profilePicture" onclick="updateProfilePic()"
 						style="min-width: 174px; height: 200px; border-radius: 12px;" th:value=0>
 						<i class="fa fa-plus fa-4x"></i>
 					</div>
+					<img id="profilePictureImg" style="cursor:pointer; display: none; width: initial;max-height: 40vh;" onclick="updateProfilePic()"></img>
 					<input id="profilePictureUpload" type="file" accept="image/*" style="display: none">
 				</div>
 			</div>
 			<div class="swiper-slide center-parent">
 				<div class="center-parent">
-					<label class="label" th:text="#{description}"></label>
-					<textarea class="textarea" id="description"></textarea>
+					<img class="onboarding-icon" src="/img/onboarding/description.svg"></img>
+					<label class="label" th:text="#{profile-onboarding.description}"></label>
+					<textarea class="textarea margin-left-right" id="description" th:placeholder="#{profile-onboarding.description.placeholder}" maxlength=200></textarea>
 				</div>
 			</div>
 			<div class="swiper-slide center-parent">
 				<div class="center-parent">
-					<label class="label" th:text="#{profile.intention}"></label>
-					<div class="control radio-parent">
-						<th:block th:each="intention : ${intentions}">
-							<label th:value="${intention.id}"
-								th:if="${intention.text == 'meet'}"><input type="radio" name="answer" th:text="#{profile.intention.meet}"></label>
-							<label th:value="${intention.id}"
-								th:if="${intention.text == 'date'}"><input type="radio" name="answer" th:text="#{profile.intention.date}"></label>
-							<label th:value="${intention.id}"
-								th:if="${intention.text == 'sex' &&  isLegal}"><input type="radio" name="answer" th:text="#{profile.intention.sex}">
-							</label>
-						</th:block>
-					</div>
-				</div>
-			</div>
-			<div class="swiper-slide center-parent">
-				<div class="center-parent">
+					<img class="onboarding-icon" src="/img/onboarding/genders.svg"></img>
 					<label class="label" th:text="#{profile.gender}"></label>
 					<div class="switch-parent">
 						<th:block th:each="gender : ${genders}">
@@ -81,21 +68,46 @@
 			</div>
 			<div class="swiper-slide center-parent">
 				<div class="center-parent">
-					<label class="label" th:text="#{interests}"></label>
-					<div style="display: flex">
-						<input class="input" pattern="[a-zA-Z0-9-]{3,30}" name="value"
-							style="flex: 1; height: 32px;" th:placeholder="#{interest}" required>
+					<img class="onboarding-icon" src="/img/onboarding/intention.svg"></img>
+					<label class="label" th:text="#{profile.intention}"></label>
+					<div class="control radio-parent margin-left-right" id="radio-parent">
+						<th:block th:each="intention : ${intentions}">
+							<label th:value="${intention.id}"
+								th:if="${intention.text == 'meet'}"><input type="radio" name="intention" value="1" th:text="#{profile.intention.meet}"></label>
+							<label th:value="${intention.id}"
+								th:if="${intention.text == 'date'}"><input type="radio" name="intention" value="2" th:text="#{profile.intention.date}"></label>
+							<label th:value="${intention.id}"
+								th:if="${intention.text == 'sex' && isLegal}"><input type="radio" name="intention" value="3" th:text="#{profile.intention.sex}">
+							</label>
+						</th:block>
+					</div>
+				</div>
+			</div>
+			<div class="swiper-slide center-parent">
+				<div class="center-parent">
+					<img class="onboarding-icon" src="/img/onboarding/interests.svg"></img>
+					<label class="label" th:text="#{profile-onboarding.interests}" style="margin-bottom: 0px !important;"></label>
+					<div style="margin-bottom: 36px !important;">
+						<label class="label-small" th:text="#{optional}" style="font-style: italic;"></label>
+						<i class="fa-lg fas fa-question-circle" style="cursor:pointer;" onclick="interestInfo()"></i>
+					</div>
+					<div style="display: flex;" class="margin-left-right">
+						<input class="input is-small" maxlength="30" id="interest1" placeholder="starwars">
+						<input class="input is-small" maxlength="30" id="interest2" placeholder="taichi">
+						<input class="input is-small" maxlength="30" id="interest3" placeholder="anime">
 						<div style="padding-top: 4px;"></div>
-						<div class="button is-info is-outlined" style="margin-left: 4px; height: 32px;">
-							<i class="fa fa-plus"></i>
-						</div>
+						
 					</div>
 
-				<div id="submit" class="button is-primary" th:text="#{submit}"></div>
+				<button id="submit" class="button is-primary colored" th:text="#{submit}" disabled></button>
 				</div>
 			</div>
 		</div>
 		<div class="swiper-pagination"></div>
+	</div>
+	
+	<div class="loader-parent">
+		<div class="loader"></div>
 	</div>
 
 	<script src="/sw.js"></script>

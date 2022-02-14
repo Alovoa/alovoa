@@ -49,6 +49,7 @@ const staticAssets = [
 	'/js/password-change.js',
 	'/js/password-reset.js',
 	'/js/profile.js',
+	'/js/profile-onboarding.js',
 	'/js/register.js',
 	'/js/register-oauth.js',
 	'/js/search.js',
@@ -65,6 +66,7 @@ const staticAssets = [
 	'/css/lib/swiper.min.css',
 	'/css/lib/leaflet.min.css',
 	'/css/lib/modal-fx.min.css',
+	'/css/lib/animate.min.css',
 
 	'/css/snips/ui-angular.css',
 
@@ -77,6 +79,7 @@ const staticAssets = [
 	'/css/privacy.css',
 	'/css/search.css',
 	'/css/profile.css',
+	'/css/profile-onboarding.css',
 	'/css/user-profile.css',
 
 	'/img/search-cover.webp',
@@ -102,7 +105,13 @@ const staticAssets = [
 	'/img/profile/7.png',
 	'/img/profile/8.png',
 	'/img/profile/9.png',
-	'/img/profile/10.png'
+	'/img/profile/10.png',
+	
+	'/img/onboarding/description.svg',
+	'/img/onboarding/genders.svg',
+	'/img/onboarding/intention.svg',
+	'/img/onboarding/interests.svg',
+	'/img/onboarding/profilepic.svg'
 	
 ];
 

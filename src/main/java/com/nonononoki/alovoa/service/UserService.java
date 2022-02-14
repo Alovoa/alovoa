@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -72,11 +73,11 @@ import com.nonononoki.alovoa.entity.user.UserNotification;
 import com.nonononoki.alovoa.entity.user.UserProfilePicture;
 import com.nonononoki.alovoa.entity.user.UserReport;
 import com.nonononoki.alovoa.model.AlovoaException;
+import com.nonononoki.alovoa.model.ProfileOnboardingDto;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.model.UserDeleteParams;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserGdpr;
-import com.nonononoki.alovoa.model.UserOnboardingDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
@@ -396,16 +397,37 @@ public class UserService {
 
 		userRepo.saveAndFlush(user);
 	}
-	
-	public void onboarding(UserOnboardingDto model) throws AlovoaException {
+
+	public void onboarding(ProfileOnboardingDto model) throws AlovoaException {
 		User user = authService.getCurrentUser();
+		if(user.getProfilePicture() != null || user.getDescription() != null) {
+			return;
+		}
+
+		Date now = new Date();
+
+		UserProfilePicture profilePic = new UserProfilePicture();
+		profilePic.setData(model.getProfilePicture());
+		user.setProfilePicture(profilePic);
+
+		UserIntention intention = userIntentionRepo.findById(model.getIntention()).orElse(null);
+		user.getDates().setIntentionChangeDate(now);
+		user.setIntention(intention);
+
+		List<Gender> preferredGenders = genderRepo.findAllById(model.getPreferredGenders());
+		user.setPreferedGenders(new HashSet<>(preferredGenders));
+
 		user.setDescription(model.getDescription());
-		user.setIntention(model.getIntention());
-		user.setPreferedGenders(model.getPreferedGenders());	
-		user.setProfilePicture(model.getProfilePicture());
+		user.getInterests().addAll((model.getInterests().stream().map(i -> {
+			UserInterest interest = new UserInterest();
+			interest.setText(i.toLowerCase());
+			interest.setUser(user);
+			return interest;
+		}).collect(Collectors.toList())));
+
 		userRepo.saveAndFlush(user);
 	}
-	
+
 	public void updateDescription(String description) throws AlovoaException {
 		if (description != null) {
 			if (description.length() > descriptionSize) {
@@ -619,6 +641,13 @@ public class UserService {
 			byte[] decodedBytes = Base64.getDecoder().decode(stripB64Type(imgB64));
 			bis = new ByteArrayInputStream(decodedBytes);
 			image = ImageIO.read(bis);
+			
+			if(image.getWidth() == imageLength && image.getWidth() == imageLength) {
+				if (bis != null) {
+					bis.close();
+				}
+				return imgB64;
+			}
 
 			if (image.getWidth() != image.getHeight()) {
 

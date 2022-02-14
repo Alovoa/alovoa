@@ -495,6 +495,19 @@ function deleteInterest(id) {
 	});
 }
 
+function interestInfo() {
+	let text = getText("profile.interest.info");
+	bulmaToast.toast({
+		message: text,
+		type: 'is-info',
+		position: 'bottom-center',
+		closeOnClick: false,
+		pauseOnHover: false,
+		duration: 2000,
+		animate: { in: 'fadeIn', out: 'fadeOut' }
+	})
+}
+
 function deleteImage(id) {
 	if (confirm(getText("profile.js.delete-image.confirm"))) {
 		$.ajax({
@@ -690,20 +703,23 @@ function resizeImage(file, callback) {
 			let canvas = document.createElement('canvas');
 			let width = img.width;
 			let height = img.height;
+			let sx = 0;
+			let sy = 0;
+			
 			if (width > height) {
-				if (width > maxImageSize) {
-					height *= maxImageSize / width;
-					width = maxImageSize;
-				}
+				sx = width/2 - height/2;
+				width = height;
 			} else {
-				if (height > maxImageSize) {
-					width *= maxImageSize / height;
-					height = maxImageSize;
-				}
+				sy = height/2 - width/2;
+				height = width;
 			}
-			canvas.width = width;
-			canvas.height = height;
-			canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+			
+			canvas.height = maxImageSize;
+			canvas.width = maxImageSize;
+			
+			canvas.getContext('2d').drawImage(img, 
+				sx, sy, width, height, 
+				0, 0, maxImageSize, maxImageSize);
 			var dataUrl = canvas.toDataURL('image/jpeg');
 			return callback(dataUrl);
 		}

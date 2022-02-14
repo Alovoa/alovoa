@@ -19,6 +19,8 @@
 	<link rel="stylesheet" href="/css/lib/swiper.min.css" />
 	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
 	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
+	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
+	<link rel="stylesheet" href="/css/lib/animate.min.css" />
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<link rel="stylesheet" href="/css/profile.css" />
 	<title th:text="#{profile.title}"></title>
@@ -218,14 +220,13 @@
 								<input class="input" pattern="[a-zA-Z0-9-]{3,30}" name="value"
 									style="flex: 1" th:placeholder="#{interest}" required>
 								<div style="padding-top: 4px;"></div>
-								<div class="button is-info is-outlined" style="margin-left: 4px;">
+								<button class="button is-info is-outlined" style="margin-left: 4px;">
 									<i class="fa fa-plus"></i>
-								</div>
+								</button>
+								<i class="fa-lg fas fa-question-circle" style="cursor:pointer;" onclick="interestInfo()"></i>
 							</div>
 						</form>
 					</div>
-					<div class="notification is-info"
-						th:text="#{profile.interest.info}"></div>
 					</th:block>
 				</div>
 				

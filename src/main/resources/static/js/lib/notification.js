@@ -20,12 +20,14 @@ $(document).ready(function() {
 	}
 });
 
-function initialiseServiceWorker() {
+function initialiseServiceWorker(callback) {
 	if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.register(serviceWorkerName).then(handleSWRegistration);
+		callback()
 	} else {
 		console.log('Service workers aren\'t supported in this browser.');
 		disableAndSetBtnMessage('Service workers unsupported');
+		callback();
 	}
 };
 
@@ -83,12 +85,15 @@ function initialiseState(reg) {
 	});
 }
 
-function subscribe() {
-
-	if (!isSubscribed) {
+function subscribe(callback) {
+	if(!isPushApiSupported() || isSubscribed) {
+		callback();
+	} else {
 		Notification.requestPermission().then(function(status) {
 			if (status == 'granted') {
-				initialiseServiceWorker();
+				initialiseServiceWorker(callback);
+			} else {
+				callback();
 			}
 		});
 	}

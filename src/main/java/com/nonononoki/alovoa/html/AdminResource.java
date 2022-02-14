@@ -39,6 +39,12 @@ public class AdminResource {
 
 	@Autowired
 	private AuthService authService;
+	
+	private static String URL = "/admin";
+	
+	public static String getUrl() {
+		return URL;
+	}
 
 	@GetMapping("/admin")
 	public ModelAndView admin()

@@ -79,7 +79,7 @@ public class ProfileResource {
 
 		User user = authService.getCurrentUser();
 		if (user.isAdmin()) {
-			return adminResource.admin();
+			return new ModelAndView("redirect:" + AdminResource.getUrl());
 		} 
 		else if (user.getProfilePicture() == null && user.getDescription() == null) {
 			return new ModelAndView("redirect:" + ProfileOnboardingResource.getUrl());

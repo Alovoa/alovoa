@@ -33,10 +33,6 @@ public class ProfileOnboardingResource {
 
 	@Autowired
 	private UserIntentionRepository userIntentionRepo;
-
-	@Autowired
-	private AdminResource adminResource;
-
 	@Value("${app.media.max-size}")
 	private int mediaMaxSize;
 
@@ -56,7 +52,9 @@ public class ProfileOnboardingResource {
 
 		User user = authService.getCurrentUser();
 		if (user.isAdmin()) {
-			return adminResource.admin();
+			return new ModelAndView("redirect:" + AdminResource.getUrl());
+		} else if (user.getProfilePicture() != null || user.getDescription() != null) {
+			return new ModelAndView("redirect:" + ProfileResource.getUrl());
 		} else {
 			int age = Tools.calcUserAge(user);
 			boolean isLegal = age >= Tools.AGE_LEGAL;

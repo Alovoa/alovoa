@@ -7,6 +7,11 @@
      margin: 0;
      padding: 0;
 }
+
+textarea {
+    box-sizing: border-box;
+}
+
 .swiper {
      width: 100%;
      height: 50%;
@@ -16,19 +21,13 @@
      justify-content: center;
      align-items: center;
 }
-.swiper-slide img {
-     display: block;
-     width: 100%;
-     height: 50%;
-     object-fit: cover;
-}
 .swiper-slide > div {
      flex-direction: column;
      height: 100%;
      max-width: 600px;
 }
 .label {
-	margin-bottom: 2em !important;
+	margin-bottom: 36px !important;
 	font-size: 2em;
 }
 .radio-parent, .switch-parent {
@@ -46,9 +45,44 @@
 	font-size: 1.3em !important;
 }
 
+.margin-left-right {
+	margin-left: 4px;
+	margin-right: 4px;
+}
+
 #submit {
 	height: 32px;
 	margin-top: 100px;
+}
+
+.onboarding-icon {
+	display: none;
+}
+
+@media screen and (min-height: 550px) {
+	.onboarding-icon {
+		display: block;
+		margin-top: 18px;
+		margin-bottom: 32px;
+		height:20vh;
+	}
+	.swiper-slide > div {
+		justify-content: initial;
+	}
+}
+
+@media screen and (min-height: 700px) {
+	.onboarding-icon {
+		margin-top: 28px;
+		margin-bottom: 52px;
+	}
+}
+
+@media screen and (min-height: 800px) {
+	.onboarding-icon {
+		margin-top: 48px;
+		margin-bottom: 64px;
+	}
 }
 
 @media screen and (min-width: 600px) {
@@ -73,7 +107,7 @@
 
 @media screen and (max-width: 400px) {
 	.radio-parent > label {
-		font-size: 0.8em !important;
+		font-size: 1.0em !important;
 	}
 }
 
