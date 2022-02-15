@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				contentType: "application/json",
 				data: JSON.stringify(data),
 				success: function(e) {
-					location.reload();
+					window.location = "/search";
 				},
 				error: function(e) {
 					console.log(e);
