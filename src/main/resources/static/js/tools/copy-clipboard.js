@@ -25,11 +25,5 @@ function copyClipboard(txt) {
 	}
 	txt.remove();
 
-	bulmaToast.toast({
-		message: successMsg,
-		type: 'is-primary',
-		position: 'bottom-center',
-		closeOnClick: false,
-		pauseOnHover: false
-	})
+	alert(successMsg);
 }

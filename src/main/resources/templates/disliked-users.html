@@ -17,6 +17,7 @@
 	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
 	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
 	<link rel="stylesheet" href="/css/lib/swiper.min.css" />
+	<link rel="stylesheet" href="/css/lib/animate.min.css" />
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<link rel="stylesheet" href="/css/user-profile.css" />
 	<link rel="stylesheet" href="/css/notification.css" />
@@ -28,7 +29,7 @@
 		<header th:insert="fragments.html::header-logged-in"></header>
 		<section class="container" id="main-container">
 			<div class="section">
-				<div class="container" style="width: 100%;">
+				<div class="container container-narrow" style="width: 100%;">
 					<div class="card is-horizontal notification-card" th:each="user : ${users}" style="width: 100%;"
 						th:onclick="viewProfile([[${user.idEncoded}]])">
 						<div class="card-image">
@@ -64,6 +65,7 @@
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/modal-fx.min.js"></script>
 	<script src="/js/lib/swiper.min.js"></script>
+	<script src="/js/lib/bulma-toast.min.js"></script>
 	<script src="/js/tools/get-notification.js"></script>
 	<script src="/js/tools/get-text.js"></script>
 	<script src="/js/tools/loader.js"></script>

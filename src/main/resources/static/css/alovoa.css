@@ -37,6 +37,10 @@ h1, h2, h3, h4, h5, h6 {
     background-color: transparent;
 }
 
+.label:not(:last-child) {
+    margin-bottom: 4px;
+}
+
 .swiper-button-next, .swiper-button-prev {
 	color: #4a4a4a;
 }
@@ -121,6 +125,11 @@ button, .button, .input, .select, select {
 .register-warning {
 	color: red;
 	padding-bottom: 8px;
+	font-size: 0.9em;
+}
+
+.container.container-narrow {
+	max-width: 780px !important;
 }
 
 .navbar {

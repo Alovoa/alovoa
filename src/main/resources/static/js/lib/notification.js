@@ -23,11 +23,11 @@ $(document).ready(function() {
 function initialiseServiceWorker(callback) {
 	if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.register(serviceWorkerName).then(handleSWRegistration);
-		callback()
+		if(callback) callback();
 	} else {
 		console.log('Service workers aren\'t supported in this browser.');
 		disableAndSetBtnMessage('Service workers unsupported');
-		callback();
+		if(callback) callback();
 	}
 };
 
@@ -87,13 +87,13 @@ function initialiseState(reg) {
 
 function subscribe(callback) {
 	if(!isPushApiSupported() || isSubscribed) {
-		callback();
+		if(callback) callback();
 	} else {
 		Notification.requestPermission().then(function(status) {
 			if (status == 'granted') {
 				initialiseServiceWorker(callback);
 			} else {
-				callback();
+				if(callback) callback();
 			}
 		});
 	}

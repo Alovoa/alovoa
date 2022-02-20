@@ -19,7 +19,6 @@
 	<link rel="stylesheet" href="/css/lib/swiper.min.css" />
 	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
 	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
-	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
 	<link rel="stylesheet" href="/css/lib/animate.min.css" />
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<link rel="stylesheet" href="/css/profile.css" />
@@ -217,8 +216,8 @@
 					<div class="field" >
 						<form id="interest-form" th:action="@{/}" method="POST">
 							<div style="display: flex">
-								<input class="input" pattern="[a-zA-Z0-9-]{3,30}" name="value"
-									style="flex: 1" th:placeholder="#{interest}" required>
+								<input class="input" pattern="[a-zA-Z0-9-]{3,30}" id="interest" name="value"
+									style="flex: 1" th:placeholder="#{interest}" maxlength="30" required>
 								<div style="padding-top: 4px;"></div>
 								<button class="button is-info is-outlined" style="margin-left: 4px;">
 									<i class="fa fa-plus"></i>
@@ -350,7 +349,6 @@
 								controls></audio>
 						</div>
 						<div style="display: flex; float: left;">
-							<div class="notification is-info" style="height: 40px; margin-right: 4px; opacity: 0.75; font-size: 0.9em;">.mp3 .wav</div>
 							<div class="button is-info is-outlined" id="audio-upload-button" style="margin-right: 4px;">
 								<i class="fa fa-microphone"></i>
 							</div>
@@ -360,10 +358,10 @@
 								th:if="${user.audio}">
 								<i class="fa fa-trash"></i>
 							</div>
+							<div class="notification is-info" style="height: 40px; margin-left: 4px; margin-right: 2px; opacity: 0.75; font-size: 0.9em;">.mp3 .wav</div>
+							<i class="fa-lg fas fa-question-circle" style="cursor:pointer;" onclick="audioInfo()"></i>
 						</div>
 					</div>
-					<div class="notification is-info" th:text="#{profile.audio.info}"
-						style="margin-top: -6px;" th:unless="${user.audio}"></div>
 				</div>
 
 				<div class="box">
@@ -429,19 +427,23 @@
 				<div class="box" th:if="${referralsLeft > 0}">
 					<div class="field">
 						<label class="label" th:text="#{register.referral-code}"></label>
-						<div class="notification is-info"><span th:text="#{profile.referrer.info}"></span> <a id="referrer-anchor" th:href="${domain} + '/register?referrer=' + ${user.idEncoded}" th:text="${domain} + '/register?referrer=' + ${user.idEncoded}"></a></div>
+						<div style="display: none;" id="referralInfo">
+							<div style="display: grid;">
+								<span th:text="#{profile.referrer.info}"></span> <a id="referrer-anchor" th:href="${domain} + '/register?referrer=' + ${user.idEncoded}" th:text="${domain} + '/register?referrer=' + ${user.idEncoded}"></a>
+							</div>
+						</div>
 						<div class="notification is-info"><span th:text="#{profile.referrer.amount}"></span> <span th:text="${referralsLeft}"></span></div>	
-						<button class="button is-primary is-outlined" style="width: 100%;" th:onclick="copyClipboard([[${domain} + '/register?referrer=' + ${user.idEncoded}]])"><i class="fa fa-copy"></i></button>
+						<button class="button is-primary is-outlined" th:onclick="copyClipboard([[${domain} + '/register?referrer=' + ${user.idEncoded}]])"><i class="fa fa-copy"></i></button>
+						<button id="referral-share-btn" class="button is-primary is-outlined" th:onclick="shareUrl([[${domain} + '/register?referrer=' + ${user.idEncoded}]])"><i class="fa fa-share-alt"></i></button>
+						<i class="fa-lg fas fa-question-circle" style="cursor:pointer;" onclick="referralInfo()"></i>
 					</div>
 				</div>
 
-				<div class="box">
-					<div class="field">
-						<button class="button is-info is-outlined"
-							onclick="location.reload()" style="width: 100%;">
-							<i class="fa fa-save" style="padding-right: 4px; font-size: 1.3em;"></i> <span th:text="#{save}"></span>
-						</button>
-					</div>
+				<div class="field" style="margin-top:48px;">
+					<button class="button is-info is-outlined"
+						onclick="location.reload()" style="width: 100%;">
+						<i class="fa fa-save" style="padding-right: 4px; font-size: 1.3em;"></i> <span th:text="#{save}"></span>
+					</button>
 				</div>
 
 				<div style="padding-top: 230px;"></div>

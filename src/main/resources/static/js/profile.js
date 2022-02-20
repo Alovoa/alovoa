@@ -24,6 +24,15 @@ $(function() {
 		},
 		pagination: { el: '.swiper-pagination' }
 	});
+	
+	if (!navigator.canShare) {
+		$("#referral-share-btn").hide();
+	}
+	
+	let interest = $('#interest');
+	interest.on('keyup paste', function() {
+		interest.val(getCleanInterest(interest.val()));
+	});
 
 	//updateProfileWarning();
 
@@ -453,6 +462,51 @@ $(function() {
 	});
 });
 
+function copyClipboard(txt) {
+
+	const successMsg = getText("success.clipboard");
+
+	var m = document;
+	txt = m.createTextNode(txt);
+	var w = window;
+	var b = m.body;
+	b.appendChild(txt);
+	if (b.createTextRange) {
+		var d = b.createTextRange();
+		d.moveToElementText(txt);
+		d.select();
+		m.execCommand('copy');
+	}
+	else {
+		var d = m.createRange();
+		var g = w.getSelection;
+		d.selectNodeContents(txt);
+		g().removeAllRanges();
+		g().addRange(d);
+		m.execCommand('copy');
+		g().removeAllRanges();
+	}
+	txt.remove();
+
+	alert(successMsg);
+}
+
+async function shareUrl(url) {
+	alert('TEST')
+	const data = {
+		title: 'Alovoa',
+		text: 'Alovoa',
+		url: url	
+	}
+	try {
+    	await navigator.share(data)
+	} catch(err) {}
+}
+
+function getCleanInterest(userInput) {
+	return userInput.replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
+}
+
 function deleteAudio() {
 	if (confirm(getText("profile.audio.delete"))) {
 		$.ajax({
@@ -497,15 +551,17 @@ function deleteInterest(id) {
 
 function interestInfo() {
 	let text = getText("profile.interest.info");
-	bulmaToast.toast({
-		message: text,
-		type: 'is-info',
-		position: 'bottom-center',
-		closeOnClick: false,
-		pauseOnHover: false,
-		duration: 2000,
-		animate: { in: 'fadeIn', out: 'fadeOut' }
-	})
+	alert(text);
+}
+
+function audioInfo() {
+	let text = getText("profile.audio.info");
+	alert(text);
+}
+
+function referralInfo() {
+	let text = document.getElementById("referralInfo").innerHTML;
+	alert(text);
 }
 
 function deleteImage(id) {
@@ -671,6 +727,7 @@ function updateProfileWarning() {
 	});
 
 }
+
 function getUserData(idEnc) {
 	let url = "/user/userdata/" + idEnc;
 	window.open(url);

@@ -145,15 +145,7 @@ function getCleanInterest(userInput) {
 
 function interestInfo() {
 	let text = getText("profile.interest.info");
-	bulmaToast.toast({
-		message: text,
-		type: 'is-info',
-		position: 'bottom-center',
-		closeOnClick: false,
-		pauseOnHover: false,
-		duration: 2000,
-		animate: { in: 'fadeIn', out: 'fadeOut' }
-	})
+	alert(text);
 }
 
 function updateData() {

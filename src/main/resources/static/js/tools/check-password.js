@@ -11,22 +11,15 @@ $(function() {
 
 function checkPassword() {
 	var password = $("#password").val();
-	var passwordRepeat = $("#password-repeat").val();
 
-	if (password != passwordRepeat) {
-		$("#password-info").html(txtErrorNoMatch);
-		$("#password-info").show();
-		return false;
+	if (isPasswordSecure(password)) {
+		$("#password-info").css("visibility", "hidden");
+		return true;
 	} else {
-		if (isPasswordSecure(password)) {
-			$("#password-info").hide();
-			return true;
-		} else {
-			$("#password-info")
-					.html(txtErrorWeak);
-			$("#password-info").show();
-			return false;
-		}
+		$("#password-info")
+				.html(txtErrorWeak);
+		$("#password-info").css("visibility", "visible");
+		return false;
 	}
 }
 

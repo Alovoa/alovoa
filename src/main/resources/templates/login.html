@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
 	<link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
 	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
+	<link rel="stylesheet" href="/css/lib/animate.min.css" />
 	<th:block th:replace="fragments.html::bulma"></th:block>
 	<th:block th:replace="fragments.html::ui-design"></th:block>
 	<link rel="stylesheet" href="/css/alovoa.css" />
@@ -23,7 +24,7 @@
 		<header th:insert="fragments.html::header-logged-out"></header>
 		<div class="section">
 
-			<div class="container">
+			<div class="container container-narrow">
 				<div>
 					<h3 class="title" th:text="#{login.title}"></h3>
 					<p class="subtitle" th:text="#{login.subtitle}"></p>
@@ -45,15 +46,17 @@
 									style="font-size: 1.3em; font-weight: 600; margin-bottom: 12px;"></h3>
 								<form th:action="@{/login}" method="POST">
 									<div class="field">
+										<label class="label" th:text="#{email}"></label>
 										<div class="control">
-											<input class="input" type="email" th:placeholder="#{email}" autofocus=""
+											<input class="input" type="email" autofocus=""
 												name="username">
 										</div>
 									</div>
 
 									<div class="field">
+										<label class="label" th:text="#{password}"></label>
 										<div class="control">
-											<input class="input" type="password" th:placeholder="#{password}"
+											<input class="input" type="password"
 												name="password">
 										</div>
 									</div>
@@ -106,6 +109,7 @@
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/bulma-collapsible.min.js"></script>
 	<script src="/js/lib/modal-fx.min.js"></script>
+	<script src="/js/lib/bulma-toast.min.js"></script>
 	<script src="/js/tools/refresh-captcha.js"></script>
 	<script src="/js/tools/get-text.js"></script>
 	<script src="/js/tools/modal.js"></script>
