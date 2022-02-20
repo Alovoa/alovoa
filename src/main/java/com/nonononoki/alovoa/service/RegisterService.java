@@ -107,28 +107,10 @@ public class RegisterService {
 
 	private static final int MIN_PASSWORD_SIZE = 7;
 
-//	public static String ZODIAC_AQUARIUS = "aquarius";
-//	public static String ZODIAC_ARIES = "aries";
-//	public static String ZODIAC_CANCER = "cancer";
-//	public static String ZODIAC_CAPRICORN = "capricorn";
-//	public static String ZODIAC_GEMINI = "gemini";
-//	public static String ZODIAC_LEO = "leo";
-//	public static String ZODIAC_LIBRA = "libra";
-//	public static String ZODIAC_PISCES = "pisces";
-//	public static String ZODIAC_SAGITTARIUS= "sagittarious";
-//	public static String ZODIAC_SCORPION = "scorpion";
-//	public static String ZODIAC_TAURUS = "taurus";
-//	public static String ZODIAC_VIRGO = "virgo";
-
 	private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
 
 	public String register(RegisterDto dto)
 			throws NoSuchAlgorithmException, AlovoaException, MessagingException, IOException {
-
-		boolean isValid = captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText());
-		if (!isValid) {
-			throw new AlovoaException(publicService.text("backend.error.captcha.invalid"));
-		}
 
 		dto.setEmail(Tools.cleanEmail(dto.getEmail()));
 

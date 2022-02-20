@@ -204,13 +204,6 @@ public class RegisterServiceTest {
 		dto.setPassword("test123");
 		dto.setFirstName("test");
 		dto.setGender(gender);
-		if (c != null) {
-			dto.setCaptchaId(c.getId());
-			dto.setCaptchaText(c.getText());
-		} else {
-			dto.setCaptchaId(0);
-			dto.setCaptchaText("test");
-		}
 		dto.setTermsConditions(true);
 		dto.setPrivacy(true);
 		return dto;

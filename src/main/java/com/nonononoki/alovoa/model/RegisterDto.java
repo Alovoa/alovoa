@@ -15,9 +15,6 @@ public class RegisterDto {
 	
 	private long gender;
 	
-	private String captchaText;
-	private long captchaId;	
-	
 	private boolean termsConditions;
 	private boolean privacy;
 }

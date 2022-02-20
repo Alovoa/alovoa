@@ -50,7 +50,6 @@ $(function() {
 					window.location = "/?confirm-registration";
 				},
 				error: function(e) {
-					refreshCaptcha();
 					console.log(e);
 					alert(e.responseText);
 				}

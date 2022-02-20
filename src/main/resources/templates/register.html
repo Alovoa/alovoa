@@ -13,7 +13,9 @@
 	<th:block th:replace="fragments.html::bulma"></th:block>
 	<th:block th:replace="fragments.html::ui-design"></th:block>
 	<link rel="stylesheet" href="/css/lib/bulma-switch.min.css" />
+	<link rel="stylesheet" href="/css/lib/bulma-divider.min.css" />
 	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
+	<link rel="stylesheet" href="/css/lib/animate.min.css" />
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<title th:text="#{register.title}"></title>
 </head>
@@ -22,7 +24,7 @@
 	<div id="main">
 		<header th:replace="fragments.html::header-logged-out"></header>
 		<div class="section">
-			<div class="container">
+			<div class="container container-narrow">
 				<h3 class="title" th:text="#{register.title}"></h3>
 				<p class="subtitle" th:text="#{register.subtitle}"></p>
 				<a id="email-auth" onclick="emailAuthClick()"
@@ -73,37 +75,11 @@
 						</div>
 					</div>
 					<div class="field">
-						<label class="label" th:text="#{email}" style="float: left;"></label><span
-							class="asterisk">*</span>
-						<div class="control">
-							<input class="input" type="email" name="email" required>
-						</div>
-					</div>
-					<div class="field">
 						<label class="label" th:text="#{dob}" style="float: left;"></label><span
 							class="asterisk">*</span>
 						<div class="control">
 							<input id="dob-input" class="input" type="date" name="dateOfBirth"
 								style="width: 100%;" required>
-						</div>
-					</div>
-
-					<div>
-						<div class="field">
-							<label class="label" th:text="#{password}"></label>
-							<div class="control">
-								<input class="input" type="password" name="password" id="password" required>
-							</div>
-						</div>
-						<div class="field">
-							<label class="label" th:text="#{password-repeat}"></label>
-							<div class="control">
-								<input class="input" type="password" id="password-repeat" required>
-							</div>
-						</div>
-	
-						<div class="notification is-danger" id="password-info" style="margin-bottom: 0.75rem;"
-							th:text="#{password-change.warning}">
 						</div>
 					</div>
 					
@@ -125,15 +101,32 @@
 						</div>
 					</div>
 					
+					<div style="padding-top: 24px;"></div>
+					
 					<div>
 						<div class="field">
-							<label class="label" th:text="#{register.referral-code} + ' (' + #{optional} +')'" style="float: left;"></label>
+							<label class="label" th:text="#{email}" style="float: left;"></label><span
+								class="asterisk">*</span>
 							<div class="control">
-								<input class="input" name="referrerCode" id="referrer">
+								<input class="input" type="email" name="email" required>
 							</div>
+						</div>						
+						<div class="field">
+							<label class="label" th:text="#{password}"></label>
+							<div class="control">
+								<input class="input" type="password" name="password" id="password" required>
+							</div>
+							<div id="password-info" th:text="#{password-change.warning}" style="font-size:0.8em; color: red;">
+						</div>	
+
 						</div>
 						
-						<div th:replace="fragments.html::captcha"></div>
+						<div class="field">
+							<label class="label" th:text="#{register.referral-code}" style="float: left;"></label>
+							<div class="control">
+								<input class="input" name="referrerCode" id="referrer" th:placeholder="#{optional}">
+							</div>
+						</div>
 	
 						<div style="height: 24px"></div>
 	
@@ -172,6 +165,7 @@
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/modal-fx.min.js"></script>
+	<script src="/js/lib/bulma-toast.min.js"></script>
 	<script src="/js/tools/refresh-captcha.js"></script>
 	<script src="/js/tools/check-password.js"></script>
 	<script src="/js/tools/get-text.js"></script>
