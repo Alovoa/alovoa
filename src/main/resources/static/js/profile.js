@@ -492,7 +492,6 @@ function copyClipboard(txt) {
 }
 
 async function shareUrl(url) {
-	alert('TEST')
 	const data = {
 		title: 'Alovoa',
 		text: 'Alovoa',
