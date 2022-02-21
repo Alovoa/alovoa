@@ -5,20 +5,19 @@
 
 	<div th:fragment="empty"></div>
 
-	<div th:fragment="captcha">
+	<div th:fragment="captcha" style="margin-bottom: 4px;">
 		<input id="captcha-id" name="captchaId" type="hidden">
 
-		<div class="field">
+		<div class="field" style="margin-bottom: 0px;">
 			<img id="captcha-image">
 		</div>
 		<div class="field">
-			<input class="input" id="captcha" name="captchaText" th:placeholder="#{captcha}" autocomplete="off"
+		<input class="input" id="captcha" name="captchaText" th:placeholder="#{captcha}" autocomplete="off" style="margin-bottom: 4px;"
 				required>
 			<button type="button" id="captcha-refresh-button" class="button is-info colored" onclick="refreshCaptcha()">
 				<i class="fa fa-sync" id="captcha-refresh-icon"></i>
 			</button>
 		</div>
-		<div style="padding-top: 4px;"></div>
 	</div>
 
 	<div th:fragment="header-logged-out" id="header-logged-out" class="header">
