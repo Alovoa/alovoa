@@ -4,7 +4,8 @@
 <img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/src/main/resources/static/img/android-chrome-192x192.png">
 </p>
 
-https://alovoa.com/
+Website: https://alovoa.com/
+Mirror: <a href="https://codeberg.org/Nonononoki/alovoa">Codeberg</a>
 
 Alovoa aims to be the first widespread open-source dating web application on the web. What differs this from other platform?
 - No ads
