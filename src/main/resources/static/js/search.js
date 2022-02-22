@@ -88,17 +88,14 @@ function mainContainerLoadCards(url) {
 		closeModal();
 		showDonatePopup();
 
-		var sliders = [];
-
-		$('.swiper-container').each(function(index, element) {
+		$('.swiper').each(function(index, element) {
 			$(this).addClass('s' + index);
 			let slider = new Swiper('.s' + index, {
 				initialSlide: 1,
 				shortSwipes: true,
-				simulateTouch: false
+				simulateTouch: true
 			});
-
-
+			
 			slider.on('transitionEnd', function() {
 				let id = $(slider.el).attr("id");
 
@@ -108,8 +105,6 @@ function mainContainerLoadCards(url) {
 					hideUser(id);
 				}
 			});
-
-			sliders.push(slider);
 		});
 
 		$(".loader-parent").css("display", "none");
