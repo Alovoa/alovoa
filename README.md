@@ -7,7 +7,7 @@
 Website: https://alovoa.com/
 Mirror: <a href="https://codeberg.org/Nonononoki/alovoa">Codeberg</a>
 
-Alovoa aims to be the first widespread free and open-source dating web application on the web. What differs this from other platform?
+Alovoa aims to be the first widespread free and open-source dating web platform. What differs this from other platform?
 - No ads
 - No selling your data
 - No paid features (no "pay super-likes", "pay to swipe", "pay to view profile" or "pay to start a chat")
