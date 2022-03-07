@@ -40,9 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private String rememberKey;
 
 	@Autowired
-	private AuthProvider authProvider;
-
-	@Autowired
 	private SuccessHandler successHandler;
 
 	@Autowired
@@ -94,7 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authProvider);
+		auth.authenticationProvider(authProvider());
 	}
 
 	@Bean
@@ -144,5 +141,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	public AuthProvider authProvider() {
+		return new AuthProvider();
 	}
 }
