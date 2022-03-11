@@ -134,7 +134,7 @@ public class AdminService {
 
 		user.setProfilePicture(null);
 		user.getImages().clear();
-		userRepo.save(user);
+		userRepo.saveAndFlush(user);
 	}
 
 	public void removeDescription(String id)
@@ -150,7 +150,7 @@ public class AdminService {
 		}
 
 		user.setDescription(null);
-		userRepo.save(user);
+		userRepo.saveAndFlush(user);
 	}
 
 	public void banUser(String id)

@@ -35,6 +35,6 @@ public class ImprintService {
 		c.setDate(new Date());
 		c.setEmail(dto.getEmail());
 		c.setMessage(dto.getMessage());
-		return contactRepo.save(c);
+		return contactRepo.saveAndFlush(c);
 	}
 }

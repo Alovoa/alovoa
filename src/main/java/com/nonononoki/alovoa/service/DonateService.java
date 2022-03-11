@@ -156,7 +156,7 @@ public class DonateService {
 				u.getDonations().add(userDonation);
 				u.setTotalDonations(u.getTotalDonations() + amount);
 				u.getDates().setLatestDonationDate(new Date());
-				userRepo.save(u);
+				userRepo.saveAndFlush(u);
 			}
 		}
 	}
@@ -204,7 +204,7 @@ public class DonateService {
 				u.getDonations().add(userDonation);
 				u.setTotalDonations(u.getTotalDonations() + amount);
 				u.getDates().setLatestDonationDate(new Date());
-				userRepo.save(u);
+				userRepo.saveAndFlush(u);
 			}
 		}
 	}

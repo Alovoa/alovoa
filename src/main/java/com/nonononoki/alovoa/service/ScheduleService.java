@@ -2,7 +2,9 @@ package com.nonononoki.alovoa.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -81,6 +83,7 @@ public class ScheduleService {
 		
 		List<Captcha> captchas = captchaRepo.findTop1000ByDateBefore(d);
 		captchaRepo.deleteAll(captchas);
+		captchaRepo.flush();
 	}
 	
 	public void cleanContact(Date date) {
@@ -90,6 +93,7 @@ public class ScheduleService {
 		
 		List<Contact> contacts = contactRepo.findTop100ByDateBefore(d);
 		contactRepo.deleteAll(contacts);
+		contactRepo.flush();
 	}
 	
 	public void cleanUserHide(Date date) {
@@ -99,6 +103,7 @@ public class ScheduleService {
 		
 		List<UserHide> tokens = userHideRepo.findTop100ByDateBefore(d);
 		List<User> users = new ArrayList<>();
+		Set<UserHide> hides = new HashSet<>();
 		for(UserHide hide : tokens ) {
 			User u = hide.getUserFrom();
 			User u2 =hide.getUserTo();
@@ -106,11 +111,9 @@ public class ScheduleService {
 			u2.getHiddenByUsers().remove(hide);
 			users.add(u);
 			users.add(u2);
-			userHideRepo.delete(hide);
 		}
 		userRepo.saveAll(users);
 		userRepo.flush();
-		userHideRepo.flush();
 	}
 	
 	public void cleanUserPasswordToken(Date date) {
@@ -127,7 +130,6 @@ public class ScheduleService {
 		}
 		userRepo.saveAll(users);
 		userRepo.flush();
-		passwordTokenRepository.flush();
 	}
 	
 	public void cleanUserDeleteToken(Date date) {
@@ -143,7 +145,6 @@ public class ScheduleService {
 		}
 		userRepo.saveAll(users);
 		userRepo.flush();
-		userDeleteTokenRepository.flush();
 	}
 	
 }

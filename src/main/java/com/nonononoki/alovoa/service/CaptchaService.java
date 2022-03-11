@@ -87,6 +87,7 @@ public class CaptchaService {
 		}
 
 		captchaRepo.delete(captcha);
+		captchaRepo.flush();
 
 		return captcha.getHashCode().equals(getIpHash(request.getRemoteAddr()))
 				&& captcha.getText().equalsIgnoreCase(text);

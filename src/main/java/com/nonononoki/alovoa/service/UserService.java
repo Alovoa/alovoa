@@ -644,10 +644,7 @@ public class UserService {
 			bis = new ByteArrayInputStream(decodedBytes);
 			image = ImageIO.read(bis);
 			
-			if(image.getWidth() == imageLength && image.getWidth() == imageLength) {
-				if (bis != null) {
-					bis.close();
-				}
+			if(image.getWidth() == imageLength && image.getHeight() == imageLength) {
 				return imgB64;
 			}
 
@@ -692,18 +689,9 @@ public class UserService {
 			String base64bytes = Base64.getEncoder().encodeToString(bytes);
 			String src = Tools.B64IMAGEPREFIX + fileType + Tools.B64PREFIX + base64bytes;
 
-			bis.close();
-			bos.close();
-
 			return src;
 
 		} catch (Exception e) {
-			if (bis != null) {
-				bis.close();
-			}
-			if (bos != null) {
-				bos.close();
-			}
 			throw e;
 		}
 
@@ -1000,7 +988,6 @@ public class UserService {
 			}
 			if (durationInSeconds <= maxSeconds) {
 				ais.close();
-				bis.close();
 				audioB64 = Tools.B64AUDIOPREFIX + MIME_WAV + Tools.B64PREFIX + stripB64Type(audioB64);
 				return audioB64;
 			} else {
@@ -1014,21 +1001,14 @@ public class UserService {
 				base64bytes = Tools.B64AUDIOPREFIX + MIME_WAV + Tools.B64PREFIX + base64bytes;
 				aisShort.close();
 				ais.close();
-				bis.close();
 				return base64bytes;
 			}
 		} catch (Exception e) {
 			if (ais != null) {
 				ais.close();
 			}
-			if (bis != null) {
-				bis.close();
-			}
 			if (aisShort != null) {
 				aisShort.close();
-			}
-			if (baos != null) {
-				baos.close();
 			}
 			throw e;
 		}

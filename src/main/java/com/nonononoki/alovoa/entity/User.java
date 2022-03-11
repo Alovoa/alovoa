@@ -107,27 +107,27 @@ public class User implements UserDetails {
 
 	private boolean disabled;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	@JoinColumn
 	private UserRegisterToken registerToken;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	@JoinColumn
 	private UserPasswordToken passwordToken;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	@JoinColumn
 	private UserDeleteToken deleteToken;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	@JoinColumn
 	private UserDates dates;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	@JoinColumn
 	private UserAudio audio;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	@JoinColumn
 	private UserProfilePicture profilePicture;
 

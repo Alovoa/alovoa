@@ -127,6 +127,9 @@ class ScheduleServiceTest {
 		long currentDateTime = currentDate.getTime();
 
 		// CAPTCHA
+		
+		catchaRepo.deleteAll();
+		
 		Captcha captchaOld = generateCaptcha("hash1");
 		captchaOld.setDate(new Date(currentDateTime - captchaDelay - 1));
 		catchaRepo.saveAndFlush(captchaOld);
@@ -222,8 +225,6 @@ class ScheduleServiceTest {
 
 		scheduleService.cleanUserDeleteToken(currentDate);
 		assertEquals(1, userDeleteTokenRepository.count());
-
-		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
 
 	private Captcha generateCaptcha(String hashCode) {

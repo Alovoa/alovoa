@@ -101,7 +101,7 @@ public class NotificationService {
 
 	public void newMatch(User user) throws GeneralSecurityException, IOException, JoseException {
 		user.getDates().setMessageDate(new Date());
-		user = userRepo.save(user);
+		user = userRepo.saveAndFlush(user);
 
 		Locale locale = Tools.getUserLocale(user);
 		String title = messageSource.getMessage("backend.webpush.match.message", null, locale);

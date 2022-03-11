@@ -60,6 +60,7 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
 		}
 	}
 	
+	//private override
 	private boolean isInstanceOfUserDetails(Authentication authentication) {
 		return authentication.getPrincipal() instanceof UserDetails;
 	}

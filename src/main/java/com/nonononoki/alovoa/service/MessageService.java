@@ -76,7 +76,7 @@ public class MessageService {
 		m.setUserTo(c.getPartner(user));
 		m.setAllowedFormatting(message.startsWith(URL_PREFIX + URL_JITSI));
 		c.getMessages().add(m);
-		conversationRepo.save(c);
+		conversationRepo.saveAndFlush(c);
 
 		int numMessages = c.getMessages().size();
 		if (numMessages > maxConvoMessages) {

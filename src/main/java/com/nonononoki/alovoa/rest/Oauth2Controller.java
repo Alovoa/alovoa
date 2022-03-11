@@ -88,7 +88,7 @@ public class Oauth2Controller {
 					if (firstName.contains(" ")) {
 						firstName = firstName.split(" ")[0];
 						if (firstName.length() > firstNameMaxLength) {
-							firstName.substring(0, firstNameMaxLength);
+							firstName = firstName.substring(0, firstNameMaxLength);
 						}
 					}
 				}

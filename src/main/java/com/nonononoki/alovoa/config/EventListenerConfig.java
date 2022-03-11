@@ -158,7 +158,7 @@ public class EventListenerConfig {
 			user.setAdmin(true);
 			String enc = passwordEncoder.encode(adminKey);
 			user.setPassword(enc);
-			userRepo.save(user);
+			userRepo.saveAndFlush(user);
 		}
 	}
 
