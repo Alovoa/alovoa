@@ -207,7 +207,7 @@ public class RegisterService {
 		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
 		token.setDate(new Date());
 		token.setUser(user);
-		return registerTokenRepo.saveAndFlush(token);
+		return token;
 	}
 
 	public User registerConfirm(String tokenString) throws MessagingException, IOException, AlovoaException,

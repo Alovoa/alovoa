@@ -2,9 +2,7 @@ package com.nonononoki.alovoa.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -103,7 +101,6 @@ public class ScheduleService {
 		
 		List<UserHide> tokens = userHideRepo.findTop100ByDateBefore(d);
 		List<User> users = new ArrayList<>();
-		Set<UserHide> hides = new HashSet<>();
 		for(UserHide hide : tokens ) {
 			User u = hide.getUserFrom();
 			User u2 =hide.getUserTo();

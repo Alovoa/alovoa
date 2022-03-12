@@ -80,13 +80,6 @@ public class AuthProvider implements AuthenticationProvider {
 			throw new BadCredentialsException("");
 		}
 		if (!user.isConfirmed() && !user.isAdmin()) {
-
-			try {
-				registerService.createUserToken(user);
-			} catch (Exception e) {
-				logger.error(e.getMessage());
-			}
-
 			throw new InsufficientAuthenticationException("");
 		}
 		
