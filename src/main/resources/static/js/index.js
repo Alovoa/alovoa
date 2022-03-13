@@ -68,6 +68,8 @@ function showIosPwaBanner() {
 	}
 }
 
+var textures = [];//generate strings when the script is first run
+for(var i=0;i<10;i++) textures.push('./img/profile/'+(i+1)+'.png');
 //Based on https://github.com/liabru/matter-js/blob/master/examples/sprites.js , MIT license
 function hero() {
 
@@ -129,119 +131,17 @@ function hero() {
 		width / 100 / multiplicator, height / 150 / multiplicator, //columns, rows
 		50, 200, //colGap, rowGap
 		function(x, y) {
-			let rand = Math.random();
-			// console.log(rand);
-			if (rand < 0.1) {
-				return Bodies.circle(x, y, 80 * multiplicator, {
-					render: {
-						strokeStyle: '#ffffff',
-						sprite: {
-							texture: './img/profile/1.png',
-							xScale: 0.5 * multiplicator,
-							yScale: 0.5 * multiplicator
-						}
+			let rand = Math.floor(Math.random()*10); //generates number from 0 to 9
+			return Bodies.circle(x, y, 80 * multiplicator, {
+				render: {
+					strokeStyle: '#ffffff',
+					sprite: {
+						texture: textures[rand],
+						xScale: 0.5 * multiplicator,
+						yScale: 0.5 * multiplicator
 					}
-				});
-			} else if (rand < 0.2) {
-				return Bodies.circle(x, y, 80 * multiplicator, {
-					render: {
-						strokeStyle: '#ffffff',
-						sprite: {
-							texture: './img/profile/2.png',
-							xScale: 0.5 * multiplicator,
-							yScale: 0.5 * multiplicator
-						}
-					}
-				});
-			} else if (rand < 0.3) {
-				return Bodies.circle(x, y, 80 * multiplicator, {
-					render: {
-						strokeStyle: '#ffffff',
-						sprite: {
-							texture: './img/profile/3.png',
-							xScale: 0.5 * multiplicator,
-							yScale: 0.5 * multiplicator
-						}
-					}
-				});
-			} else if (rand < 0.4) {
-				return Bodies.circle(x, y, 80 * multiplicator, {
-					render: {
-						strokeStyle: '#ffffff',
-						sprite: {
-							texture: './img/profile/4.png',
-							xScale: 0.5 * multiplicator,
-							yScale: 0.5 * multiplicator
-						}
-					}
-				});
-			} else if (rand < 0.5) {
-				return Bodies.circle(x, y, 80 * multiplicator, {
-					render: {
-						strokeStyle: '#ffffff',
-						sprite: {
-							texture: './img/profile/5.png',
-							xScale: 0.5 * multiplicator,
-							yScale: 0.5 * multiplicator
-						}
-					}
-				});
-			} else if (rand < 0.6) {
-				return Bodies.circle(x, y, 80 * multiplicator, {
-					render: {
-						strokeStyle: '#ffffff',
-						sprite: {
-							texture: './img/profile/6.png',
-							xScale: 0.5 * multiplicator,
-							yScale: 0.5 * multiplicator
-						}
-					}
-				});
-			} else if (rand < 0.7) {
-				return Bodies.circle(x, y, 80 * multiplicator, {
-					render: {
-						strokeStyle: '#ffffff',
-						sprite: {
-							texture: './img/profile/7.png',
-							xScale: 0.5 * multiplicator,
-							yScale: 0.5 * multiplicator
-						}
-					}
-				});
-			} else if (rand < 0.8) {
-				return Bodies.circle(x, y, 80 * multiplicator, {
-					render: {
-						strokeStyle: '#ffffff',
-						sprite: {
-							texture: './img/profile/8.png',
-							xScale: 0.5 * multiplicator,
-							yScale: 0.5 * multiplicator
-						}
-					}
-				});
-			} else if (rand < 0.9) {
-				return Bodies.circle(x, y, 80 * multiplicator, {
-					render: {
-						strokeStyle: '#ffffff',
-						sprite: {
-							texture: './img/profile/9.png',
-							xScale: 0.5 * multiplicator,
-							yScale: 0.5 * multiplicator
-						}
-					}
-				});
-			} else {
-				return Bodies.circle(x, y, 80 * multiplicator, {
-					render: {
-						strokeStyle: '#ffffff',
-						sprite: {
-							texture: './img/profile/10.png',
-							xScale: 0.5 * multiplicator,
-							yScale: 0.5 * multiplicator
-						}
-					}
-				});
-			}
+				}
+			});
 		});
 
 	Composite.add(world, stack);
