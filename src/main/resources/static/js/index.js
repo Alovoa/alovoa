@@ -145,4 +145,9 @@ function hero() {
 		});
 
 	Composite.add(world, stack);
+	
+	setTimeout(function() {
+		Runner.stop(runner,engine);
+	}, 5000);
+	
 }
