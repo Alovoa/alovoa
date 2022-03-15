@@ -24,13 +24,9 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AuthToken;
 import com.nonononoki.alovoa.repo.CaptchaRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
-import com.nonononoki.alovoa.service.RegisterService;
 
 @Component
 public class AuthProvider implements AuthenticationProvider {
-
-	@Autowired
-	private RegisterService registerService;
 
 	@Autowired
 	private UserRepository userRepo;

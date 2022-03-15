@@ -163,23 +163,21 @@ public class Tools {
 		return result;
 	}
 
-	// https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude/20410612#20410612
-	// CC BY-SA 4.0 Arman Ebrahimpour, CC BY-SA 3.0 zahmde
-	public static int calcDistanceKm(double lat1, double lng1, double lat2, double lng2) {
-		double a = (lat1 - lat2) * distPerLat(lat1);
-		double b = (lng1 - lng2) * distPerLng(lat1);
-		double dist = Math.sqrt(a * a + b * b);
-		return (int) dist / THOUSAND;
-	}
+	//https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula/12600225#12600225
+	public final static double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
+	public static int calcDistanceKm(double userLat, double userLng,
+	  double venueLat, double venueLng) {
 
-	private static double distPerLng(double lat) {
-		return 0.0003121092 * Math.pow(lat, 4) + 0.0101182384 * Math.pow(lat, 3) - 17.2385140059 * lat * lat
-				+ 5.5485277537 * lat + 111301.967182595;
-	}
+	    double latDistance = Math.toRadians(userLat - venueLat);
+	    double lngDistance = Math.toRadians(userLng - venueLng);
 
-	private static double distPerLat(double lat) {
-		return -0.000000487305676 * Math.pow(lat, 4) - 0.0033668574 * Math.pow(lat, 3) + 0.4601181791 * lat * lat
-				- 1.4558127346 * lat + 110579.25662316;
+	    double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+	      + Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(venueLat))
+	      * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
+
+	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+	    return (int) (Math.round(AVERAGE_RADIUS_OF_EARTH_KM * c));
 	}
 
 	public static boolean usersCompatible(User user1, User user2) {

@@ -16,8 +16,12 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.component.AuthProvider;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Gender;
@@ -106,6 +110,8 @@ public class UserDto {
 	public static final int LA_STATE_ACTIVE_4 = 7;
 
 	private static final double MILES_TO_KM = 0.6214;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthProvider.class);
 
 	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
@@ -203,6 +209,10 @@ public class UserDto {
 				dist = Tools.getDistanceToUser(user, currentUser);
 				if (currentUser.getUnits() == User.UNIT_IMPERIAL) {
 					dist = (int) (dist * MILES_TO_KM);
+				}
+				if(dist == 0) {
+					LOGGER.warn("ZERO DISTANCE: User1 [ID, LAT, LONG]: ".concat(currentUser.getId().toString()).concat(",").concat(currentUser.getLocationLatitude().toString()).concat(",").concat(currentUser.getLocationLongitude().toString()));
+					LOGGER.warn("ZERO DISTANCE: User2 [ID, LAT, LONG]: ".concat(user.getId().toString()).concat(",").concat(user.getLocationLatitude().toString()).concat(",").concat(user.getLocationLongitude().toString()));
 				}
 			}
 			dto.setDistanceToUser(dist);
