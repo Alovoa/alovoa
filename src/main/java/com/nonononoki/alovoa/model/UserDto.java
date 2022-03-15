@@ -111,7 +111,7 @@ public class UserDto {
 
 	private static final double MILES_TO_KM = 0.6214;
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthProvider.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserDto.class);
 
 	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
