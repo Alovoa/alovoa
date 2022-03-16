@@ -5,11 +5,15 @@ var lat;
 var lon;
 
 $(function() {
+	
+	lat = $("#lat").attr("value");
+	lon = $("#lon").attr("value");
+	console.log(lat);
+	console.log(lon);
+	
 	bulmaSlider.attach();
 
-	lat = 52.3;
-	lon = 4.9;
-	mymap = L.map('map').setView({ lon: lon, lat: lat }, 4);
+	mymap = L.map('map').setView({ lon: 4.9, lat: 52.3 }, 4);
 
 	// add the OpenStreetMap tiles
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -82,8 +86,6 @@ function searchBase() {
 }
 
 function mainContainerLoadCards(url) {
-
-
 	$("#main-container").load(url, function() {
 		closeModal();
 		showDonatePopup();

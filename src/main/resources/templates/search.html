@@ -27,6 +27,9 @@
 
 <body class="preload">
 	<div id="has-location" th:if="${user.hasLocation}"></div>
+	<div id="lat" th:value="${user.locationLatitude}"></div>
+	<div id="lon" th:value="${user.locationLongitude}"></div>
+	
 	<div id="main-logged-in">
 		<header th:insert="fragments.html::header-search"></header>
 	

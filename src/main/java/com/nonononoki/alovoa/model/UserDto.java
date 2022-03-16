@@ -95,6 +95,8 @@ public class UserDto {
 	private boolean compatible;
 
 	private boolean hasLocation;
+	private Double locationLatitude;
+	private Double locationLongitude;
 
 	private int lastActiveState = 5;
 
@@ -136,6 +138,8 @@ public class UserDto {
 		if (user.getLocationLatitude() != null) {
 			dto.setHasLocation(true);
 		}
+		dto.setLocationLatitude(user.getLocationLatitude());
+		dto.setLocationLongitude(user.getLocationLongitude());
 		dto.setDescription(user.getDescription());
 		dto.setFirstName(user.getFirstName());
 		dto.setGender(user.getGender());
@@ -210,10 +214,10 @@ public class UserDto {
 				if (currentUser.getUnits() == User.UNIT_IMPERIAL) {
 					dist = (int) (dist * MILES_TO_KM);
 				}
-				if(dist == 0) {
-					LOGGER.warn("ZERO DISTANCE: User1 [ID, LAT, LONG]: ".concat(currentUser.getId().toString()).concat(",").concat(currentUser.getLocationLatitude().toString()).concat(",").concat(currentUser.getLocationLongitude().toString()));
-					LOGGER.warn("ZERO DISTANCE: User2 [ID, LAT, LONG]: ".concat(user.getId().toString()).concat(",").concat(user.getLocationLatitude().toString()).concat(",").concat(user.getLocationLongitude().toString()));
-				}
+//				if(dist == 0) {
+//					LOGGER.warn("ZERO DISTANCE: User1 [ID, LAT, LONG]: ".concat(currentUser.getId().toString()).concat(",").concat(currentUser.getLocationLatitude().toString()).concat(",").concat(currentUser.getLocationLongitude().toString()));
+//					LOGGER.warn("ZERO DISTANCE: User2 [ID, LAT, LONG]: ".concat(user.getId().toString()).concat(",").concat(user.getLocationLatitude().toString()).concat(",").concat(user.getLocationLongitude().toString()));
+//				}
 			}
 			dto.setDistanceToUser(dist);
 		}
