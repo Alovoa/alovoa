@@ -176,7 +176,7 @@ $(function() {
 				success: function(e) {
 					//updateProfileWarning();
 					alert(getText("profile.warning.intention.limit"))
-					location.reload();
+					//location.reload();
 				},
 				error: function(e) {
 					console.log(e);

@@ -464,6 +464,8 @@ public class UserService {
 			user.setIntention(i);
 			user.getDates().setIntentionChangeDate(now);
 			userRepo.saveAndFlush(user);
+		} else {
+			throw new AlovoaException("intention cooldown not finished");
 		}
 	}
 

@@ -89,12 +89,19 @@ function mainContainerLoadCards(url) {
 	$("#main-container").load(url, function() {
 		closeModal();
 		showDonatePopup();
+		
+		let shortSwipes = true;
+		if(window.innerWidth <= 1024) {
+			shortSwipes = true;
+		} else {
+			shortSwipes = false;
+		}
 
 		$('.swiper').each(function(index, element) {
 			$(this).addClass('s' + index);
 			let slider = new Swiper('.s' + index, {
 				initialSlide: 1,
-				shortSwipes: true,
+				shortSwipes: shortSwipes,
 				simulateTouch: true
 			});
 			
