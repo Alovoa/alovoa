@@ -333,12 +333,15 @@
 										<div class="right" th:if="${user.compatible}" style="display: flex;">
 											<button class="button colored is-danger"
 												style="margin-right: 4px;"
-												th:onclick="hideUser([[${user.idEncoded}]])">
+												th:onclick="hideUser([[${user.idEncoded}]])"
+												th:title="#{profile.button.dislike}"
+												th:attr="aria-label=#{profile.button.dislike}">
 												<i class="fa fa-thumbs-down"></i>
 											</button>
 											<div class="search-button-padding"></div>
 											<button class="button colored is-success"
-												th:onclick="likeUser([[${user.idEncoded}]])">
+												th:onclick="likeUser([[${user.idEncoded}]])"
+												th:title="#{profile.button.like}" th:attr="aria-label=#{profile.button.like}">
 												<i class="fa fa-thumbs-up"></i>
 											</button>
 										</div>
@@ -723,23 +726,28 @@
 		<div id="like-hide-bottom" th:if="${compatible}" >
 				<button class="button colored is-danger" style="height: 56px; width: 56px;"
 					th:unless="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
-					th:onclick="hideUser([[${user.idEncoded}]])">
+					th:onclick="hideUser([[${user.idEncoded}]])"
+					th:title="#{profile.button.dislike}" th:attr="aria-label=#{profile.button.dislike}">
 					<i class="fa fa-thumbs-down"></i>
 				</button>
 				<button class="button colored is-danger" style="height: 56px; width: 56px;"
 					th:if="${user.hiddenByCurrentUser or user.likedByCurrentUser}"
-					th:onclick="hideUser([[${user.idEncoded}]])" disabled>
+					th:onclick="hideUser([[${user.idEncoded}]])"
+					th:title="#{profile.button.dislike}" th:attr="aria-label=#{profile.button.dislike}"
+					disabled>
 					<i class="fa fa-thumbs-down"></i>
 				</button>
 				<div style="padding-right: 24px;"></div>
 				<button class="button colored is-success" style="height: 56px; width: 56px;"
 					th:unless="${user.likedByCurrentUser}"
-					th:onclick="likeUser([[${user.idEncoded}]])">
+					th:onclick="likeUser([[${user.idEncoded}]])"
+					th:title="#{profile.button.like}" th:attr="aria-label=#{profile.button.like}">
 					<i class="fa fa-thumbs-up"></i>
 				</button>
 				<button class="button colored is-success" style="height: 56px; width: 56px;"
 					th:if="${user.likedByCurrentUser}"
-					th:onclick="likeUser([[${user.idEncoded}]])" disabled>
+					th:onclick="likeUser([[${user.idEncoded}]])" disabled
+					th:title="#{profile.button.like}" th:attr="aria-label=#{profile.button.like}">
 					<i class="fa fa-thumbs-up"></i>
 				</button>
 		</div>

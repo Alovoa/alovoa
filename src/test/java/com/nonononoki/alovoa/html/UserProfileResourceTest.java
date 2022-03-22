@@ -1,6 +1,9 @@
 package com.nonononoki.alovoa.html;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 
@@ -10,9 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
@@ -26,9 +32,11 @@ import com.nonononoki.alovoa.service.MailService;
 import com.nonononoki.alovoa.service.RegisterService;
 import com.nonononoki.alovoa.service.RegisterServiceTest;
 import com.nonononoki.alovoa.service.UserService;
+import com.nonononoki.alovoa.util.AuthTestUtil;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@AutoConfigureMockMvc
 @Transactional
 class UserProfileResourceTest {
 
@@ -67,6 +75,9 @@ class UserProfileResourceTest {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
+	@Autowired
+	private MockMvc mockMvc;
+
 	@BeforeEach
 	void before() throws Exception {
 		Mockito.when(mailService.sendMail(Mockito.any(String.class), any(String.class), any(String.class),
@@ -96,5 +107,18 @@ class UserProfileResourceTest {
 		Mockito.when(authService.getCurrentUser()).thenReturn(currUser);
 		String encodedId = UserDto.encodeId(user.getId(), textEncryptor);
 		userProfileResource.profileView(encodedId);
+	}
+
+	@Test
+	void profileView__validUser__profileDisplayed() throws Exception {
+		Mockito.when(authService.getCurrentUser()).thenReturn(testUsers.get(0));
+		AuthTestUtil.setAuthTo(testUsers.get(0));
+
+		ResultActions ra = mockMvc.perform(get("/profile/view/" + UserDto.encodeId(testUsers.get(1).getId(), textEncryptor)));
+
+		ra.andExpect(status().isOk());
+		String contentAsString = ra.andReturn().getResponse().getContentAsString();
+		assertThat(contentAsString.contains("aria-label=\"Like\""));
+		assertThat(contentAsString.contains(testUsers.get(1).getFirstName())).withFailMessage("Profile must contain first name of profile user");
 	}
 }
