@@ -27,6 +27,7 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 	@Value("${app.text.salt}")
 	private String salt;
 
+	private static final Base64.Decoder BASE64_DECODER = Base64.getDecoder();
 	private static final String TRANSFORMATION = "AES/CBC/PKCS5PADDING";
 
 	private static IvParameterSpec ivSpec;
@@ -38,14 +39,14 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 
 	private IvParameterSpec getIvSpec() {
 		if (ivSpec == null) {
-			ivSpec = new IvParameterSpec(salt.getBytes(StandardCharsets.UTF_8));
+			ivSpec = new IvParameterSpec(BASE64_DECODER.decode(salt));
 		}
 		return ivSpec;
 	}
 
 	private SecretKeySpec getKeySpec() {
 		if (keySpec == null) {
-			keySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
+			keySpec = new SecretKeySpec(BASE64_DECODER.decode(key), "AES");
 		}
 		return keySpec;
 	}
