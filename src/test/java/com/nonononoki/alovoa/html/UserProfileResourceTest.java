@@ -1,6 +1,8 @@
 package com.nonononoki.alovoa.html;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 
@@ -10,9 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
@@ -26,9 +31,11 @@ import com.nonononoki.alovoa.service.MailService;
 import com.nonononoki.alovoa.service.RegisterService;
 import com.nonononoki.alovoa.service.RegisterServiceTest;
 import com.nonononoki.alovoa.service.UserService;
+import com.nonononoki.alovoa.util.AuthTestUtil;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@AutoConfigureMockMvc
 @Transactional
 class UserProfileResourceTest {
 
@@ -55,6 +62,9 @@ class UserProfileResourceTest {
 
 	@Autowired
 	private UserProfileResource userProfileResource;
+	
+	@Autowired
+	private MockMvc mockMvc;
 
 	@MockBean
 	private AuthService authService;
@@ -82,7 +92,6 @@ class UserProfileResourceTest {
 
 	@Test
 	void test() throws Exception {
-
 		User currUser = testUsers.get(0);
 		currUser.setLocationLatitude(0.0);
 		currUser.setLocationLongitude(0.0);
@@ -92,9 +101,12 @@ class UserProfileResourceTest {
 		userRepo.save(currUser);
 		userRepo.save(user);
 		userRepo.flush();
-
 		Mockito.when(authService.getCurrentUser()).thenReturn(currUser);
+		AuthTestUtil.setAuthTo(currUser);
 		String encodedId = UserDto.encodeId(user.getId(), textEncryptor);
-		userProfileResource.profileView(encodedId);
+		
+		ResultActions ra = mockMvc.perform(get("/profile/view/{0}", encodedId).secure(true));
+		
+		ra.andExpect(status().isOk());
 	}
 }

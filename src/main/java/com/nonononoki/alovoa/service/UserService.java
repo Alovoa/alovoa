@@ -843,7 +843,7 @@ public class UserService {
 	public User encodedIdToUser(String idEnc)
 			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-		long id = UserDto.decodeId(idEnc, textEncryptor);
+		long id = UserDto.decodeIdThrowing(idEnc, textEncryptor);
 		return userRepo.findById(id).orElse(null);
 	}
 

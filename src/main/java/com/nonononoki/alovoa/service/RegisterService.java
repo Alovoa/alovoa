@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -174,7 +175,12 @@ public class RegisterService {
 
 		try {
 			if (dto.getReferrerCode() != null && !dto.getReferrerCode().isEmpty()) {
-				long id = UserDto.decodeId(dto.getReferrerCode(), textEncryptor);
+				Optional<Long> idOptional = UserDto.decodeId(dto.getReferrerCode(), textEncryptor);
+				if (idOptional.isEmpty()) {
+					throw new AlovoaException("user_not_found");
+				}
+			
+				long id = idOptional.get();
 				User referrer = userRepo.findById(id).orElse(null);
 
 				if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
@@ -231,7 +237,7 @@ public class RegisterService {
 
 		try {
 			if (user.getReferrerCode() != null && !user.getReferrerCode().isEmpty()) {
-				long id = UserDto.decodeId(user.getReferrerCode(), textEncryptor);
+				long id = UserDto.decodeIdThrowing(user.getReferrerCode(), textEncryptor);
 				User referrer = userRepo.findById(id).orElse(null);
 
 				if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
