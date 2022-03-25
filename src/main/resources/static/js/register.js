@@ -5,13 +5,15 @@ const maxAge = 99;
 $(function() {
 
 	let today = new Date();
-	let startDate = new Date(today.setFullYear(today.getFullYear() - minAge)).toISOString().split('T')[0];
-	let endDate = new Date(today.setFullYear(today.getFullYear() - maxAge)).toISOString().split('T')[0];
+	let startDate = new Date(today.getTime());
+	startDate.setFullYear(today.getFullYear() - minAge)
+	let endDate = new Date(today.getTime());
+	endDate.setFullYear(today.getFullYear() - maxAge);
 
 	let dobInput = $("#dob-input");
 	//dobInput.val(startDate);
-	dobInput.attr('max', startDate);
-	dobInput.attr('min', endDate);
+	dobInput.attr('max', startDate.toISOString().split('T')[0]);
+	dobInput.attr('min', endDate.toISOString().split('T')[0]);
 
 	const queryString = window.location.search;
 	const urlParams = new URLSearchParams(queryString);
