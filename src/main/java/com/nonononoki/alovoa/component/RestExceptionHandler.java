@@ -19,8 +19,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler
 	protected ResponseEntity<Object> handleConflict(Exception ex, WebRequest request) {
+		String exceptionMessage = ex.getMessage();
 		LOGGER.error(ExceptionUtils.getStackTrace(ex));
-		return handleExceptionInternal(ex, HtmlUtils.htmlEscape(ex.getMessage()), new HttpHeaders(),
+		exceptionMessage = exceptionMessage == null ? null : HtmlUtils.htmlEscape(exceptionMessage);
+		return handleExceptionInternal(ex, exceptionMessage, new HttpHeaders(),
 				HttpStatus.CONFLICT, request);
 	}
 }
