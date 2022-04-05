@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -32,6 +33,9 @@ import com.nonononoki.alovoa.component.SuccessHandler;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Autowired
+	private Environment environment;
 
 	@Value("${app.text.key}")
 	private String key;
@@ -86,7 +90,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.sessionManagement().maximumSessions(10).expiredSessionStrategy(getSessionInformationExpiredStrategy())
 				.sessionRegistry(sessionRegistry());
 		http.csrf().ignoringAntMatchers("/donate/received/**");
-		http.requiresChannel().anyRequest().requiresSecure();
+		if (!environment.acceptsProfiles(ProfileConstants.TEST)) {
+			http.requiresChannel().anyRequest().requiresSecure();
+		}
 	}
 
 	@Override
