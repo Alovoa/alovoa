@@ -11,17 +11,17 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AlovoaException;
-import com.nonononoki.alovoa.model.ResourceNotFoundException;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.AuthService;
@@ -45,7 +45,7 @@ public class UserProfileResource {
 			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		Optional<Long> idOptional = UserDto.decodeId(idEncoded, textEncryptor);
 		if (idOptional.isEmpty()) {
-			throw new ResourceNotFoundException();
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 
 		Long id = idOptional.get();
@@ -89,7 +89,7 @@ public class UserProfileResource {
 			InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		Optional<Long> idOptional = UserDto.decodeId(idEncoded, textEncryptor);
 		if (idOptional.isEmpty()) {
-			throw new ResourceNotFoundException();
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 
 		Long id = idOptional.get();
