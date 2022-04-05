@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -20,6 +21,7 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AlovoaException;
+import com.nonononoki.alovoa.model.ResourceNotFoundException;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.AuthService;
@@ -36,19 +38,22 @@ public class UserProfileResource {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
-	@Autowired
-	private ProfileResource profileResource;
 
 	@GetMapping("/profile/view/{idEncoded}")
-	public ModelAndView profileView(@PathVariable String idEncoded) throws NumberFormatException, InvalidKeyException,
+	public String profileView(@PathVariable String idEncoded, Model model) throws NumberFormatException, InvalidKeyException,
 			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
 			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		long id = UserDto.decodeId(idEncoded, textEncryptor);
+		Optional<Long> idOptional = UserDto.decodeId(idEncoded, textEncryptor);
+		if (idOptional.isEmpty()) {
+			throw new ResourceNotFoundException();
+		}
+
+		Long id = idOptional.get();
 		User userView = userRepo.findById(id).orElse(null);
 		User user = authService.getCurrentUser();
 
 		if (user.getId().equals(id)) {
-			return profileResource.profile();
+			return "redirect:" + ProfileResource.URL;
 		}
 
 		if (userView != null) {
@@ -63,16 +68,15 @@ public class UserProfileResource {
 			userView.setNumberProfileViews(userView.getNumberProfileViews() + 1);
 			userView = userRepo.saveAndFlush(userView);
 
-			ModelAndView mav = new ModelAndView("user-profile");
 			UserDto userDto = UserDto.userToUserDto(userView, user, textEncryptor, UserDto.NO_AUDIO);
 			UserDto currUserDto = UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA);
 
-			mav.addObject("user", userDto);
-			mav.addObject("currUser", currUserDto);
+			model.addAttribute("user", userDto);
+			model.addAttribute("currUser", currUserDto);
 
-			mav.addObject("compatible", Tools.usersCompatible(user, userView));
+			model.addAttribute("compatible", Tools.usersCompatible(user, userView));
 
-			return mav;
+			return "user-profile";
 
 		} else {
 			throw new AlovoaException("user_not_found");
@@ -83,8 +87,12 @@ public class UserProfileResource {
 	public String warning(Model model, @PathVariable String idEncoded) throws AlovoaException, InvalidKeyException,
 			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
 			InvalidAlgorithmParameterException, UnsupportedEncodingException {
+		Optional<Long> idOptional = UserDto.decodeId(idEncoded, textEncryptor);
+		if (idOptional.isEmpty()) {
+			throw new ResourceNotFoundException();
+		}
 
-		long id = UserDto.decodeId(idEncoded, textEncryptor);
+		Long id = idOptional.get();
 		User userView = userRepo.findById(id).orElse(null);
 		User user = authService.getCurrentUser();
 

@@ -10,6 +10,7 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.crypto.BadPaddingException;
@@ -232,11 +233,21 @@ public class UserDto {
 				.encodeToString(textEncryptor.encode(Long.toString(id)).getBytes(StandardCharsets.UTF_8.name()));
 	}
 
-	public static long decodeId(String id, TextEncryptorConverter textEncryptor) throws NumberFormatException,
+	public static long decodeIdThrowing(String id, TextEncryptorConverter textEncryptor) throws NumberFormatException,
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, NumberFormatException {
 		String en = new String(Base64.getDecoder().decode(id));
 		return Long.parseLong(textEncryptor.decode(en));
+	}
+
+	public static Optional<Long> decodeId(String id, TextEncryptorConverter textEncryptor) {
+		try {
+			String en = new String(Base64.getDecoder().decode(id));			
+			return Optional.of(Long.parseLong(textEncryptor.decode(en)));
+		} catch (Exception e) {
+			LOGGER.debug(String.format("Couldn't decode id '%s'", id), e);
+		}
+		return Optional.empty();
 	}
 
 	public static String getUserZodiac(User user) {

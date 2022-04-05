@@ -126,7 +126,7 @@ public class AdminService {
 
 		checkRights();
 
-		User user = userRepo.findById(UserDto.decodeId(id, textEncryptor)).orElse(null);
+		User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
 
 		if (user == null) {
 			throw new AlovoaException("user_not_found");
@@ -143,7 +143,7 @@ public class AdminService {
 
 		checkRights();
 
-		User user = userRepo.findById(UserDto.decodeId(id, textEncryptor)).orElse(null);
+		User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
 
 		if (user == null) {
 			throw new AlovoaException("user_not_found");
@@ -159,7 +159,7 @@ public class AdminService {
 
 		checkRights();
 
-		User user = userRepo.findById(UserDto.decodeId(id, textEncryptor)).orElse(null);
+		User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
 
 		if (user == null) {
 			throw new AlovoaException("user_not_found");
