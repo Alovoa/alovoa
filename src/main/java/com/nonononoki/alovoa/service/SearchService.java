@@ -21,6 +21,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.SearchDto;
+import com.nonononoki.alovoa.model.SearchDto.SearchStage;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserSearchRequest;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -74,6 +76,8 @@ public class SearchService {
 	private static final int SEARCH_STEP_2 = 1000;
 
 	private static final int DEFAULT_DISTANCE = 50;
+	
+	private static final int SEARCH_MAX = 200; 
 
 	public SearchDto searchDefault() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
@@ -104,11 +108,13 @@ public class SearchService {
 //			sort = Sort.by(Sort.Direction.ASC, "dates.latestDonationDate");
 //			break;
 		case SORT_DONATION_TOTAL:
-			sort = Sort.by(Sort.Direction.ASC, "totalDonations");
+			sort = Sort.by(Sort.Direction.DESC, "totalDonations");
 			break;
 		case SORT_NEWEST_USER:
 			sort = Sort.by(Sort.Direction.DESC, "dates.creationDate");
 			break;
+		default:
+			Sort.unsorted();
 		}
 
 		int ageLegal = Tools.AGE_LEGAL;
@@ -148,19 +154,18 @@ public class SearchService {
 		double maxLong = longitude + deltaLong;
 
 		UserSearchRequest request = UserSearchRequest.builder().age(age).minLat(minLat).minLong(minLong).maxLat(maxLat)
-				.maxLong(maxLong).maxDateDob(maxDate).minDateDob(minDate).intentionText(user.getIntention().getText())
+				.maxLong(maxLong).maxDateDob(maxDate).minDateDob(minDate).intentionId(user.getIntention().getId())
 				.likeIds(user.getLikes().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
 				.blockIds(user.getBlockedUsers().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
 				.hideIds(user.getHiddenUsers().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
-				.genderTexts(user.getPreferedGenders().stream().map(o -> o.getText()).collect(Collectors.toSet()))
-				.build();
+				.genderIds(user.getPreferedGenders().stream().map(o -> o.getId()).collect(Collectors.toSet())).build();
 
 		// because IS IN does not work with empty list
 		request.getBlockIds().add(user.getId());
 		request.getLikeIds().add(0L);
 		request.getHideIds().add(0L);
 
-		List<User> users = userRepo.usersSearch(request, sort);
+		List<User> users = userRepo.usersSearch(request, PageRequest.of(0, SEARCH_MAX, sort));
 
 		Set<Long> ignoreIds = new HashSet<>();
 		ignoreIds.addAll(
@@ -169,14 +174,15 @@ public class SearchService {
 		List<User> filteredUsers = filterUsers(users, ignoreIds, user, false);
 
 		if (filteredUsers.size() < maxResults && users.size() >= UserRepository.MAX_USERS_SEARCH) {
-			List<User> allUsers = userRepo.usersSearchAll(request, sort);
+			List<User> allUsers = userRepo.usersSearch(request, PageRequest.of(0, Integer.MAX_VALUE, sort));
 			if (allUsers.size() != users.size()) {
 				filteredUsers = filterUsers(allUsers, ignoreIds, user, false);
 			}
 		}
 
 		if (!filteredUsers.isEmpty()) {
-			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user)).build();
+			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
+					.stage(SearchStage.NORMAL).build();
 		}
 		filteredUsers.clear();
 
@@ -193,11 +199,12 @@ public class SearchService {
 		request.setMaxLat(maxLat);
 		request.setMinLong(minLong);
 		request.setMaxLong(maxLong);
-		users = userRepo.usersSearch(request, sort);
+		users = userRepo.usersSearch(request, PageRequest.of(0, SEARCH_MAX, sort));
 		filteredUsers = filterUsers(users, ignoreIds, user, false);
 		if (!filteredUsers.isEmpty()) {
 			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-					.message(publicService.text("search.warning.global")).global(true).build();
+					.message(publicService.text("search.warning.global")).global(true)
+					.stage(SearchStage.INCREASED_RADIUS_1).build();
 		}
 		filteredUsers.clear();
 
@@ -212,20 +219,21 @@ public class SearchService {
 		request.setMaxLat(maxLat);
 		request.setMinLong(minLong);
 		request.setMaxLong(maxLong);
-		users = userRepo.usersSearch(request, sort);
+		users = userRepo.usersSearch(request, PageRequest.of(0, SEARCH_MAX, sort));
 		filteredUsers = filterUsers(users, ignoreIds, user, false);
 		if (!filteredUsers.isEmpty()) {
 			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-					.message(publicService.text("search.warning.global")).global(true).build();
+					.message(publicService.text("search.warning.global")).global(true)
+					.stage(SearchStage.INCREASED_RADIUS_2).build();
 		}
 		filteredUsers.clear();
 
-		users = userRepo.usersSearchAllIgnoreLocation(request, sort);
+		users = userRepo.usersSearchAllIgnoreLocation(request, PageRequest.of(0, SEARCH_MAX, sort));
 		filteredUsers = filterUsers(users, ignoreIds, user, false);
 
 		if (!filteredUsers.isEmpty()) {
 			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-					.message(publicService.text("search.warning.global")).global(true).build();
+					.message(publicService.text("search.warning.global")).global(true).stage(SearchStage.WORLD).build();
 		}
 
 		filteredUsers.clear();
@@ -233,7 +241,8 @@ public class SearchService {
 		filteredUsers = filterUsers(users, ignoreIds, user, false);
 		if (!filteredUsers.isEmpty()) {
 			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-					.message(publicService.text("search.warning.incompatible")).global(true).build();
+					.message(publicService.text("search.warning.incompatible")).global(true).stage(SearchStage.IGNORE_1)
+					.build();
 		}
 
 		if (isLegalAge) {
@@ -251,14 +260,16 @@ public class SearchService {
 		filteredUsers = filterUsers(users, ignoreIds, user, false);
 		if (!filteredUsers.isEmpty()) {
 			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-					.message(publicService.text("search.warning.incompatible")).global(true).build();
+					.message(publicService.text("search.warning.incompatible")).global(true).stage(SearchStage.IGNORE_2)
+					.build();
 		}
 
 		filteredUsers.clear();
 		users = userRepo.usersSearchAllIgnoreAll(request, sort);
 		filteredUsers = filterUsers(users, ignoreIds, user, true);
 		return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-				.message(publicService.text("search.warning.incompatible")).incompatible(true).build();
+				.message(publicService.text("search.warning.incompatible")).incompatible(true)
+				.stage(SearchStage.IGNORE_ALL).build();
 
 	}
 

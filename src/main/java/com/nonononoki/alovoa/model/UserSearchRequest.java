@@ -16,9 +16,9 @@ public class UserSearchRequest {
 	private int age;
 	private Date minDateDob;
 	private Date maxDateDob;
-	private String intentionText;
+	private long intentionId;
 	private Collection<Long> likeIds;
 	private Collection<Long> hideIds;
 	private Collection<Long> blockIds;
-	private Collection<String> genderTexts;
+	private Collection<Long> genderIds;
 }
