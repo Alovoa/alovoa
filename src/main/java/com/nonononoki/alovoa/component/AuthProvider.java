@@ -18,6 +18,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
@@ -43,7 +44,7 @@ public class AuthProvider implements AuthenticationProvider {
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
 		AuthToken a = (AuthToken) authentication;
-		String email = a.getUsername();
+		String email = Tools.cleanEmail(a.getUsername());
 		String password = a.getPassword();
 		long captchaId = a.getCaptchaId();
 		String captchaText = a.getCaptchaText();
