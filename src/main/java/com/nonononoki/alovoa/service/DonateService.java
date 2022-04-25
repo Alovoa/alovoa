@@ -72,7 +72,7 @@ public class DonateService {
 
 	private static final String BMAC_URL = "https://www.buymeacoffee.com/";
 	private static final String BMAC_TEST_EMAIL = "test@example.com";
-	private static final double BMAC_AMOUNT_FACTOR = 0.95;
+	private static final double BMAC_AMOUNT_FACTOR = 1.0; // 0.95; //just use the full amount
 
 	public List<DonationDto> filter(int filter) throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
