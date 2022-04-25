@@ -114,7 +114,7 @@ class DonateServiceTest {
 		donationBmac.setResponse(bmacResponse);
 		donateService.donationReceivedBmac(donationBmac);
 
-		assertTrue(user1.getTotalDonations() < donationAmount + donationAmount2
+		assertTrue(user1.getTotalDonations() == donationAmount + donationAmount2
 				&& user1.getTotalDonations() > donationAmount);
 		assertEquals(2, userDonationRepository.count());
 
