@@ -22,19 +22,22 @@
 <body>
 	<div id="main">
 		<header th:insert="fragments.html::header-logged-out"></header>
-		<div class="section">
+		<div class="section" id="main-section">
 			<div class="container">
 				<div id="donation-links">
 					<div class="box">
+						<i class="fa-lg fas fa-question-circle question-button" style="cursor:pointer; float: right;" onclick="kofiInfo()"></i>
 						<a href="https://ko-fi.com/alovoa" target="_blank" class="button colored is-info"
 							style="width: 100%; border-color: #dbdbdb; margin-bottom: 4px;"><i
 								class="fa fa-coins"></i><span th:text="#{kofi}" style="padding-left: 4px;"></span></a>
-						<div class="notification is-success" th:text="#{donate.notice-1}"
+						<div class="notification is-success" th:text="#{donate.notice-1}" id="donate-notice-1"
 							style="margin-bottom: 4px; font-size: 0.8em;"></div>
-						<div class="notification is-success" style="font-size: 0.8em;" th:text="#{donate.notice-2}">
+						<div class="notification is-success" style="font-size: 0.8em;" th:text="#{donate.notice-2}" id="donate-notice-2">
 						</div>
 					</div>
-					<div class="box">
+					
+					<div class="box" style="margin-bottom: 1.5rem;">
+						<i class="fa-lg fas fa-question-circle question-button" style="cursor:pointer; float: right;" onclick="bmacInfo()"></i>
 						<a href="https://www.buymeacoffee.com/alovoa" target="_blank" class="button colored is-info"
 							style="width: 100%; border-color: #dbdbdb; margin-bottom: 4px;"><i
 								class="fa fa-coins"></i><span th:text="#{bmac}" style="padding-left: 4px;"></span></a>
@@ -42,14 +45,14 @@
 							style="margin-bottom: 4px; font-size: 0.8em;"></div>
 						<div class="notification is-success" th:text="#{donate.notice-2}"
 							style="margin-bottom: 4px; font-size: 0.8em;"></div>
-						<div class="notification is-success" style="font-size: 0.8em;" th:text="#{donate.notice-3}">
 						</div>
 					</div>
-				</div>
-				<div class="box">
-					<div class="notification is-info" style="margin-bottom: 8px;">
-						<span style="word-break: break-all">BTC:
-							bc1q5yejhe5rv0m7j0euxml7klkd2ummw0gc3vx58p</span>
+					
+					<div class="box">
+						<div class="notification is-info" style="margin-bottom: 8px;">
+							<span style="word-break: break-all">BTC:
+								bc1q5yejhe5rv0m7j0euxml7klkd2ummw0gc3vx58p</span>
+						</div>
 					</div>
 				</div>
 			</div>

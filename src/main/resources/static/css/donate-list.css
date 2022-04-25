@@ -2,10 +2,28 @@
 	padding-bottom: 2rem;
 }
 
-.button svg {
+#main-section .button svg {
 	color: white; 
 }
 
 .notification.is-success {
     opacity: 0.7;
+}
+
+.question-button {
+	display: none;
+}
+
+.notification.is-success {
+	background-color: #757575;
+}
+
+@media screen and (max-width: 600px) {
+	.notification.is-success {
+		display: none;
+	}
+	
+	.question-button {
+		display: block;
+	}
 }
