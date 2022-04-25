@@ -279,7 +279,11 @@ input[type=range].slider {
 }
 
 .toast-container {
-	margin-bottom: 68px;
+	margin-bottom: 24px;
+}
+
+.toast-container .notification {
+	background-color: #757575;
 }
 
 .navigation-item-span-bottom {
@@ -628,6 +632,10 @@ input[type=range].slider {
 	}
 	.section {
 		padding: 1rem 0.5rem;
+	}
+	.toast-container .notification {
+	    padding: 0.7rem 1.0rem !important;
+	    font-size: 0.8em;
 	}
 }
 @media screen and (max-width: 260px) {

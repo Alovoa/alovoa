@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	window.addEventListener('resize', rootResize);
 });
 
-function alert(text) {
+function alert(text, position) {
 	let duration = 2000;
 	if(text.length < 40) {
 		duration = 1500;
@@ -22,7 +22,7 @@ function alert(text) {
 	bulmaToast.toast({
 		message: text,
 		type: 'is-info',
-		position: 'top-center',
+		position: position ? position : 'bottom-center',
 		closeOnClick: false,
 		pauseOnHover: false,
 		duration: duration,
