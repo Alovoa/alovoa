@@ -69,7 +69,7 @@ function showIosPwaBanner() {
 }
 
 var textures = [];//generate strings when the script is first run
-for(var i=0;i<10;i++) textures.push('./img/profile/'+(i+1)+'.png');
+for (var i = 0; i < 10; i++) textures.push('./img/profile/' + (i + 1) + '.png');
 //Based on https://github.com/liabru/matter-js/blob/master/examples/sprites.js , MIT license
 function hero() {
 
@@ -86,12 +86,15 @@ function hero() {
 		Runner = Matter.Runner,
 		Composites = Matter.Composites,
 		Composite = Matter.Composite,
+		Events = Matter.Events,
+		Body = Matter.Body,
 		Bodies = Matter.Bodies;
 
 	// create engine
 	var engine = Engine.create(),
 		world = engine.world;
 	engine.gravity.y = -1.0;
+	engine.enableSleeping = true;
 
 	// create renderer
 	var render = Render.create({
@@ -101,6 +104,7 @@ function hero() {
 			width: width,
 			height: height,
 			showAngleIndicator: false,
+			showSleeping: false,
 			wireframes: false
 		}
 	});
@@ -123,15 +127,15 @@ function hero() {
 
 	Composite.add(world, [
 		Bodies.rectangle(width, 0, width * 2, 1, options),
-		Bodies.rectangle(width+1, 0, 1, height * 2, options),
-		Bodies.rectangle(0-1, 0, 1, height * 2, options)
+		Bodies.rectangle(width + 1, 0, 1, height * 2, options),
+		Bodies.rectangle(0 - 1, 0, 1, height * 2, options)
 	]);
 
 	var stack = Composites.stack(10, height, //xx,yy
 		width / 100 / multiplicator, height / 150 / multiplicator, //columns, rows
 		50, 200, //colGap, rowGap
 		function(x, y) {
-			let rand = Math.floor(Math.random()*10); //generates number from 0 to 9
+			let rand = Math.floor(Math.random() * 10); //generates number from 0 to 9
 			return Bodies.circle(x, y, 80 * multiplicator, {
 				render: {
 					strokeStyle: '#ffffff',
@@ -146,8 +150,15 @@ function hero() {
 
 	Composite.add(world, stack);
 	
-	setTimeout(function() {
-		Runner.stop(runner,engine);
-	}, 5000);
-	
+	Events.on(engine, 'collisionStart', (event) => {
+		event.pairs.forEach((collision) => {
+			console.log(collision);
+			setTimeout(function() {
+			  	Body.setStatic(collision.bodyA, true);
+				Body.setStatic(collision.bodyB, true);
+			}, 5000);
+			
+		});
+	});
+
 }
