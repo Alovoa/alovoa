@@ -173,14 +173,11 @@ public class UserService {
 	@Value("${app.audio.max-time}")
 	private int audioMaxTime; // in seconds
 
-	@Value("${app.user.delete.delay}")
-	private long userDeleteDelay;
+	@Value("${app.user.delete.duration.valid}")
+	private long userDeleteDuration;
 
 	@Value("${app.intention.delay}")
 	private long intentionDelay;
-
-	@Value("${app.schedule.delay.delete-account}")
-	private long accountDeleteDuration;
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
@@ -217,8 +214,8 @@ public class UserService {
 		}
 
 		long ms = new Date().getTime();
-		if (user.getDeleteToken().getDate().getTime() + accountDeleteDuration < ms) {
-			throw new AlovoaException("deletion_not_active");
+		if (ms - user.getDeleteToken().getDate().getTime() > userDeleteDuration) {
+			throw new AlovoaException("deletion_not_valid");
 		}
 
 		if (!dto.getTokenString().equals(userTokenString)) {

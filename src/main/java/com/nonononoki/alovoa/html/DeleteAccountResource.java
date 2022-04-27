@@ -35,7 +35,7 @@ public class DeleteAccountResource {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 	
-	@Value("${app.schedule.delay.delete-account}")
+	@Value("${app.user.delete.duration.valid}")
 	private long accountDeleteDuration;
 
 	@GetMapping("/delete-account/{tokenString}")

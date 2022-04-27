@@ -47,6 +47,9 @@ public class PasswordService {
 	
 	@Value("${app.password-token.length}")
 	private int tokenLength;
+	
+	@Value("${app.user.password-reset.duration.valid}")
+	private int userPasswordResetDuration;
 
 	public UserPasswordToken resetPasword(PasswordResetDto dto)
 			throws AlovoaException, NoSuchAlgorithmException, MessagingException, IOException {
@@ -94,6 +97,12 @@ public class PasswordService {
 		if (!user.getEmail().equals(Tools.cleanEmail(dto.getEmail()))) {
 			throw new AlovoaException("wrong_email");
 		}
+		
+		long ms = new Date().getTime();
+		if (ms - user.getDeleteToken().getDate().getTime() > userPasswordResetDuration) {
+			throw new AlovoaException("deletion_not_valid");
+		}
+		
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 		user.setPasswordToken(null);
 

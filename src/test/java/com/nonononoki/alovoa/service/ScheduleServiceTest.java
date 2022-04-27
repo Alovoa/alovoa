@@ -21,16 +21,11 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.user.UserDeleteToken;
 import com.nonononoki.alovoa.entity.user.UserHide;
-import com.nonononoki.alovoa.entity.user.UserPasswordToken;
-import com.nonononoki.alovoa.model.PasswordResetDto;
 import com.nonononoki.alovoa.repo.CaptchaRepository;
 import com.nonononoki.alovoa.repo.ContactRepository;
 import com.nonononoki.alovoa.repo.ConversationRepository;
-import com.nonononoki.alovoa.repo.UserDeleteTokenRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
-import com.nonononoki.alovoa.repo.UserPasswordTokenRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 
 @SpringBootTest
@@ -49,12 +44,6 @@ class ScheduleServiceTest {
 
 	@Autowired
 	private UserRepository userRepo;
-
-	@Autowired
-	private UserPasswordTokenRepository passwordTokenRepository;
-
-	@Autowired
-	private UserDeleteTokenRepository userDeleteTokenRepository;
 
 	@Autowired
 	private ConversationRepository conversationRepo;
@@ -78,12 +67,6 @@ class ScheduleServiceTest {
 	@Value("${app.schedule.delay.hide}")
 	private long hideDelay;
 
-	@Value("${app.schedule.delay.password-reset}")
-	private long passwordResetDelay;
-
-	@Value("${app.schedule.delay.delete-account}")
-	private long deleteAccountDelay;
-
 	@Value("${app.schedule.delay.contact}")
 	private long contactDelay;
 
@@ -98,9 +81,6 @@ class ScheduleServiceTest {
 
 	@Autowired
 	private RegisterService registerService;
-
-	@Autowired
-	private PasswordService passwordService;
 
 	@Autowired
 	private UserService userService;
@@ -182,49 +162,6 @@ class ScheduleServiceTest {
 		assertEquals(2, userHideRepo.count());
 		scheduleService.cleanUserHide(currentDate);
 		assertEquals(1, userHideRepo.count());
-
-		// USERPASSWORDTOKEN
-		Captcha captcha1 = captchaService.generate();
-		PasswordResetDto pwResetDto1 = new PasswordResetDto();
-		pwResetDto1.setEmail(user1.getEmail());
-		pwResetDto1.setCaptchaId(captcha1.getId());
-		pwResetDto1.setCaptchaText(captcha1.getText());
-		UserPasswordToken passwordTokenOld = passwordService.resetPasword(pwResetDto1);
-		passwordTokenOld.setDate(new Date(currentDateTime - passwordResetDelay - 1));
-		user1.setPasswordToken(passwordTokenOld);
-		userRepo.saveAndFlush(user1);
-
-		Captcha captcha2 = captchaService.generate();
-		PasswordResetDto pwResetDto2 = new PasswordResetDto();
-		pwResetDto2.setEmail(user2.getEmail());
-		pwResetDto2.setCaptchaId(captcha2.getId());
-		pwResetDto2.setCaptchaText(captcha2.getText());
-		UserPasswordToken passwordTokenNew = passwordService.resetPasword(pwResetDto2);
-		passwordTokenNew.setDate(new Date(currentDateTime - passwordResetDelay));
-		user2.setPasswordToken(passwordTokenNew);
-		userRepo.saveAndFlush(user2);
-
-		assertEquals(2, passwordTokenRepository.count());
-		scheduleService.cleanUserPasswordToken(currentDate);
-		assertEquals(1, passwordTokenRepository.count());
-
-		// USERDELETETOKEN
-		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		UserDeleteToken deleteTokenOld = userService.deleteAccountRequest();
-		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
-		UserDeleteToken deleteTokenNew = userService.deleteAccountRequest();
-
-		assertEquals(2, userDeleteTokenRepository.count());
-		deleteTokenOld.setDate(new Date(currentDateTime - passwordResetDelay - 1));
-		user1.setDeleteToken(deleteTokenNew);
-		userRepo.saveAndFlush(user1);
-
-		deleteTokenNew.setDate(new Date(currentDateTime - passwordResetDelay));
-		user2.setDeleteToken(deleteTokenNew);
-		userRepo.saveAndFlush(user2);
-
-		scheduleService.cleanUserDeleteToken(currentDate);
-		assertEquals(1, userDeleteTokenRepository.count());
 	}
 
 	private Captcha generateCaptcha(String hashCode) {

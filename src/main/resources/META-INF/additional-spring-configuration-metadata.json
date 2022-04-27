@@ -298,5 +298,20 @@
     "name": "app.referral.max",
     "type": "java.lang.String",
     "description": "A description for 'app.referral.max'"
+  },
+  {
+    "name": "app.user.delete.duration.valid",
+    "type": "java.lang.String",
+    "description": "A description for 'app.user.delete.duration.valid'"
+  },
+  {
+    "name": "app.user.password-reset.duration.valid",
+    "type": "java.lang.String",
+    "description": "A description for 'app.user.password-reset.duration.valid'"
+  },
+  {
+    "name": "app.user.captcha.duration.valid",
+    "type": "java.lang.String",
+    "description": "A description for 'app.user.captcha.duration.valid'"
   }
 ]}

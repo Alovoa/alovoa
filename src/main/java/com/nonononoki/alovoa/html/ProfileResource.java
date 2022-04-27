@@ -40,9 +40,6 @@ public class ProfileResource {
 	private UserIntentionRepository userIntentionRepo;
 
 	@Autowired
-	private AdminResource adminResource;
-
-	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
 	@Value("${app.profile.image.max}")

@@ -10,6 +10,5 @@ import com.nonononoki.alovoa.entity.Contact;
 public interface ContactRepository extends JpaRepository<Contact, Long> {
 	List<Contact> findTop20ByHiddenFalse();
 
-	List<Contact> findTop100ByDateBefore(Date d); 
+	void deleteByDateBefore(Date date);
 }
-
