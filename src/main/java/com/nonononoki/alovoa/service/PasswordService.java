@@ -99,7 +99,7 @@ public class PasswordService {
 		}
 		
 		long ms = new Date().getTime();
-		if (ms - user.getDeleteToken().getDate().getTime() > userPasswordResetDuration) {
+		if (ms - user.getPasswordToken().getDate().getTime() > userPasswordResetDuration) {
 			throw new AlovoaException("deletion_not_valid");
 		}
 		
