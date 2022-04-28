@@ -52,6 +52,7 @@ public class ScheduleService {
 		if (enableSchedules) {
 			Date date = new Date();
 			cleanCaptcha(date);
+			cleanUserHide(date);
 		}
 	}
 
@@ -59,7 +60,6 @@ public class ScheduleService {
 	public void scheduleLong() {
 		if (enableSchedules) {
 			Date date = new Date();
-			cleanUserHide(date);
 			cleanContact(date);
 		}
 	}
