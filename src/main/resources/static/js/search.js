@@ -51,6 +51,7 @@ function mapSearchButtonClicked() {
 
 function search(defaultSearch) {
 
+	
 	if (defaultSearch && document.getElementById("has-location")) {
 		mainContainerLoadCards("/search/users/default");
 	} else {
@@ -86,8 +87,12 @@ function searchBase() {
 }
 
 function mainContainerLoadCards(url) {
+	
+	showLoader();
 	$("#main-container").load(url, function() {
+		
 		closeModal();
+		
 		showDonatePopup();
 		
 		let shortSwipes = true;
@@ -116,14 +121,14 @@ function mainContainerLoadCards(url) {
 			});
 		});
 
-		$(".loader-parent").css("display", "none");
-
 		let searchMessageDiv = $("#search-message");
 		if (searchMessageDiv) {
 			if (searchMessageDiv.text()) {
 				alert(searchMessageDiv.text());
 			}
 		}
+		
+		hideLoader();
 
 	});
 }
