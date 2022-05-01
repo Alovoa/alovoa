@@ -48,6 +48,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -241,6 +242,7 @@ public class UserService {
 		userRepo.delete(user);
 		userRepo.flush();
 
+		SecurityContextHolder.clearContext();
 		mailService.sendAccountDeleteConfirm(user);
 	}
 
