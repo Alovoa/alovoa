@@ -188,34 +188,38 @@ function readURL(input) {
 
 function getResizedImage(b64, callback) {
 
-	var img = new Image();
-	img.onload = function() {
-		let canvas = document.createElement('canvas');
-		let width = img.width;
-		let height = img.height;
-		
-		let sx = 0;
-		let sy = 0;
-		
-		if (width > height) {
-			sx = width/2 - height/2;
-			width = height;
-		} else {
-			sy = height/2 - width/2;
-			height = width;
+	if(window.HTMLCanvasElement && window.CanvasRenderingContext2D) {
+		var img = new Image();
+		img.onload = function() {
+			let canvas = document.createElement('canvas');
+			let width = img.width;
+			let height = img.height;
+			
+			let sx = 0;
+			let sy = 0;
+			
+			if (width > height) {
+				sx = width/2 - height/2;
+				width = height;
+			} else {
+				sy = height/2 - width/2;
+				height = width;
+			}
+			
+			canvas.height = maxImageSize;
+			canvas.width = maxImageSize;
+			
+			canvas.getContext('2d').drawImage(img, 
+				sx, sy, width, height, 
+				0, 0, maxImageSize, maxImageSize);
+			
+			var dataUrl = canvas.toDataURL('image/jpeg');
+			return callback(dataUrl);
 		}
-		
-		canvas.height = maxImageSize;
-		canvas.width = maxImageSize;
-		
-		canvas.getContext('2d').drawImage(img, 
-			sx, sy, width, height, 
-			0, 0, maxImageSize, maxImageSize);
-		
-		var dataUrl = canvas.toDataURL('image/jpeg');
-		return callback(dataUrl);
+		img.src = b64;
+	} else {
+		getBase64(file, callback);
 	}
-	img.src = b64;
 }
 
 function getBase64InMB(base64) {

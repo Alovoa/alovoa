@@ -752,36 +752,41 @@ function resizeAudio(file, callback) {
 }
 
 function resizeImage(file, callback) {
-	var reader = new FileReader();
-	reader.onload = function(readerEvent) {
-		var img = new Image();
-		img.onload = function() {
-			let canvas = document.createElement('canvas');
-			let width = img.width;
-			let height = img.height;
-			let sx = 0;
-			let sy = 0;
-			
-			if (width > height) {
-				sx = width/2 - height/2;
-				width = height;
-			} else {
-				sy = height/2 - width/2;
-				height = width;
+	
+	if(window.HTMLCanvasElement && window.CanvasRenderingContext2D) {
+		var reader = new FileReader();
+		reader.onload = function(readerEvent) {
+			var img = new Image();
+			img.onload = function() {
+				let canvas = document.createElement('canvas');
+				let width = img.width;
+				let height = img.height;
+				let sx = 0;
+				let sy = 0;
+				
+				if (width > height) {
+					sx = width/2 - height/2;
+					width = height;
+				} else {
+					sy = height/2 - width/2;
+					height = width;
+				}
+				
+				canvas.height = maxImageSize;
+				canvas.width = maxImageSize;
+				
+				canvas.getContext('2d').drawImage(img, 
+					sx, sy, width, height, 
+					0, 0, maxImageSize, maxImageSize);
+				var dataUrl = canvas.toDataURL('image/jpeg');
+				return callback(dataUrl);
 			}
-			
-			canvas.height = maxImageSize;
-			canvas.width = maxImageSize;
-			
-			canvas.getContext('2d').drawImage(img, 
-				sx, sy, width, height, 
-				0, 0, maxImageSize, maxImageSize);
-			var dataUrl = canvas.toDataURL('image/jpeg');
-			return callback(dataUrl);
+			img.src = readerEvent.target.result;
 		}
-		img.src = readerEvent.target.result;
+		reader.readAsDataURL(file);
+	} else {
+		getBase64(file, callback);
 	}
-	reader.readAsDataURL(file);
 }
 
 function getBase64InMB(base64) {
