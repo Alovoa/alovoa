@@ -18,6 +18,10 @@
 	background-color: #757575;
 }
 
+#main-section {
+	height: 100vh;
+}
+
 @media screen and (max-width: 600px) {
 	.notification.is-success {
 		display: none;

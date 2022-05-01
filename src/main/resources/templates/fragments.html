@@ -111,9 +111,40 @@
 			<div style="width: 100%; display: flex;">
 				<div class="navbar-end">
 					<span class="navbar-item" style="padding-right: 0px;">
-						<a class="button is-outlined is-info navbar-item-icon" onclick="searchSettingsClicked()"
-							style="width: 40px; height: 40px;"><i style="padding-right: 0px;"
+						<a class="button colored is-info navbar-item-icon" onclick="searchSettingsClicked()"
+							style="width: 76px; height: 40px;"><i style="padding-right: 0px;"
 								class="fas fa-cog"></i></a>
+					</span>
+					<span class="navbar-item">
+						<form th:action="@{/logout}" method="post">
+							<button class="button is-outlined is-info" href="/logout" id="logout">
+								<span th:text="#{logout}"></span>
+							</button>
+						</form>
+					</span>
+				</div>
+			</div>
+		</nav>
+	</div>
+	
+	<div th:fragment="header-donate" id="header-logged-in" class="header header-donate">
+		<nav class="navbar">
+			<div class="navbar-brand">
+				<a id="navbar-text" class="navbar-item" th:text="#{app.name}"></a>
+			</div>
+
+			<div style="width: 100%; display: flex;">
+				<div class="navbar-end">
+					<span class="navbar-item" style="padding-right: 0px;">
+						<a class="button colored is-info navbar-item-icon" onclick="donateSortClicked()"
+							style="width: 76px; height: 40px;"><i style="padding-right: 0px;"
+								class="fas fa-sort-amount-down"></i></a>
+					</span>
+					<span class="navbar-item" style="padding-right: 0px;">
+						<a class="button colored is-info navbar-item-icon" href="/donate-list" target="_blank"
+							style="min-width: 76px; height: 40px;"><i style="padding-right: 0px;"
+								class="fas fa-coins"></i><span th:text="#{donate.donate-now}"
+						style="padding-left: 8px;" id="donate-now-text"></a>
 					</span>
 					<span class="navbar-item">
 						<form th:action="@{/logout}" method="post">

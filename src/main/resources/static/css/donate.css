@@ -27,12 +27,6 @@
 	overflow-y: scroll;
 }
 
-#donate-bottom {
-	display: flex;
-	padding: initial;
-	padding: 1em;
-}
-
 #donate-top-margin {
 	margin-top: 8px;
 }
@@ -48,8 +42,8 @@
 	
 	#main-container {
 		scroll-snap-type: y mandatory;
-	 	height: calc(100vh - 162px);
- 	 	height: calc(100 * var(--vh) - 162px);
+	 	height: calc(100vh - 112px);
+ 	 	height: calc(100 * var(--vh) - 112px);
 	}
 	
 	.card-image {
@@ -71,9 +65,6 @@
 	#donate-now-text {
 		display: none;
 	}
-	#donate-bottom {
-		padding: 0.3em;
-	}
 	.donate-user-card .content {
 		padding-top: 0px;
 	}	
@@ -85,7 +76,7 @@
 /* KAIOS Screns are very small */
 @media screen and (max-width: 302px) {
 	#main-container {
-	    height: calc(100vh - 120px);
-	    height: calc(100 * var(--vh) - 120px);
+	    height: calc(100vh - 56px);
+	    height: calc(100 * var(--vh) - 56px);
 	}
 }

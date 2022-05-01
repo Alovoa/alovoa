@@ -26,23 +26,25 @@
 
 <body>
 	<div id="main-logged-in">
-		<header th:insert="fragments.html::header-logged-in"></header>
-		<section class="container" id="donate-bottom">
-			<div class="select" id="donation-select">
-				<select id="sort" onchange="search()">
-					<option value="1" th:text="#{donate.latest-donations}"></option>
-					<option value="2" th:text="#{donate.largest-donations}"></option>
-				</select>
-			</div>
-			<div class="container" id="donate-button">
-				<button class="button colored is-primary" style="width: 100%; padding: 4px;" onclick="onDonateClick()">
-					<i class="fa fa-hand-holding-usd fa-lg"></i><span th:text="#{donate.donate-now}"
-						style="padding-left: 8px;" id="donate-now-text"></span>
-				</button>
-			</div>
-		</section>
+		<header th:insert="fragments.html::header-donate"></header>
 		<div id="donate-top-margin"></div>
 		<section class="container" id="main-container" style="margin-bottom: 52px;"></section>
+	</div>
+	
+	<div id="donate-settings-modal" class="modal modal-fx-fadeInScale">
+		<div class="modal-background" onclick="closeModal()"></div>
+		<div class="modal-content">
+			<div class="box">
+				<article class="media">
+					<div class="select" id="donation-select">
+						<select id="sort" onchange="search()">
+							<option value="1" th:text="#{donate.latest-donations}"></option>
+							<option value="2" th:text="#{donate.largest-donations}"></option>
+						</select>
+					</div>
+				</article>
+			</div>
+		</div>
 	</div>
 
 	<div class="loader-parent">
