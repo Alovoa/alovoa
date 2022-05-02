@@ -66,7 +66,7 @@ public class UserController {
 	}
 
 	@PostMapping(value = "/onboarding", consumes = "application/json")
-	public void onboarding(@RequestBody ProfileOnboardingDto dto) throws AlovoaException {
+	public void onboarding(@RequestBody ProfileOnboardingDto dto) throws AlovoaException, IOException {
 		userService.onboarding(dto);
 	}
 	

@@ -399,7 +399,7 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
-	public void onboarding(ProfileOnboardingDto model) throws AlovoaException {
+	public void onboarding(ProfileOnboardingDto model) throws AlovoaException, IOException {
 		User user = authService.getCurrentUser();
 		if(user.getProfilePicture() != null || user.getDescription() != null) {
 			return;
@@ -408,7 +408,7 @@ public class UserService {
 		Date now = new Date();
 
 		UserProfilePicture profilePic = new UserProfilePicture();
-		profilePic.setData(model.getProfilePicture());
+		profilePic.setData(adjustPicture(model.getProfilePicture()));
 		user.setProfilePicture(profilePic);
 
 		UserIntention intention = userIntentionRepo.findById(model.getIntention()).orElse(null);
