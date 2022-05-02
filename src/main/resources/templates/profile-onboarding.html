@@ -38,7 +38,7 @@
 						style="min-width: 174px; height: 200px; border-radius: 12px;" th:value=0>
 						<i class="fa fa-plus fa-4x"></i>
 					</div>
-					<img id="profilePictureImg" style="cursor:pointer; display: none; width: initial;max-height: 40vh;" onclick="updateProfilePic()"></img>
+					<img id="profilePictureImg" style="cursor:pointer; display: none; object-fit: cover; width:40vh; height:40vh;" onclick="updateProfilePic()"></img>
 					<input id="profilePictureUpload" type="file" accept="image/*" style="display: none">
 				</div>
 			</div>
@@ -81,6 +81,7 @@
 							</label>
 						</th:block>
 					</div>
+					<span id="intention-warning" th:text="#{profile-onboarding.intention.warning}"></span>
 				</div>
 			</div>
 			<div class="swiper-slide center-parent">

@@ -59,6 +59,12 @@ textarea {
 	display: none;
 }
 
+#intention-warning {
+	padding-top: 24px;
+	font-size: 0.7em;
+	opacity: 0.5;
+}
+
 @media screen and (min-height: 550px) {
 	.onboarding-icon {
 		display: block;
