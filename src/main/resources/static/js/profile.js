@@ -778,8 +778,13 @@ function resizeImage(file, callback) {
 				canvas.getContext('2d').drawImage(img, 
 					sx, sy, width, height, 
 					0, 0, maxImageSize, maxImageSize);
-				var dataUrl = canvas.toDataURL('image/jpeg');
-				return callback(dataUrl);
+				
+				if(canvasProtected(canvas.getContext('2d'))) {
+					getBase64(file, callback);
+				} else {
+					let dataUrl = canvas.toDataURL('image/jpeg');
+					callback(dataUrl);
+				}
 			}
 			img.src = readerEvent.target.result;
 		}
@@ -801,4 +806,14 @@ function getBase64(file, callback) {
 	};
 	reader.onerror = function() {
 	};
+}
+
+function canvasProtected(context) {
+	let data = context.getImageData(1, 1, 1, 1).data;
+	let data2 = context.getImageData(1, 1, 1, 1).data;
+	if(data[0] == data2[0] && data[1] == data2[1] && data[2] == data2[2]) {
+		return false;
+	} else {
+		return true;
+	}
 }

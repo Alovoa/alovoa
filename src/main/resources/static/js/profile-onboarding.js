@@ -168,55 +168,58 @@ function updateData() {
 function readURL(input) {
 	console.log(input)
 	if (input.files && input.files[0]) {
-		var reader = new FileReader();
-		reader.onload = function(e) {
-			getResizedImage(e.target.result, function(b64) {
-				let img = $('#profilePictureImg');
-				img.attr('src', b64);
-				img.show();
-				$('#profilePicture').hide();
+		resizeImage(input.files[0], function(b64) {
+			let img = $('#profilePictureImg');
+			img.attr('src', b64);
+			img.show();
+			$('#profilePicture').hide();
 
-				if (!profilePicUploaded) {
-					updateData();
-					profilePicUploaded = true;
-				}
-			});
-		};
-		reader.readAsDataURL(input.files[0]);
+			if (!profilePicUploaded) {
+				updateData();
+				profilePicUploaded = true;
+			}
+		});
 	}
 }
 
-function getResizedImage(b64, callback) {
-
+function resizeImage(file, callback) {
+	
 	if(window.HTMLCanvasElement && window.CanvasRenderingContext2D) {
-		var img = new Image();
-		img.onload = function() {
-			let canvas = document.createElement('canvas');
-			let width = img.width;
-			let height = img.height;
-			
-			let sx = 0;
-			let sy = 0;
-			
-			if (width > height) {
-				sx = width/2 - height/2;
-				width = height;
-			} else {
-				sy = height/2 - width/2;
-				height = width;
+		var reader = new FileReader();
+		reader.onload = function(readerEvent) {
+			var img = new Image();
+			img.onload = function() {
+				let canvas = document.createElement('canvas');
+				let width = img.width;
+				let height = img.height;
+				let sx = 0;
+				let sy = 0;
+				
+				if (width > height) {
+					sx = width/2 - height/2;
+					width = height;
+				} else {
+					sy = height/2 - width/2;
+					height = width;
+				}
+				
+				canvas.height = maxImageSize;
+				canvas.width = maxImageSize;
+				
+				canvas.getContext('2d').drawImage(img, 
+					sx, sy, width, height, 
+					0, 0, maxImageSize, maxImageSize);
+				
+				if(canvasProtected(canvas.getContext('2d'))) {
+					getBase64(file, callback);
+				} else {
+					let dataUrl = canvas.toDataURL('image/jpeg');
+					callback(dataUrl);
+				}
 			}
-			
-			canvas.height = maxImageSize;
-			canvas.width = maxImageSize;
-			
-			canvas.getContext('2d').drawImage(img, 
-				sx, sy, width, height, 
-				0, 0, maxImageSize, maxImageSize);
-			
-			var dataUrl = canvas.toDataURL('image/jpeg');
-			return callback(dataUrl);
+			img.src = readerEvent.target.result;
 		}
-		img.src = b64;
+		reader.readAsDataURL(file);
 	} else {
 		getBase64(file, callback);
 	}
@@ -234,5 +237,15 @@ function getBase64(file, callback) {
 	};
 	reader.onerror = function() {
 	};
+}
+
+function canvasProtected(context) {
+	let data = context.getImageData(1, 1, 1, 1).data;
+	let data2 = context.getImageData(1, 1, 1, 1).data;
+	if(data[0] == data2[0] && data[1] == data2[1] && data[2] == data2[2]) {
+		return false;
+	} else {
+		return true;
+	}
 }
 
