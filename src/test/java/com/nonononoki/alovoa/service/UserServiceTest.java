@@ -218,6 +218,13 @@ class UserServiceTest {
 		assertThrows(Exception.class, () -> {
 			deleteTest(user1);
 		});
+		
+		
+		//PROFILE PICTURE
+		String imgLong = Tools.imageToB64("img/long.jpeg", imgMimePng);
+		userService.updateProfilePicture(imgLong);
+		String imgWide = Tools.imageToB64("img/wide.webp", imgMimePng);
+		userService.updateProfilePicture(imgWide);
 
 		// USERDATA
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
