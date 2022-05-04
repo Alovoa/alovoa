@@ -40,10 +40,6 @@ public class ProfileOnboardingResource {
 	private int interestMaxSize;
 	
 	public static final String URL = "/user/onboarding";
-	
-	public static String getUrl() {
-		return URL;
-	}
 
 	@GetMapping(URL)
 	public ModelAndView onboarding() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
@@ -52,9 +48,9 @@ public class ProfileOnboardingResource {
 
 		User user = authService.getCurrentUser();
 		if (user.isAdmin()) {
-			return new ModelAndView("redirect:" + AdminResource.getUrl());
+			return new ModelAndView("redirect:" + AdminResource.URL);
 		} else if (user.getProfilePicture() != null || user.getDescription() != null) {
-			return new ModelAndView("redirect:" + ProfileResource.getUrl());
+			return new ModelAndView("redirect:" + ProfileResource.URL);
 		} else {
 			int age = Tools.calcUserAge(user);
 			boolean isLegal = age >= Tools.AGE_LEGAL;

@@ -27,13 +27,15 @@ public class RegisterResource {
 
 	@Autowired
 	private AuthService authService;
+	
+	public static final String URL = "/register";
 
-	@GetMapping("/register")
+	@GetMapping(URL)
 	public ModelAndView register() throws AlovoaException {
 
 		User user = authService.getCurrentUser();
 		if (user != null) {
-			return new ModelAndView("redirect:" + ProfileResource.getUrl());
+			return new ModelAndView("redirect:" + ProfileResource.URL);
 		}
 		ModelAndView mav = new ModelAndView("register");
 		mav.addObject("genders", genderRepo.findAll());

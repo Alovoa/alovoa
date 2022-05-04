@@ -24,6 +24,14 @@ $(function() {
 	} else if (localStorage.getItem("referrer")) {
 		$("#referrer").val(localStorage.getItem("referrer"));
 	}
+	
+	let url = window.location.href;
+	if (url.includes("?register.oauth.email-invalid")) {
+		let text = getText("backend.error.register.oauth.email-invalid");
+		if (text) {
+			alert(text);
+		}
+	}
 
 	$("#register-form").submit(
 		function(e) {

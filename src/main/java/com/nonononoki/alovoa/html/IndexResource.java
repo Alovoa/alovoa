@@ -39,9 +39,9 @@ public class IndexResource {
 			
 			if(user.getProfilePicture() != null
 					&& user.getDescription() != null) {
-				return new ModelAndView("redirect:" + SearchResource.getUrl());
+				return new ModelAndView("redirect:" + SearchResource.URL);
 			} else {
-				return new ModelAndView("redirect:" + ProfileOnboardingResource.getUrl());
+				return new ModelAndView("redirect:" + ProfileOnboardingResource.URL);
 			}
 		}
 

@@ -30,8 +30,10 @@ public class LoginResource {
 
 	@Value("${app.privacy.update-date}")
 	private String privacyDate;
+	
+	public static final String URL = "/login";
 
-	@GetMapping("/login")
+	@GetMapping(URL)
 	public ModelAndView login() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException {

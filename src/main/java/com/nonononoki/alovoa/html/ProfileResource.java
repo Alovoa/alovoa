@@ -65,10 +65,6 @@ public class ProfileResource {
 
 	public static final String URL = "/profile";
 
-	public static String getUrl() {
-		return URL;
-	}
-
 	@GetMapping(URL)
 	public ModelAndView profile() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
@@ -76,10 +72,10 @@ public class ProfileResource {
 
 		User user = authService.getCurrentUser();
 		if (user.isAdmin()) {
-			return new ModelAndView("redirect:" + AdminResource.getUrl());
+			return new ModelAndView("redirect:" + AdminResource.URL);
 		} 
 		else if (user.getProfilePicture() == null && user.getDescription() == null) {
-			return new ModelAndView("redirect:" + ProfileOnboardingResource.getUrl());
+			return new ModelAndView("redirect:" + ProfileOnboardingResource.URL);
 		} else {
 			int age = Tools.calcUserAge(user);
 			boolean isLegal = age >= Tools.AGE_LEGAL;

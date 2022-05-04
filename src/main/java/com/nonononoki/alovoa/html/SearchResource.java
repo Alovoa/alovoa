@@ -47,10 +47,6 @@ public class SearchResource {
 	
 	public static final String URL = "/search";
 
-	public static String getUrl() {
-		return URL;
-	}
-
 	@GetMapping(URL)
 	public ModelAndView search() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,

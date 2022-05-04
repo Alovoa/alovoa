@@ -40,13 +40,9 @@ public class AdminResource {
 	@Autowired
 	private AuthService authService;
 	
-	private static String URL = "/admin";
-	
-	public static String getUrl() {
-		return URL;
-	}
+	public static final String URL = "/admin";
 
-	@GetMapping("/admin")
+	@GetMapping(URL)
 	public ModelAndView admin()
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {

@@ -10,6 +10,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -32,6 +34,7 @@ import com.nonononoki.alovoa.html.LoginResource;
 import com.nonononoki.alovoa.html.RegisterResource;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.repo.UserRepository;
+import com.nonononoki.alovoa.service.PublicService;
 
 @RestController
 @RequestMapping("/")
@@ -45,12 +48,14 @@ public class Oauth2Controller {
 
 	@Autowired
 	private RegisterResource registerResource;
-
+	
 	@Autowired
-	private LoginResource loginResource;
+	private PublicService publicService;
 
 	@Value("${app.first-name.length-max}")
 	private int firstNameMaxLength;
+	
+	private static final Logger logger = LoggerFactory.getLogger(Oauth2Controller.class);
 
 	@SuppressWarnings("rawtypes")
 	@GetMapping("/login/oauth2/success")
@@ -93,6 +98,10 @@ public class Oauth2Controller {
 					}
 				}
 
+				if(attributes.get("email") == null) {
+					throw new AlovoaException(publicService.text("backend.error.register.oauth.email-invalid"));
+				}
+				
 				String email = (String) attributes.get("email");
 				email = email.toLowerCase();
 
@@ -110,14 +119,16 @@ public class Oauth2Controller {
 				if (!user.isConfirmed()) {
 					return registerResource.registerOauth(firstName);
 				} else {
-					return new ModelAndView("redirect:/");
+					return new ModelAndView("redirect:" + LoginResource.URL);
 				}
 			}
 
-			return loginResource.login();
-
+		} catch (AlovoaException e) {
+			return new ModelAndView("redirect:" + RegisterResource.URL + "?register.oauth.email-invalid");
 		} catch (Exception e) {
-			return loginResource.login();
+			logger.error(e.getMessage(), e);
 		}
+		
+		return new ModelAndView("redirect:" + LoginResource.URL);
 	}
 }
