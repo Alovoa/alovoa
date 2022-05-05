@@ -14,6 +14,7 @@
 	<th:block th:replace="fragments.html::ui-design"></th:block>
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<link rel="stylesheet" href="/css/lib/animate.min.css" />
+	<link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
 	<title th:text="#{imprint.title}"></title>
 </head>
 <body>
@@ -22,28 +23,41 @@
 		<header th:insert="fragments.html::header-logged-out"></header>
 		<div class="section">
 			<div class="box">
+				<h2 th:text="#{email} + ':'"></h2>
+				<a href= "mailto:contact@alovoa.com">contact@alovoa.com</a>
+			</div>
+			<div style="margin-bottom: 1.5rem;">
+				<header class="card-header collapsible-header">
+					<a href="#collapsible-card" data-action="collapse" class="card-header-icon full-width" 
+					aria-label="more options" style="padding: 1.25rem; display: flex; justify-content: space-between;">
+						<span class="label" style="margin-bottom: initial;" th:text="#{contact}"></span>
+						<div class="navbar-link"></div>
+					</a>
+				</header>
+				<div id="collapsible-card" class="is-collapsible always-collapse">
+					<div class="card-content">
+						<form id="imprint-form" th:action="@{/imprint/contact}"
+							method="POST">
+							<div class="field">
+								<input class="input" type="email" th:placeholder="#{email}"
+									name="email" required>
+							</div>
+							<div class="field">
+								<textarea class="textarea" name="message"
+									th:placeholder="#{message}" required></textarea>
+							</div>
+							<div style="padding-top: 12px;"></div>
+							<div th:replace="fragments.html::captcha"></div>
+							<button class="button colored is-primary" th:text="#{submit}"></button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="box">
 				<p th:text="${companyName}"></p>
 				<p>Nho Quy Dinh</p>
 				<p>Neulanderweg 18, 21423 Winsen Luhe</p>
 				<p>Tel: 015678593504</p>
-				<p>contact@alovoa.com</p>
-			</div>
-			<div class="box">
-				<p th:text="#{contact}" style="margin-bottom: 16px;"></p>
-				<form id="imprint-form" th:action="@{/imprint/contact}"
-					method="POST">
-					<div class="field">
-						<input class="input" type="email" th:placeholder="#{email}"
-							name="email" required>
-					</div>
-					<div class="field">
-						<textarea class="textarea" name="message"
-							th:placeholder="#{message}" required></textarea>
-					</div>
-					<div style="padding-top: 12px;"></div>
-					<div th:replace="fragments.html::captcha"></div>
-					<button class="button colored is-primary" th:text="#{submit}"></button>
-				</form>
 			</div>
 		</div>
 	</div>
@@ -54,6 +68,7 @@
 	<script src="/js/lib/fontawesome.all.js"></script>
 	<script src="/js/lib/modal-fx.min.js"></script>
 	<script src="/js/lib/bulma-toast.min.js"></script>
+	<script src="/js/lib/bulma-collapsible.min.js"></script>
 	<script src="/js/tools/refresh-captcha.js"></script>
 	<script src="/js/tools/get-text.js"></script>
 	<script src="/js/alovoa.js"></script>

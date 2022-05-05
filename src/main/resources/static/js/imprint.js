@@ -1,4 +1,5 @@
 $(function() {
+	bulmaCollapsible.attach();
 	$("#imprint-form").submit(
 		function(e) {
 			e.preventDefault();
