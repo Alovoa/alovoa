@@ -25,9 +25,6 @@ public class LoginResource {
 	@Autowired
 	private AuthService authService;
 
-	@Autowired
-	private ProfileResource profileResource;
-
 	@Value("${app.privacy.update-date}")
 	private String privacyDate;
 	
@@ -40,7 +37,7 @@ public class LoginResource {
 
 		User user = authService.getCurrentUser();
 		if (user != null) {
-			return profileResource.profile();
+			return new ModelAndView("redirect:" + SearchResource.URL);
 		}
 
 		ModelAndView mav = new ModelAndView("login");
