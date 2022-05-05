@@ -366,7 +366,7 @@ input[type=range].slider {
 	.is-collapsible:not(.always-collapse) {
 		height: initial !important;
 	}
-	.collapsible-header.is-hidden-fullscreen {
+	.collapsible-header:not(.always-collapse) {
 		display: none;
 	}
 	.collapsible-desktop {
