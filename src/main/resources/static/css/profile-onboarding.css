@@ -59,21 +59,35 @@ textarea {
 	display: none;
 }
 
-#intention-warning {
+.subtitle {
 	padding-top: 24px;
-	font-size: 0.7em;
+	font-size: 0.5em !important;
 	opacity: 0.5;
 }
 
-@media screen and (min-height: 550px) {
+@media screen and (min-height: 400px) {
 	.onboarding-icon {
 		display: block;
 		margin-top: 18px;
 		margin-bottom: 32px;
-		height:20vh;
+		height:10vh;
 	}
 	.swiper-slide > div {
 		justify-content: initial;
+	}
+	.subtitle {
+		font-size: 0.6em !important;
+	}
+}
+
+@media screen and (min-height: 550px) {
+	.onboarding-icon {
+		margin-top: 18px;
+		margin-bottom: 32px;
+		height:20vh;
+	}
+	.subtitle {
+		font-size: 0.7em !important;
 	}
 }
 
@@ -81,6 +95,9 @@ textarea {
 	.onboarding-icon {
 		margin-top: 28px;
 		margin-bottom: 52px;
+	}
+	.subtitle {
+		font-size: 0.8em !important;
 	}
 }
 

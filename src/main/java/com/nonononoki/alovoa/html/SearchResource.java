@@ -52,6 +52,10 @@ public class SearchResource {
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException {
 		User user = authService.getCurrentUser();
+		
+		if (user.getProfilePicture() == null && user.getDescription() == null) {
+			return new ModelAndView("redirect:" + ProfileOnboardingResource.URL);
+		}
 
 		user.setNumberSearches(user.getNumberSearches() + 1);
 		userRepo.saveAndFlush(user);

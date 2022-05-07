@@ -81,7 +81,7 @@
 							</label>
 						</th:block>
 					</div>
-					<span id="intention-warning" th:text="#{profile-onboarding.intention.warning}"></span>
+					<span class="subtitle" th:text="#{profile-onboarding.intention.warning}"></span>
 				</div>
 			</div>
 			<div class="swiper-slide center-parent">
@@ -99,8 +99,14 @@
 						<div style="padding-top: 4px;"></div>
 						
 					</div>
-
-				<button id="submit" class="button is-primary colored" th:text="#{submit}" disabled></button>
+				</div>
+			</div>
+			<div class="swiper-slide center-parent">
+				<div class="center-parent">
+				<img class="onboarding-icon" src="/img/onboarding/match.svg"></img>
+				<label class="label" th:text="#{profile-onboarding.match.title}"></label>
+				<span class="subtitle" th:text="#{profile-onboarding.match.subtitle}"></span>
+				<button id="submit" class="button is-primary colored" th:text="#{profile-onboarding.submit}" disabled></button>
 				</div>
 			</div>
 		</div>

@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '42';
+const cacheName = '43';
 const staticAssets = [
 
 	'/favicon.ico',
@@ -111,6 +111,7 @@ const staticAssets = [
 	'/img/onboarding/genders.svg',
 	'/img/onboarding/intention.svg',
 	'/img/onboarding/interests.svg',
+	'/img/onboarding/match.svg',
 	'/img/onboarding/profilepic.svg'
 	
 ];
