@@ -5,7 +5,10 @@
 </p>
 
 Website: https://alovoa.com/
+Main repository: <a href="https://github.com/Alovoa/alovoa">Github</a> 
 Mirror: <a href="https://codeberg.org/Nonononoki/alovoa">Codeberg</a>
+
+Like this project? Consider making a donation: <a href="https://alovoa.com/donate-list">https://alovoa.com/donate-list</a>
 
 Alovoa aims to be the first widespread free and open-source dating web platform. What differs this from other platform?
 - No ads
