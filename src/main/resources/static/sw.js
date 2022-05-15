@@ -37,7 +37,6 @@ const staticAssets = [
 	'/js/tools/copy-clipboard.js',
 
 	'/js/alovoa.js',
-	'/js/admin.js',
 	'/js/delete-account.js',
 	'/js/donate.js',
 	'/js/donate-list.js',

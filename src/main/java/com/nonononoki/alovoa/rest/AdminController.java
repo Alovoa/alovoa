@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.rest;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -74,6 +75,16 @@ public class AdminController {
 	public void deleteAccount(@RequestBody AdminAccountDeleteDto dto)
 			throws AlovoaException, MessagingException, IOException {
 		adminService.deleteAccount(dto);
+	}
+	
+	@PostMapping("/user-exists/{email}")
+	public boolean userExists(@PathVariable String email) throws AlovoaException, UnsupportedEncodingException {
+		return adminService.userExists(email);
+	}
+	
+	@PostMapping("/donation/add/{email}/{amount}")
+	public void addDonation(@PathVariable String email, @PathVariable double amount) throws AlovoaException, UnsupportedEncodingException {
+		adminService.addDonation(email, amount);
 	}
 
 }

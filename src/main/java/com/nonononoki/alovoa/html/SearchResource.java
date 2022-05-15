@@ -53,7 +53,7 @@ public class SearchResource {
 			UnsupportedEncodingException {
 		User user = authService.getCurrentUser();
 		
-		if (user.getProfilePicture() == null && user.getDescription() == null) {
+		if (!user.isAdmin() && user.getProfilePicture() == null && user.getDescription() == null) {
 			return new ModelAndView("redirect:" + ProfileOnboardingResource.URL);
 		}
 

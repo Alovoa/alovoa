@@ -90,6 +90,25 @@
 			</form>
 		</div>
 		
+		<div id="user-exists" class="box">
+			<h3>Check user exists</h3>
+			<form id="user-exists-form" th:action="@{/admin/user-exists/}" method="POST">
+				<input class="input" name="email" th:placeholder="#{email}" id="user-exists-email" required>
+				<div style="padding-top: 4px;"></div>
+				<button class="button" th:text="#{submit}"></button>
+			</form>
+		</div>
+		
+		<div id="donation-add" class="box">
+			<h3>Add donation</h3>
+			<form id="donation-add-form" th:action="@{/admin/donation/add/}" method="POST">
+				<input class="input" name="email" th:placeholder="#{email}" id="donation-add-email" required>
+				<input class="input" type="number" step=".01" name="amount" th:placeholder="Amount" id="donation-add-amount" required>
+				<div style="padding-top: 4px;"></div>
+				<button class="button" th:text="#{submit}"></button>
+			</form>
+		</div>
+		
 		<div id="links" class="box">
 			<a href="/search">Search</a>
 		</div>

@@ -1,9 +1,13 @@
 package com.nonononoki.alovoa.service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.List;
 
 import javax.crypto.BadPaddingException;
@@ -17,9 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.UserDonation;
 import com.nonononoki.alovoa.entity.user.UserReport;
 import com.nonononoki.alovoa.model.AdminAccountDeleteDto;
 import com.nonononoki.alovoa.model.AlovoaException;
@@ -164,6 +170,10 @@ public class AdminService {
 		if (user == null) {
 			throw new AlovoaException("user_not_found");
 		}
+		
+		if (user.isAdmin()) {
+			throw new AlovoaException("user_is_admin");
+		}
 
 		UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
 				.userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
@@ -211,10 +221,14 @@ public class AdminService {
 	public void deleteAccount(AdminAccountDeleteDto dto) throws AlovoaException {
 		checkRights();
 
-		User user = userRepo.findByEmail(dto.getEmail());
+		User user = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
 
 		if (user == null) {
 			throw new AlovoaException("user_not_found");
+		}
+		
+		if(user.isDisabled()) {
+			throw new AlovoaException("user_is_banned");
 		}
 
 		if (user.isAdmin()) {
@@ -229,6 +243,29 @@ public class AdminService {
 			UserService.removeUserDataCascading(user, userDeleteParam);
 			userRepo.delete(userRepo.findByEmail(user.getEmail()));
 			userRepo.flush();
+		}
+	}
+
+	public boolean userExists(String email) throws AlovoaException, UnsupportedEncodingException {
+		checkRights();
+		User u = userRepo.findByEmail(Tools.cleanEmail(URLDecoder.decode(email, StandardCharsets.UTF_8)));
+		return u != null;
+	}
+
+	public void addDonation(String email, double amount) throws AlovoaException, UnsupportedEncodingException {
+		checkRights();
+		User u = userRepo.findByEmail(Tools.cleanEmail(URLDecoder.decode(email, StandardCharsets.UTF_8)));
+		if (u != null) {
+			UserDonation userDonation = new UserDonation();
+			userDonation.setAmount(amount);
+			userDonation.setDate(new Date());
+			userDonation.setUser(u);
+			u.getDonations().add(userDonation);
+			u.setTotalDonations(u.getTotalDonations() + amount);
+			u.getDates().setLatestDonationDate(new Date());
+			userRepo.saveAndFlush(u);
+		} else {
+			throw new AlovoaException("User not found!");
 		}
 	}
 

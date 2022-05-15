@@ -3,6 +3,8 @@ package com.nonononoki.alovoa.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -104,6 +106,7 @@ class AdminServiceTest {
 		List<User> allUsers = userRepo.findAll();
 		User adminUser = allUsers.get(0);
 		User user1 = testUsers.get(0);
+		User user2 = testUsers.get(1);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(adminUser);
 
@@ -125,6 +128,13 @@ class AdminServiceTest {
 		adminService.banUser(UserDto.encodeId(user1.getId(), textEncryptor));
 		User bannedUser = userRepo.findById(user1.getId()).get();
 		assertEquals(true, bannedUser.isDisabled());
+		
+		assertEquals(true, adminService.userExists(URLDecoder.decode(user2.getEmail(), StandardCharsets.UTF_8)));
+		
+		double donationAmount = 10.00;
+		adminService.addDonation(URLDecoder.decode(user2.getEmail(), StandardCharsets.UTF_8), donationAmount);
+		assertEquals(donationAmount, user2.getTotalDonations());
+		assertEquals(1, user2.getDonations().size());
 
 	}
 

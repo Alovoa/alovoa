@@ -192,4 +192,58 @@ $("#delete-account-form").submit(
 
 	});
 
+$("#user-exists-form").submit(
+	function(e) {
+		e.preventDefault();
+
+		var actionUrl = e.currentTarget.action + encodeURIComponent($("#user-exists-email").val());
+
+		$.ajax({
+			url: actionUrl,
+			headers: {
+				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
+			},
+			type: 'POST',
+			success: function(data) {
+				console.log(data)
+				$("#user-exists-form")[0].reset();
+				if (data) {
+					alert("User exists");
+				}
+				else {
+					alert("User doesn't exist");
+				}
+			},
+			error: function(e) {
+				console.log(e);
+				alert(e.responseText);
+			}
+		});
+
+	});
+
+$("#donation-add-form").submit(
+	function(e) {
+		e.preventDefault();
+
+		var actionUrl = e.currentTarget.action + encodeURIComponent($("#donation-add-email").val()) + "/" + $("#donation-add-amount").val();
+
+		$.ajax({
+			url: actionUrl,
+			headers: {
+				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
+			},
+			type: 'POST',
+			success: function(data) {
+				$("#donation-add-form")[0].reset();
+				alert(getText("success.submit.generic"));
+			},
+			error: function(e) {
+				console.log(e);
+				alert(e.responseText);
+			}
+		});
+
+	});
+
 
