@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserHide;
@@ -18,6 +19,7 @@ import com.nonononoki.alovoa.repo.ContactRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 
+@Transactional
 @Service
 public class ScheduleService {
 
