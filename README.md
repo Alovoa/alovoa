@@ -4,13 +4,11 @@
 <img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/src/main/resources/static/img/android-chrome-192x192.png">
 </p>
 
-Website: https://alovoa.com/
-Main repository: <a href="https://github.com/Alovoa/alovoa">Github</a> 
-Mirror: <a href="https://codeberg.org/Nonononoki/alovoa">Codeberg</a>
+Website: https://alovoa.com/ | 
+Main repository: <a href="https://github.com/Alovoa/alovoa">Github</a> | 
+Mirror: <a href="https://codeberg.org/Nonononoki/alovoa">Codeberg</a> |
 
-Like this project? Consider making a donation: <a href="https://alovoa.com/donate-list">https://alovoa.com/donate-list</a>
-
-Alovoa aims to be the first widespread free and open-source dating web platform. What differs this from other platform?
+Alovoa aims to be the first widespread free and open-source dating web platform. What makes Alovoa different from other platforms?
 - No ads
 - No selling your data
 - No paid features (no "pay super-likes", "pay to swipe", "pay to view profile" or "pay to start a chat")
@@ -18,6 +16,27 @@ Alovoa aims to be the first widespread free and open-source dating web platform.
 - No closed-source libraries
 - No seeing people you don't want to see with advanced filters
 - Your most private data is securely encrypted
+
+### Mobile apps
+[<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/en/packages/com.alovoa.alovoa/)
+
+### Contribute:
+- Join the development chat/support community on [Matrix](https://matrix.to/#/#AlovoaDating:matrix.org)
+- Translate this project into your preferred language on [Weblate](https://hosted.weblate.org/projects/alovoa/alovoa/)
+
+<details>
+  <summary>Translation status</summary>
+  
+[![Translation Status](https://hosted.weblate.org/widgets/alovoa/-/multi-auto.svg)](https://hosted.weblate.org/engage/alovoa/)
+</details>
+
+### Donate:
+Like this project? Consider making a donation.
+- Alovoa: https://alovoa.com/donate-list
+- BuyMeACoffee: https://www.buymeacoffee.com/alovoa
+- Ko-fi: https://ko-fi.com/Alovoa
+- Liberapay: https://liberapay.com/alovoa/donate
+- Open Collective: https://opencollective.com/alovoa
 
 ### How to build:
 - Install a JDK >= 9 (OpenJDK 11 is officially supported)
@@ -33,16 +52,6 @@ Alovoa aims to be the first widespread free and open-source dating web platform.
 
 ### Documentation:
 - Please read the DOCUMENTATION.md
-
-### Contribute:
-- Want to help but you don't know how to code? No problem! Help us improve the existing translations or add your preferred language: https://hosted.weblate.org/projects/alovoa/alovoa/
-
-### Donate:
-- Alovoa: https://alovoa.com/donate-list
-- BuyMeACoffee: https://www.buymeacoffee.com/alovoa
-- Ko-fi: https://ko-fi.com/Alovoa
-- Liberapay: https://liberapay.com/alovoa/donate
-- Open Collective: https://opencollective.com/alovoa
 
 ### Licenses:
 - All code is licensed under the AGPLv3 license, unless stated otherwise. 
