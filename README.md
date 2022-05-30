@@ -1,4 +1,5 @@
 # Alovoa
+Alovoa aims to be the first widespread free and open-source dating web platform.
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/src/main/resources/static/img/android-chrome-192x192.png">
@@ -8,7 +9,7 @@ Website: https://alovoa.com/ |
 Main repository: <a href="https://github.com/Alovoa/alovoa">Github</a> | 
 Mirror: <a href="https://codeberg.org/Nonononoki/alovoa">Codeberg</a> |
 
-Alovoa aims to be the first widespread free and open-source dating web platform. What makes Alovoa different from other platforms?
+What makes Alovoa different from other platforms?
 - No ads
 - No selling your data
 - No paid features (no "pay super-likes", "pay to swipe", "pay to view profile" or "pay to start a chat")
@@ -18,10 +19,11 @@ Alovoa aims to be the first widespread free and open-source dating web platform.
 - Your most private data is securely encrypted
 
 ### Mobile apps
-[<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/en/packages/com.alovoa.alovoa/)
-- Android app [source code](https://github.com/Alovoa/alovoa-android)
+
+Alovoa is also available as a mobile app. Check out Android app [source code repo](https://github.com/Alovoa/alovoa-android), download an app on [F-Droid](https://f-droid.org/en/packages/com.alovoa.alovoa/) or [Google Play](https://play.google.com/store/apps/details?id=com.alovoa.alovoa_playstore)
 
 ### Contribute:
+- Improve the project by posting in [Issues](https://github.com/aha999/markdown-templates/issues) and make a PR upon Issue discussion.
 - Chat/support to the development community on [Matrix](https://matrix.to/#/#AlovoaDating:matrix.org)
 - Translate this project into your preferred language on [Weblate](https://hosted.weblate.org/projects/alovoa/alovoa/)
 
@@ -52,7 +54,7 @@ Like this project? Consider making a donation.
 - Find the lombok.jar (should be in the ~/.m2) and execute it with "java -jar"
 
 ### Documentation:
-- Please read the DOCUMENTATION.md
+- Please read the [DOCUMENTATION.md](/DOCUMENTATION.md)
 
 ### Licenses:
 - All code is licensed under the AGPLv3 license, unless stated otherwise. 
