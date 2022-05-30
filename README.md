@@ -34,6 +34,9 @@ Alovoa aims to be the first widespread free and open-source dating web platform.
 ### Documentation:
 - Please read the DOCUMENTATION.md
 
+### Contribute:
+- Want to help but you don't know how to code? No problem! Help us improve the existing translations or add your preferred language: https://hosted.weblate.org/projects/alovoa/alovoa/
+
 ### Licenses:
 - All code is licensed under the AGPLv3 license, unless stated otherwise. 
 - All images are proprietary, unless stated otherwise.
