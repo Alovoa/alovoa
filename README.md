@@ -37,6 +37,13 @@ Alovoa aims to be the first widespread free and open-source dating web platform.
 ### Contribute:
 - Want to help but you don't know how to code? No problem! Help us improve the existing translations or add your preferred language: https://hosted.weblate.org/projects/alovoa/alovoa/
 
+### Donate:
+- Alovoa: https://alovoa.com/donate-list
+- BuyMeACoffee: https://www.buymeacoffee.com/alovoa
+- Ko-fi: https://ko-fi.com/Alovoa
+- Liberapay: https://liberapay.com/alovoa/donate
+- Open Collective: https://opencollective.com/alovoa
+
 ### Licenses:
 - All code is licensed under the AGPLv3 license, unless stated otherwise. 
 - All images are proprietary, unless stated otherwise.
