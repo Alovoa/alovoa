@@ -1,6 +1,11 @@
 # Alovoa
 Alovoa aims to be the first widespread free and open-source dating web platform.
 
+[![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/Alovoa?color=orange)](https://www.reddit.com/r/Alovoa/)
+[![GitHub license](https://img.shields.io/github/license/Alovoa/Alovoa?color=lightgrey)](/LICENSE)
+
+
+
 <p align="center">
 <img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/src/main/resources/static/img/android-chrome-192x192.png">
 </p>
