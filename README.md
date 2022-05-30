@@ -19,6 +19,7 @@ Alovoa aims to be the first widespread free and open-source dating web platform.
 
 ### Mobile apps
 [<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/en/packages/com.alovoa.alovoa/)
+- Android app [source code](https://github.com/Alovoa/alovoa-android)
 
 ### Contribute:
 - Chat/support to the development community on [Matrix](https://matrix.to/#/#AlovoaDating:matrix.org)
