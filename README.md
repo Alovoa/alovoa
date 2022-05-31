@@ -1,6 +1,7 @@
 # Alovoa
 Alovoa aims to be the first widespread free and open-source dating web platform.
 
+![Website](https://img.shields.io/website?url=https%3A%2F%2Falovoa.com%2F)
 ![GitHub issues](https://img.shields.io/github/issues/Alovoa/Alovoa?color=red)
 ![Matrix](https://img.shields.io/matrix/alovoa_love:matrix.org?label=Matrix%20chat)
 ![Twitter Follow](https://img.shields.io/twitter/follow/alovoa_love?label=Twitter&style=social)
