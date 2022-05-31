@@ -31,7 +31,7 @@ Alovoa is also available as a mobile app. Check out Android app [source code rep
 
 ### Contribute:
 - Improve the project by posting in [Issues](https://github.com/aha999/markdown-templates/issues) and make a PR upon Issue discussion.
-- Chat/support to the development community on [Matrix](https://matrix.to/#/#AlovoaDating:matrix.org)
+- Chat/support to the development community on [Matrix](https://matrix.to/#/#alovoa_love:matrix.org)
 - Translate this project into your preferred language on [Weblate](https://hosted.weblate.org/projects/alovoa/alovoa/)
 
 <details>
