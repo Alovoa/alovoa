@@ -5,6 +5,7 @@ Alovoa aims to be the first widespread free and open-source dating web platform.
 ![GitHub issues](https://img.shields.io/github/issues/Alovoa/Alovoa?color=red)
 ![Matrix](https://img.shields.io/matrix/alovoa_love:matrix.org?label=Matrix%20chat)
 ![Twitter Follow](https://img.shields.io/twitter/follow/alovoa_love?label=Twitter&style=social)
+![Mastodon Follow](https://img.shields.io/mastodon/follow/106347928891909537?label=Mastodon&style=social)
 ![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/Alovoa?label=Subreddit&style=social)
 [![GitHub license](https://img.shields.io/github/license/Alovoa/Alovoa?color=lightgrey)](/LICENSE)
 
