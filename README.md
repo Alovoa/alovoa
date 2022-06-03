@@ -49,7 +49,7 @@ Like this project? Consider making a donation.
 | Ko-fi           | [ko-fi.com/Alovoa](https://ko-fi.com/Alovoa)                                                      |
 | Liberapay       | [liberapay.com/alovoa/donate](https://liberapay.com/alovoa/donate)                                |
 | Open Collective | [opencollective.com/alovoa](https://opencollective.com/alovoa)                                    |
-| BTC             | <details><summary>Click to expand</summary>`bc1q5yejhe5rv0m7j0euxml7klkd2ummw0gc3vx58p`</details> |
+| BTC             | <details><summary>Click to reveal</summary>`bc1q5yejhe5rv0m7j0euxml7klkd2ummw0gc3vx58p`</details> |
 
 
 ### How to build
