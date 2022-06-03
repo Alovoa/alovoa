@@ -43,11 +43,14 @@ Alovoa is also available as a mobile app. Check out Android app [source code rep
 
 ### Donate:
 Like this project? Consider making a donation.
-- Alovoa: https://alovoa.com/donate-list
-- BuyMeACoffee: https://www.buymeacoffee.com/alovoa
-- Ko-fi: https://ko-fi.com/Alovoa
-- Liberapay: https://liberapay.com/alovoa/donate
-- Open Collective: https://opencollective.com/alovoa
+
+| Platform        | Link                                |
+| ----------------| ------------------------------------|
+| Alovoa          | https://alovoa.com/donate-list      |
+| BuyMeACoffee    | https://www.buymeacoffee.com/alovoa |
+| Ko-fi           | https://ko-fi.com/Alovoa            |
+| Liberapay       | https://liberapay.com/alovoa/donate |
+| Open Collective | https://opencollective.com/alovoa   |
 
 ### How to build:
 - Install a JDK >= 9 (OpenJDK 11 is officially supported)
