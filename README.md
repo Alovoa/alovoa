@@ -28,7 +28,7 @@ What makes Alovoa different from other platforms?
 Alovoa is also available as a mobile app. Check out Android app [source code repo](https://github.com/Alovoa/alovoa-android), download an app on [F-Droid](https://f-droid.org/en/packages/com.alovoa.alovoa/) or [Google Play](https://play.google.com/store/apps/details?id=com.alovoa.alovoa_playstore)
 
 ### Contribute
-- Tell your friends about it and share on social media! Alovoa is relatively small against big proprietary dating platforms, which have the funds to market themselves, so Alovoa must rely on the user community to put out a good word and make it grow!
+- Tell your friends about it and share on social media! This is the best way to make it grow.
 - Improve the project by posting in [Issues](https://github.com/aha999/markdown-templates/issues) and make a PR upon Issue discussion.
 - Chat/support to the development community on [Matrix](https://matrix.to/#/#alovoa_love:matrix.org)
 - Translate this project into your preferred language on [Weblate](https://hosted.weblate.org/projects/alovoa/alovoa/)
