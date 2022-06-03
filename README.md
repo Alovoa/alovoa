@@ -45,7 +45,7 @@ Alovoa is also available as a mobile app. Check out Android app [source code rep
 Like this project? Consider making a donation.
 
 | Platform        | Link                                |
-| ----------------| ------------------------------------|
+| --------------- | ----------------------------------- |
 | Alovoa          | https://alovoa.com/donate-list      |
 | BuyMeACoffee    | https://www.buymeacoffee.com/alovoa |
 | Ko-fi           | https://ko-fi.com/Alovoa            |
