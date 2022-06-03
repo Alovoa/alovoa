@@ -30,7 +30,7 @@ What makes Alovoa different from other platforms?
 
 Alovoa is also available as a mobile app. Check out Android app [source code repo](https://github.com/Alovoa/alovoa-android), download an app on [F-Droid](https://f-droid.org/en/packages/com.alovoa.alovoa/) or [Google Play](https://play.google.com/store/apps/details?id=com.alovoa.alovoa_playstore)
 
-### Contribute:
+### Contribute
 - Improve the project by posting in [Issues](https://github.com/aha999/markdown-templates/issues) and make a PR upon Issue discussion.
 - Chat/support to the development community on [Matrix](https://matrix.to/#/#alovoa_love:matrix.org)
 - Translate this project into your preferred language on [Weblate](https://hosted.weblate.org/projects/alovoa/alovoa/)
@@ -41,7 +41,7 @@ Alovoa is also available as a mobile app. Check out Android app [source code rep
 [![Translation Status](https://hosted.weblate.org/widgets/alovoa/-/multi-auto.svg)](https://hosted.weblate.org/engage/alovoa/)
 </details>
 
-### Donate:
+### Donate
 Like this project? Consider making a donation.
 
 | Platform        | Link                                |
@@ -52,7 +52,7 @@ Like this project? Consider making a donation.
 | Liberapay       | https://liberapay.com/alovoa/donate |
 | Open Collective | https://opencollective.com/alovoa   |
 
-### How to build:
+### How to build
 - Install a JDK >= 9 (OpenJDK 11 is officially supported)
 - Install maven: https://maven.apache.org/install.html
 - Setup a database (MariaDB is officially supported)
