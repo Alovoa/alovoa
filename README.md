@@ -16,7 +16,7 @@ Alovoa aims to be the first widespread free and open-source dating web platform.
 
 What makes Alovoa different from other platforms?
 - No ads
-- No selling your data
+- No selling of your data
 - No paid features (no "pay super-likes", "pay to swipe", "pay to view profile" or "pay to start a chat")
 - No unsecure servers
 - No closed-source libraries
