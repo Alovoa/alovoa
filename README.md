@@ -2,7 +2,7 @@
 Alovoa aims to be the first widespread free and open-source dating web platform.
 
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Falovoa.com%2F)](https://alovoa.com/)
-[![Codeberg](https://img.shields.io/badge/Codeberg-Repo%20Mirror-blue?logo=codeberg)](https://codeberg.org/Nonononoki/alovoa)
+[![Codeberg](https://img.shields.io/badge/Codeberg-Mirror-blue?logo=codeberg)](https://codeberg.org/Nonononoki/alovoa)
 [![GitHub issues](https://img.shields.io/github/issues/Alovoa/Alovoa?color=red)](https://github.com/Alovoa/alovoa/issues)
 [![Matrix](https://img.shields.io/matrix/alovoa_love:matrix.org?label=Matrix%20chat)](https://matrix.to/#/#alovoa_love:matrix.org)
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/106347928891909537?label=Mastodon&style=social)](https://mastodon.social/@alovoa_love)
