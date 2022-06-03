@@ -8,6 +8,7 @@ Alovoa aims to be the first widespread free and open-source dating web platform.
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/106347928891909537?label=Mastodon&style=social)](https://mastodon.social/@alovoa_love)
 [![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/Alovoa?label=Subreddit&style=social)](https://www.reddit.com/r/Alovoa/)
 [![GitHub license](https://img.shields.io/github/license/Alovoa/Alovoa?color=lightgrey)](/LICENSE)
+[![Codeberg](https://img.shields.io/badge/Codeberg-Repo%20Mirror-blue)](https://codeberg.org/Nonononoki/alovoa)
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/src/main/resources/static/img/android-chrome-192x192.png">
