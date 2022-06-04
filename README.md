@@ -1,4 +1,5 @@
-# Alovoa
+# <img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/src/main/resources/static/img/android-chrome-192x192.png" width="70"> Alovoa
+
 Alovoa aims to be the first widespread free and open-source dating web platform.
 
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Falovoa.com%2F)](https://alovoa.com/)
@@ -9,10 +10,6 @@ Alovoa aims to be the first widespread free and open-source dating web platform.
 [![Twitter Follow](https://img.shields.io/twitter/follow/alovoa_love?label=Twitter&style=social)](https://twitter.com/alovoa_love)
 [![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/Alovoa?label=Subreddit&style=social)](https://www.reddit.com/r/Alovoa/)
 [![GitHub license](https://img.shields.io/github/license/Alovoa/Alovoa?color=lightgrey)](/LICENSE)
-
-<p align="center">
-<img src="https://raw.githubusercontent.com/Alovoa/alovoa/master/src/main/resources/static/img/android-chrome-192x192.png">
-</p>
 
 What makes Alovoa different from other platforms?
 - No ads
