@@ -46,7 +46,7 @@ public class ScheduleService {
 
 	@Value("${app.schedule.delay.contact}")
 	private long contactDelay;
-	
+
 	private final static int HIDE_MAX = 20;
 
 	@Scheduled(fixedDelayString = "${app.schedule.short}")
@@ -71,6 +71,7 @@ public class ScheduleService {
 		ms -= captchaDelay;
 		Date d = new Date(ms);
 		captchaRepo.deleteByDateBefore(d);
+		captchaRepo.flush();
 	}
 
 	public void cleanContact(Date date) {
@@ -78,6 +79,7 @@ public class ScheduleService {
 		ms -= contactDelay;
 		Date d = new Date(ms);
 		contactRepo.deleteByDateBefore(d);
+		contactRepo.flush();
 	}
 
 	public void cleanUserHide(Date date) {
@@ -85,15 +87,16 @@ public class ScheduleService {
 		ms -= hideDelay;
 		Date d = new Date(ms);
 
-		List<UserHide> hides = userHideRepo.findByByDateBefore(d, PageRequest.of(0, HIDE_MAX, Sort.by(Sort.Direction.ASC, "date")));
+		List<UserHide> hides = userHideRepo.findByByDateBefore(d,
+				PageRequest.of(0, HIDE_MAX, Sort.by(Sort.Direction.ASC, "date")));
 		List<User> users = new ArrayList<>();
 		for (UserHide hide : hides) {
 			User u = hide.getUserFrom();
-			User u2 = hide.getUserTo();
+//			User u2 = hide.getUserTo();
 			u.getHiddenUsers().remove(hide);
-			u2.getHiddenByUsers().remove(hide);
+			// u2.getHiddenByUsers().remove(hide);
 			users.add(u);
-			users.add(u2);
+//			users.add(u2);
 		}
 		userRepo.saveAll(users);
 		userRepo.flush();
