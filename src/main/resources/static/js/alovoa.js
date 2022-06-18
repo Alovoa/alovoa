@@ -29,3 +29,10 @@ function alert(text, position) {
 		animate: { in: 'fadeIn', out: 'fadeOut' }
 	})
 }
+
+window.onload = function(){
+	let div = document.getElementById("preloader-parent")
+	if(div) {
+		div.style.display = "none"; 
+	}
+};

@@ -13,6 +13,7 @@
 	<th:block th:replace="fragments.html::bulma"></th:block>
 	<th:block th:replace="fragments.html::ui-design"></th:block>
 	<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
+	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
 	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
 	<link rel="stylesheet" href="/css/lib/swiper.min.css" />
 	<link rel="stylesheet" href="/css/lib/animate.min.css" />
@@ -22,6 +23,9 @@
 	<title th:text="#{message.title}"></title>
 </head>
 <body>
+	<div class="loader-parent" id="preloader-parent" style="display: flex">
+		<div class="loader" id="preloader"></div>
+	</div>
 	<div id="main-logged-in">
 		<header th:insert="fragments.html::header-logged-in"></header>
 		<input type="hidden" id="convo-id" th:value="${convoId}">
@@ -50,8 +54,8 @@
 		</section>
 	</div>
 	
-	<div class="loader-parent">
-		<div class="loader"></div>
+	<div class="loader-parent" id="loader-parent">
+		<div class="loader" id="loader"></div>
 	</div>
 	
 	<div id="user-profile-container"></div>

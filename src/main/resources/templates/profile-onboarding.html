@@ -25,8 +25,10 @@
 </head>
 
 <body>
-
-<header th:insert="fragments.html::header-logged-in"></header>
+	<div class="loader-parent" id="preloader-parent" style="display: flex">
+		<div class="loader" id="preloader"></div>
+	</div>
+	<header th:insert="fragments.html::header-logged-in"></header>
 	<form th:action="@{/}" method="POST"></form>
 	<div class="swiper onboarding-swiper" id="main">
 		<div class="swiper-wrapper">
@@ -113,8 +115,8 @@
 		<div class="swiper-pagination"></div>
 	</div>
 	
-	<div class="loader-parent">
-		<div class="loader"></div>
+	<div class="loader-parent" id="loader-parent">
+		<div class="loader" id="loader"></div>
 	</div>
 
 	<script src="/sw.js"></script>

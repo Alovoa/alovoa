@@ -16,6 +16,7 @@
 	<link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
 	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
 	<link rel="stylesheet" href="/css/lib/animate.min.css" />
+	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<link rel="stylesheet" href="/css/index.css" />
 
@@ -36,6 +37,9 @@
 </head>
 
 <body class="preload">
+	<div class="loader-parent" id="preloader-parent" style="display: flex">
+		<div class="loader" id="preloader"></div>
+	</div>
 	<div id="main">
 		<header th:replace="fragments.html::header-index"></header>
 		<div id="hero-gravity"></div>

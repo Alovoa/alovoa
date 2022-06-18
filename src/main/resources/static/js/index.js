@@ -152,7 +152,7 @@ function hero() {
 	
 	Events.on(engine, 'collisionStart', (event) => {
 		event.pairs.forEach((collision) => {
-			console.log(collision);
+			//console.log(collision);
 			setTimeout(function() {
 			  	Body.setStatic(collision.bodyA, true);
 				Body.setStatic(collision.bodyB, true);

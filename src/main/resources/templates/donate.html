@@ -25,6 +25,9 @@
 </head>
 
 <body>
+	<div class="loader-parent" id="preloader-parent" style="display: flex">
+		<div class="loader" id="preloader"></div>
+	</div>
 	<div id="main-logged-in">
 		<header th:insert="fragments.html::header-donate"></header>
 		<div id="donate-top-margin"></div>
@@ -47,8 +50,8 @@
 		</div>
 	</div>
 
-	<div class="loader-parent">
-		<div class="loader"></div>
+	<div class="loader-parent" id="loader-parent">
+		<div class="loader" id="loader"></div>
 	</div>
 	
 	<div id="user-profile-container"></div>
