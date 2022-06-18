@@ -263,7 +263,7 @@ input[type=range].slider {
 	z-index: 100000;
 	align-items: center;
 	justify-content: center;
-	background-color: rgba(18, 18, 18, 0.9);
+	background-color: rgb(18, 18, 18);
 }
 
 #audio {
