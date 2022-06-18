@@ -33,6 +33,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 */
 
+.radio-parent [type="radio"] {
+	margin-right: 4px;
+}
+
 .table {
     background-color: transparent;
 }

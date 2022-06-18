@@ -39,11 +39,9 @@
 		<div class="modal-content">
 			<div class="box">
 				<article class="media">
-					<div class="select" id="donation-select">
-						<select id="sort" onchange="search()">
-							<option value="1" th:text="#{donate.latest-donations}"></option>
-							<option value="2" th:text="#{donate.largest-donations}"></option>
-						</select>
+					<div class="control radio-parent" id="donation-select">
+						<label class="radio"><input th:text="#{donate.latest-donations}" type="radio" onchange="search(1)" name="sort" checked></label>
+						<label class="radio"><input th:text="#{donate.largest-donations}" type="radio" onchange="search(2)" name="sort"></label>
 					</div>
 				</article>
 			</div>

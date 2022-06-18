@@ -36,10 +36,6 @@ textarea {
 	align-items: flex-start
 }
 
-.radio-parent [type="radio"] {
-	margin-right: 4px;
-}
-
 .switch-parent > label, .radio-parent > label {
 	margin-bottom: 10px;
 	font-size: 1.3em !important;

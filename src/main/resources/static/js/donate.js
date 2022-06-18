@@ -2,8 +2,7 @@ $(function() {
 	search();
 });
 
-function search() {
-	let sort = $("#sort").val();
+function search(sort) {
 	let url = "/donate/search/" + sort;
 	$("#main-container").load(url, function() {
 		closeModal();
