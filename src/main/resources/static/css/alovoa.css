@@ -49,9 +49,16 @@ h1, h2, h3, h4, h5, h6 {
 	color: #4a4a4a;
 }
 
-button {
+button, .button {
 	cursor: pointer;
+  	transition: background 0.7s;
 }
+
+/*https://github.com/mladenplavsic/css-ripple-effect MIT License Copyright (c) Mladen Plavsic */
+.button, button, .collapsible-header {position:relative;overflow:hidden;transform:translate3d(0,0,0)}
+.button:after, button:after, .collapsible-header:after {content:"";display:block;position:absolute;width:100%;height:100%;top:0;left:0;pointer-events:none;background-image:radial-gradient(circle,#000 2%,transparent 10.01%);background-repeat:no-repeat;background-position:50%;transform:scale(10,10);opacity:0;transition:transform .5s,opacity 1s}
+.button:active:after, button:active:after, .collapsible-header:active:after{transform:scale(0,0);opacity:.2;transition:0s}
+
 
 button, .button, .input, .select, select {
 	border-radius: 290486px;
@@ -73,6 +80,8 @@ button, .button, .input, .select, select {
 
 #navbar-text {
 	padding-left: 24px;
+	padding-right: 24px;
+	user-select: none;
 }
 
 #captcha-refresh-button {
@@ -380,7 +389,7 @@ input[type=range].slider {
 		display: none;
 	}
 	.navbar.is-fixed-bottom {
-	    width: 1204px;
+	    width: 1024px;
 	    left: 50%;
 	    transform: translateX(-50%);
 	}
@@ -427,6 +436,9 @@ input[type=range].slider {
 	html, .card, .box, .textarea, .footer, .select select, select option
 		{
 		background-color: #121212;
+	}
+	.button.is-inverted:after, button.is-inverted:after{
+		background-image:radial-gradient(circle,#FFF 2%,transparent 10.01%)
 	}
 	.button:not(.colored) {
 		background-color: #121212;
