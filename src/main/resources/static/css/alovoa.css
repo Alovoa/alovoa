@@ -21,6 +21,7 @@ body {
 	overflow-wrap: anywhere;
 	scrollbar-width: thin;
 	font-family: "Montserrat" !important;
+	 -webkit-tap-highlight-color: transparent;
 }
 
 ::-webkit-scrollbar {
@@ -436,6 +437,9 @@ input[type=range].slider {
 	html, .card, .box, .textarea, .footer, .select select, select option
 		{
 		background-color: #121212;
+	}
+	.input, .textarea, .select select, .card {
+	    border-color: #424242 !important;
 	}
 	.button.is-inverted:after, button.is-inverted:after{
 		background-image:radial-gradient(circle,#FFF 2%,transparent 10.01%)

@@ -16,7 +16,8 @@ html {
 .card {
 	padding: 24px;
 	box-sizing: border-box;
-	border-bottom: 1px solid #dbdbdb;
+	border-bottom: 1px solid;
+	border-color: #dbdbdb;
 	border-radius: initial;
 }
 
