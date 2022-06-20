@@ -1,11 +1,13 @@
 $(function() {
-	search();
+	search(1);
 });
 
 function search(sort) {
+	showLoader();
 	let url = "/donate/search/" + sort;
 	$("#main-container").load(url, function() {
 		closeModal();
+		hideLoader();
 	});
 }
 
