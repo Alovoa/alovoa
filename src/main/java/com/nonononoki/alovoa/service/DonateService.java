@@ -72,7 +72,7 @@ public class DonateService {
 
 	private static final String BMAC_URL = "https://www.buymeacoffee.com/";
 	private static final String BMAC_TEST_EMAIL = "test@example.com";
-	private static final double BMAC_AMOUNT_FACTOR = 1.0; // 0.95; //just use the full amount
+	// private static final double BMAC_AMOUNT_FACTOR = 1.0; // 0.95;
 
 	public List<DonationDto> filter(int filter) throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
@@ -80,9 +80,9 @@ public class DonateService {
 		List<DonationDto> donationsToDtos = null;
 
 		User user = authService.getCurrentUser();
-		
+
 		int ageLegal = Tools.AGE_LEGAL;
-		
+
 		int age = Tools.calcUserAge(user);
 		boolean isLegalAge = age >= ageLegal;
 		int minAge = user.getPreferedMinAge();
@@ -99,10 +99,13 @@ public class DonateService {
 		Date maxDate = Tools.ageToDate(minAge);
 
 		if (filter == FILTER_RECENT) {
-			donationsToDtos = DonationDto.donationsToDtos(userDonationRepo.findTop20ByUserDatesDateOfBirthGreaterThanEqualAndUserDatesDateOfBirthLessThanEqualOrderByDateDesc(minDate, maxDate), user,
-					textEncryptor, maxEntries);
+			donationsToDtos = DonationDto.donationsToDtos(userDonationRepo
+					.findTop20ByUserDatesDateOfBirthGreaterThanEqualAndUserDatesDateOfBirthLessThanEqualOrderByDateDesc(
+							minDate, maxDate),
+					user, textEncryptor, maxEntries);
 		} else if (filter == FILTER_AMOUNT) {
-			donationsToDtos = DonationDto.usersToDtos(userRepo.usersDonate(minDate, maxDate), user, textEncryptor, maxEntries);
+			donationsToDtos = DonationDto.usersToDtos(userRepo.usersDonate(minDate, maxDate), user, textEncryptor,
+					maxEntries);
 		} else {
 			throw new AlovoaException("filter_not_found");
 		}
@@ -119,7 +122,7 @@ public class DonateService {
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
-		
+
 		donation.setEmail(Tools.cleanEmail(donation.getEmail()));
 
 		if (kofiIp.equals(ip) || !profile.equals(Tools.PROD)) {
@@ -127,8 +130,8 @@ public class DonateService {
 			Date now = new Date();
 
 			if (profile.equals(Tools.PROD) && (KOFI_TEST_TRANSACTION_ID.equals(donation.getKofi_transaction_id())
-					|| donation.getEmail() != null && KOFI_TEST_EMAIL.equalsIgnoreCase(donation.getEmail())
-					|| !donation.is_public())) {
+					|| donation.getEmail() != null && KOFI_TEST_EMAIL.equalsIgnoreCase(donation.getEmail()))) {
+				logger.warn("Donation is not valid");
 				return;
 			}
 
@@ -158,13 +161,15 @@ public class DonateService {
 				u.getDates().setLatestDonationDate(new Date());
 				userRepo.saveAndFlush(u);
 			}
+		} else {
+			logger.error("IPs not matching! Wanted: " + kofiIp + ", got:" + ip);
 		}
 	}
 
 	public void donationReceivedBmac(DonationBmac data) throws UnknownHostException, MalformedURLException {
 		String bmacIp = InetAddress.getByName(new URL(BMAC_URL).getHost()).getHostAddress().trim();
 		String ip = request.getRemoteAddr().trim();
-		
+
 		try {
 			logger.info(objectMapper.writeValueAsString(data));
 		} catch (Exception e) {
@@ -177,6 +182,7 @@ public class DonateService {
 			DonationBmac.DonationBmacResponse donation = data.getResponse();
 
 			if (profile.equals(Tools.PROD) && BMAC_TEST_EMAIL.equalsIgnoreCase(donation.getSupporter_email())) {
+				logger.warn("Donation is not valid");
 				return;
 			}
 
@@ -196,8 +202,8 @@ public class DonateService {
 
 			if (u != null) {
 				UserDonation userDonation = new UserDonation();
-				double amount = donation.getTotal_amount() * BMAC_AMOUNT_FACTOR;
-				amount = (double) Math.round(amount * 100) / 100;
+				double amount = donation.getTotal_amount();// * BMAC_AMOUNT_FACTOR;
+				// amount = (double) Math.round(amount * 100) / 100;
 				userDonation.setAmount(amount);
 				userDonation.setDate(now);
 				userDonation.setUser(u);
@@ -206,6 +212,8 @@ public class DonateService {
 				u.getDates().setLatestDonationDate(new Date());
 				userRepo.saveAndFlush(u);
 			}
+		} else {
+			logger.error("IPs not matching! Wanted: " + bmacIp + ", got:" + ip);
 		}
 	}
 

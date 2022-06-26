@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.DonationBmac;
 import com.nonononoki.alovoa.model.DonationBmac.DonationBmacResponse;
@@ -118,6 +119,21 @@ class DonateServiceTest {
 				&& user1.getTotalDonations() > donationAmount);
 		assertEquals(2, userDonationRepository.count());
 
+	}
+
+	@Test
+	void testWithRealDataKofi() throws Exception {
+		User user2 = testUsers.get(2);
+		String kofiString = "{\"email\":\"" + user2.getEmail()
+				+ "\",\"message_id\":\"27c5906e-8a77-4949-844c-a08d13f70340\",\"message\":\"" + user2.getEmail()
+				+ "\",\"timestamp\":\"2022-06-26T08:24:19Z\",\"type\":\"Donation\",\"from_name\":\"Somebody\",\"amount\":\"3.00\",\"url\":\"https://ko-fi.com/Home/CoffeeShop?txid=e0397a56-594f-4764-8f80-761baafcdbf4&readToken=e274f1de-5fb3-4e38-86df-4af1de6bb3c9\",\"kofi_transaction_id\":\"e0397a56-594f-4764-8f80-761baafcdbf5\",\"_public\":false}";
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		DonationKofi donationKofi = objectMapper.readValue(kofiString, DonationKofi.class);
+		donateService.donationReceivedKofi(donationKofi);
+
+		assertTrue(user2.getTotalDonations() > 0);
+		assertEquals(1, userDonationRepository.count());
 	}
 
 }
