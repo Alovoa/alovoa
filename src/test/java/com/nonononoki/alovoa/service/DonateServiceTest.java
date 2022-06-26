@@ -51,6 +51,12 @@ class DonateServiceTest {
 
 	@Value("${app.first-name.length-min}")
 	private int firstNameLengthMin;
+	
+	@Value("${app.donate.kofi.key}")
+	private String kofiKey;
+	
+	@Value("${app.donate.bmac.key}")
+	private String bmacKey;
 
 	@MockBean
 	private AuthService authService;
@@ -101,7 +107,7 @@ class DonateServiceTest {
 		DonationKofi donationKofi = new DonationKofi();
 		donationKofi.setAmount(donationString);
 		donationKofi.setMessage(user1.getEmail());
-		donateService.donationReceivedKofi(donationKofi);
+		donateService.donationReceivedKofi(donationKofi, kofiKey);
 
 		assertEquals(donationAmount, user1.getTotalDonations(), doubleDelta);
 		assertEquals(1, userDonationRepository.count());
@@ -113,7 +119,7 @@ class DonateServiceTest {
 		bmacResponse.setSupporter_email(user1.getEmail());
 		bmacResponse.setTotal_amount(donationAmount2);
 		donationBmac.setResponse(bmacResponse);
-		donateService.donationReceivedBmac(donationBmac);
+		donateService.donationReceivedBmac(donationBmac, bmacKey);
 
 		assertTrue(user1.getTotalDonations() == donationAmount + donationAmount2
 				&& user1.getTotalDonations() > donationAmount);
@@ -130,10 +136,9 @@ class DonateServiceTest {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		DonationKofi donationKofi = objectMapper.readValue(kofiString, DonationKofi.class);
-		donateService.donationReceivedKofi(donationKofi);
+		donateService.donationReceivedKofi(donationKofi, kofiKey);
 
 		assertTrue(user2.getTotalDonations() > 0);
 		assertEquals(1, userDonationRepository.count());
 	}
-
 }

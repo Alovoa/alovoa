@@ -61,20 +61,20 @@ public class DonateController {
 		return "fragments :: donate-filter";
 	}
 
-	@PostMapping(value = "/received/kofi", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public ResponseEntity<String> receivedKofi(String data)
+	@PostMapping(value = "/received/kofi/{key}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ResponseEntity<String> receivedKofi(String data, @PathVariable String key)
 			throws UnknownHostException, MalformedURLException, JsonProcessingException {
 		logger.info(data);
-		donateService.donationReceivedKofi(objectMapper.readValue(data, DonationKofi.class));
+		donateService.donationReceivedKofi(objectMapper.readValue(data, DonationKofi.class), key);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@PostMapping(value = "/received/bmac")
-	public ResponseEntity<String> receivedBmac(@RequestBody DonationBmac data)
+	@PostMapping(value = "/received/bmac/{key}")
+	public ResponseEntity<String> receivedBmac(@RequestBody DonationBmac data, @PathVariable String key)
 			throws JsonProcessingException, UnknownHostException, MalformedURLException {
 		String logInfo = objectMapper.writeValueAsString(data);
 		logger.info(logInfo);
-		donateService.donationReceivedBmac(data);
+		donateService.donationReceivedBmac(data, key);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

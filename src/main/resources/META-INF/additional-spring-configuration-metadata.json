@@ -313,5 +313,15 @@
     "name": "app.user.captcha.duration.valid",
     "type": "java.lang.String",
     "description": "A description for 'app.user.captcha.duration.valid'"
+  },
+  {
+    "name": "app.donate.kofi.key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.donate.kofi.key'"
+  },
+  {
+    "name": "app.donate.bmac.key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.donate.bmac.key'"
   }
 ]}

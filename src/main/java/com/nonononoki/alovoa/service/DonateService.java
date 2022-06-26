@@ -1,9 +1,7 @@
 package com.nonononoki.alovoa.service;
 
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -14,7 +12,6 @@ import java.util.List;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,9 +44,6 @@ public class DonateService {
 	private UserRepository userRepo;
 
 	@Autowired
-	private HttpServletRequest request;
-
-	@Autowired
 	private AuthService authService;
 
 	@Autowired
@@ -63,14 +57,18 @@ public class DonateService {
 
 	@Value("${spring.profiles.active}")
 	private String profile;
+	
+	@Value("${app.donate.kofi.key}")
+	private String kofiKey;
+	
+	@Value("${app.donate.bmac.key}")
+	private String bmacKey;
 
 	private static final Logger logger = LoggerFactory.getLogger(DonateService.class);
 
-	private static final String KOFI_URL = "https://ko-fi.com/";
 	private static final String KOFI_TEST_TRANSACTION_ID = "1234-1234-1234-1234";
 	private static final String KOFI_TEST_EMAIL = "john@example.com";
 
-	private static final String BMAC_URL = "https://www.buymeacoffee.com/";
 	private static final String BMAC_TEST_EMAIL = "test@example.com";
 	// private static final double BMAC_AMOUNT_FACTOR = 1.0; // 0.95;
 
@@ -113,9 +111,7 @@ public class DonateService {
 		return donationsToDtos;
 	}
 
-	public void donationReceivedKofi(DonationKofi donation) throws UnknownHostException, MalformedURLException {
-		String kofiIp = InetAddress.getByName(new URL(KOFI_URL).getHost()).getHostAddress().trim();
-		String ip = request.getRemoteAddr().trim();
+	public void donationReceivedKofi(DonationKofi donation, String key) throws UnknownHostException, MalformedURLException {
 
 		try {
 			logger.info(objectMapper.writeValueAsString(donation));
@@ -125,7 +121,7 @@ public class DonateService {
 
 		donation.setEmail(Tools.cleanEmail(donation.getEmail()));
 
-		if (kofiIp.equals(ip) || !profile.equals(Tools.PROD)) {
+		if (kofiKey.equals(key)) {
 
 			Date now = new Date();
 
@@ -162,21 +158,19 @@ public class DonateService {
 				userRepo.saveAndFlush(u);
 			}
 		} else {
-			logger.error("IPs not matching! Wanted: " + kofiIp + ", got:" + ip);
+			logger.error("Invalid key");
 		}
 	}
 
-	public void donationReceivedBmac(DonationBmac data) throws UnknownHostException, MalformedURLException {
-		String bmacIp = InetAddress.getByName(new URL(BMAC_URL).getHost()).getHostAddress().trim();
-		String ip = request.getRemoteAddr().trim();
-
+	public void donationReceivedBmac(DonationBmac data, String key) throws UnknownHostException, MalformedURLException {
+		
 		try {
 			logger.info(objectMapper.writeValueAsString(data));
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
 
-		if (bmacIp.equals(ip) || !profile.equals(Tools.PROD)) {
+		if (bmacKey.equals(key)) {
 
 			Date now = new Date();
 			DonationBmac.DonationBmacResponse donation = data.getResponse();
@@ -213,7 +207,7 @@ public class DonateService {
 				userRepo.saveAndFlush(u);
 			}
 		} else {
-			logger.error("IPs not matching! Wanted: " + bmacIp + ", got:" + ip);
+			logger.error("Invalid key");
 		}
 	}
 
