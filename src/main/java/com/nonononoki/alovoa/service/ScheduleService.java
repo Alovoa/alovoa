@@ -89,17 +89,21 @@ public class ScheduleService {
 
 		List<UserHide> hides = userHideRepo.findByByDateBefore(d,
 				PageRequest.of(0, HIDE_MAX, Sort.by(Sort.Direction.ASC, "date")));
+		List<UserHide> emptyHides = new ArrayList<>();
 		List<User> users = new ArrayList<>();
 		for (UserHide hide : hides) {
 			User u = hide.getUserFrom();
-//			User u2 = hide.getUserTo();
-			u.getHiddenUsers().remove(hide);
-			// u2.getHiddenByUsers().remove(hide);
-			users.add(u);
-//			users.add(u2);
+			if (u.getHiddenUsers() != null) {
+				u.getHiddenUsers().remove(hide);
+				users.add(u);
+			} else {
+				emptyHides.add(hide);
+			}
 		}
 		userRepo.saveAll(users);
+		userHideRepo.deleteAll(emptyHides);
 		userRepo.flush();
+		userHideRepo.flush();
 	}
 
 }

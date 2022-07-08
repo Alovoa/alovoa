@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.4</version>
+		<version>2.7.1</version>
 		<relativePath />
 	</parent>
 	<groupId>com.alovoa</groupId>
@@ -109,12 +109,8 @@
 			<artifactId>cache-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.github.ben-manes.caffeine</groupId>
-			<artifactId>caffeine</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.github.ben-manes.caffeine</groupId>
-			<artifactId>jcache</artifactId>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
 		</dependency>
 
 
@@ -122,12 +118,12 @@
 		<dependency>
 			<groupId>com.github.ulisesbocchio</groupId>
 			<artifactId>jasypt-spring-boot-starter</artifactId>
-			<version>3.0.3</version>
+			<version>3.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
-			<version>1.68</version>
+			<version>1.70</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.martijndwars</groupId>
@@ -137,12 +133,12 @@
 		<dependency>
 			<groupId>com.giffing.bucket4j.spring.boot.starter</groupId>
 			<artifactId>bucket4j-spring-boot-starter</artifactId>
-			<version>0.3.3</version>
+			<version>0.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sipgate</groupId>
 			<artifactId>mp3-wav</artifactId>
-			<version>1.0.3</version>
+			<version>1.0.4</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.github.gotson</groupId>
@@ -157,12 +153,12 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.6.7</version>
+			<version>1.6.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-security</artifactId>
-			<version>1.6.7</version>
+			<version>1.6.9</version>
 		</dependency>
 
 	</dependencies>
