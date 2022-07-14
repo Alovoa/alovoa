@@ -93,12 +93,12 @@ public class ScheduleService {
 		List<User> users = new ArrayList<>();
 		for (UserHide hide : hides) {
 			User u = hide.getUserFrom();
-			if (u.getHiddenUsers() != null) {
+			if(u == null || u.getHiddenByUsers() == null) {
+				emptyHides.add(hide);
+			} else {
 				u.getHiddenUsers().remove(hide);
 				users.add(u);
-			} else {
-				emptyHides.add(hide);
-			}
+			} 
 		}
 		userRepo.saveAll(users);
 		userHideRepo.deleteAll(emptyHides);

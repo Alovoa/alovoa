@@ -12,6 +12,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.util.HtmlUtils;
 
+import com.nonononoki.alovoa.model.AlovoaException;
+
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -20,7 +22,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler
 	protected ResponseEntity<Object> handleConflict(Exception ex, WebRequest request) {
 		String exceptionMessage = ex.getMessage();
-		LOGGER.error(ExceptionUtils.getStackTrace(ex));
+		if(ex instanceof AlovoaException) {
+			LOGGER.error(ExceptionUtils.getMessage(ex));
+		} else {
+			LOGGER.error(ExceptionUtils.getStackTrace(ex));
+		}
 		exceptionMessage = exceptionMessage == null ? null : HtmlUtils.htmlEscape(exceptionMessage);
 		return handleExceptionInternal(ex, exceptionMessage, new HttpHeaders(),
 				HttpStatus.CONFLICT, request);
