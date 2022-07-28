@@ -68,6 +68,9 @@ public class SearchService {
 
 	@Value("${app.age.max}")
 	private int ageMax;
+	
+	@Value("${app.search.estimate.max}")
+	private int searchEstimateMax;
 
 	private static final double LATITUDE = 111.1;
 	private static final double LONGITUDE = 111.320;
@@ -173,7 +176,7 @@ public class SearchService {
 
 		List<User> filteredUsers = filterUsers(users, ignoreIds, user, false);
 
-		if (filteredUsers.size() < maxResults && users.size() >= UserRepository.MAX_USERS_SEARCH) {
+		if (filteredUsers.size() < maxResults && users.size() >= searchEstimateMax) {
 			List<User> allUsers = userRepo.usersSearch(request, PageRequest.of(0, Integer.MAX_VALUE, sort));
 			if (allUsers.size() != users.size()) {
 				filteredUsers = filterUsers(allUsers, ignoreIds, user, false);

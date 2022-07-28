@@ -53,6 +53,69 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	interest3.on('keyup paste', function() {
 		interest3.val(getCleanInterest(interest3.val()));
 	});
+	
+	interest1.autocomplete({
+		minLength: 3,
+		delay: 500,
+		source: function(request, response) {
+			$.getJSON("/user/interest/autocomplete/" + encodeURI(request.term), {}, response);
+		},
+		focus: function(event, ui) {
+			interest1.val(ui.item.name);
+			return false;
+		},
+		select: function(event, ui) {
+			interest1.val(ui.item.name);
+			return false;
+		}
+	})
+	.autocomplete("instance")._renderItem = function(ul, item) {
+		return $("<li>")
+			.append("<div>" + item.name + ' <span class="interest-autocomplete-count">(' + item.count + ")</span></div>")
+			.appendTo(ul);
+	};
+	
+	interest2.autocomplete({
+		minLength: 3,
+		delay: 500,
+		source: function(request, response) {
+			$.getJSON("/user/interest/autocomplete/" + encodeURI(request.term), {}, response);
+		},
+		focus: function(event, ui) {
+			interest2.val(ui.item.name);
+			return false;
+		},
+		select: function(event, ui) {
+			interest2.val(ui.item.name);
+			return false;
+		}
+	})
+	.autocomplete("instance")._renderItem = function(ul, item) {
+		return $("<li>")
+			.append("<div>" + item.name + ' <span class="interest-autocomplete-count">(' + item.count + ")</span></div>")
+			.appendTo(ul);
+	};
+	
+	interest3.autocomplete({
+		minLength: 3,
+		delay: 500,
+		source: function(request, response) {
+			$.getJSON("/user/interest/autocomplete/" + encodeURI(request.term), {}, response);
+		},
+		focus: function(event, ui) {
+			interest3.val(ui.item.name);
+			return false;
+		},
+		select: function(event, ui) {
+			interest3.val(ui.item.name);
+			return false;
+		}
+	})
+	.autocomplete("instance")._renderItem = function(ul, item) {
+		return $("<li>")
+			.append("<div>" + item.name + ' <span class="interest-autocomplete-count">(' + item.count + ")</span></div>")
+			.appendTo(ul);
+	};
 
 	let profilePicInput = $("#profilePictureUpload");
 	profilePicInput.change(function() {

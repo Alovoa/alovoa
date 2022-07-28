@@ -24,15 +24,36 @@ $(function() {
 		},
 		pagination: { el: '.swiper-pagination' }
 	});
-	
+
 	if (!navigator.canShare) {
 		$("#referral-share-btn").hide();
 	}
-	
+
 	let interest = $('#interest');
 	interest.on('keyup paste', function() {
 		interest.val(getCleanInterest(interest.val()));
 	});
+	interest.autocomplete({
+		minLength: 3,
+		delay: 500,
+		source: function(request, response) {
+			$.getJSON("/user/interest/autocomplete/" + encodeURI(request.term), {}, response);
+		},
+		focus: function(event, ui) {
+			interest.val(ui.item.name);
+			return false;
+		},
+		select: function(event, ui) {
+			interest.val(ui.item.name);
+			$("#interest-form").submit();
+			return false;
+		}
+	})
+	.autocomplete("instance")._renderItem = function(ul, item) {
+		return $("<li>")
+			.append("<div>" + item.name + ' <span class="interest-autocomplete-count">(' + item.count + ")</span></div>")
+			.appendTo(ul);
+	};
 
 	//updateProfileWarning();
 
@@ -330,9 +351,9 @@ $(function() {
 					if (obj.classList.contains("misc-info-single")) {
 						let parent = obj.parentNode.parentNode;
 						let inputs = parent.getElementsByTagName('input');
-						if(obj.checked) {
-							for(let i in inputs) {
-								if(inputs[i].value != obj.value) {
+						if (obj.checked) {
+							for (let i in inputs) {
+								if (inputs[i].value != obj.value) {
 									inputs[i].checked = false;
 								}
 							}
@@ -495,11 +516,11 @@ async function shareUrl(url) {
 	const data = {
 		title: 'Alovoa',
 		text: 'Alovoa',
-		url: url	
+		url: url
 	}
 	try {
-    	await navigator.share(data)
-	} catch(err) {}
+		await navigator.share(data)
+	} catch (err) { }
 }
 
 function getCleanInterest(userInput) {
@@ -752,8 +773,8 @@ function resizeAudio(file, callback) {
 }
 
 function resizeImage(file, callback) {
-	
-	if(window.HTMLCanvasElement && window.CanvasRenderingContext2D) {
+
+	if (window.HTMLCanvasElement && window.CanvasRenderingContext2D) {
 		var reader = new FileReader();
 		reader.onload = function(readerEvent) {
 			var img = new Image();
@@ -763,23 +784,23 @@ function resizeImage(file, callback) {
 				let height = img.height;
 				let sx = 0;
 				let sy = 0;
-				
+
 				if (width > height) {
-					sx = width/2 - height/2;
+					sx = width / 2 - height / 2;
 					width = height;
 				} else {
-					sy = height/2 - width/2;
+					sy = height / 2 - width / 2;
 					height = width;
 				}
-				
+
 				canvas.height = maxImageSize;
 				canvas.width = maxImageSize;
-				
-				canvas.getContext('2d').drawImage(img, 
-					sx, sy, width, height, 
+
+				canvas.getContext('2d').drawImage(img,
+					sx, sy, width, height,
 					0, 0, maxImageSize, maxImageSize);
-				
-				if(canvasProtected(canvas.getContext('2d'))) {
+
+				if (canvasProtected(canvas.getContext('2d'))) {
 					getBase64(file, callback);
 				} else {
 					let dataUrl = canvas.toDataURL('image/jpeg');
@@ -811,7 +832,7 @@ function getBase64(file, callback) {
 function canvasProtected(context) {
 	let data = context.getImageData(1, 1, 1, 1).data;
 	let data2 = context.getImageData(1, 1, 1, 1).data;
-	if(data[0] == data2[0] && data[1] == data2[1] && data[2] == data2[2]) {
+	if (data[0] == data2[0] && data[1] == data2[1] && data[2] == data2[2]) {
 		return false;
 	} else {
 		return true;

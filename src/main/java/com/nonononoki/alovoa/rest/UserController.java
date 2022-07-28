@@ -6,6 +6,7 @@ import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -28,8 +29,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.model.AlovoaException;
-import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.model.ProfileOnboardingDto;
+import com.nonononoki.alovoa.model.UserDeleteAccountDto;
+import com.nonononoki.alovoa.model.UserInterestDto;
 import com.nonononoki.alovoa.service.UserService;
 
 @RestController
@@ -41,10 +43,10 @@ public class UserController {
 
 	@Value("${app.media.max-size}")
 	private int mediaMaxSize;
-	
-	//simple post to test session
+
+	// simple post to test session
 	@PostMapping("/post")
-	public void post(){
+	public void post() {
 	}
 
 	// GDPR
@@ -61,7 +63,9 @@ public class UserController {
 
 	@GetMapping(value = "/userdata/{idEnc}")
 	public ResponseEntity<Resource> getUserdata(@PathVariable String idEnc)
-			throws JsonProcessingException, UnsupportedEncodingException, AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+			throws JsonProcessingException, UnsupportedEncodingException, AlovoaException, NumberFormatException,
+			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException {
 		return userService.getUserdata(idEnc);
 	}
 
@@ -69,7 +73,7 @@ public class UserController {
 	public void onboarding(@RequestBody ProfileOnboardingDto dto) throws AlovoaException, IOException {
 		userService.onboarding(dto);
 	}
-	
+
 	@PostMapping(value = "/delete/profile-picture")
 	public void deleteProfilePicture() throws AlovoaException {
 		userService.deleteProfilePicture();
@@ -129,7 +133,7 @@ public class UserController {
 			throws AlovoaException {
 		userService.updatePreferedGender(genderId, Tools.binaryStringToBoolean(activated));
 	}
-	
+
 	@PostMapping("/update/misc-info/{infoValue}/{activated}")
 	public void updatePreferedGenders(@PathVariable long infoValue, @PathVariable String activated)
 			throws AlovoaException {
@@ -146,6 +150,11 @@ public class UserController {
 		userService.deleteInterest(interestId);
 	}
 
+	@GetMapping(value = "/interest/autocomplete/{name}")
+	public List<UserInterestDto> interestAutocomplete(@PathVariable String name) throws AlovoaException {
+		return userService.getInterestAutocomplete(name);
+	}
+
 	@PostMapping("/accent-color/update/{accentColor}")
 	public void updateAccentColor(@PathVariable String accentColor) throws AlovoaException {
 		userService.updateAccentColor(accentColor);
@@ -155,12 +164,12 @@ public class UserController {
 	public void updateUiDesign(@PathVariable String uiDesign) throws AlovoaException {
 		userService.updateUiDesign(uiDesign);
 	}
-	
+
 	@PostMapping("/show-zodiac/update/{showZodiac}")
 	public void updateUiDesign(@PathVariable int showZodiac) throws AlovoaException {
 		userService.updateShowZodiac(showZodiac);
 	}
-	
+
 	@PostMapping("/units/update/{units}")
 	public void updateUnits(@PathVariable int units) throws AlovoaException {
 		userService.updateUnits(units);

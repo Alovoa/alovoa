@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.io.BufferedReader;
@@ -33,9 +34,11 @@ import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserDeleteToken;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserGdpr;
+import com.nonononoki.alovoa.model.UserInterestDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 
@@ -82,6 +85,9 @@ class UserServiceTest {
 
 	@Value("${app.first-name.length-min}")
 	private int firstNameLengthMin;
+	
+	@Value("${app.interest.autocomplete.max}")
+	private int interestAutocompleteMax;
 
 	@MockBean
 	private AuthService authService;
@@ -260,6 +266,68 @@ class UserServiceTest {
 		assertEquals(authService.getCurrentUser().getNumberSearches(), gdpr.getNumberSearches());
 		assertEquals(authService.getCurrentUser().getPreferedMaxAge(), gdpr.getPreferedMaxAge());
 		assertEquals(authService.getCurrentUser().getTotalDonations(), gdpr.getTotalDonations(), 0.001);
+	}
+	
+	@Test
+	public void testGetInterestAutocomplete() throws AlovoaException {
+		
+		removeAllInterests(testUsers);
+		
+		User user1 = testUsers.get(0);
+		User user2 = testUsers.get(1);
+		User user3 = testUsers.get(2);
+		
+		String query = "test";
+
+		String INTEREST1 = "test1";
+		String INTEREST2 = "test2";
+		String INTEREST3 = "test3";
+		String INTEREST4 = "test4";
+		String INTEREST5 = "test5";
+		
+		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		userService.addInterest(INTEREST1);
+		userService.addInterest(INTEREST2);
+		userService.addInterest(INTEREST3);
+		userService.addInterest(INTEREST4);
+		userService.addInterest(INTEREST5);
+		
+		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
+		userService.addInterest(INTEREST1);
+		userService.addInterest(INTEREST2);
+		userService.addInterest(INTEREST3);
+		userService.addInterest(INTEREST4);
+		
+		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		List<UserInterestDto> iterests = userService.getInterestAutocomplete(query);
+		List<String> iterestNames = iterests.stream().map(i -> i.getName()).collect(Collectors.toList());
+		
+		assertEquals(interestAutocompleteMax, iterests.size());
+		assertEquals(2, iterests.get(0).getCount());
+		assertEquals(2, iterests.get(1).getCount());
+		assertEquals(2, iterests.get(2).getCount());
+		assertEquals(2, iterests.get(3).getCount());
+		assertEquals(1, iterests.get(4).getCount());
+		assertTrue(iterestNames.contains(INTEREST1));
+		assertTrue(iterestNames.contains(INTEREST2));
+		assertTrue(iterestNames.contains(INTEREST3));
+		assertTrue(iterestNames.contains(INTEREST4));
+		assertTrue(iterestNames.contains(INTEREST5));
+		
+		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
+		iterests = userService.getInterestAutocomplete(query);
+		assertEquals(1, iterests.size());
+		assertEquals(1, iterests.get(0).getCount());
+		assertEquals(INTEREST5, iterests.get(0).getName());
+		
+		removeAllInterests(testUsers);
+	}
+	
+	private void removeAllInterests(List<User> ul) {
+		ul.forEach(u -> {
+			u.getInterests().clear();
+			userRepo.saveAndFlush(u);
+		});
 	}
 
 	private void deleteTest(User user) throws Exception {

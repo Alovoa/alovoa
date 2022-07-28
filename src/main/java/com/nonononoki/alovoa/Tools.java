@@ -3,6 +3,8 @@ package com.nonononoki.alovoa;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -27,6 +29,7 @@ public class Tools {
 	}
 
 	public static final float BASE64FACTOR = 0.75f;
+	private static final int BILLION = 1000000000;
 	public static final int MILLION = 1000000;
 	public static final int THOUSAND = 1000;
 	public static final String B64IMAGEPREFIX = "data:image/";
@@ -41,7 +44,7 @@ public class Tools {
 	public static final String MAIL_GMAIL_DOMAIN = "@gmail.com";
 
 	public static final String TEMP_EMAIL_FILE_NAME = "temp-mail.txt";
-	
+
 	private static final String GMAIL_EMAIL = "@gmail";
 
 	public static final int AGE_LEGAL = 18;
@@ -53,7 +56,7 @@ public class Tools {
 	public static final double REFERRED_AMOUNT = 0.5;
 
 	public static String cleanEmail(String email) {
-		if(email == null) {
+		if (email == null) {
 			return null;
 		}
 		if (email.contains(GMAIL_EMAIL)) {
@@ -163,21 +166,20 @@ public class Tools {
 		return result;
 	}
 
-	//https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula/12600225#12600225
+	// https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula/12600225#12600225
 	public final static double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
-	public static int calcDistanceKm(double userLat, double userLng,
-	  double venueLat, double venueLng) {
 
-	    double latDistance = Math.toRadians(userLat - venueLat);
-	    double lngDistance = Math.toRadians(userLng - venueLng);
+	public static int calcDistanceKm(double userLat, double userLng, double venueLat, double venueLng) {
 
-	    double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-	      + Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(venueLat))
-	      * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
+		double latDistance = Math.toRadians(userLat - venueLat);
+		double lngDistance = Math.toRadians(userLng - venueLng);
 
-	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) + Math.cos(Math.toRadians(userLat))
+				* Math.cos(Math.toRadians(venueLat)) * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
 
-	    return (int) (Math.round(AVERAGE_RADIUS_OF_EARTH_KM * c));
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+		return (int) (Math.round(AVERAGE_RADIUS_OF_EARTH_KM * c));
 	}
 
 	public static boolean usersCompatible(User user1, User user2) {
@@ -205,5 +207,29 @@ public class Tools {
 	public static int convertPrefAgeToExactYear(Date userDateOfBirth, int prefAge) {
 		LocalDate currentDate = LocalDate.now();
 		return Period.between(Tools.dateToLocalDate(userDateOfBirth), currentDate).getYears() + prefAge;
+	}
+
+	private static final String STR_NUM_BILLION = "B";
+	private static final String STR_NUM_MILLION = "M";
+	private static final String STR_NUM_THOUSAND = "K";
+	
+
+	public static String largeNumberToString(long num) {
+		if (num < THOUSAND) {
+			return String.valueOf(num);
+		}
+		DecimalFormat df = new DecimalFormat("#.###");
+		df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+
+		if (num >= BILLION) {
+			double d = (double)num / BILLION;
+			return df.format(d) + STR_NUM_BILLION;
+		} else if (num >= MILLION) {
+			double d = (double)num / MILLION;
+			return df.format(d) + STR_NUM_MILLION;
+		} else {
+			double d = (double)num / THOUSAND;
+			return df.format(d) + STR_NUM_THOUSAND;
+		}
 	}
 }

@@ -15,8 +15,6 @@ import com.nonononoki.alovoa.model.UserSearchRequest;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	public static final int MAX_USERS_SEARCH = 200;
-
 	User findByEmail(String email);
 
 	long countByConfirmed(boolean confirmed);

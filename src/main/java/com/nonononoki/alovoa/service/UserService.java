@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
@@ -42,6 +43,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -79,6 +81,7 @@ import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.model.UserDeleteParams;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserGdpr;
+import com.nonononoki.alovoa.model.UserInterestDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
@@ -170,6 +173,9 @@ public class UserService {
 
 	@Value("${app.interest.max-chars}")
 	private int interestMaxCharSize;
+	
+	@Value("${app.interest.autocomplete.max}")
+	private int interestAutocompleteMax;
 
 	@Value("${app.audio.max-time}")
 	private int audioMaxTime; // in seconds
@@ -584,6 +590,18 @@ public class UserService {
 
 		user.getInterests().remove(interest);
 		userRepo.saveAndFlush(user);
+	}
+	
+	public List<UserInterestDto> getInterestAutocomplete(String name) throws AlovoaException {
+		User user = authService.getCurrentUser();
+		name = "%" + URLDecoder.decode(name, StandardCharsets.UTF_8) + "%";
+		List<String> interestTexts = user.getInterests().stream().map(i -> i.getText()).collect(Collectors.toList());
+		if(interestTexts.isEmpty()) {
+			interestTexts.add("");
+		}
+		List<UserInterestDto> interests = userInterestRepo.getInterestAutocomplete(name, interestTexts, PageRequest.of(0, interestAutocompleteMax));
+		interests.forEach(i -> i.setCountString(Tools.largeNumberToString(i.getCount())));
+		return interests;
 	}
 
 	public void updateAccentColor(String accentColor) throws AlovoaException {
@@ -1014,4 +1032,6 @@ public class UserService {
 			throw e;
 		}
 	}
+
+
 }

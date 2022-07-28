@@ -323,5 +323,25 @@
     "name": "app.donate.bmac.key",
     "type": "java.lang.String",
     "description": "A description for 'app.donate.bmac.key'"
+  },
+  {
+    "name": "app.interest.autocomplete.max",
+    "type": "java.lang.String",
+    "description": "A description for 'app.interest.autocomplete.max'"
+  },
+  {
+    "name": "app.search.estimate.max",
+    "type": "java.lang.String",
+    "description": "A description for 'app.search.estimate.max'"
+  },
+  {
+    "name": "app.search.estimate.max",
+    "type": "java.lang.String",
+    "description": "A description for 'app.search.estimate.max'"
+  },
+  {
+    "name": "app.search.estimate.max",
+    "type": "java.lang.String",
+    "description": "A description for 'app.search.estimate.max'"
   }
 ]}

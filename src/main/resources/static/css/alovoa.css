@@ -277,7 +277,7 @@ input[type=range].slider {
 	z-index: 100000;
 	align-items: center;
 	justify-content: center;
-	background-color: rgb(18, 18, 18);
+	background-color: #e0e0e0;
 }
 
 #audio {
@@ -364,6 +364,24 @@ input[type=range].slider {
 	color: white !important;
 }
 
+.ui-autocomplete {
+	position: absolute;
+	top: 0;
+	left: 0;
+	cursor: default;
+	background-color: white;
+    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0 0 1px rgb(10 10 10 / 2%);
+}
+
+.ui-menu-item > .ui-menu-item-wrapper{
+	padding: 4px;
+	padding-left: 16px;
+}
+
+.ui-state-active {
+	background-color: #eeeeee;
+}
+
 @media screen and (max-width: 1050px) {
 	.navigation-item span {
 		font-size: 0.8em;
@@ -434,8 +452,7 @@ input[type=range].slider {
 /* DARK THEME */
 
 @media ( prefers-color-scheme : dark) {
-	html, .card, .box, .textarea, .footer, .select select, select option
-		{
+	html, .card, .box, .textarea, .footer, .select select, select option, .ui-autocomplete, .loader-parent {
 		background-color: #121212;
 	}
 	.input, .textarea, .select select, .card {
@@ -511,7 +528,13 @@ input[type=range].slider {
 	.header .button.is-info.is-outlined {
 		color: white !important;
 	}
-	
+	.ui-state-active {
+		background-color: #767676;
+	}
+	.ui-autocomplete {
+		box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 90%), 0 0 0 1px rgb(10 10 10 / 90%);
+	}
+		
 	@media screen and (max-width: 1024px) {
 		.content-background {
 			background: rgba(18, 18, 18, 0.9) !important;

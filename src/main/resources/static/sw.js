@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '45';
+const cacheName = '46';
 const staticAssets = [
 
 	'/favicon.ico',
@@ -21,6 +21,7 @@ const staticAssets = [
 	'/js/lib/cutter.min.js',
 	'/js/lib/fontawesome.all.js',
 	'/js/lib/jquery.min.js',
+	'/js/lib/jquery-ui.min.js',
 	'/js/lib/matter.min.js',
 	'/js/lib/Mp3LameEncoder.min.js',
 	'/js/lib/notification.js',

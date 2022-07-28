@@ -120,4 +120,12 @@ class ToolsTest {
 		assertEquals(user1.getPreferedMinAge(),25);
 		assertEquals(user1.getPreferedMaxAge(),55);
 	}
+	
+	@Test
+	void testLargeNumberToString() {
+		assertEquals("1.23B", Tools.largeNumberToString(1230000000));
+		assertEquals("12.34M", Tools.largeNumberToString(12340000));
+		assertEquals("1K", Tools.largeNumberToString(1000));
+		assertEquals("123", Tools.largeNumberToString(123));
+	}
 }
