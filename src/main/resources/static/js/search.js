@@ -55,20 +55,20 @@ function search(defaultSearch) {
 	if (defaultSearch && document.getElementById("has-location")) {
 		mainContainerLoadCards("/search/users/default");
 	} else {
-		$(".loader-parent").css("display", "flex");
+		showLoader();
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function(position) {
 				lat = position.coords.latitude;
 				lon = position.coords.longitude;
-				searchBase();
+				searchBase(false);
 			}, function() {
-				$(".loader-parent").css("display", "none");
+				hideLoader();
 				openModal("map-modal");
 				mymap.invalidateSize(true);
 				alert(getText("search.js.error.no-location"));
 			});
 		} else {
-			$(".loader-parent").css("display", "none");
+			hideLoader();
 			alert(getText("search.js.error.no-geolocation"));
 			openModal("map-modal");
 			mymap.invalidateSize(true);
@@ -76,19 +76,21 @@ function search(defaultSearch) {
 	}
 }
 
-function searchBase() {
+function searchBase(showLoader = true) {
 	let distance = $("#max-distance-slider").val();
 	let sort = $("#sort").val();
 	let url = "/search/users/" + lat + "/"
 		+ lon + "/" + distance + "/" + sort;
 	console.log(url);
-	mainContainerLoadCards(url);
+	mainContainerLoadCards(url, showLoader);
 
 }
 
-function mainContainerLoadCards(url) {
+function mainContainerLoadCards(url, bShowLoader = true) {
 	
-	showLoader();
+	if(bShowLoader) {
+		showLoader();
+	}
 	$("#main-container").load(url, function() {
 		
 		closeModal();
