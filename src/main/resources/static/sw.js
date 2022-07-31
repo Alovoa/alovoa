@@ -9,7 +9,7 @@
  */
 
 
-const cacheName = '47';
+const cacheName = '48';
 const staticAssets = [
 
 	'/favicon.ico',
@@ -87,6 +87,7 @@ const staticAssets = [
 	'/img/android-chrome-192x192.png',
 	'/img/android-chrome-512x512.png',
 	'/img/apple-touch-icon.png',
+	'/img/share.png',
 	'/img/f-icon.svg',
 	'/img/g-icon.svg',
 	'/img/m-icon.svg',
