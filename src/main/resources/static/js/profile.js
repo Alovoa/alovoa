@@ -30,30 +30,32 @@ $(function() {
 	}
 
 	let interest = $('#interest');
-	interest.on('keyup paste', function() {
-		interest.val(getCleanInterest(interest.val()));
-	});
-	interest.autocomplete({
-		minLength: 3,
-		delay: 500,
-		source: function(request, response) {
-			$.getJSON("/user/interest/autocomplete/" + encodeURI(request.term), {}, response);
-		},
-		focus: function(event, ui) {
-			interest.val(ui.item.name);
-			return false;
-		},
-		select: function(event, ui) {
-			interest.val(ui.item.name);
-			$("#interest-form").submit();
-			return false;
-		}
-	})
-	.autocomplete("instance")._renderItem = function(ul, item) {
-		return $("<li>")
-			.append("<div>" + item.name + ' <span class="interest-autocomplete-count">(' + item.count + ")</span></div>")
-			.appendTo(ul);
-	};
+	if(interest.length) {
+		interest.on('keyup paste', function() {
+			interest.val(getCleanInterest(interest.val()));
+		});
+		interest.autocomplete({
+			minLength: 3,
+			delay: 500,
+			source: function(request, response) {
+				$.getJSON("/user/interest/autocomplete/" + encodeURI(request.term), {}, response);
+			},
+			focus: function(event, ui) {
+				interest.val(ui.item.name);
+				return false;
+			},
+			select: function(event, ui) {
+				interest.val(ui.item.name);
+				$("#interest-form").submit();
+				return false;
+			}
+		})
+		.autocomplete("instance")._renderItem = function(ul, item) {
+			return $("<li>")
+				.append("<div>" + item.name + ' <span class="interest-autocomplete-count">(' + item.count + ")</span></div>")
+				.appendTo(ul);
+		};
+	}
 
 	//updateProfileWarning();
 
