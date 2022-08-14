@@ -41,14 +41,14 @@ public class AdminController {
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
 		adminService.banUser(id);
 	}
-	
+
 	@PostMapping("/remove-images/{id}")
 	public void removeImages(@PathVariable String id)
 			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
 		adminService.removeImages(id);
 	}
-	
+
 	@PostMapping("/remove-description/{id}")
 	public void removeDescription(@PathVariable String id)
 			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
@@ -72,18 +72,18 @@ public class AdminController {
 	}
 
 	@PostMapping(value = "/delete-account", consumes = "application/json")
-	public void deleteAccount(@RequestBody AdminAccountDeleteDto dto)
-			throws AlovoaException, MessagingException, IOException {
+	public void deleteAccount(@RequestBody AdminAccountDeleteDto dto) throws AlovoaException {
 		adminService.deleteAccount(dto);
 	}
-	
+
 	@PostMapping("/user-exists/{email}")
 	public boolean userExists(@PathVariable String email) throws AlovoaException, UnsupportedEncodingException {
 		return adminService.userExists(email);
 	}
-	
+
 	@PostMapping("/donation/add/{email}/{amount}")
-	public void addDonation(@PathVariable String email, @PathVariable double amount) throws AlovoaException, UnsupportedEncodingException {
+	public void addDonation(@PathVariable String email, @PathVariable double amount)
+			throws AlovoaException, UnsupportedEncodingException {
 		adminService.addDonation(email, amount);
 	}
 

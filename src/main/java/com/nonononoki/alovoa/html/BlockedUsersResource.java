@@ -34,7 +34,7 @@ public class BlockedUsersResource {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
-	private final long MAX_RESULTS = 50;
+	private static final long MAX_RESULTS = 50;
 
 	@GetMapping("/blocked-users")
 	public ModelAndView blockedUsers() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,

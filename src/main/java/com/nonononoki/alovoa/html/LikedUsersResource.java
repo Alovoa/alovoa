@@ -34,7 +34,7 @@ public class LikedUsersResource {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
-	private final long MAX_RESULTS = 50;
+	private static final long MAX_RESULTS = 50;
 
 	@GetMapping("/user/liked-users")
 	public ModelAndView likedUsers() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,

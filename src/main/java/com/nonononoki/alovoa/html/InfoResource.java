@@ -30,7 +30,7 @@ public class InfoResource {
 	private UserLikeRepository userLikeRepo;
 
 	@GetMapping("/info")
-	public ModelAndView imprint() throws AlovoaException, JsonProcessingException {
+	public ModelAndView imprint() throws JsonProcessingException {
 
 		ModelAndView mav = new ModelAndView("info");
 		mav.addObject("info",

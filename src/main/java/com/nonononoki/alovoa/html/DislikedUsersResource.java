@@ -34,7 +34,7 @@ public class DislikedUsersResource {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
-	private final long MAX_RESULTS = 50;
+	private static final long MAX_RESULTS = 50;
 
 	@GetMapping("/user/disliked-users")
 	public ModelAndView dislikedUsers() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,

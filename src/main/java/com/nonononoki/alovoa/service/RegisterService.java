@@ -191,6 +191,7 @@ public class RegisterService {
 				}
 			}
 		} catch (Exception e) {
+			throw new AlovoaException(e.getMessage());
 		}
 
 		userRepo.saveAndFlush(user);
@@ -248,6 +249,7 @@ public class RegisterService {
 				}
 			}
 		} catch (Exception e) {
+			throw new AlovoaException(e.getMessage());
 		}
 
 		user.setConfirmed(true);
@@ -304,7 +306,7 @@ public class RegisterService {
 		user.setPreferedMaxAge(dto.getDateOfBirth(), userMaxAge);
 		user.setGender(genderRepo.findById(dto.getGender()).orElse(null));
 		user.setIntention(userIntentionRepo.findById(UserIntention.MEET).orElse(null));
-		user.setPreferedGenders(new HashSet<Gender>(genderRepo.findAll()));
+		user.setPreferedGenders(new HashSet<>(genderRepo.findAll()));
 
 		UserDates dates = new UserDates();
 		Date today = new Date();

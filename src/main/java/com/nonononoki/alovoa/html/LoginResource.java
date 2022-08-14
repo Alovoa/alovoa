@@ -1,14 +1,5 @@
 package com.nonononoki.alovoa.html;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -31,9 +22,7 @@ public class LoginResource {
 	public static final String URL = "/login";
 
 	@GetMapping(URL)
-	public ModelAndView login() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			UnsupportedEncodingException {
+	public ModelAndView login() throws AlovoaException {
 
 		User user = authService.getCurrentUser();
 		if (user != null) {

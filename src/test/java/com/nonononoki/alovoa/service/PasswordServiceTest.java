@@ -115,8 +115,7 @@ class PasswordServiceTest {
 		passwordChangeDto.setPassword(newPassword);
 		passwordChangeDto.setToken(userPasswordToken.getContent());
 		
-		HttpSession session = mock(HttpSession.class);
-		passwordService.changePasword(passwordChangeDto, session);
+		passwordService.changePasword(passwordChangeDto);
 
 		user1 = userRepo.findById(user1.getId()).get();
 

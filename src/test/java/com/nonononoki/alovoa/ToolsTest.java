@@ -106,19 +106,19 @@ class ToolsTest {
 		user1.setPreferedMinAge(18);
 		user1.setPreferedMaxAge(45);
 
-		assertEquals(user1.getPreferedMinAge(),18);
-		assertEquals(user1.getPreferedMaxAge(),45);
+		assertEquals(18, user1.getPreferedMinAge());
+		assertEquals(45, user1.getPreferedMaxAge());
 
 		userDates1.setDateOfBirth(Tools.localDateToDate(LocalDate.now().minusYears(21)));
 
-		assertEquals(user1.getPreferedMinAge(),19);
-		assertEquals(user1.getPreferedMaxAge(),46);
+		assertEquals(19, user1.getPreferedMinAge());
+		assertEquals(46, user1.getPreferedMaxAge());
 
 		user1.setPreferedMinAge(25);
 		user1.setPreferedMaxAge(55);
 
-		assertEquals(user1.getPreferedMinAge(),25);
-		assertEquals(user1.getPreferedMaxAge(),55);
+		assertEquals(25, user1.getPreferedMinAge());
+		assertEquals(55, user1.getPreferedMaxAge());
 	}
 	
 	@Test

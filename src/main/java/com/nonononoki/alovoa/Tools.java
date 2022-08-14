@@ -167,7 +167,7 @@ public class Tools {
 	}
 
 	// https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula/12600225#12600225
-	public final static double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
+	public static final double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
 
 	public static int calcDistanceKm(double userLat, double userLng, double venueLat, double venueLng) {
 

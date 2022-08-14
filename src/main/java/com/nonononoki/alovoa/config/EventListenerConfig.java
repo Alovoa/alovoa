@@ -75,7 +75,7 @@ public class EventListenerConfig {
 	private static final Logger logger = LoggerFactory.getLogger(EventListenerConfig.class);
 
 	@EventListener
-	public void handleContextRefresh(ApplicationStartedEvent event) throws AlovoaException {
+	public void handleContextRefresh(ApplicationStartedEvent event) {
 		setDefaultAdmin();
 		setDefaultGenders();
 		setDefaulIntentions();

@@ -19,6 +19,7 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
 		super(key, userDetailsService);
 	}
 
+	@Override
 	protected String retrieveUserName(Authentication authentication) {
 		if (isInstanceOfUserDetails(authentication)) {
 			return ((UserDetails) authentication.getPrincipal()).getUsername();

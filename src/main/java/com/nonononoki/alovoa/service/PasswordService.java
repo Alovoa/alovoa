@@ -85,7 +85,7 @@ public class PasswordService {
 		return u.getPasswordToken();
 	}
 
-	public void changePasword(PasswordChangeDto dto, HttpSession session) throws AlovoaException {
+	public void changePasword(PasswordChangeDto dto) throws AlovoaException {
 		UserPasswordToken token = userPasswordTokenRepo.findByContent(dto.getToken());
 		if (token == null) {
 			throw new AlovoaException("token_not_found");

@@ -31,7 +31,7 @@ public class PasswordController {
 	}
 
 	@PostMapping(value = "/change", consumes = "application/json")
-	public void changePasword(@RequestBody PasswordChangeDto dto, HttpSession session) throws AlovoaException {
-		passwordService.changePasword(dto, session);
+	public void changePasword(@RequestBody PasswordChangeDto dto) throws AlovoaException {
+		passwordService.changePasword(dto);
 	}
 }

@@ -47,7 +47,7 @@ public class ScheduleService {
 	@Value("${app.schedule.delay.contact}")
 	private long contactDelay;
 
-	private final static int HIDE_MAX = 20;
+	private static final int HIDE_MAX = 20;
 
 	@Scheduled(fixedDelayString = "${app.schedule.short}")
 	public void scheduleShort() {

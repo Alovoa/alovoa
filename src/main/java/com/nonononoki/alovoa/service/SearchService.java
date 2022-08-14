@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.Gender;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.SearchDto;
 import com.nonononoki.alovoa.model.SearchDto.SearchStage;
@@ -89,7 +90,11 @@ public class SearchService {
 		if (user.isAdmin()) {
 			return SearchDto.builder().users(searchResultstoUserDto(userRepo.adminSearch(), 0, user)).build();
 		}
-		return search(user.getLocationLatitude(), user.getLocationLongitude(), DEFAULT_DISTANCE, SORT_DONATION_LATEST);
+		if(user.getLocationLatitude() != null && user.getLocationLatitude() != null) {
+			return search(user.getLocationLatitude(), user.getLocationLongitude(), DEFAULT_DISTANCE, SORT_DONATION_LATEST);
+		} else {
+			return null;
+		}
 	}
 
 	public SearchDto search(Double latitude, Double longitude, int distance, int sortId) throws AlovoaException,
@@ -161,7 +166,7 @@ public class SearchService {
 				.likeIds(user.getLikes().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
 				.blockIds(user.getBlockedUsers().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
 				.hideIds(user.getHiddenUsers().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
-				.genderIds(user.getPreferedGenders().stream().map(o -> o.getId()).collect(Collectors.toSet())).build();
+				.genderIds(user.getPreferedGenders().stream().map(Gender::getId).collect(Collectors.toSet())).build();
 
 		// because IS IN does not work with empty list
 		request.getBlockIds().add(user.getId());

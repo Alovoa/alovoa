@@ -173,7 +173,7 @@ public class UserService {
 
 	@Value("${app.interest.max-chars}")
 	private int interestMaxCharSize;
-	
+
 	@Value("${app.interest.autocomplete.max}")
 	private int interestAutocompleteMax;
 
@@ -212,13 +212,14 @@ public class UserService {
 			throws MessagingException, IOException, AlovoaException, NoSuchAlgorithmException {
 		User user = authService.getCurrentUser();
 		UserDeleteToken deleteToken = user.getDeleteToken();
-		String userTokenString = deleteToken.getContent();
-		
-		dto.setEmail(Tools.cleanEmail(dto.getEmail()));
 
 		if (!dto.isConfirm() || deleteToken == null) {
 			throw new AlovoaException("deletion_not_confirmed");
 		}
+
+		String userTokenString = deleteToken.getContent();
+
+		dto.setEmail(Tools.cleanEmail(dto.getEmail()));
 
 		long ms = new Date().getTime();
 		if (ms - user.getDeleteToken().getDate().getTime() > userDeleteDuration) {
@@ -407,7 +408,7 @@ public class UserService {
 
 	public void onboarding(ProfileOnboardingDto model) throws AlovoaException, IOException {
 		User user = authService.getCurrentUser();
-		if(user.getProfilePicture() != null || user.getDescription() != null) {
+		if (user.getProfilePicture() != null || user.getDescription() != null) {
 			return;
 		}
 
@@ -591,15 +592,16 @@ public class UserService {
 		user.getInterests().remove(interest);
 		userRepo.saveAndFlush(user);
 	}
-	
+
 	public List<UserInterestDto> getInterestAutocomplete(String name) throws AlovoaException {
 		User user = authService.getCurrentUser();
 		name = "%" + URLDecoder.decode(name, StandardCharsets.UTF_8) + "%";
 		List<String> interestTexts = user.getInterests().stream().map(i -> i.getText()).collect(Collectors.toList());
-		if(interestTexts.isEmpty()) {
+		if (interestTexts.isEmpty()) {
 			interestTexts.add("");
 		}
-		List<UserInterestDto> interests = userInterestRepo.getInterestAutocomplete(name, interestTexts, PageRequest.of(0, interestAutocompleteMax));
+		List<UserInterestDto> interests = userInterestRepo.getInterestAutocomplete(name, interestTexts,
+				PageRequest.of(0, interestAutocompleteMax));
 		interests.forEach(i -> i.setCountString(Tools.largeNumberToString(i.getCount())));
 		return interests;
 	}
@@ -662,8 +664,8 @@ public class UserService {
 			byte[] decodedBytes = Base64.getDecoder().decode(stripB64Type(imgB64));
 			bis = new ByteArrayInputStream(decodedBytes);
 			image = ImageIO.read(bis);
-			
-			if(image.getWidth() == imageLength && image.getHeight() == imageLength) {
+
+			if (image.getWidth() == imageLength && image.getHeight() == imageLength) {
 				return imgB64;
 			}
 
@@ -1032,6 +1034,5 @@ public class UserService {
 			throw e;
 		}
 	}
-
 
 }

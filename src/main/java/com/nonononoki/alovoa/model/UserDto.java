@@ -112,7 +112,7 @@ public class UserDto {
 	public static final int LA_STATE_ACTIVE_4 = 7;
 
 	private static final double MILES_TO_KM = 0.6214;
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserDto.class);
 
 	public static UserDto userToUserDto(User user, User currentUser, TextEncryptorConverter textEncryptor)
@@ -190,14 +190,22 @@ public class UserDto {
 		}
 
 		if (!user.equals(currentUser)) {
-			dto.blockedByCurrentUser = currentUser.getBlockedUsers().stream()
-					.anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
-			dto.reportedByCurrentUser = currentUser.getReported().stream()
-					.anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
-			dto.likedByCurrentUser = currentUser.getLikes().stream()
-					.anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
-			dto.hiddenByCurrentUser = currentUser.getHiddenUsers().stream()
-					.anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
+			if (currentUser.getBlockedUsers() != null) {
+				dto.blockedByCurrentUser = currentUser.getBlockedUsers().stream()
+						.anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
+			}
+			if (currentUser.getReported() != null) {
+				dto.reportedByCurrentUser = currentUser.getReported().stream()
+						.anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
+			}
+			if (currentUser.getLikes() != null) {
+				dto.likedByCurrentUser = currentUser.getLikes().stream()
+						.anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
+			}
+			if (currentUser.getHiddenUsers() != null) {
+				dto.hiddenByCurrentUser = currentUser.getHiddenUsers().stream()
+						.anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
+			}
 
 			int sameInterests = 0;
 			for (int i = 0; i < currentUser.getInterests().size(); i++) {
@@ -232,16 +240,16 @@ public class UserDto {
 				.encodeToString(textEncryptor.encode(Long.toString(id)).getBytes(StandardCharsets.UTF_8.name()));
 	}
 
-	public static long decodeIdThrowing(String id, TextEncryptorConverter textEncryptor) throws NumberFormatException,
-			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, NumberFormatException {
+	public static long decodeIdThrowing(String id, TextEncryptorConverter textEncryptor)
+			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 		String en = new String(Base64.getDecoder().decode(id));
 		return Long.parseLong(textEncryptor.decode(en));
 	}
 
 	public static Optional<Long> decodeId(String id, TextEncryptorConverter textEncryptor) {
 		try {
-			String en = new String(Base64.getDecoder().decode(id));			
+			String en = new String(Base64.getDecoder().decode(id));
 			return Optional.of(Long.parseLong(textEncryptor.decode(en)));
 		} catch (Exception e) {
 			LOGGER.debug(String.format("Couldn't decode id '%s'", id), e);

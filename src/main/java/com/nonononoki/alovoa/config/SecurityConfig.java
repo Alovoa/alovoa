@@ -95,7 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public AuthFilter authenticationFilter() throws Exception {
+	AuthFilter authenticationFilter() throws Exception {
 		AuthFilter filter = new AuthFilter();
 		filter.setAuthenticationManager(authenticationManager());
 		filter.setAuthenticationSuccessHandler(successHandler);
@@ -122,7 +122,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public SessionRegistry sessionRegistry() {
+	SessionRegistry sessionRegistry() {
 		return new SessionRegistryImpl();
 	}
 
@@ -132,19 +132,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Bean
-	public TokenBasedRememberMeServices oAuthRememberMeServices() throws Exception {
+	TokenBasedRememberMeServices oAuthRememberMeServices() throws Exception {
 		CustomTokenBasedRememberMeServices rememberMeService = new CustomTokenBasedRememberMeServices(rememberKey, customUserDetailsService);
 		rememberMeService.setAlwaysRemember(true);
 		return rememberMeService;
 	}
 
 	@Bean
-	public PasswordEncoder passwordEncoder() {
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	
 	@Bean
-	public AuthProvider authProvider() {
+	AuthProvider authProvider() {
 		return new AuthProvider();
 	}
 }

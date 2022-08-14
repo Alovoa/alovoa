@@ -92,7 +92,7 @@ public class AdminService {
 		contactRepo.saveAndFlush(contact);
 	}
 
-	public void sendMailSingle(MailDto dto) throws AlovoaException, MessagingException, IOException {
+	public void sendMailSingle(MailDto dto) throws AlovoaException {
 
 		checkRights();
 
@@ -238,15 +238,12 @@ public class AdminService {
 		UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
 				.userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
 				.userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
-
-		if (user != null) {
-			UserService.removeUserDataCascading(user, userDeleteParam);
-			userRepo.delete(userRepo.findByEmail(user.getEmail()));
-			userRepo.flush();
-		}
+		UserService.removeUserDataCascading(user, userDeleteParam);
+		userRepo.delete(userRepo.findByEmail(user.getEmail()));
+		userRepo.flush();
 	}
 
-	public boolean userExists(String email) throws AlovoaException, UnsupportedEncodingException {
+	public boolean userExists(String email) throws AlovoaException {
 		checkRights();
 		User u = userRepo.findByEmail(Tools.cleanEmail(URLDecoder.decode(email, StandardCharsets.UTF_8)));
 		return u != null;

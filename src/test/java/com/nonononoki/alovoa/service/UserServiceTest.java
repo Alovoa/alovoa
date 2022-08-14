@@ -269,7 +269,7 @@ class UserServiceTest {
 	}
 	
 	@Test
-	public void testGetInterestAutocomplete() throws AlovoaException {
+	void testGetInterestAutocomplete() throws AlovoaException {
 		
 		removeAllInterests(testUsers);
 		
