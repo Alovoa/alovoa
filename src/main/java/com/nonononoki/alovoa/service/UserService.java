@@ -38,6 +38,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jose4j.lang.JoseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -185,6 +187,8 @@ public class UserService {
 
 	@Value("${app.intention.delay}")
 	private long intentionDelay;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
@@ -227,6 +231,7 @@ public class UserService {
 		}
 
 		if (!dto.getTokenString().equals(userTokenString)) {
+			LOGGER.debug("Expected:" + userTokenString + ". Got: " + dto.getTokenString());
 			throw new AlovoaException("deletion_wrong_token");
 		}
 

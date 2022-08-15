@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html th:with="lang=${#locale.language}" th:lang="${lang}">
+
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,7 +9,7 @@
 	<meta name="apple-mobile-web-app-title" content="Alovoa">
 	<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
 	<link rel="manifest" href="/manifest/manifest.json">
-	
+
 	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
 	<th:block th:replace="fragments.html::bulma"></th:block>
 	<th:block th:replace="fragments.html::ui-design"></th:block>
@@ -19,6 +20,7 @@
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<title th:text="#{delete-account.title}"></title>
 </head>
+
 <body>
 	<div class="loader-parent" id="preloader-parent" style="display: flex">
 		<div class="loader" id="preloader"></div>
@@ -30,20 +32,16 @@
 			<div class="container">
 				<h3 class="title" th:text="#{delete-account.title}"></h3>
 				<th:block th:if="${active}">
-					<form th:action="@{/user/delete-account-confirm}" method="POST"
-						id="delete-account-form">
-						<input type="hidden" name="tokenString" th:value="${tokenString}"
-							required>
+					<form th:action="@{/user/delete-account-confirm}" method="POST" id="delete-account-form">
+						<input type="hidden" name="tokenString" th:value="${tokenString}" required>
 						<div class="field">
-							<input name="email" type="email" th:placeholder="#{email}"
-								class="input" required>
+							<input name="email" type="email" th:placeholder="#{email}" class="input" required>
 						</div>
 						<div style="padding-top: 32px;"></div>
 						<div th:replace="fragments.html::captcha"></div>
 						<div class="field">
-							<input id="confirm" type="checkbox" name="confirm" class="switch"
-								style="position: absolute" required> <label
-								for="confirm"><span th:text="#{delete-account.confirm}"></span>
+							<input id="confirm" type="checkbox" name="confirm" class="switch" style="position: absolute"
+								required> <label for="confirm"><span th:text="#{delete-account.confirm}"></span>
 							</label>
 						</div>
 						<button class="button" th:text="#{submit}"></button>
@@ -54,8 +52,8 @@
 				</th:block>
 			</div>
 		</div>
-		
-		<div class="loader-parent">
+
+		<div class="loader-parent" id="loader-parent">
 			<div class="loader" id="loader"></div>
 		</div>
 
@@ -77,4 +75,5 @@
 	<script src="/js/delete-account.js"></script>
 	<script src="/js/user-profile-modal.js"></script>
 </body>
+
 </html>
