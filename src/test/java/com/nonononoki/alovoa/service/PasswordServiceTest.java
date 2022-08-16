@@ -2,11 +2,8 @@ package com.nonononoki.alovoa.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 
 import java.util.List;
-
-import javax.servlet.http.HttpSession;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -114,7 +111,7 @@ class PasswordServiceTest {
 		passwordChangeDto.setEmail(user1.getEmail());
 		passwordChangeDto.setPassword(newPassword);
 		passwordChangeDto.setToken(userPasswordToken.getContent());
-		
+
 		passwordService.changePasword(passwordChangeDto);
 
 		user1 = userRepo.findById(user1.getId()).get();

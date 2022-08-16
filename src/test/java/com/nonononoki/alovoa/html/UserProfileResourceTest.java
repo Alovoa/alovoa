@@ -59,9 +59,6 @@ class UserProfileResourceTest {
 
 	@Value("${app.first-name.length-min}")
 	private int firstNameLengthMin;
-
-	@Autowired
-	private UserProfileResource userProfileResource;
 	
 	@Autowired
 	private MockMvc mockMvc;

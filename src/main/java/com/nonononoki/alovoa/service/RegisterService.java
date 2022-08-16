@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.user.Gender;
 import com.nonononoki.alovoa.entity.user.UserDates;
 import com.nonononoki.alovoa.entity.user.UserIntention;
 import com.nonononoki.alovoa.entity.user.UserRegisterToken;
