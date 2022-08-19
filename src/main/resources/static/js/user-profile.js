@@ -105,6 +105,41 @@ function reportUserSubmit(idEncoded) {
 	});
 }
 
+function likeUser(idEnc) {
+	$.ajax({
+		type : "POST",
+		url : "/user/like/" + idEnc,
+		headers : {
+			"X-CSRF-TOKEN" : csrf
+		},
+		success : function() {
+			location.reload(true);
+		},
+		error : function(e) {
+			console.log(e);
+			alert(getGenericErrorText());
+		}
+	});
+
+}
+
+function hideUser(idEnc) {
+	$.ajax({
+		type : "POST",
+		url : "/user/hide/" + idEnc,
+		headers : {
+			"X-CSRF-TOKEN" : csrf
+		},
+		success : function() {
+			location.reload(true);
+		},
+		error : function(e) {
+			console.log(e);
+			alert(getGenericErrorText());
+		}
+	});
+}
+
 $(window).on("popstate", function(e) {
 	if(!document.getElementById("user-profile-modal")) {
 		location.reload();
