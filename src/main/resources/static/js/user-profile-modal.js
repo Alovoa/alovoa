@@ -91,7 +91,8 @@ function unblockUser(idEnc) {
 function reportUser() {
 	var element = document.getElementById("report-user-div");
 	element.classList.toggle("display-none");
-	window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+	//window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+	element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
 }
 
 function reportUserSubmit(idEncoded) {
