@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,9 @@ import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserSearchRequest;
 import com.nonononoki.alovoa.repo.UserRepository;
 
+import uk.recurse.geocoding.reverse.Country;
+import uk.recurse.geocoding.reverse.ReverseGeocoder;
+
 @Service
 public class SearchService {
 
@@ -57,6 +61,9 @@ public class SearchService {
 
 	@Autowired
 	private PublicService publicService;
+	
+	@Autowired
+	private UserService userService;
 
 	@Value("${app.search.max}")
 	private int maxResults;
@@ -69,7 +76,7 @@ public class SearchService {
 
 	@Value("${app.age.max}")
 	private int ageMax;
-	
+
 	@Value("${app.search.estimate.max}")
 	private int searchEstimateMax;
 
@@ -80,8 +87,17 @@ public class SearchService {
 	private static final int SEARCH_STEP_2 = 1000;
 
 	private static final int DEFAULT_DISTANCE = 50;
-	
-	private static final int SEARCH_MAX = 200; 
+
+	private static final int SEARCH_MAX = 200;
+
+	private static ReverseGeocoder geocoder = null;
+
+	public ReverseGeocoder getGeocoder() {
+		if (geocoder == null) {
+			geocoder = new ReverseGeocoder();
+		}
+		return geocoder;
+	}
 
 	public SearchDto searchDefault() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
@@ -90,8 +106,9 @@ public class SearchService {
 		if (user.isAdmin()) {
 			return SearchDto.builder().users(searchResultstoUserDto(userRepo.adminSearch(), 0, user)).build();
 		}
-		if(user.getLocationLatitude() != null && user.getLocationLatitude() != null) {
-			return search(user.getLocationLatitude(), user.getLocationLongitude(), DEFAULT_DISTANCE, SORT_DONATION_LATEST);
+		if (user.getLocationLatitude() != null && user.getLocationLatitude() != null) {
+			return search(user.getLocationLatitude(), user.getLocationLongitude(), DEFAULT_DISTANCE,
+					SORT_DONATION_LATEST);
 		} else {
 			return null;
 		}
@@ -106,6 +123,14 @@ public class SearchService {
 		if (user.isAdmin()) {
 			return SearchDto.builder().users(searchResultstoUserDto(userRepo.adminSearch(), 0, user)).build();
 		}
+		
+		if(!latitude.equals(user.getLocationLatitude()) || !longitude.equals(user.getLocationLongitude()) || user.getCountry() == null) {
+			Optional<String> country = getCountryIsoByLocation(latitude, longitude);
+			if(country.isPresent()) {
+				userService.updateCountry(country.get());
+			}
+		}
+		
 
 		Sort sort = Sort.by(Sort.Direction.DESC, "dates.latestDonationDate", "dates.creationDate");
 		switch (sortId) {
@@ -320,6 +345,15 @@ public class SearchService {
 		}
 
 		return userDtos;
+	}
+
+	public Optional<String> getCountryIsoByLocation(double lat, double lon) {
+		Optional<Country> country = getGeocoder().getCountry(lat, lon);
+		if (country.isPresent()) {
+			return Optional.ofNullable(country.get().iso());
+		} else {
+			return Optional.empty();
+		}
 	}
 
 }

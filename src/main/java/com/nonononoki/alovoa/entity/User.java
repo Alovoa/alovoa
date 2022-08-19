@@ -106,6 +106,8 @@ public class User implements UserDetails {
 	private boolean confirmed;
 
 	private boolean disabled;
+	
+	private String country;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn

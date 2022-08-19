@@ -71,7 +71,9 @@ public class UserDto {
 	private List<UserImage> images;
 
 	private String description;
-
+	
+	private String country;
+	
 	private int distanceToUser;
 	private int sameInterests;
 	private double totalDonations;
@@ -144,6 +146,7 @@ public class UserDto {
 		dto.setFirstName(user.getFirstName());
 		dto.setGender(user.getGender());
 		dto.setAccentColor(user.getAccentColor());
+		dto.setCountry(Tools.getCountryEmoji(user.getCountry()));
 		dto.setUiDesign(user.getUiDesign());
 		if (currentUser.isShowZodiac()) {
 			dto.setZodiac(getUserZodiac(user));

@@ -580,7 +580,7 @@
 									th:classappend="${user.gender.text == 'male' ? 'male' : user.gender.text == 'female' ? 'female' : 'other'}">
 								</div>
 								<div class="left" style="font-size: 1.5em; padding-top: 8px;">
-									<span>, </span><span th:text="${user.age}"></span>  <th:block th:insert="fragments.html :: zodiac"></th:block> <th:block th:insert="fragments.html :: last-active-state"></th:block>
+									<span>, </span><span th:text="${user.age}"></span>  <th:block th:insert="fragments.html :: zodiac"></th:block> <span th:text="${user.country}"></span> <th:block th:insert="fragments.html :: last-active-state"></th:block>
 								</div>
 								<div class="right" style="font-size: 1.2em; padding-top: 12px;">
 									<i class="fa fa-map-marker-alt"></i>

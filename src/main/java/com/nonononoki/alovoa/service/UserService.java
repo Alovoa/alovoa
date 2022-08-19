@@ -15,6 +15,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashSet;
@@ -187,7 +188,7 @@ public class UserService {
 
 	@Value("${app.intention.delay}")
 	private long intentionDelay;
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 	@Autowired
@@ -963,6 +964,19 @@ public class UserService {
 			user.getAudio().setData(newAudioB64);
 		}
 
+		userRepo.saveAndFlush(user);
+	}
+
+	public void updateCountry(String countryIso) throws AlovoaException {
+		User user = authService.getCurrentUser();
+		boolean validCountryIso = Arrays.asList(Locale.getISOCountries()).contains(countryIso);
+		if (validCountryIso) {
+			user.setCountry(countryIso);
+		} else {
+			//remove flag if user is not in a valid country
+			user.setCountry(null);
+		}
+		
 		userRepo.saveAndFlush(user);
 	}
 

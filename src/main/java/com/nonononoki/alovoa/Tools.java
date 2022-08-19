@@ -212,7 +212,6 @@ public class Tools {
 	private static final String STR_NUM_BILLION = "B";
 	private static final String STR_NUM_MILLION = "M";
 	private static final String STR_NUM_THOUSAND = "K";
-	
 
 	public static String largeNumberToString(long num) {
 		if (num < THOUSAND) {
@@ -222,14 +221,23 @@ public class Tools {
 		df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
 		if (num >= BILLION) {
-			double d = (double)num / BILLION;
+			double d = (double) num / BILLION;
 			return df.format(d) + STR_NUM_BILLION;
 		} else if (num >= MILLION) {
-			double d = (double)num / MILLION;
+			double d = (double) num / MILLION;
 			return df.format(d) + STR_NUM_MILLION;
 		} else {
-			double d = (double)num / THOUSAND;
+			double d = (double) num / THOUSAND;
 			return df.format(d) + STR_NUM_THOUSAND;
 		}
+	}
+
+	public static String getCountryEmoji(String countryIso) {
+		if (countryIso != null) {
+			int firstLetter = Character.codePointAt(countryIso, 0) - 0x41 + 0x1F1E6;
+			int secondLetter = Character.codePointAt(countryIso, 1) - 0x41 + 0x1F1E6;
+			return new String(Character.toChars(firstLetter)) + new String(Character.toChars(secondLetter));
+		}
+		return null;
 	}
 }

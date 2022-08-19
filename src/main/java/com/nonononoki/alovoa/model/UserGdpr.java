@@ -46,6 +46,8 @@ public class UserGdpr {
 	private String accentColor;
 
 	private String uiDesign;
+	
+	private String country;
 
 	private int units;
 
@@ -86,6 +88,7 @@ public class UserGdpr {
 		u.setDescription(user.getDescription());
 		u.setLanguage(user.getLanguage());
 		u.setAccentColor(user.getAccentColor());
+		u.setCountry(user.getCountry());
 		u.setUiDesign(user.getUiDesign());
 		u.setUnits(user.getUnits());
 

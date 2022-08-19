@@ -193,6 +193,7 @@ public class AdminService {
 		user.setDescription(null);
 		user.setLanguage(null);
 		user.setAccentColor(null);
+		user.setCountry(null);
 		user.setUiDesign(null);
 		user.setDisabled(true);
 		user.getDonations().clear();
