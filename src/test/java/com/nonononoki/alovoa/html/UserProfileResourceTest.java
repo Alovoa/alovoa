@@ -99,6 +99,7 @@ class UserProfileResourceTest {
 		userRepo.save(user);
 		userRepo.flush();
 		Mockito.when(authService.getCurrentUser()).thenReturn(currUser);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(currUser);
 		AuthTestUtil.setAuthTo(currUser);
 		String encodedId = UserDto.encodeId(user.getId(), textEncryptor);
 		

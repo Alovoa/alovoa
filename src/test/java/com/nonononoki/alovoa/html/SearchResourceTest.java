@@ -78,6 +78,7 @@ class SearchResourceTest {
 	@Test
 	void test() throws Exception {
 		Mockito.when(authService.getCurrentUser()).thenReturn(testUsers.get(0));
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(testUsers.get(0));
 		searchResource.search();
 	}
 }

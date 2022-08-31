@@ -109,6 +109,7 @@ class AdminServiceTest {
 		User user2 = testUsers.get(1);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(adminUser);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(adminUser);
 
 		MailDto mailDto = new MailDto();
 		String mailBodyAll = "mailBodyAll";

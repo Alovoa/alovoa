@@ -154,6 +154,7 @@ class SearchAndMessageServiceTest {
 		String imgMimePng = "png";
 		// setup settings
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 		String img1 = Tools.imageToB64("img/profile1.png", imgMimePng);
 		userService.updateProfilePicture(img1);
 		userService.addInterest(INTEREST);
@@ -164,6 +165,7 @@ class SearchAndMessageServiceTest {
 		userService.updatePreferedGender(2, true);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
 		String img2 = Tools.imageToB64("img/profile2.png", imgMimePng);
 		userService.updateProfilePicture(img2);
 		userService.addInterest(INTEREST);
@@ -174,6 +176,7 @@ class SearchAndMessageServiceTest {
 		userService.updatePreferedGender(1, true);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
 		String img3 = Tools.imageToB64("img/profile3.png", imgMimePng);
 		userService.updateProfilePicture(img3);
 		assertNotNull(user3.getProfilePicture());
@@ -201,29 +204,35 @@ class SearchAndMessageServiceTest {
 		userService.addInterest(INTEREST);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 		List<UserDto> searchDtos1 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		assertEquals(2, searchDtos1.size());
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
 		List<UserDto> searchDtos2 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		assertEquals(1, searchDtos2.size());
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
 		List<UserDto> searchDtos3 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		assertEquals(1, searchDtos3.size());
 
 		// Tip: 1 degree equals roughly 111km
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 		userService.updatePreferedGender(1, true);
 		userService.updatePreferedGender(2, true);
 		userService.updatePreferedGender(3, true);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
 		userService.updatePreferedGender(1, true);
 		userService.updatePreferedGender(2, true);
 		userService.updatePreferedGender(3, true);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
 		userService.updatePreferedGender(1, true);
 		userService.updatePreferedGender(2, true);
 		userService.updatePreferedGender(3, true);
@@ -239,15 +248,19 @@ class SearchAndMessageServiceTest {
 
 		// search filtered by interest
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 		userService.deleteInterest(user1.getInterests().get(0).getId());
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
 		List<UserDto> interestSearchDto1 = searchService.search(0.0, 0.0, 50, SearchService.SORT_INTEREST).getUsers();
 		assertEquals(1, interestSearchDto1.size());
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 		userService.addInterest(INTEREST);
 
 		// test preferedAge
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
 		userService.updateMinAge(USER1_AGE + 1);
 		List<UserDto> ageSearchDto1 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		assertEquals(1, ageSearchDto1.size());
@@ -257,17 +270,20 @@ class SearchAndMessageServiceTest {
 
 		user2.getDates().setDateOfBirth(Tools.localDateToDate(LocalDateTime.now().minusYears(minAge).toLocalDate()));
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
 		userService.updateMinAge(minAge);
 		userService.updateMaxAge(maxAge);
 		List<UserDto> ageSearchDto3 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		assertEquals(0, ageSearchDto3.size());
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
 		List<UserDto> ageSearchDto4 = searchService.search(0.0, 0.0, 50, 1).getUsers();
 		assertEquals(1, ageSearchDto4.size());
 		user2.getDates().setDateOfBirth(Tools.ageToDate(USER2_AGE));
 
 		// likeUser
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
 		userService.likeUser(UserDto.encodeId(user1.getId(), textEncryptor));
 		assertEquals(1, userLikeRepo.count());
 		assertEquals(1, user3.getLikes().size());
@@ -307,6 +323,7 @@ class SearchAndMessageServiceTest {
 		});
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 		userService.likeUser(UserDto.encodeId(user3.getId(), textEncryptor));
 
 		assertEquals(2, userLikeRepo.count());
@@ -338,6 +355,7 @@ class SearchAndMessageServiceTest {
 		assertEquals(2, messageRepo.count());
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
 		assertThrows(Exception.class, () -> {
 			messageService.send(user1.getConversations().get(0).getId(), "Hello");
 		});
@@ -345,6 +363,7 @@ class SearchAndMessageServiceTest {
 		assertEquals(2, messageRepo.count());
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 		userService.unblockUser(UserDto.encodeId(user3.getId(), textEncryptor));
 		assertEquals(0, userBlockRepo.count());
 

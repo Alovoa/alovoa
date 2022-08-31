@@ -86,6 +86,7 @@ class MessageResourceTest {
 		User currUser = testUsers.get(1);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(currUser);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(currUser);
 		messageResource.chats();
 
 		List<Message> messages = new ArrayList<>();

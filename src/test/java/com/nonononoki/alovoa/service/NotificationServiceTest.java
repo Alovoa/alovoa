@@ -91,6 +91,7 @@ class NotificationServiceTest {
 		User user1 = testUsers.get(1);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 
 		Date oldDate = new Date();
 

@@ -83,6 +83,7 @@ class BlockedUsersResourceTest {
 		User user = testUsers.get(0);
 		User blockUser = testUsers.get(1);
 		Mockito.when(authService.getCurrentUser()).thenReturn(user);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user);
 		UserBlock block = new UserBlock();
 		block.setUserFrom(user);
 		block.setUserTo(blockUser);

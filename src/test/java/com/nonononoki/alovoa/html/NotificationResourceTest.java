@@ -80,6 +80,7 @@ class NotificationResourceTest {
 	@Test
 	void test() throws Exception {
 		Mockito.when(authService.getCurrentUser()).thenReturn(testUsers.get(0));
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(testUsers.get(0));
 
 		User user = testUsers.get(2);
 		User currUser = testUsers.get(1);

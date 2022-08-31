@@ -140,6 +140,7 @@ class UserServiceTest {
 		String imgMimePng = "png";
 		// setup settings
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 		String img1 = Tools.imageToB64("img/profile1.png", imgMimePng);
 		userService.updateProfilePicture(img1);
 		userService.addInterest(INTEREST);
@@ -173,6 +174,7 @@ class UserServiceTest {
 		}
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
 		String img2 = Tools.imageToB64("img/profile2.png", imgMimePng);
 		userService.updateProfilePicture(img2);
 		userService.addInterest(INTEREST);
@@ -183,6 +185,7 @@ class UserServiceTest {
 		userService.updatePreferedGender(1, true);
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
 		String img3 = Tools.imageToB64("img/profile3.png", imgMimePng);
 		userService.updateProfilePicture(img3);
 		assertNotNull(user3.getProfilePicture());
@@ -234,6 +237,7 @@ class UserServiceTest {
 
 		// USERDATA
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 		String idEnc = UserDto.encodeId(user1.getId(), textEncryptor);
 		ResponseEntity<Resource> userData = userService.getUserdata(idEnc);
 		InputStream inputStream = ((ByteArrayResource) userData.getBody()).getInputStream();
@@ -286,6 +290,7 @@ class UserServiceTest {
 		String INTEREST5 = "test5";
 		
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 		userService.addInterest(INTEREST1);
 		userService.addInterest(INTEREST2);
 		userService.addInterest(INTEREST3);
@@ -293,12 +298,14 @@ class UserServiceTest {
 		userService.addInterest(INTEREST5);
 		
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
 		userService.addInterest(INTEREST1);
 		userService.addInterest(INTEREST2);
 		userService.addInterest(INTEREST3);
 		userService.addInterest(INTEREST4);
 		
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
 		List<UserInterestDto> iterests = userService.getInterestAutocomplete(query);
 		List<String> iterestNames = iterests.stream().map(i -> i.getName()).collect(Collectors.toList());
 		
@@ -315,6 +322,7 @@ class UserServiceTest {
 		assertTrue(iterestNames.contains(INTEREST5));
 		
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
 		iterests = userService.getInterestAutocomplete(query);
 		assertEquals(1, iterests.size());
 		assertEquals(1, iterests.get(0).getCount());
