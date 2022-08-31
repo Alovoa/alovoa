@@ -46,7 +46,7 @@ public class MessageController {
 
 	@GetMapping(value = "/get-messages/{convoId}/{first}")
 	public String getMessages(Model model, @PathVariable long convoId, @PathVariable int first) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		Conversation c = conversationRepo.findById(convoId).orElse(null);
 
 		if (c == null) {

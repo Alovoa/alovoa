@@ -36,7 +36,7 @@ public class SearchController {
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		model.addAttribute("dto", searchService.search(latitude, longitude, distance, search));
-		model.addAttribute("currUser", authService.getCurrentUser());
+		model.addAttribute("currUser", authService.getCurrentUser(true));
 		return "fragments :: search-users";
 	}
 	
@@ -45,7 +45,7 @@ public class SearchController {
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		model.addAttribute("dto", searchService.searchDefault());
-		model.addAttribute("currUser", authService.getCurrentUser());
+		model.addAttribute("currUser", authService.getCurrentUser(true));
 		return "fragments :: search-users";
 	}
 }

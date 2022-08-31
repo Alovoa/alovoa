@@ -102,7 +102,7 @@ public class SearchService {
 	public SearchDto searchDefault() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		if (user.isAdmin()) {
 			return SearchDto.builder().users(searchResultstoUserDto(userRepo.adminSearch(), 0, user)).build();
 		}
@@ -118,7 +118,7 @@ public class SearchService {
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 
 		if (user.isAdmin()) {
 			return SearchDto.builder().users(searchResultstoUserDto(userRepo.adminSearch(), 0, user)).build();

@@ -198,7 +198,7 @@ public class UserService {
 	private ObjectMapper objectMapper;
 
 	public UserDeleteToken deleteAccountRequest() throws MessagingException, IOException, AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		UserDeleteToken token = new UserDeleteToken();
 		Date currentDate = new Date();
 
@@ -215,7 +215,7 @@ public class UserService {
 
 	public void deleteAccountConfirm(UserDeleteAccountDto dto)
 			throws MessagingException, IOException, AlovoaException, NoSuchAlgorithmException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		UserDeleteToken deleteToken = user.getDeleteToken();
 
 		if (!dto.isConfirm() || deleteToken == null) {
@@ -250,7 +250,7 @@ public class UserService {
 
 		removeUserDataCascading(user, userDeleteParam);
 
-		user = authService.getCurrentUser();
+		user = authService.getCurrentUser(true);
 		user = userRepo.saveAndFlush(user);
 		userRepo.delete(user);
 		userRepo.flush();
@@ -398,7 +398,7 @@ public class UserService {
 	}
 
 	public void updateProfilePicture(String imgB64) throws AlovoaException, IOException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		String newImgB64 = adjustPicture(imgB64);
 		if (user.getProfilePicture() == null) {
 			UserProfilePicture profilePic = new UserProfilePicture();
@@ -413,7 +413,7 @@ public class UserService {
 	}
 
 	public void onboarding(ProfileOnboardingDto model) throws AlovoaException, IOException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		if (user.getProfilePicture() != null || user.getDescription() != null) {
 			return;
 		}
@@ -457,13 +457,13 @@ public class UserService {
 				}
 			}
 		}
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		user.setDescription(description);
 		userRepo.saveAndFlush(user);
 	}
 
 	public void updateIntention(long intention) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 
 		Date now = new Date();
 		if (user.getDates().getIntentionChangeDate() == null
@@ -485,7 +485,7 @@ public class UserService {
 		if (userMinAge < minAge) {
 			userMinAge = minAge;
 		}
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		user.setPreferedMinAge(userMinAge);
 		userRepo.saveAndFlush(user);
 	}
@@ -494,13 +494,13 @@ public class UserService {
 		if (userMaxAge > maxAge) {
 			userMaxAge = maxAge;
 		}
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		user.setPreferedMaxAge(userMaxAge);
 		userRepo.saveAndFlush(user);
 	}
 
 	public void updatePreferedGender(long genderId, boolean activated) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		Set<Gender> list = user.getPreferedGenders();
 		if (list == null) {
 			list = new HashSet<>();
@@ -521,7 +521,7 @@ public class UserService {
 	}
 
 	public void updateUserMiscInfo(long infoValue, boolean activated) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		Set<UserMiscInfo> list = user.getMiscInfos();
 		if (list == null) {
 			list = new HashSet<>();
@@ -553,7 +553,7 @@ public class UserService {
 	}
 
 	public void addInterest(String value) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 
 		if (value.length() < interestMinCharSize || value.length() > interestMaxCharSize
 				|| user.getInterests().size() >= interestSize) {
@@ -584,7 +584,7 @@ public class UserService {
 	}
 
 	public void deleteInterest(long interestId) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		UserInterest interest = userInterestRepo.findById(interestId).orElse(null);
 
 		if (interest == null) {
@@ -600,7 +600,7 @@ public class UserService {
 	}
 
 	public List<UserInterestDto> getInterestAutocomplete(String name) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		name = "%" + URLDecoder.decode(name, StandardCharsets.UTF_8) + "%";
 		List<String> interestTexts = user.getInterests().stream().map(i -> i.getText()).collect(Collectors.toList());
 		if (interestTexts.isEmpty()) {
@@ -613,31 +613,31 @@ public class UserService {
 	}
 
 	public void updateAccentColor(String accentColor) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		user.setAccentColor(accentColor);
 		userRepo.saveAndFlush(user);
 	}
 
 	public void updateUiDesign(String uiDesign) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		user.setUiDesign(uiDesign);
 		userRepo.saveAndFlush(user);
 	}
 
 	public void updateShowZodiac(int showZodiac) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		user.setShowZodiac(showZodiac == 1);
 		userRepo.saveAndFlush(user);
 	}
 
 	public void updateUnits(int units) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		user.setUnits(units);
 		userRepo.saveAndFlush(user);
 	}
 
 	public void addImage(String imgB64) throws AlovoaException, IOException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		if (user.getImages() != null && user.getImages().size() < imageMax) {
 
 			UserImage img = new UserImage();
@@ -652,7 +652,7 @@ public class UserService {
 	}
 
 	public void deleteImage(long id) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		UserImage img = userImageRepo.findById(id).orElse(null);
 		if (img != null && user.getImages().contains(img)) {
 			user.getImages().remove(img);
@@ -733,7 +733,7 @@ public class UserService {
 
 	public void likeUser(String idEnc) throws AlovoaException, GeneralSecurityException, IOException, JoseException {
 		User user = encodedIdToUser(idEnc);
-		User currUser = authService.getCurrentUser();
+		User currUser = authService.getCurrentUser(true);
 
 		if (user.equals(currUser)) {
 			throw new AlovoaException("user_is_same_user");
@@ -800,7 +800,7 @@ public class UserService {
 			throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
 		User user = encodedIdToUser(idEnc);
-		User currUser = authService.getCurrentUser();
+		User currUser = authService.getCurrentUser(true);
 		if (userHideRepo.findByUserFromAndUserTo(currUser, user) == null) {
 			UserHide hide = new UserHide();
 			hide.setDate(new Date());
@@ -815,7 +815,7 @@ public class UserService {
 			throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 		User user = encodedIdToUser(idEnc);
-		User currUser = authService.getCurrentUser();
+		User currUser = authService.getCurrentUser(true);
 		if (userBlockRepo.findByUserFromAndUserTo(currUser, user) == null) {
 			UserBlock block = new UserBlock();
 			block.setDate(new Date());
@@ -830,7 +830,7 @@ public class UserService {
 			throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 		User user = encodedIdToUser(idEnc);
-		User currUser = authService.getCurrentUser();
+		User currUser = authService.getCurrentUser(true);
 
 		UserBlock block = userBlockRepo.findByUserFromAndUserTo(currUser, user);
 		if (block != null) {
@@ -844,7 +844,7 @@ public class UserService {
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException,
 			InvalidAlgorithmParameterException {
 		User user = encodedIdToUser(idEnc);
-		User currUser = authService.getCurrentUser();
+		User currUser = authService.getCurrentUser(true);
 		if (userReportRepo.findByUserFromAndUserTo(currUser, user) == null) {
 
 			boolean isValid = captchaService.isValid(captchaId, captchaText);
@@ -873,7 +873,7 @@ public class UserService {
 	}
 
 	public boolean hasNewAlert() throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		// user always check their alerts periodically in the background, so just update
 		// it here
 		if (user != null) {
@@ -885,7 +885,7 @@ public class UserService {
 	}
 
 	public boolean hasNewMessage() throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		if (user != null && user.getDates().getMessageDate() != null
 				&& user.getDates().getMessageCheckedDate() != null) {
 			return user.getDates().getMessageDate().after(user.getDates().getMessageCheckedDate());
@@ -907,7 +907,7 @@ public class UserService {
 			UnsupportedEncodingException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		User userFromIdEnc = encodedIdToUser(idEnc);
 		if (!user.getId().equals(userFromIdEnc.getId())) {
 			throw new AlovoaException("wrong_id_enc");
@@ -929,7 +929,7 @@ public class UserService {
 	}
 
 	public void deleteProfilePicture() throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		user.setProfilePicture(null);
 		userRepo.saveAndFlush(user);
 	}
@@ -945,14 +945,14 @@ public class UserService {
 	}
 
 	public void deleteAudio() throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		user.setAudio(null);
 		userRepo.saveAndFlush(user);
 	}
 
 	public void updateAudio(String audioB64, String mimeType)
 			throws AlovoaException, UnsupportedAudioFileException, IOException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		String newAudioB64 = adjustAudio(audioB64, mimeType);
 
 		if (user.getAudio() == null) {
@@ -968,7 +968,7 @@ public class UserService {
 	}
 
 	public void updateCountry(String countryIso) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		boolean validCountryIso = Arrays.asList(Locale.getISOCountries()).contains(countryIso);
 		if (validCountryIso) {
 			user.setCountry(countryIso);

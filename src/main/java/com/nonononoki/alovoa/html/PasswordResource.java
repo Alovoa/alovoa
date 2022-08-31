@@ -37,7 +37,7 @@ public class PasswordResource {
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException {
 		ModelAndView mav = new ModelAndView("password-reset");
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;
 	}
@@ -48,7 +48,7 @@ public class PasswordResource {
 			InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		ModelAndView mav = new ModelAndView("password-change");
 		mav.addObject("tokenString", tokenString);
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;
 	}

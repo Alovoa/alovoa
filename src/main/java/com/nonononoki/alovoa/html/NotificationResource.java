@@ -46,7 +46,7 @@ public class NotificationResource {
 			UnsupportedEncodingException {
 
 		ModelAndView mav = new ModelAndView("notification");
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		user.getDates().setNotificationCheckedDate(new Date());
 		userRepo.saveAndFlush(user);
 		List<UserNotification> nots = user.getNotifications();

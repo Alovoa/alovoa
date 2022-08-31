@@ -15,11 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.nonononoki.alovoa.component.TextEncryptorConverter;
-import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AlovoaException;
-import com.nonononoki.alovoa.model.UserDto;
-import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.PublicService;
 
 @Controller
@@ -27,12 +23,6 @@ public class PrivacyResource {
 
 	@Autowired
 	private PublicService publicService;
-
-	@Autowired
-	private AuthService authService;
-
-	@Autowired
-	private TextEncryptorConverter textEncryptor;
 
 	@Value("${app.company.name}")
 	private String companyName;
@@ -52,8 +42,6 @@ public class PrivacyResource {
 		content = content.replace(COMPANY_NAME, companyName);
 		content = content.replace(PRIVACY_UPDATE_DATE, privacyUpdateDate);
 		mav.addObject("content", content);
-		User user = authService.getCurrentUser();
-		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;
 	}
 }

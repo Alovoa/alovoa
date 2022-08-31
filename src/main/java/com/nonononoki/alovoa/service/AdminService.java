@@ -268,7 +268,7 @@ public class AdminService {
 	}
 
 	private void checkRights() throws AlovoaException {
-		if (!authService.getCurrentUser().isAdmin()) {
+		if (!authService.getCurrentUser(true).isAdmin()) {
 			throw new AlovoaException("not_admin");
 		}
 	}

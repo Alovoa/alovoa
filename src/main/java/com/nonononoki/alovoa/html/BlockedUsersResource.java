@@ -41,7 +41,7 @@ public class BlockedUsersResource {
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException {
 
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		ModelAndView mav = new ModelAndView("blocked-users");
 		List<UserBlock> userBlocks = user.getBlockedUsers();
 		List<User> blockedUsers = userBlocks.stream().sorted(Comparator.comparing(UserBlock::getDate).reversed())

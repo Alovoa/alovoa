@@ -41,7 +41,7 @@ public class DislikedUsersResource {
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException {
 
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		ModelAndView mav = new ModelAndView("disliked-users");
 		List<UserHide> userDislikes = user.getHiddenUsers();
 		List<User> dislikedUsers = userDislikes.stream().sorted(Comparator.comparing(UserHide::getDate).reversed())

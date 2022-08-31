@@ -41,7 +41,7 @@ public class LikedUsersResource {
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException {
 
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		ModelAndView mav = new ModelAndView("liked-users");
 		List<UserLike> userLikes = user.getLikes();
 		List<User> likedUsers = userLikes.stream().sorted(Comparator.comparing(UserLike::getDate).reversed())

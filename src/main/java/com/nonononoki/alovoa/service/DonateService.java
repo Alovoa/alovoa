@@ -77,7 +77,7 @@ public class DonateService {
 			UnsupportedEncodingException {
 		List<DonationDto> donationsToDtos = null;
 
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 
 		int ageLegal = Tools.AGE_LEGAL;
 

@@ -23,7 +23,7 @@ public class AuthService {
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
-	public User getCurrentUser() throws AlovoaException {
+	public User getCurrentUser(boolean throwExceptionWhenNull) throws AlovoaException {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String email;
 		if (auth instanceof OAuth2AuthenticationToken) {
@@ -42,9 +42,15 @@ public class AuthService {
 		User user = userRepo.findByEmail(Tools.cleanEmail(email));
 		if (user != null && user.isDisabled()) {
 			throw new AlovoaException("user_not_found");
+		} else if (user == null && throwExceptionWhenNull) {
+			throw new AlovoaException("user_not_found");
 		}
 
 		return user;
+	}
+	
+	public User getCurrentUser() throws AlovoaException {
+		return getCurrentUser(false);
 	}
 
 	public String getOauth2Email() {

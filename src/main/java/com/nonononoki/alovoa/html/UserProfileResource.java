@@ -50,7 +50,7 @@ public class UserProfileResource {
 
 		Long id = idOptional.get();
 		User userView = userRepo.findById(id).orElse(null);
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 
 		if (user.getId().equals(id)) {
 			return "redirect:" + ProfileResource.URL;
@@ -94,7 +94,7 @@ public class UserProfileResource {
 
 		Long id = idOptional.get();
 		User userView = userRepo.findById(id).orElse(null);
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 
 		if (user.getId().equals(id)) {
 			return "";

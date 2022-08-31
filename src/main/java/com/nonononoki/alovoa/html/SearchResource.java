@@ -51,7 +51,7 @@ public class SearchResource {
 	public ModelAndView search() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		
 		if (!user.isAdmin() && user.getProfilePicture() == null && user.getDescription() == null) {
 			return new ModelAndView("redirect:" + ProfileOnboardingResource.URL);

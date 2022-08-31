@@ -57,7 +57,7 @@ public class DonateController {
 		List<DonationDto> donations = donateService.filter(filter);
 		model.addAttribute("donations", donations);
 		model.addAttribute("filter", filter);
-		model.addAttribute("currUser", authService.getCurrentUser());
+		model.addAttribute("currUser", authService.getCurrentUser(true));
 		return "fragments :: donate-filter";
 	}
 

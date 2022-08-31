@@ -35,7 +35,7 @@ public class ProfileOnboardingResource {
 	@GetMapping(URL)
 	public ModelAndView onboarding() throws AlovoaException {
 
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		if (user.isAdmin()) {
 			return new ModelAndView("redirect:" + AdminResource.URL);
 		} else if (user.getProfilePicture() != null || user.getDescription() != null) {

@@ -34,7 +34,7 @@ public class DonateResource {
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		ModelAndView mav = new ModelAndView("donate");
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;
 	}

@@ -42,7 +42,7 @@ public class MessageService {
 	public void send(Long convoId, String message)
 			throws AlovoaException, GeneralSecurityException, IOException, JoseException {
 
-		User currUser = authService.getCurrentUser();
+		User currUser = authService.getCurrentUser(true);
 
 		Conversation c = conversationRepo.findById(convoId).orElse(null);
 

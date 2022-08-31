@@ -70,7 +70,7 @@ public class ProfileResource {
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException {
 
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		if (user.isAdmin()) {
 			return new ModelAndView("redirect:" + AdminResource.URL);
 		} 
@@ -116,7 +116,7 @@ public class ProfileResource {
 	@GetMapping("/profile/warning")
 	public String warning(Model model) throws AlovoaException {
 
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		ProfileWarningDto warning = getWarnings(user);
 
 		model.addAttribute("hasWarning", warning.isHasWarning());

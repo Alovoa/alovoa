@@ -69,7 +69,7 @@ public class NotificationService {
 	}
 
 	public void subscribe(UserWebPush webPush) throws AlovoaException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		webPush.setUser(user);
 		if (webPush.getDate() == null) {
 			webPush.setDate(new Date());

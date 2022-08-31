@@ -59,7 +59,7 @@ public class AdminResource {
 
 		mav.addObject("reports", reports);
 		mav.addObject("contacts", contacts);
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 
 		return mav;

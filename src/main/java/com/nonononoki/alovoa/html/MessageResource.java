@@ -54,7 +54,7 @@ public class MessageResource {
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 
 		ModelAndView mav = new ModelAndView("messages");
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		user.getDates().setMessageCheckedDate(new Date());
 		userRepo.saveAndFlush(user);
 		List<ConversationDto> convos = new ArrayList<>();
@@ -78,7 +78,7 @@ public class MessageResource {
 			InvalidAlgorithmParameterException, UnsupportedEncodingException {
 
 		ModelAndView mav = new ModelAndView("message-detail");
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
 		Conversation c = conversationRepo.findById(id).orElse(null);
 
 		if (c == null) {

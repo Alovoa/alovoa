@@ -42,7 +42,8 @@ public class DeleteAccountResource {
 	public ModelAndView deleteAccount(@PathVariable String tokenString) throws AlovoaException, InvalidKeyException,
 			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
 			InvalidAlgorithmParameterException, UnsupportedEncodingException {
-		User user = authService.getCurrentUser();
+		User user = authService.getCurrentUser(true);
+		
 		ModelAndView mav = new ModelAndView("delete-account");
 		mav.addObject("tokenString", tokenString);
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
