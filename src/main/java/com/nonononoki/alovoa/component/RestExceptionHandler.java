@@ -3,6 +3,9 @@ package com.nonononoki.alovoa.component;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +22,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionHandler.class);
 
+	@Autowired
+	Environment env;
+
 	@ExceptionHandler
 	protected ResponseEntity<Object> handleConflict(Exception ex, WebRequest request) {
 		String exceptionMessage = ex.getMessage();
-		if(ex instanceof AlovoaException) {
+		if (ex instanceof AlovoaException && !env.acceptsProfiles(Profiles.of("dev"))) {
 			LOGGER.error(ExceptionUtils.getMessage(ex));
 		} else {
 			LOGGER.error(ExceptionUtils.getStackTrace(ex));
 		}
 		exceptionMessage = exceptionMessage == null ? null : HtmlUtils.htmlEscape(exceptionMessage);
-		return handleExceptionInternal(ex, exceptionMessage, new HttpHeaders(),
-				HttpStatus.CONFLICT, request);
+		return handleExceptionInternal(ex, exceptionMessage, new HttpHeaders(), HttpStatus.CONFLICT, request);
 	}
 }

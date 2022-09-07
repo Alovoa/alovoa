@@ -6,14 +6,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy;
@@ -30,8 +33,12 @@ import com.nonononoki.alovoa.component.CustomUserDetailsService;
 import com.nonononoki.alovoa.component.FailureHandler;
 import com.nonononoki.alovoa.component.SuccessHandler;
 
+import lombok.RequiredArgsConstructor;
+
+@Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@RequiredArgsConstructor
+public class SecurityConfig {
 
 	@Value("${app.text.key}")
 	private String key;
@@ -47,6 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
+	
+    private final AuthenticationConfiguration configuration;
 
 	private static final String ROLE_USER = "ROLE_USER";
 	private static final String ROLE_ADMIN = "ROLE_ADMIN";
@@ -61,8 +70,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return ROLE_ADMIN;
 	}
 
-	@Override
-	public void configure(HttpSecurity http) throws Exception {
+	@Bean
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		
+		AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+		authenticationManagerBuilder.authenticationProvider(authProvider());
+		
 		http.authorizeRequests().antMatchers("/admin").hasAnyAuthority(ROLE_ADMIN).antMatchers("/admin/**")
 				.hasAnyAuthority(ROLE_ADMIN).antMatchers("/css/**").permitAll().antMatchers("/js/**").permitAll()
 				.antMatchers("/img/**").permitAll().antMatchers("/font/**").permitAll().antMatchers("/json/**")
@@ -87,13 +100,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionRegistry(sessionRegistry());
 		http.csrf().ignoringAntMatchers("/donate/received/**");
 		http.requiresChannel().anyRequest().requiresSecure();
+		return http.build();
 	}
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authProvider());
-	}
-
+    @Bean
+    AuthenticationManager authenticationManager() throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+	
 	@Bean
 	AuthFilter authenticationFilter() throws Exception {
 		AuthFilter filter = new AuthFilter();
@@ -127,13 +141,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public TokenBasedRememberMeServices rememberMeServices() throws Exception {
+	TokenBasedRememberMeServices rememberMeServices() throws Exception {
 		return new TokenBasedRememberMeServices(rememberKey, customUserDetailsService);
 	}
-	
+
 	@Bean
 	TokenBasedRememberMeServices oAuthRememberMeServices() throws Exception {
-		CustomTokenBasedRememberMeServices rememberMeService = new CustomTokenBasedRememberMeServices(rememberKey, customUserDetailsService);
+		CustomTokenBasedRememberMeServices rememberMeService = new CustomTokenBasedRememberMeServices(rememberKey,
+				customUserDetailsService);
 		rememberMeService.setAlwaysRemember(true);
 		return rememberMeService;
 	}
@@ -142,7 +157,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Bean
 	AuthProvider authProvider() {
 		return new AuthProvider();

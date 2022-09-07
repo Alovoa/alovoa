@@ -38,6 +38,7 @@ public class AuthProvider implements AuthenticationProvider {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(AuthProvider.class);
 
 	@Override
