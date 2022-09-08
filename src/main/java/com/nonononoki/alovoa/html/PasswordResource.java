@@ -48,7 +48,7 @@ public class PasswordResource {
 			InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		ModelAndView mav = new ModelAndView("password-change");
 		mav.addObject("tokenString", tokenString);
-		User user = authService.getCurrentUser(true);
+		User user = authService.getCurrentUser();
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
 		return mav;
 	}
