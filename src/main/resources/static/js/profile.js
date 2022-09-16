@@ -87,9 +87,6 @@ $(function() {
 				$.ajax({
 					type: "POST",
 					url: "/user/update/profile-picture",
-					headers: {
-						"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-					},
 					contentType: "text/plain",
 					data: b64,
 					success: function() {
@@ -121,9 +118,6 @@ $(function() {
 				$.ajax({
 					type: "POST",
 					url: "/user/image/add",
-					headers: {
-						"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-					},
 					contentType: "text/plain",
 					data: b64,
 					success: function() {
@@ -165,9 +159,6 @@ $(function() {
 					$.ajax({
 						type: "POST",
 						url: "/user/update/description",
-						headers: {
-							"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-						},
 						contentType: "text/plain",
 						data: data,
 						success: function(e) {
@@ -193,9 +184,6 @@ $(function() {
 			$.ajax({
 				type: "POST",
 				url: "/user/update/intention/" + data,
-				headers: {
-					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-				},
 				success: function(e) {
 					//updateProfileWarning();
 					alert(getText("profile.warning.intention.limit"))
@@ -223,9 +211,6 @@ $(function() {
 			$.ajax({
 				type: "POST",
 				url: "/user/update/min-age/" + data,
-				headers: {
-					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-				},
 				error: function(e) {
 					console.log(e);
 					alert(getGenericErrorText());
@@ -251,9 +236,6 @@ $(function() {
 			$.ajax({
 				type: "POST",
 				url: "/user/update/max-age/" + data,
-				headers: {
-					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-				},
 				error: function(e) {
 					console.log(e);
 					alert(getGenericErrorText());
@@ -280,9 +262,6 @@ $(function() {
 			$.ajax({
 				type: "POST",
 				url: "/user/update/preferedGender/" + data + "/" + checked,
-				headers: {
-					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-				},
 				success: function() {
 					updateProfileWarning();
 				},
@@ -313,9 +292,6 @@ $(function() {
 			$.ajax({
 				type: "POST",
 				url: "/user/update/preferedGender/" + data + "/" + checked,
-				headers: {
-					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-				},
 				success: function() {
 					updateProfileWarning();
 				},
@@ -346,9 +322,6 @@ $(function() {
 			$.ajax({
 				type: "POST",
 				url: "/user/update/misc-info/" + data + "/" + checked,
-				headers: {
-					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-				},
 				success: function() {
 					if (obj.classList.contains("misc-info-single")) {
 						let parent = obj.parentNode.parentNode;
@@ -380,9 +353,6 @@ $(function() {
 
 		$.ajax({
 			url: "/user/interest/add/" + val,
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			type: 'POST',
 			success: function() {
 				location.reload();
@@ -402,9 +372,6 @@ $(function() {
 		$.ajax({
 			type: "POST",
 			url: url,
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			data: "{}",
 			contentType: "application/json",
 			success: function(e) {
@@ -426,9 +393,6 @@ $(function() {
 			type: "POST",
 			url: "/user/delete-account/",
 			contentType: "text/plain",
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			success: function(e) {
 				alert(getText("profile.delete-account.success"));
 			},
@@ -463,9 +427,6 @@ $(function() {
 				$.ajax({
 					type: "POST",
 					url: "/user/update/audio/" + type,
-					headers: {
-						"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-					},
 					contentType: "text/plain",
 					data: b64,
 					success: function() {
@@ -534,9 +495,6 @@ function deleteAudio() {
 		$.ajax({
 			type: "POST",
 			url: "/user/delete/audio",
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			success: function(e) {
 				location.reload();
 			},
@@ -555,9 +513,6 @@ function deleteInterest(id) {
 	$.ajax({
 		type: "POST",
 		url: "/user/interest/delete/" + id,
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		success: function() {
 			location.reload();
 		},
@@ -591,9 +546,6 @@ function deleteImage(id) {
 		$.ajax({
 			type: "POST",
 			url: "/user/image/delete/" + id,
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			success: function(e) {
 				location.reload();
 			},
@@ -612,9 +564,6 @@ function updateAccentColor(color) {
 	$.ajax({
 		type: "POST",
 		url: "/user/accent-color/update/" + color,
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		success: function(e) {
 			location.reload();
 		},
@@ -633,9 +582,6 @@ function updateUiDesign() {
 	$.ajax({
 		type: "POST",
 		url: "/user/ui-design/update/" + des,
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		success: function(e) {
 			location.reload();
 		},
@@ -654,9 +600,6 @@ function updateShowZodiac() {
 	$.ajax({
 		type: "POST",
 		url: "/user/show-zodiac/update/" + val,
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		success: function(e) {
 			location.reload();
 		},
@@ -675,9 +618,6 @@ function updateUnits() {
 	$.ajax({
 		type: "POST",
 		url: "/user/units/update/" + val,
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		success: function(e) {
 			location.reload();
 		},

@@ -1,5 +1,4 @@
 var locationFound = false;
-var csrf = $("meta[name='_csrf']").attr("content");
 
 $(function() {
 	new Swiper('.swiper-container-user-profile', {
@@ -15,10 +14,7 @@ function downloadAndPlayAudio() {
 	let userIdEnc = $("#user-id-enc").val();
 	$.ajax({
 		type : "GET",
-		url : "/user/get/audio/" + userIdEnc ,
-		headers : {
-			"X-CSRF-TOKEN" : csrf
-		},
+		url : "/user/get/audio/" + userIdEnc,
 		success : function(res) {
 		 	let audio = document.getElementById('audio-profile');
 		 	$("#audio-profile").show();
@@ -43,9 +39,6 @@ function blockUser(idEnc) {
 		$.ajax({
 			type : "POST",
 			url : "/user/block/" + idEnc,
-			headers : {
-				"X-CSRF-TOKEN" : csrf
-			},
 			success : function() {
 				location.reload(true);
 			},
@@ -64,9 +57,6 @@ function unblockUser(idEnc) {
 		$.ajax({
 			type : "POST",
 			url : "/user/unblock/" + idEnc,
-			headers : {
-				"X-CSRF-TOKEN" : csrf
-			},
 			success : function() {
 				location.reload(true);
 			},
@@ -89,9 +79,6 @@ function reportUserSubmit(idEncoded) {
 		type : "POST",
 		url : "/user/report/" + idEncoded + "/"
 				+ $("#captcha-id").val() + "/" + $("#captcha").val(),
-		headers : {
-			"X-CSRF-TOKEN" : csrf
-		},
 		contentType : "text/plain",
 		data: $("#report-comment").val(),
 		success : function() {
@@ -109,9 +96,6 @@ function likeUser(idEnc) {
 	$.ajax({
 		type : "POST",
 		url : "/user/like/" + idEnc,
-		headers : {
-			"X-CSRF-TOKEN" : csrf
-		},
 		success : function() {
 			location.reload(true);
 		},
@@ -127,9 +111,6 @@ function hideUser(idEnc) {
 	$.ajax({
 		type : "POST",
 		url : "/user/hide/" + idEnc,
-		headers : {
-			"X-CSRF-TOKEN" : csrf
-		},
 		success : function() {
 			location.reload(true);
 		},

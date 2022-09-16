@@ -2,9 +2,6 @@ function hideContact(id) {
 	$.ajax({
 		type: "POST",
 		url: "/admin/contact/hide/" + id,
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		success: function() {
 			$("#contact" + id).hide();
 		},
@@ -24,9 +21,6 @@ function deleteReport(id) {
 	$.ajax({
 		type: "POST",
 		url: "/admin/report/delete/" + id,
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		success: function() {
 			$("#report" + id).hide();
 		},
@@ -42,9 +36,6 @@ function removeDescription(id) {
 		$.ajax({
 			type: "POST",
 			url: "/admin/remove-description/" + id,
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			success: function() {
 				alert(getText("success.submit.generic"));
 			},
@@ -61,9 +52,6 @@ function removeImages(id) {
 		$.ajax({
 			type: "POST",
 			url: "/admin/remove-images/" + id,
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			success: function() {
 				alert(getText("success.submit.generic"));
 			},
@@ -80,9 +68,6 @@ function banUser(id, idReal) {
 		$.ajax({
 			type: "POST",
 			url: "/admin/ban-user/" + id,
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			success: function() {
 				$(".user" + idReal).hide();
 			},
@@ -107,9 +92,6 @@ $("#mail-single-form").submit(
 
 		$.ajax({
 			url: actionUrl,
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			type: 'POST',
 			data: JSON.stringify(formdata),
 			contentType: "application/json",
@@ -141,9 +123,6 @@ $("#mail-all-form").submit(
 
 			$.ajax({
 				url: actionUrl,
-				headers: {
-					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-				},
 				type: 'POST',
 				data: JSON.stringify(formdata),
 				contentType: "application/json",
@@ -174,9 +153,6 @@ $("#delete-account-form").submit(
 
 		$.ajax({
 			url: actionUrl,
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			type: 'POST',
 			data: JSON.stringify(formdata),
 			contentType: "application/json",
@@ -200,9 +176,6 @@ $("#user-exists-form").submit(
 
 		$.ajax({
 			url: actionUrl,
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			type: 'POST',
 			success: function(data) {
 				console.log(data)
@@ -230,9 +203,6 @@ $("#donation-add-form").submit(
 
 		$.ajax({
 			url: actionUrl,
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			type: 'POST',
 			success: function(data) {
 				$("#donation-add-form")[0].reset();

@@ -149,9 +149,6 @@ function likeUser(idEnc) {
 	$.ajax({
 		type: "POST",
 		url: "/user/like/" + idEnc,
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		success: function() {
 			hideProfileTile(idEnc);
 		},
@@ -171,9 +168,6 @@ function hideUser(idEnc) {
 	$.ajax({
 		type: "POST",
 		url: "/user/hide/" + idEnc,
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		success: function() {
 			hideProfileTile(idEnc);
 		},
@@ -220,9 +214,6 @@ function playPauseAudio(userIdEnc) {
 		$.ajax({
 			type: "GET",
 			url: "/user/get/audio/" + userIdEnc,
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			success: function(res) {
 				if (res) {
 					audio.src = res;

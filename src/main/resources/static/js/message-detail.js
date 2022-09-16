@@ -37,9 +37,6 @@ function sendMessage() {
 		$.ajax({
 			type : "POST",
 			url : "/message/send/" + getConvoId(),
-			headers : {
-				"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
-			},
 			contentType : "text/plain",
 			data : data,
 			success : function() {
@@ -56,9 +53,6 @@ function reloadMessages(first) {
 	$.ajax({
 		type : "GET",
 		url : "/message/get-messages/" + getConvoId() + "/" + first,
-		headers : {
-			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
-		},
 		contentType : "text/plain",
 		success : function(res) {	
 			if(res != "<div></div>") {

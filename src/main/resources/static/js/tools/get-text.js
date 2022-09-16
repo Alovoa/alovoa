@@ -5,9 +5,6 @@ function getText(param) {
 		type : "GET",
 		url : url,
 		async : false, // to make it synchronous,
-		headers : {
-			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
-		},
 		success : function(e) {
 			res = e;
 		},
@@ -27,9 +24,6 @@ function getTextAsync(param, callback) {
 		type : "GET",
 		url : url,
 		async : true,
-		headers : {
-			"X-CSRF-TOKEN" : $("input[name='_csrf']").val()
-		},
 		success : function(e) {
 			res = e;
 			callback(res);

@@ -49,9 +49,6 @@ $(function() {
 
 			$.ajax({
 				url: actionUrl,
-				headers: {
-					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-				},
 				type: 'POST',
 				data: JSON.stringify(formdata),
 				contentType: "application/json",

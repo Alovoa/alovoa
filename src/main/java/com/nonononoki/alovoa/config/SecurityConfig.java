@@ -98,7 +98,7 @@ public class SecurityConfig {
 
 		http.sessionManagement().maximumSessions(10).expiredSessionStrategy(getSessionInformationExpiredStrategy())
 				.sessionRegistry(sessionRegistry());
-		http.csrf().ignoringAntMatchers("/donate/received/**");
+		http.csrf().disable();
 		http.requiresChannel().anyRequest().requiresSecure();
 		return http.build();
 	}

@@ -1,5 +1,3 @@
-var csrf = $("input[name='_csrf']").val();
-
 function viewProfile(idEnc) {
 	history.pushState(null, null, '/profile/view/' + idEnc);
 	let url = '/profile/view/modal/' + idEnc;
@@ -12,9 +10,6 @@ function likeUser(idEnc) {
 	$.ajax({
 		type : "POST",
 		url : "/user/like/" + idEnc,
-		headers : {
-			"X-CSRF-TOKEN" : csrf
-		},
 		success : function() {
 			location.reload(true);
 		},
@@ -30,9 +25,6 @@ function hideUser(idEnc) {
 	$.ajax({
 		type : "POST",
 		url : "/user/hide/" + idEnc,
-		headers : {
-			"X-CSRF-TOKEN" : csrf
-		},
 		success : function() {
 			location.reload(true);
 		},
@@ -51,15 +43,11 @@ function blockUser(idEnc) {
 		$.ajax({
 			type: "POST",
 			url: "/user/block/" + idEnc,
-			headers: {
-				"X-CSRF-TOKEN": csrf
-			},
 			success: function() {
 				alert(getText("success.generic"));
 			},
 			error: function(e) {
 				console.log(e);
-				console.log(csrf);
 				alert(getGenericErrorText());
 			}
 		});
@@ -73,9 +61,6 @@ function unblockUser(idEnc) {
 		$.ajax({
 			type: "POST",
 			url: "/user/unblock/" + idEnc,
-			headers: {
-				"X-CSRF-TOKEN": csrf
-			},
 			success: function() {
 				//location.reload(true);
 				alert(getText("success.generic"));
@@ -100,9 +85,6 @@ function reportUserSubmit(idEncoded) {
 		type: "POST",
 		url: "/user/report/" + idEncoded + "/"
 			+ $("#captcha-id").val() + "/" + $("#captcha").val(),
-		headers: {
-			"X-CSRF-TOKEN": csrf
-		},
 		contentType: "text/plain",
 		data: $("#report-comment").val(),
 		success: function() {

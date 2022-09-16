@@ -14,9 +14,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	$.ajax({
 		type: "POST",
 		url: "/user/post",
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		error: function(e) {
 			if (e.status == 403) {
 				location.reload();
@@ -177,9 +174,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			$.ajax({
 				type: "POST",
 				url: "/user/onboarding",
-				headers: {
-					"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-				},
 				contentType: "application/json",
 				data: JSON.stringify(data),
 				success: function(e) {

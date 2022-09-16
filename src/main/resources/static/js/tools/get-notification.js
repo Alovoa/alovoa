@@ -12,9 +12,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	$.ajax({
 		type: "POST",
 		url: "/user/post",
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		error: function(e) {
 			if (e.status == 403) {
 				location.reload();
@@ -27,9 +24,6 @@ function getNewAlert() {
 	$.ajax({
 		type: "GET",
 		url: "/user/status/new-alert",
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		success: function(bool) {
 			if (bool) {
 				$("#nav-alerts").addClass("new");
@@ -50,9 +44,6 @@ function getNewMessage() {
 	$.ajax({
 		type: "GET",
 		url: "/user/status/new-message",
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		success: function(bool) {
 			if (bool) {
 				$("#nav-chats").addClass("new");

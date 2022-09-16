@@ -17,9 +17,6 @@ $(function() {
 		$.ajax({
 			type: "POST",
 			url: "/password/change/",
-			headers: {
-				"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-			},
 			data: JSON.stringify(data),
 			contentType: "application/json",
 			success: function(e) {

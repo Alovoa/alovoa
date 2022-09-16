@@ -107,9 +107,6 @@ function sendSubscriptionToServer(endpoint, key, auth) {
 		url: notificationSubscriptionUrl,
 		data: JSON.stringify({ publicKey: encodedKey, auth: encodedAuth, endPoint: endpoint }),
 		contentType: "application/json",
-		headers: {
-			"X-CSRF-TOKEN": $("input[name='_csrf']").val()
-		},
 		success: function(response) {
 			console.log('Subscribed successfully! ' + JSON.stringify(response));
 		}
