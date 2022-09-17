@@ -64,24 +64,33 @@ public class PasswordService {
 			if (u == null) {
 				throw new DisabledException("user_not_found");
 			}
+			
+			if (u.getPassword() != null) {
+				throw new AlovoaException("user_has_social_login");
+			}
 
 			if (u.isDisabled()) {
 				throw new DisabledException("user_disabled");
 			}
 		}
-
-		UserPasswordToken token = new UserPasswordToken();
-		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
-		token.setDate(new Date());
-		token.setUser(u);
-		u.setPasswordToken(token);
-		u = userRepo.saveAndFlush(u);
-
-		mailService.sendPasswordResetMail(u);
 		
-		SecurityContextHolder.clearContext();
-
-		return u.getPasswordToken();
+		//user has social login, do not assign new password!
+		if (u.getPassword() != null) {
+			UserPasswordToken token = new UserPasswordToken();
+			token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
+			token.setDate(new Date());
+			token.setUser(u);
+			u.setPasswordToken(token);
+			u = userRepo.saveAndFlush(u);
+	
+			mailService.sendPasswordResetMail(u);
+			
+			SecurityContextHolder.clearContext();
+	
+			return u.getPasswordToken();
+		} else {
+			return null;
+		}
 	}
 
 	public void changePasword(PasswordChangeDto dto) throws AlovoaException {
