@@ -1,6 +1,8 @@
 package com.nonononoki.alovoa.component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +16,9 @@ import org.springframework.security.web.authentication.rememberme.TokenBasedReme
 import org.springframework.util.StringUtils;
 
 public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServices {
+	
+	public static final String COOKIE_REMEMBER = "remember-me";
+	public static final String COOKIE_REMEMBER_EXPIRE = "remember-me-expire";
 
 	public CustomTokenBasedRememberMeServices(String key, UserDetailsService userDetailsService) {
 		super(key, userDetailsService);
@@ -26,8 +31,8 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
 		}
 		return (String) ((DefaultOAuth2User) authentication.getPrincipal()).getAttributes().get("email");
 	}
-	
-	//Mostly copied from TokenBasedRememberMeServices
+
+	// Mostly copied from TokenBasedRememberMeServices
 	@Override
 	public void onLoginSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication successfulAuthentication) {
@@ -42,9 +47,9 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
 		}
 		if (!StringUtils.hasLength(password)) {
 			try {
-			UserDetails user = getUserDetailsService().loadUserByUsername(username);
+				UserDetails user = getUserDetailsService().loadUserByUsername(username);
 				password = user.getPassword();
-			} catch(UsernameNotFoundException e) {
+			} catch (UsernameNotFoundException e) {
 				password = "";
 			}
 		}
@@ -60,10 +65,22 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
 					"Added remember-me cookie for user '" + username + "', expiry: '" + new Date(expiryTime) + "'");
 		}
 	}
-	
-	//private override
+
+	// private override
 	private boolean isInstanceOfUserDetails(Authentication authentication) {
 		return authentication.getPrincipal() instanceof UserDetails;
 	}
-	
+
+	public Map<String, Object> getRememberMeCookieData(String username) {
+		long expiryTime = System.currentTimeMillis();
+		// SEC-949
+		expiryTime += 1000L * TWO_WEEKS_S;
+		String signatureValue = makeTokenSignature(expiryTime, username, "");
+		String cookieValue = encodeCookie(new String[] { username, Long.toString(expiryTime), signatureValue });
+		Map<String, Object> map = new HashMap<>();
+		map.put(COOKIE_REMEMBER, cookieValue);
+		map.put(COOKIE_REMEMBER_EXPIRE, expiryTime);
+		return map;
+	}
+
 }
