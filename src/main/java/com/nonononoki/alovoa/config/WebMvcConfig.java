@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -17,6 +18,11 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 @EnableWebMvc
 @ComponentScan
 public class WebMvcConfig implements WebMvcConfigurer {
+
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**").allowedOrigins("*");
+	}
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -31,12 +37,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	}
 
 	@Bean
-	public CookieLocaleResolver localeResolver() {
+	CookieLocaleResolver localeResolver() {
 		return new CookieLocaleResolver();
 	}
 
 	@Bean
-	public ReloadableResourceBundleMessageSource messageSource() {
+	ReloadableResourceBundleMessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageResource = new ReloadableResourceBundleMessageSource();
 		messageResource.setBasename("classpath:i18n/messages");
 		messageResource.setDefaultEncoding(StandardCharsets.UTF_8.name());
