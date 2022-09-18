@@ -173,7 +173,6 @@ public class SecurityConfig {
 	CorsFilter corsFilter() {
 	    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 	    final CorsConfiguration config = new CorsConfiguration();
-	    config.setAllowCredentials(true);
 	    config.setAllowedOrigins(Collections.singletonList("*"));
 	    config.setAllowedHeaders(Arrays.asList("*"));
 	    config.setAllowedMethods(Arrays.asList("*"));
