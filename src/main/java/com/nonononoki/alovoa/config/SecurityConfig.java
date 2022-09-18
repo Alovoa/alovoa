@@ -1,6 +1,8 @@
 package com.nonononoki.alovoa.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.security.web.session.SimpleRedirectSessionInformationExpiredStrategy;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.nonononoki.alovoa.component.AuthFilter;
 import com.nonononoki.alovoa.component.AuthProvider;
@@ -100,6 +105,7 @@ public class SecurityConfig {
 				.sessionRegistry(sessionRegistry());
 		http.csrf().disable();
 		http.requiresChannel().anyRequest().requiresSecure();
+		http.cors();
 		return http.build();
 	}
 
@@ -161,5 +167,17 @@ public class SecurityConfig {
 	@Bean
 	AuthProvider authProvider() {
 		return new AuthProvider();
+	}
+	
+	@Bean
+	CorsFilter corsFilter() {
+	    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    final CorsConfiguration config = new CorsConfiguration();
+	    config.setAllowCredentials(true);
+	    config.setAllowedOrigins(Collections.singletonList("*"));
+	    config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept"));
+	    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
+	    source.registerCorsConfiguration("/**", config);
+	    return new CorsFilter(source);
 	}
 }
