@@ -190,7 +190,7 @@ public class Oauth2Controller {
 
 	private String getOauthParams(String username, String firstName, int page) {
 		CustomTokenBasedRememberMeServices s = new CustomTokenBasedRememberMeServices(rememberKey, userDetailsService);
-		Map<String, Object> map = s.getRememberMeCookieData(firstName);
+		Map<String, Object> map = s.getRememberMeCookieData(username);
 		StringBuilder builder = new StringBuilder();
 		builder.append("?remember-me=").append(map.get(CustomTokenBasedRememberMeServices.COOKIE_REMEMBER))
 				.append("&remember-me-expire=")
