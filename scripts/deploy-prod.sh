@@ -1,7 +1,7 @@
 #!/bin/bash
 cd ..
 git pull origin master
-mvn install -DskipTests
+mvn clean install -DskipTests
 cd target
 read -sp 'Password: ' pw
 fuser -k 8843/tcp

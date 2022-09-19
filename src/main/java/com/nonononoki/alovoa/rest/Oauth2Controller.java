@@ -35,7 +35,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.nonononoki.alovoa.component.CustomTokenBasedRememberMeServices;
-import com.nonononoki.alovoa.component.CustomUserDetailsService;
+import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.html.LoginResource;
 import com.nonononoki.alovoa.html.RegisterResource;
@@ -63,13 +63,10 @@ public class Oauth2Controller {
 	private HttpSession httpSession;
 
 	@Autowired
-	private CustomUserDetailsService userDetailsService;
+	private SecurityConfig securityConfig;
 
 	@Value("${app.first-name.length-max}")
 	private int firstNameMaxLength;
-
-	@Value("${app.login.remember.key}")
-	private String rememberKey;
 
 	private static final String REDIRECT_URL = "redirect-url";
 
@@ -189,8 +186,7 @@ public class Oauth2Controller {
 	}
 
 	private String getOauthParams(String username, String firstName, int page) {
-		CustomTokenBasedRememberMeServices s = new CustomTokenBasedRememberMeServices(rememberKey, userDetailsService);
-		Map<String, Object> map = s.getRememberMeCookieData(username);
+		Map<String, Object> map = securityConfig.getOAuthRememberMeServices().getRememberMeCookieData(username);
 		StringBuilder builder = new StringBuilder();
 		builder.append("?remember-me=").append(map.get(CustomTokenBasedRememberMeServices.COOKIE_REMEMBER))
 				.append("&remember-me-expire=")

@@ -147,12 +147,12 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	TokenBasedRememberMeServices rememberMeServices() throws Exception {
+	TokenBasedRememberMeServices rememberMeServices() {
 		return new TokenBasedRememberMeServices(rememberKey, customUserDetailsService);
 	}
 
 	@Bean
-	TokenBasedRememberMeServices oAuthRememberMeServices() throws Exception {
+	TokenBasedRememberMeServices oAuthRememberMeServices() {
 		CustomTokenBasedRememberMeServices rememberMeService = new CustomTokenBasedRememberMeServices(rememberKey,
 				customUserDetailsService);
 		rememberMeService.setAlwaysRemember(true);
@@ -178,5 +178,9 @@ public class SecurityConfig {
 	    config.setAllowedMethods(Arrays.asList("*"));
 	    source.registerCorsConfiguration("/**", config);
 	    return new CorsFilter(source);
+	}
+	
+	public CustomTokenBasedRememberMeServices getOAuthRememberMeServices() {
+		return (CustomTokenBasedRememberMeServices) oAuthRememberMeServices();
 	}
 }
