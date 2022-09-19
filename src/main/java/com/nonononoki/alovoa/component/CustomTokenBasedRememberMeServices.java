@@ -53,10 +53,10 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
 				password = "";
 			}
 		}
-		int tokenLifetime = calculateLoginLifetime(request, successfulAuthentication);
+		int tokenLifetime = TWO_WEEKS_S;
 		long expiryTime = System.currentTimeMillis();
 		// SEC-949
-		expiryTime += 1000L * ((tokenLifetime < 0) ? TWO_WEEKS_S : tokenLifetime);
+		expiryTime += 1000L * TWO_WEEKS_S;
 		String signatureValue = makeTokenSignature(expiryTime, username, password);
 		setCookie(new String[] { username, Long.toString(expiryTime), signatureValue }, tokenLifetime, request,
 				response);
@@ -75,7 +75,7 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
 		long expiryTime = System.currentTimeMillis();
 		// SEC-949
 		expiryTime += 1000L * TWO_WEEKS_S;
-		String signatureValue = makeTokenSignature(expiryTime, username, "");
+		String signatureValue = makeTokenSignature(expiryTime, username, null);
 		String cookieValue = encodeCookie(new String[] { username, Long.toString(expiryTime), signatureValue });
 		Map<String, Object> map = new HashMap<>();
 		map.put(COOKIE_REMEMBER, cookieValue);
