@@ -1,9 +1,8 @@
 package com.nonononoki.alovoa.component;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -65,22 +64,35 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
 					"Added remember-me cookie for user '" + username + "', expiry: '" + new Date(expiryTime) + "'");
 		}
 	}
+	
+	// Mostly copied from TokenBasedRememberMeServices
+	public Cookie getRememberMeCookie(String cookieValue, HttpServletRequest request, HttpServletResponse response) {
+		Cookie cookie = new Cookie(COOKIE_REMEMBER, cookieValue);
+		cookie.setMaxAge(TWO_WEEKS_S);
+		cookie.setPath(getCookiePath(request));
+		cookie.setSecure(request.isSecure());
+		cookie.setHttpOnly(true);
+		return cookie;
+	}
+	
+	// Mostly copied from TokenBasedRememberMeServices
+	private String getCookiePath(HttpServletRequest request) {
+		String contextPath = request.getContextPath();
+		return (contextPath.length() > 0) ? contextPath : "/";
+	}
 
 	// private override
 	private boolean isInstanceOfUserDetails(Authentication authentication) {
 		return authentication.getPrincipal() instanceof UserDetails;
 	}
 
-	public Map<String, Object> getRememberMeCookieData(String username) {
+	// Mostly copied from TokenBasedRememberMeServices
+	public String getRememberMeCookieData(String username) {
 		long expiryTime = System.currentTimeMillis();
 		// SEC-949
 		expiryTime += 1000L * TWO_WEEKS_S;
 		String signatureValue = makeTokenSignature(expiryTime, username, null);
 		String cookieValue = encodeCookie(new String[] { username, Long.toString(expiryTime), signatureValue });
-		Map<String, Object> map = new HashMap<>();
-		map.put(COOKIE_REMEMBER, cookieValue);
-		map.put(COOKIE_REMEMBER_EXPIRE, expiryTime);
-		return map;
+		return cookieValue;
 	}
-
 }
