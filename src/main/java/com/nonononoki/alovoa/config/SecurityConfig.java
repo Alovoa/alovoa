@@ -2,7 +2,6 @@ package com.nonononoki.alovoa.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,7 +182,8 @@ public class SecurityConfig {
 	CorsFilter corsFilter() {
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		final CorsConfiguration config = new CorsConfiguration();
-		config.setAllowedOrigins(Collections.singletonList("*"));
+		config.setAllowCredentials(true);
+		config.setAllowedOriginPatterns(Arrays.asList("*"));
 		config.setAllowedHeaders(Arrays.asList("*"));
 		config.setAllowedMethods(Arrays.asList("*"));
 		source.registerCorsConfiguration("/**", config);
