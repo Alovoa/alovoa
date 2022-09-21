@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -12,10 +13,10 @@ import javax.crypto.NoSuchPaddingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.html.DonateResource;
 import com.nonononoki.alovoa.html.MessageResource;
 import com.nonononoki.alovoa.html.NotificationResource;
@@ -25,6 +26,7 @@ import com.nonononoki.alovoa.html.UserProfileResource;
 import com.nonononoki.alovoa.model.AlovoaException;
 
 @RestController
+@RequestMapping("/api/v1")
 public class ApiController {
 
 	@Autowired
@@ -41,60 +43,56 @@ public class ApiController {
 
 	@Autowired
 	private SearchResource searchResource;
-	
+
 	@Autowired
 	private UserProfileResource userProfileResource;
 
-	@Autowired
-	private ObjectMapper objectMapper;
-
-	@GetMapping("/api/v1/resource/donate")
-	public String resourceDonate() throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
+	@GetMapping("/resource/donate")
+	public Map<String, Object> resourceDonate() throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			UnsupportedEncodingException, AlovoaException {
-		return objectMapper.writeValueAsString(donateResource.donate().getModel());
-	}
-
-	@GetMapping("/api/v1/resource/chats")
-	public String resourceChats() throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			UnsupportedEncodingException, AlovoaException {
-		return objectMapper.writeValueAsString(messageResource.chats().getModel());
-	}
-
-	@GetMapping("/api/v1/resource/chats/{id}")
-	public String resourceChatsDetail(@PathVariable long id) throws JsonProcessingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return objectMapper.writeValueAsString(messageResource.chatsDetail(id).getModel());
-	}
-
-	@GetMapping("/api/v1/resource/alerts")
-	public String resourceNotification() throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			UnsupportedEncodingException, AlovoaException {
-		return objectMapper.writeValueAsString(notificationResource.notification().getModel());
-	}
-
-	@GetMapping("/api/v1/resource/profile")
-	public String resourceProfile() throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			UnsupportedEncodingException, AlovoaException {
-		return objectMapper.writeValueAsString(profileResource.profile().getModel());
-	}
-
-	@GetMapping("/api/v1/resource/search")
-	public String resourceSearch() throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			UnsupportedEncodingException, AlovoaException {
-		return objectMapper.writeValueAsString(searchResource.search().getModel());
+		return donateResource.donate().getModel();
 	}
 	
-	@GetMapping("/api/v1/resource//profile/view/{idEncoded}")
-	public String resourceProfileView(@PathVariable String idEncoded) throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			UnsupportedEncodingException, AlovoaException {
-		return objectMapper.writeValueAsString(userProfileResource.profileView(idEncoded).getModel());
+	@GetMapping("/resource/chats")
+	public Map<String, Object> resourceChats()
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		return messageResource.chats().getModel();
 	}
 
+	@GetMapping("/resource/chats/{id}")
+	public Map<String, Object> resourceChatsDetail(@PathVariable long id) throws JsonProcessingException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		return messageResource.chatsDetail(id).getModel();
+	}
+
+	@GetMapping("/resource/alerts")
+	public Map<String, Object> resourceNotification() throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+			UnsupportedEncodingException, AlovoaException {
+		return notificationResource.notification().getModel();
+	}
+
+	@GetMapping("/resource/profile")
+	public Map<String, Object> resourceProfile() throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+			UnsupportedEncodingException, AlovoaException {
+		return profileResource.profile().getModel();
+	}
+
+	@GetMapping("/resource/search")
+	public Map<String, Object> resourceSearch() throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
+			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+			UnsupportedEncodingException, AlovoaException {
+		return searchResource.search().getModel();
+	}
+
+	@GetMapping("/resource//profile/view/{idEncoded}")
+	public Map<String, Object> resourceProfileView(@PathVariable String idEncoded) throws JsonProcessingException,
+			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		return userProfileResource.profileView(idEncoded).getModel();
+	}
 }
