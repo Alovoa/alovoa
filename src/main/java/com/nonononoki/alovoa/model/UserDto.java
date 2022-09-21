@@ -157,12 +157,12 @@ public class UserDto {
 		dto.setPreferedGenders(user.getPreferedGenders());
 		dto.setPreferedMinAge(user.getPreferedMinAge());
 		dto.setPreferedMaxAge(user.getPreferedMaxAge());
-		if (mode != PROFILE_PICTURE_ONLY) {
+		if (mode != PROFILE_PICTURE_ONLY && mode != NO_MEDIA) {
 			dto.setImages(user.getImages());
 		}
 		dto.setGender(user.getGender());
 		dto.setIntention(user.getIntention());
-		if (user.getProfilePicture() != null) {
+		if (mode != NO_MEDIA && user.getProfilePicture() != null) {
 			dto.setProfilePicture(user.getProfilePicture().getData());
 		}
 		dto.setBlockedUsers(user.getBlockedUsers());
@@ -170,7 +170,7 @@ public class UserDto {
 		dto.setBlockedByUsers(user.getBlockedByUsers());
 		dto.setReportedByUsers(user.getReportedByUsers());
 		dto.setInterests(user.getInterests());
-		if ((mode != NO_AUDIO || mode != PROFILE_PICTURE_ONLY) && user.getAudio() != null) {
+		if ((mode != NO_AUDIO || mode != PROFILE_PICTURE_ONLY || mode != NO_MEDIA) && user.getAudio() != null) {
 			dto.setAudio(user.getAudio().getData());
 		}
 		dto.setHasAudio(user.getAudio() != null);
