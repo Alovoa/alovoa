@@ -23,7 +23,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionHandler.class);
 
 	@Autowired
-	Environment env;
+	private Environment env;
 
 	@ExceptionHandler
 	protected ResponseEntity<Object> handleConflict(Exception ex, WebRequest request) {

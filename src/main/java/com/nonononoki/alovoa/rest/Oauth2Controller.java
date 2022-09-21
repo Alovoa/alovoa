@@ -11,6 +11,9 @@ import java.util.Map;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -34,7 +37,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.nonononoki.alovoa.component.CustomTokenBasedRememberMeServices;
 import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.html.LoginResource;
@@ -64,6 +66,12 @@ public class Oauth2Controller {
 
 	@Autowired
 	private SecurityConfig securityConfig;
+
+	@Autowired
+	private HttpServletRequest request;
+
+	@Autowired
+	private HttpServletResponse response;
 
 	@Value("${app.first-name.length-max}")
 	private int firstNameMaxLength;
@@ -185,13 +193,16 @@ public class Oauth2Controller {
 		return new ModelAndView("redirect:" + LoginResource.URL);
 	}
 
+	@GetMapping("/oauth2/remember-me-cookie/{cookieValue}")
+	public void getRememberMeCookie(@PathVariable String cookieValue) {
+		Cookie cookie = securityConfig.getOAuthRememberMeServices().getRememberMeCookie(cookieValue, request, response);
+		response.addCookie(cookie);
+	}
+
 	private String getOauthParams(String username, String firstName, int page) {
-		Map<String, Object> map = securityConfig.getOAuthRememberMeServices().getRememberMeCookieData(username);
+		String cookieData = securityConfig.getOAuthRememberMeServices().getRememberMeCookieData(username);
 		StringBuilder builder = new StringBuilder();
-		builder.append("?remember-me=").append(map.get(CustomTokenBasedRememberMeServices.COOKIE_REMEMBER))
-				.append("&remember-me-expire=")
-				.append(map.get(CustomTokenBasedRememberMeServices.COOKIE_REMEMBER_EXPIRE)).append("&page=")
-				.append(page);
+		builder.append("?remember-me=").append(cookieData).append("&page=").append(page);
 		if (firstName != null) {
 			builder.append("&firstName=").append(firstName);
 		}

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -52,6 +54,9 @@ public class SecurityConfig {
 	private String rememberKey;
 
 	@Autowired
+	private Environment env;
+
+	@Autowired
 	private SuccessHandler successHandler;
 
 	@Autowired
@@ -59,8 +64,8 @@ public class SecurityConfig {
 
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
-	
-    private final AuthenticationConfiguration configuration;
+
+	private final AuthenticationConfiguration configuration;
 
 	private static final String ROLE_USER = "ROLE_USER";
 	private static final String ROLE_ADMIN = "ROLE_ADMIN";
@@ -77,10 +82,11 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		
-		AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+
+		AuthenticationManagerBuilder authenticationManagerBuilder = http
+				.getSharedObject(AuthenticationManagerBuilder.class);
 		authenticationManagerBuilder.authenticationProvider(authProvider());
-		
+
 		http.authorizeRequests().antMatchers("/admin").hasAnyAuthority(ROLE_ADMIN).antMatchers("/admin/**")
 				.hasAnyAuthority(ROLE_ADMIN).antMatchers("/css/**").permitAll().antMatchers("/js/**").permitAll()
 				.antMatchers("/img/**").permitAll().antMatchers("/font/**").permitAll().antMatchers("/json/**")
@@ -104,16 +110,20 @@ public class SecurityConfig {
 		http.sessionManagement().maximumSessions(10).expiredSessionStrategy(getSessionInformationExpiredStrategy())
 				.sessionRegistry(sessionRegistry());
 		http.csrf().disable();
-		http.requiresChannel().anyRequest().requiresSecure();
+
+		if (env.acceptsProfiles(Profiles.of("prod"))) {
+			http.requiresChannel().anyRequest().requiresSecure();
+		}
+
 		http.cors();
 		return http.build();
 	}
 
-    @Bean
-    AuthenticationManager authenticationManager() throws Exception {
-        return configuration.getAuthenticationManager();
-    }
-	
+	@Bean
+	AuthenticationManager authenticationManager() throws Exception {
+		return configuration.getAuthenticationManager();
+	}
+
 	@Bean
 	AuthFilter authenticationFilter() throws Exception {
 		AuthFilter filter = new AuthFilter();
@@ -168,18 +178,18 @@ public class SecurityConfig {
 	AuthProvider authProvider() {
 		return new AuthProvider();
 	}
-	
+
 	@Bean
 	CorsFilter corsFilter() {
-	    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	    final CorsConfiguration config = new CorsConfiguration();
-	    config.setAllowedOrigins(Collections.singletonList("*"));
-	    config.setAllowedHeaders(Arrays.asList("*"));
-	    config.setAllowedMethods(Arrays.asList("*"));
-	    source.registerCorsConfiguration("/**", config);
-	    return new CorsFilter(source);
+		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		final CorsConfiguration config = new CorsConfiguration();
+		config.setAllowedOrigins(Collections.singletonList("*"));
+		config.setAllowedHeaders(Arrays.asList("*"));
+		config.setAllowedMethods(Arrays.asList("*"));
+		source.registerCorsConfiguration("/**", config);
+		return new CorsFilter(source);
 	}
-	
+
 	public CustomTokenBasedRememberMeServices getOAuthRememberMeServices() {
 		return (CustomTokenBasedRememberMeServices) oAuthRememberMeServices();
 	}
