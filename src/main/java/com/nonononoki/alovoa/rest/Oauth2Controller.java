@@ -83,6 +83,7 @@ public class Oauth2Controller {
 	private static final int REDIRECT_REGISTER = 1;
 	private static final int REDIRECT_ONBOARDING = 2;
 	private static final int REDIRECT_DEFAULT = 3;
+	private static final int HOUR_S = 3600;
 
 	@GetMapping("/oauth2/authorization/google/{redirectUrlEncoded}")
 	public ModelAndView oauth2Google(@PathVariable String redirectUrlEncoded) {
@@ -193,16 +194,23 @@ public class Oauth2Controller {
 		return new ModelAndView("redirect:" + LoginResource.URL);
 	}
 
-	@GetMapping("/oauth2/remember-me-cookie/{cookieValue}")
-	public void getRememberMeCookie(@PathVariable String cookieValue) {
-		Cookie cookie = securityConfig.getOAuthRememberMeServices().getRememberMeCookie(cookieValue, request, response);
-		response.addCookie(cookie);
+	@GetMapping("/oauth2/remember-me-cookie/{rememberCookieValue}/{sessionId}")
+	public void getRememberMeCookie(@PathVariable String rememberCookieValue, @PathVariable String sessionId) {
+		Cookie cookieRememberMe = securityConfig.getOAuthRememberMeServices().getRememberMeCookie(rememberCookieValue, request, response);
+		response.addCookie(cookieRememberMe);
+		
+		Cookie cookieSession = new Cookie(SecurityConfig.COOKIE_SESSION, sessionId);
+		cookieSession.setMaxAge(HOUR_S);
+		cookieSession.setPath("/");
+		cookieSession.setSecure(request.isSecure());
+		cookieSession.setHttpOnly(true);
+		response.addCookie(cookieSession);
 	}
 
 	private String getOauthParams(String username, String firstName, int page) {
 		String cookieData = securityConfig.getOAuthRememberMeServices().getRememberMeCookieData(username);
 		StringBuilder builder = new StringBuilder();
-		builder.append("?remember-me=").append(cookieData).append("&page=").append(page);
+		builder.append("?remember-me=").append(cookieData).append("&jsessionid=").append(httpSession.getId()).append("&page=").append(page);
 		if (firstName != null) {
 			builder.append("&firstName=").append(firstName);
 		}

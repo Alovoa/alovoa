@@ -49,7 +49,7 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
 				UserDetails user = getUserDetailsService().loadUserByUsername(username);
 				password = user.getPassword();
 			} catch (UsernameNotFoundException e) {
-				password = "";
+				password = null;
 			}
 		}
 		int tokenLifetime = TWO_WEEKS_S;

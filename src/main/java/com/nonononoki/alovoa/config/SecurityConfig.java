@@ -66,10 +66,10 @@ public class SecurityConfig {
 
 	private final AuthenticationConfiguration configuration;
 
-	private static final String ROLE_USER = "ROLE_USER";
-	private static final String ROLE_ADMIN = "ROLE_ADMIN";
-	private static final String COOKIE_SESSION = "JSESSIONID";
-	private static final String COOKIE_REMEMBER = "remember-me";
+	public static final String ROLE_USER = "ROLE_USER";
+	public static final String ROLE_ADMIN = "ROLE_ADMIN";
+	public static final String COOKIE_SESSION = "JSESSIONID";
+	public static final String COOKIE_REMEMBER = "remember-me";
 
 	public static String getRoleUser() {
 		return ROLE_USER;
