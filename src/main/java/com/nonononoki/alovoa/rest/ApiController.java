@@ -11,6 +11,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +34,13 @@ public class ApiController {
 	private DonateResource donateResource;
 
 	@Autowired
+	private DonateController donateController;
+
+	@Autowired
 	private MessageResource messageResource;
+	
+	@Autowired
+	private MessageController messageController;
 
 	@Autowired
 	private NotificationResource notificationResource;
@@ -43,17 +50,28 @@ public class ApiController {
 
 	@Autowired
 	private SearchResource searchResource;
+	
+	@Autowired
+	private SearchController searchController;
 
 	@Autowired
 	private UserProfileResource userProfileResource;
 
 	@GetMapping("/resource/donate")
-	public Map<String, Object> resourceDonate() throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			UnsupportedEncodingException, AlovoaException {
+	public Map<String, Object> resourceDonate() throws JsonProcessingException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		return donateResource.donate().getModel();
 	}
-	
+
+	@GetMapping("/resource/donate/recent/{filter}")
+	public Map<String, Object> resourceDonateRecent(Model model, @PathVariable int filter)
+			throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+			UnsupportedEncodingException, AlovoaException {
+		return donateController.filterRecentModel(model, filter).asMap();
+	}
+
 	@GetMapping("/resource/chats")
 	public Map<String, Object> resourceChats()
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
@@ -62,37 +80,59 @@ public class ApiController {
 	}
 
 	@GetMapping("/resource/chats/{id}")
-	public Map<String, Object> resourceChatsDetail(@PathVariable long id) throws JsonProcessingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+	public Map<String, Object> resourceChatsDetail(@PathVariable long id) throws JsonProcessingException,
+			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		return messageResource.chatsDetail(id).getModel();
+	}
+	
+	@GetMapping("/resource/message/update/{convoId}/{first}")
+	public Map<String, Object> resourceMessageUpdate(Model model, @PathVariable long convoId, @PathVariable int first) throws JsonProcessingException,
+			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		return messageController.getMessagesModel(model, convoId, first).asMap();
 	}
 
 	@GetMapping("/resource/alerts")
-	public Map<String, Object> resourceNotification() throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			UnsupportedEncodingException, AlovoaException {
+	public Map<String, Object> resourceNotification() throws JsonProcessingException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		return notificationResource.notification().getModel();
 	}
 
 	@GetMapping("/resource/profile")
-	public Map<String, Object> resourceProfile() throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			UnsupportedEncodingException, AlovoaException {
+	public Map<String, Object> resourceProfile() throws JsonProcessingException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		return profileResource.profile().getModel();
 	}
-
-	@GetMapping("/resource/search")
-	public Map<String, Object> resourceSearch() throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			UnsupportedEncodingException, AlovoaException {
-		return searchResource.search().getModel();
-	}
-
-	@GetMapping("/resource//profile/view/{idEncoded}")
+	
+	@GetMapping("/resource/profile/view/{idEncoded}")
 	public Map<String, Object> resourceProfileView(@PathVariable String idEncoded) throws JsonProcessingException,
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		return userProfileResource.profileView(idEncoded).getModel();
+	}
+
+	@GetMapping("/resource/search")
+	public Map<String, Object> resourceSearch() throws JsonProcessingException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		return searchResource.search().getModel();
+	}
+	
+	@GetMapping("/resource/search/users/{latitude}/{longitude}/{distance}/{search}")
+	public Map<String, Object> resourceSearch(Model model, @PathVariable Double latitude, @PathVariable Double longitude,
+			@PathVariable int distance, @PathVariable int search) throws JsonProcessingException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		return searchController.getUsersModel(model, latitude, longitude, distance, search).asMap();
+	}
+	
+	@GetMapping("/resource/search/users/default")
+	public Map<String, Object> resourceSearch(Model model) throws JsonProcessingException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		return searchController.getUsersDefaultModel(model).asMap();
 	}
 }

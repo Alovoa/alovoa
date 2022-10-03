@@ -26,7 +26,7 @@ public class SearchController {
 
 	@Autowired
 	private SearchService searchService;
-	
+
 	@Autowired
 	private AuthService authService;
 
@@ -35,17 +35,31 @@ public class SearchController {
 			@PathVariable int distance, @PathVariable int search)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		model.addAttribute("dto", searchService.search(latitude, longitude, distance, search));
-		model.addAttribute("currUser", authService.getCurrentUser(true));
+		model = getUsersModel(model, latitude, longitude, distance, search);
 		return "fragments :: search-users";
 	}
-	
+
+	public Model getUsersModel(Model model, Double latitude, Double longitude, int distance, int search)
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		model.addAttribute("dto", searchService.search(latitude, longitude, distance, search));
+		model.addAttribute("currUser", authService.getCurrentUser(true));
+		return model;
+	}
+
 	@GetMapping("/users/default")
 	public String getUsersDefault(Model model)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		model = getUsersDefaultModel(model);
+		return "fragments :: search-users";
+	}
+	
+	public Model getUsersDefaultModel(Model model)
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		model.addAttribute("dto", searchService.searchDefault());
 		model.addAttribute("currUser", authService.getCurrentUser(true));
-		return "fragments :: search-users";
+		return model;
 	}
 }

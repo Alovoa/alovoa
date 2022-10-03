@@ -13,7 +13,6 @@ import javax.crypto.NoSuchPaddingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
@@ -47,13 +46,13 @@ public class UserProfileResource {
 	}
 
 	@GetMapping("/profile/view/modal/{idEncoded}")
-	public ModelAndView profileViewModal(Model model, @PathVariable String idEncoded) throws AlovoaException,
+	public ModelAndView profileViewModal(@PathVariable String idEncoded) throws AlovoaException,
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {	
 		return data(idEncoded, "fragments::user-profile-modal");
 	}
 
-	private ModelAndView data(String idEncoded, String view) throws AlovoaException, InvalidKeyException,
+	public ModelAndView data(String idEncoded, String view) throws AlovoaException, InvalidKeyException,
 			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
 			InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		Optional<Long> idOptional = UserDto.decodeId(idEncoded, textEncryptor);

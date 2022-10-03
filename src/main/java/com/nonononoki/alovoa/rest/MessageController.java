@@ -46,6 +46,17 @@ public class MessageController {
 
 	@GetMapping(value = "/get-messages/{convoId}/{first}")
 	public String getMessages(Model model, @PathVariable long convoId, @PathVariable int first) throws AlovoaException {
+
+		model = getMessagesModel(model, convoId, first);
+		boolean show = (boolean) model.getAttribute("show");
+		if (show) {
+			return "fragments :: message-detail";
+		} else {
+			return "fragments :: empty";
+		}
+	}
+
+	public Model getMessagesModel(Model model, long convoId, int first) throws AlovoaException {
 		User user = authService.getCurrentUser(true);
 		Conversation c = conversationRepo.findById(convoId).orElse(null);
 
@@ -86,12 +97,9 @@ public class MessageController {
 
 		conversationRepo.saveAndFlush(c);
 
-		if (first == 1 || lastCheckedDate == null || !lastCheckedDate.after(c.getLastUpdated())) {
-			model.addAttribute("messages", MessageDto.messagesToDtos(c.getMessages(), user));
-			return "fragments :: message-detail";
-		}
-
-		return "fragments :: empty";
-
+		model.addAttribute("messages", MessageDto.messagesToDtos(c.getMessages(), user));
+		boolean show = first == 1 || lastCheckedDate == null || !lastCheckedDate.after(c.getLastUpdated());
+		model.addAttribute("show", show);
+		return model;
 	}
 }

@@ -54,11 +54,18 @@ public class DonateController {
 	public String filterRecent(Model model, @PathVariable int filter)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		filterRecentModel(model, filter);
+		return "fragments :: donate-filter";
+	}
+	
+	public Model filterRecentModel(Model model, int filter)
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		List<DonationDto> donations = donateService.filter(filter);
 		model.addAttribute("donations", donations);
 		model.addAttribute("filter", filter);
 		model.addAttribute("currUser", authService.getCurrentUser(true));
-		return "fragments :: donate-filter";
+		return model;
 	}
 
 	@PostMapping(value = "/received/kofi/{key}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
