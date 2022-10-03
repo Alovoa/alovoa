@@ -131,7 +131,9 @@ public class UserDto {
 		}
 		UserDto dto = new UserDto();
 		dto.setId(user.getId());
-		dto.setEmail(user.getEmail());
+		if (user.equals(currentUser)) {
+			dto.setEmail(user.getEmail());
+		}
 		dto.setIdEncoded(encodeId(user.getId(), textEncryptor));
 		if (user.getDates() != null) {
 			dto.setActiveDate(user.getDates().getActiveDate());
