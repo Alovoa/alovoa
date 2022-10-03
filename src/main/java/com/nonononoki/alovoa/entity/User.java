@@ -30,6 +30,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.config.SecurityConfig;
@@ -68,8 +69,10 @@ public class User implements UserDetails {
 
 	@Column(nullable = false, unique = true, updatable = false)
 	@Convert(converter = TextEncryptorConverter.class)
+	@JsonIgnore
 	private final String email;
 
+	@JsonIgnore
 	private String password;
 
 	@Column(updatable = false)
@@ -79,50 +82,68 @@ public class User implements UserDetails {
 	private String description;
 
 	// used for emails
+	@JsonIgnore
 	private String language;
 
+	@JsonIgnore
 	private String accentColor;
 
+	@JsonIgnore
 	private int units;
 
+	@JsonIgnore
 	private int numberReferred;
 
+	@JsonIgnore
 	private String referrerCode;
 
+	@JsonIgnore
 	private String uiDesign;
 
+	@JsonIgnore
 	private boolean showZodiac;
 
 	private int preferedMinAge;
 	private int preferedMaxAge;
 
+	@JsonIgnore
 	private Double locationLatitude;
+	
+	@JsonIgnore
 	private Double locationLongitude;
 
 	private double totalDonations;
 
+	@JsonIgnore
 	private boolean admin;
 
+	@JsonIgnore
 	private boolean confirmed;
 
+	@JsonIgnore
 	private boolean disabled;
 	
+	@JsonIgnore
 	private String country;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn
+	@JsonIgnore
 	private UserRegisterToken registerToken;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn
+	@JsonIgnore
 	private UserPasswordToken passwordToken;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn
+	@JsonIgnore
 	private UserDeleteToken deleteToken;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn
+	@JsonIgnore
 	private UserDates dates;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -153,55 +174,71 @@ public class User implements UserDetails {
 	private List<UserImage> images;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+	@JsonIgnore
 	private List<UserDonation> donations;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+	@JsonIgnore
 	private List<UserWebPush> webPush;
 
 	// Tables with multiple users
 
 	@OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true, mappedBy = "userFrom")
+	@JsonIgnore
 	private List<Message> messageSent;
 
 	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
+	@JsonIgnore
 	private List<Message> messageReceived;
 
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, mappedBy = "users")
+	@JsonIgnore
 	private List<Conversation> conversations;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
+	@JsonIgnore
 	private List<UserLike> likes;
 
 	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
+	@JsonIgnore
 	private List<UserLike> likedBy;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userTo")
+	@JsonIgnore
 	private List<UserNotification> notifications;
 
 	@OneToMany(orphanRemoval = true, mappedBy = "userFrom")
+	@JsonIgnore
 	private List<UserNotification> notificationsFrom;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
 	private List<UserHide> hiddenUsers;
 
 	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
+	@JsonIgnore
 	private List<UserHide> hiddenByUsers;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
+	@JsonIgnore
 	private List<UserBlock> blockedUsers;
 
 	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
+	@JsonIgnore
 	private List<UserBlock> blockedByUsers;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
+	@JsonIgnore
 	private List<UserReport> reported;
 
 	@OneToMany(orphanRemoval = true, mappedBy = "userTo")
+	@JsonIgnore
 	private List<UserReport> reportedByUsers;
 
 	// some more data
+	@JsonIgnore
 	long numberProfileViews;
 
+	@JsonIgnore
 	long numberSearches;
 
 	@Transient

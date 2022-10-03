@@ -25,12 +25,10 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Gender;
-import com.nonononoki.alovoa.entity.user.UserBlock;
 import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserIntention;
 import com.nonononoki.alovoa.entity.user.UserInterest;
 import com.nonononoki.alovoa.entity.user.UserMiscInfo;
-import com.nonononoki.alovoa.entity.user.UserReport;
 
 import lombok.Data;
 
@@ -71,19 +69,17 @@ public class UserDto {
 	private List<UserImage> images;
 
 	private String description;
-	
+
 	private String country;
-	
+
 	private int distanceToUser;
 	private int sameInterests;
 	private double totalDonations;
 
 	private Date activeDate;
 
-	private List<UserBlock> blockedByUsers;
-	private List<UserReport> reportedByUsers;
-
-	private List<UserBlock> blockedUsers;
+	private long numBlockedByUsers;
+	private long numReports;
 
 	private boolean blockedByCurrentUser;
 	private boolean reportedByCurrentUser;
@@ -167,10 +163,9 @@ public class UserDto {
 		if (mode != NO_MEDIA && user.getProfilePicture() != null) {
 			dto.setProfilePicture(user.getProfilePicture().getData());
 		}
-		dto.setBlockedUsers(user.getBlockedUsers());
 		dto.setTotalDonations(user.getTotalDonations());
-		dto.setBlockedByUsers(user.getBlockedByUsers());
-		dto.setReportedByUsers(user.getReportedByUsers());
+		dto.setNumBlockedByUsers(user.getBlockedByUsers().size());
+		dto.setNumReports(user.getReportedByUsers().size());
 		dto.setInterests(user.getInterests());
 		if ((mode != NO_AUDIO || mode != PROFILE_PICTURE_ONLY || mode != NO_MEDIA) && user.getAudio() != null) {
 			dto.setAudio(user.getAudio().getData());

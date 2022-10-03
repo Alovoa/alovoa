@@ -694,11 +694,11 @@
 								</tr>
 								<tr>
 									<th th:text="#{userprofile.num-blocks}"></th>
-									<td th:text="${#lists.size(user.blockedByUsers)}"></td>
+									<td th:text="${user.numBlockedByUsers}"></td>
 								</tr>
 								<tr>
 									<th th:text="#{userprofile.num-reports}"></th>
-									<td th:text="${#lists.size(user.reportedByUsers)}"></td>
+									<td th:text="${user.numReports}"></td>
 								</tr>
 							</tbody>
 						</table>
