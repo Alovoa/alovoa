@@ -208,7 +208,7 @@ class UserServiceTest {
 		userService.updatePreferedGender(2, false);
 		assertEquals(2, user3.getPreferedGenders().size());
 
-		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getId());
+		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getText());
 		assertEquals(0, authService.getCurrentUser().getInterests().size());
 		userService.addInterest(INTEREST);
 		userService.addImage(img3);

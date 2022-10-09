@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -583,19 +584,16 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
-	public void deleteInterest(long interestId) throws AlovoaException {
+	public void deleteInterest(String interest) throws AlovoaException {
 		User user = authService.getCurrentUser(true);
-		UserInterest interest = userInterestRepo.findById(interestId).orElse(null);
+		
+		Optional<UserInterest> interestOpt = user.getInterests().stream().filter(i -> i.getText().equals(interest)).findFirst();
 
-		if (interest == null) {
-			throw new AlovoaException("interest_is_null");
-		}
-
-		if (!user.getInterests().contains(interest)) {
+		if (interest.isEmpty()) {
 			throw new AlovoaException("interest_does_not_exists");
 		}
 
-		user.getInterests().remove(interest);
+		user.getInterests().remove(interestOpt.get());
 		userRepo.saveAndFlush(user);
 	}
 

@@ -135,7 +135,7 @@ public class UserController {
 	}
 
 	@PostMapping("/update/misc-info/{infoValue}/{activated}")
-	public void updatePreferedGenders(@PathVariable long infoValue, @PathVariable String activated)
+	public void updateMiscInfo(@PathVariable long infoValue, @PathVariable String activated)
 			throws AlovoaException {
 		userService.updateUserMiscInfo(infoValue, Tools.binaryStringToBoolean(activated));
 	}
@@ -145,9 +145,9 @@ public class UserController {
 		userService.addInterest(value);
 	}
 
-	@PostMapping("/interest/delete/{interestId}")
-	public void deleteInterest(@PathVariable long interestId) throws AlovoaException {
-		userService.deleteInterest(interestId);
+	@PostMapping("/interest/delete/{value}")
+	public void deleteInterest(@PathVariable String value) throws AlovoaException {
+		userService.deleteInterest(value);
 	}
 
 	@GetMapping(value = "/interest/autocomplete/{name}")
@@ -166,7 +166,7 @@ public class UserController {
 	}
 
 	@PostMapping("/show-zodiac/update/{showZodiac}")
-	public void updateUiDesign(@PathVariable int showZodiac) throws AlovoaException {
+	public void updateZodiac(@PathVariable int showZodiac) throws AlovoaException {
 		userService.updateShowZodiac(showZodiac);
 	}
 

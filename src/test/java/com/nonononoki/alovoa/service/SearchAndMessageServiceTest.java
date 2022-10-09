@@ -199,7 +199,7 @@ class SearchAndMessageServiceTest {
 		userService.updatePreferedGender(2, false);
 		assertEquals(2, user3.getPreferedGenders().size());
 
-		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getId());
+		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getText());
 		assertEquals(0, authService.getCurrentUser().getInterests().size());
 		userService.addInterest(INTEREST);
 
@@ -249,7 +249,7 @@ class SearchAndMessageServiceTest {
 		// search filtered by interest
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-		userService.deleteInterest(user1.getInterests().get(0).getId());
+		userService.deleteInterest(user1.getInterests().get(0).getText());
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
 		List<UserDto> interestSearchDto1 = searchService.search(0.0, 0.0, 50, SearchService.SORT_INTEREST).getUsers();

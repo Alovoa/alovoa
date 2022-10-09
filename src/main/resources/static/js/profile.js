@@ -509,10 +509,10 @@ function deleteAudio() {
 	}
 }
 
-function deleteInterest(id) {
+function deleteInterest(val) {
 	$.ajax({
 		type: "POST",
-		url: "/user/interest/delete/" + id,
+		url: "/user/interest/delete/" + val,
 		success: function() {
 			location.reload();
 		},
