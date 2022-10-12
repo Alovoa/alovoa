@@ -11,6 +11,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +43,9 @@ public class SearchController {
 	public Model getUsersModel(Model model, Double latitude, Double longitude, int distance, int search)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		if(model == null) {
+			model = new ConcurrentModel();
+		}
 		model.addAttribute("dto", searchService.search(latitude, longitude, distance, search));
 		model.addAttribute("currUser", authService.getCurrentUser(true));
 		return model;
@@ -58,6 +62,9 @@ public class SearchController {
 	public Model getUsersDefaultModel(Model model)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		if(model == null) {
+			model = new ConcurrentModel();
+		}
 		model.addAttribute("dto", searchService.searchDefault());
 		model.addAttribute("currUser", authService.getCurrentUser(true));
 		return model;

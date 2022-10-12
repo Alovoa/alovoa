@@ -7,6 +7,7 @@ import java.util.Date;
 import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -97,6 +98,9 @@ public class MessageController {
 
 		conversationRepo.saveAndFlush(c);
 
+		if(model == null) {
+			model = new ConcurrentModel();
+		}
 		model.addAttribute("messages", MessageDto.messagesToDtos(c.getMessages(), user));
 		boolean show = first == 1 || lastCheckedDate == null || !lastCheckedDate.after(c.getLastUpdated());
 		model.addAttribute("show", show);

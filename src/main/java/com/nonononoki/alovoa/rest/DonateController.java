@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,6 +63,9 @@ public class DonateController {
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		List<DonationDto> donations = donateService.filter(filter);
+		if(model == null) {
+			model = new ConcurrentModel();
+		}
 		model.addAttribute("donations", donations);
 		model.addAttribute("filter", filter);
 		model.addAttribute("currUser", authService.getCurrentUser(true));
