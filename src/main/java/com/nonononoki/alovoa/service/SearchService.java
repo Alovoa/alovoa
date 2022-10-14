@@ -274,7 +274,7 @@ public class SearchService {
 		filteredUsers = filterUsers(users, ignoreIds, user, false);
 		if (!filteredUsers.isEmpty()) {
 			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-					.message(publicService.text("search.warning.incompatible")).global(true).stage(SearchStage.IGNORE_1)
+					.message(publicService.text("search.warning.incompatible")).incompatible(true).global(true).stage(SearchStage.IGNORE_1)
 					.build();
 		}
 
@@ -293,7 +293,7 @@ public class SearchService {
 		filteredUsers = filterUsers(users, ignoreIds, user, false);
 		if (!filteredUsers.isEmpty()) {
 			return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-					.message(publicService.text("search.warning.incompatible")).global(true).stage(SearchStage.IGNORE_2)
+					.message(publicService.text("search.warning.incompatible")).incompatible(true).global(true).stage(SearchStage.IGNORE_2)
 					.build();
 		}
 
@@ -301,7 +301,7 @@ public class SearchService {
 		users = userRepo.usersSearchAllIgnoreAll(request, sort);
 		filteredUsers = filterUsers(users, ignoreIds, user, true);
 		return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-				.message(publicService.text("search.warning.incompatible")).incompatible(true)
+				.message(publicService.text("search.warning.incompatible")).incompatible(true).global(true)
 				.stage(SearchStage.IGNORE_ALL).build();
 
 	}
