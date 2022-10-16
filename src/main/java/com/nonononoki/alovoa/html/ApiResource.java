@@ -11,7 +11,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nonononoki.alovoa.model.AlovoaException;
-import com.nonononoki.alovoa.rest.MessageController;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -30,9 +28,6 @@ public class ApiResource {
 
 	@Autowired
 	private MessageResource messageResource;
-	
-	@Autowired
-	private MessageController messageController;
 
 	@Autowired
 	private NotificationResource notificationResource;
@@ -65,13 +60,6 @@ public class ApiResource {
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		return messageResource.chatsDetail(id).getModel();
-	}
-	
-	@GetMapping("/resource/message/update/{convoId}/{first}")
-	public Map<String, Object> resourceMessageUpdate(Model model, @PathVariable long convoId, @PathVariable int first) throws JsonProcessingException,
-			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return messageController.getMessagesModel(model, convoId, first).asMap();
 	}
 
 	@GetMapping("/resource/alerts")

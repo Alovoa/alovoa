@@ -21,10 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
-import com.nonononoki.alovoa.entity.user.Message;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.ConversationDto;
-import com.nonononoki.alovoa.model.MessageDto;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
@@ -92,13 +90,7 @@ public class MessageResource {
 
 		User u = c.getPartner(user);
 
-		List<Message> messages = c.getMessages();
-		messages.sort((Message a, Message b) -> b.getDate().compareTo(a.getDate()));
-		
-		List<MessageDto> messageDtos = MessageDto.messagesToDtos(messages, user);
-
 		mav.addObject("user", UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA));
-		mav.addObject("messages", messageDtos);
 		mav.addObject("convoId", id);
 		mav.addObject("partner", UserDto.userToUserDto(u, user, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
 

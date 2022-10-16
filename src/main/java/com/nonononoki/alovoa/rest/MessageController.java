@@ -3,6 +3,7 @@ package com.nonononoki.alovoa.rest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Date;
+import java.util.List;
 
 import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ public class MessageController {
 
 	@Autowired
 	private MessageService messageService;
+	
+	private final int MAX_MESSAGES = 50;
 
 	@ResponseBody
 	@PostMapping(value = "/send/{convoId}", consumes = "text/plain")
@@ -101,6 +104,9 @@ public class MessageController {
 		if(model == null) {
 			model = new ConcurrentModel();
 		}
+		List<MessageDto> messages = MessageDto.messagesToDtos(c.getMessages(), user);
+		messages = messages.subList(Math.max(messages.size() - MAX_MESSAGES, 0), messages.size());
+		model.addAttribute(messages);
 		model.addAttribute("messages", MessageDto.messagesToDtos(c.getMessages(), user));
 		boolean show = first == 1 || lastCheckedDate == null || !lastCheckedDate.after(c.getLastUpdated());
 		model.addAttribute("show", show);
