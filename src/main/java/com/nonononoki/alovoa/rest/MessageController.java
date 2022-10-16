@@ -107,9 +107,12 @@ public class MessageController {
 		List<MessageDto> messages = MessageDto.messagesToDtos(c.getMessages(), user);
 		messages = messages.subList(Math.max(messages.size() - MAX_MESSAGES, 0), messages.size());
 		model.addAttribute(messages);
-		model.addAttribute("messages", MessageDto.messagesToDtos(c.getMessages(), user));
+		
 		boolean show = first == 1 || lastCheckedDate == null || !lastCheckedDate.after(c.getLastUpdated());
 		model.addAttribute("show", show);
+		if(show) {
+			model.addAttribute("messages", MessageDto.messagesToDtos(c.getMessages(), user));
+		}
 		return model;
 	}
 }
