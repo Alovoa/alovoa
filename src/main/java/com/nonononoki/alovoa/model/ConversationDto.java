@@ -10,7 +10,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
@@ -20,9 +19,7 @@ import lombok.Data;
 @Data
 public class ConversationDto {
 
-	@JsonIgnore
 	private long id;
-	
 	private Date lastUpdated;
 	private String userName;
 	private String userProfilePicture;
