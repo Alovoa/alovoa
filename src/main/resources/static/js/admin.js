@@ -178,7 +178,6 @@ $("#user-exists-form").submit(
 			url: actionUrl,
 			type: 'POST',
 			success: function(data) {
-				console.log(data)
 				$("#user-exists-form")[0].reset();
 				if (data) {
 					alert("User exists");

@@ -639,7 +639,6 @@ function updateProfileWarning() {
 		type: "GET",
 		url: url,
 		success: function(res) {
-			console.log(res)
 			let warning = "profile-warning-collapsible";
 			if (!res.includes(warning)) {
 				$("#" + warning).addClass("disabled");
@@ -666,10 +665,8 @@ function updateProfileWarning() {
 			}
 			warning = "no-gender";
 			if (!res.includes(warning)) {
-				console.log("gender")
 				$("#" + warning).addClass("disabled");
 			} else {
-				console.log("no-gender")
 				$("#" + warning).removeClass("disabled");
 			}
 			warning = "no-location";

@@ -8,8 +8,6 @@ $(function() {
 	
 	lat = $("#lat").attr("value");
 	lon = $("#lon").attr("value");
-	console.log(lat);
-	console.log(lon);
 	
 	bulmaSlider.attach();
 
@@ -81,7 +79,6 @@ function searchBase(showLoader = true) {
 	let sort = $("#sort").val();
 	let url = "/search/users/" + lat + "/"
 		+ lon + "/" + distance + "/" + sort;
-	console.log(url);
 	mainContainerLoadCards(url, showLoader);
 
 }
@@ -206,7 +203,6 @@ function onDonateModalClicked() {
 
 function playPauseAudio(userIdEnc) {
 	let audio = document.getElementById("audio");
-	console.log(audio.paused)
 	if (!audio.paused) {
 		audio.pause();
 	} else {

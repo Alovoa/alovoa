@@ -13,7 +13,6 @@ function getText(param) {
 		}
 	});
 	
-	console.log(res);
 	return res;
 }
 

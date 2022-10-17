@@ -53,7 +53,6 @@ function cookieClick() {
 function showIosPwaBanner() {
 	let userAgent = window.navigator.userAgent;
 	let isIos = /iPhone|iPad|iPod/.test(userAgent);
-	//console.log("isIos:" + isIos);
 	if (isIos) {
 		let isPwa = window.location.href.includes("?pwa");
 		if (isPwa) {
@@ -61,7 +60,6 @@ function showIosPwaBanner() {
 		} else {
 			isPwa = localStorage.getItem("pwa");
 		}
-		console.log("isPwa:" + isPwa);
 		if (!isPwa) {
 			openModal("ios-pwa-modal");
 		}
@@ -152,7 +150,6 @@ function hero() {
 	
 	Events.on(engine, 'collisionStart', (event) => {
 		event.pairs.forEach((collision) => {
-			//console.log(collision);
 			setTimeout(function() {
 			  	Body.setStatic(collision.bodyA, true);
 				Body.setStatic(collision.bodyB, true);
