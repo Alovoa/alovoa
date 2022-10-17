@@ -2,6 +2,7 @@ package com.nonononoki.alovoa;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -239,5 +240,15 @@ public class Tools {
 			return new String(Character.toChars(firstLetter)) + new String(Character.toChars(secondLetter));
 		}
 		return null;
+	}
+
+	public static boolean isURLValid(String urlString) {
+	    try {
+	        URL url = new URL(urlString);
+	        url.toURI();
+	        return true;
+	    } catch (Exception e) {
+	        return false;
+	    }
 	}
 }

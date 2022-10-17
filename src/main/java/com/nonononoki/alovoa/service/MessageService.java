@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
 import com.nonononoki.alovoa.entity.user.Message;
@@ -34,10 +35,6 @@ public class MessageService {
 
 	@Autowired
 	private NotificationService notificationService;
-
-	private static final String URL_PREFIX = "<a href=\"";
-
-	private static final String URL_JITSI = "https://meet.jit.si";
 
 	public void send(Long convoId, String message)
 			throws AlovoaException, GeneralSecurityException, IOException, JoseException {
@@ -74,7 +71,10 @@ public class MessageService {
 		m.setDate(new Date());
 		m.setUserFrom(user);
 		m.setUserTo(c.getPartner(user));
-		m.setAllowedFormatting(message.startsWith(URL_PREFIX + URL_JITSI));
+		
+		if(Tools.isURLValid(message)) {
+			m.setAllowedFormatting(true);
+		}
 		c.getMessages().add(m);
 		conversationRepo.saveAndFlush(c);
 

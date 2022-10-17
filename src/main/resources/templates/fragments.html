@@ -398,12 +398,12 @@
 			style="display: inline-block; width: 100%;">
 
 			<div th:if="${message.from && message.allowedFormatting}"
-				class="chat-message left" th:utext="${message.content}"></div>
+				class="chat-message left" th:utext='|<a href="${message.content}">${message.content}</a>|'></div>
 			<div th:if="${message.from && !message.allowedFormatting}"
 				class="chat-message left" th:text="${message.content}"></div>
 
 			<div th:if="${!message.from  && message.allowedFormatting}"
-				class="chat-message right notification is-primary" th:utext="${message.content}"></div>
+				class="chat-message right notification is-primary" th:utext='|<a href="${message.content}">${message.content}</a>|'></div>
 			<div th:if="${!message.from  && !message.allowedFormatting}"
 				class="chat-message right notification is-primary" th:text="${message.content}"></div>
 

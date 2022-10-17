@@ -1,5 +1,4 @@
 /**
- * Based on: 
  * Created by thihara on 8/29/16.
  * 
  * The service worker for displaying push notifications.
@@ -9,7 +8,7 @@
  */
 
 
-const cacheName = '52';
+const cacheName = '53';
 const staticAssets = [
 
 	'/favicon.ico',
