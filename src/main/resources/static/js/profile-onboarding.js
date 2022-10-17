@@ -169,8 +169,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				data.interests.push(interest3.value);
 			}
 			
-			console.log(data)
-			
 			$.ajax({
 				type: "POST",
 				url: "/user/onboarding",
@@ -223,7 +221,6 @@ function updateData() {
 }
 
 function readURL(input) {
-	console.log(input)
 	if (input.files && input.files[0]) {
 		resizeImage(input.files[0], function(b64) {
 			let img = $('#profilePictureImg');

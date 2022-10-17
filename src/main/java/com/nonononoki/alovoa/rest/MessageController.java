@@ -110,7 +110,7 @@ public class MessageController {
 		if(show) {
 			List<MessageDto> messages = MessageDto.messagesToDtos(c.getMessages(), user);
 			messages = messages.subList(Math.max(messages.size() - MAX_MESSAGES, 0), messages.size());
-			model.addAttribute(messages);
+			model.addAttribute("messages", messages);
 		}
 		return model;
 	}
