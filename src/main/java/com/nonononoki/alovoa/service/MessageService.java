@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
+import com.nonononoki.alovoa.entity.user.ConversationCheckedDate;
 import com.nonononoki.alovoa.entity.user.Message;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.repo.ConversationRepository;
@@ -88,6 +89,30 @@ public class MessageService {
 		conversationRepo.saveAndFlush(c);
 
 		notificationService.newMessage(user);
+	}
+	
+	public Date updateCheckedDate(Conversation c) throws AlovoaException {
+		User user = authService.getCurrentUser(true);
+		Date now = new Date();
+		Date lastCheckedDate = null;
+		ConversationCheckedDate convoCheckedDate = c.getCheckedDates().stream()
+				.filter(d -> d.getUserId().equals(user.getId())).findAny().orElse(null);
+		if (convoCheckedDate == null) {
+			ConversationCheckedDate ccd = new ConversationCheckedDate();
+			ccd.setConversation(c);
+			ccd.setLastCheckedDate(now);
+			ccd.setUserId(user.getId());
+			c.getCheckedDates().add(ccd);
+		} else {
+			c.getCheckedDates().remove(convoCheckedDate);
+			lastCheckedDate = convoCheckedDate.getLastCheckedDate();
+			convoCheckedDate.setLastCheckedDate(now);
+			c.getCheckedDates().add(convoCheckedDate);
+		}
+		
+		conversationRepo.saveAndFlush(c);
+		
+		return lastCheckedDate;
 	}
 
 }
