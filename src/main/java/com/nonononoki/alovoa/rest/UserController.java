@@ -50,7 +50,7 @@ public class UserController {
 	}
 
 	// GDPR
-	@PostMapping(value = "/delete-account", consumes = "text/plain")
+	@PostMapping(value = "/delete-account")
 	public void deleteAccount() throws MessagingException, IOException, AlovoaException {
 		userService.deleteAccountRequest();
 	}
@@ -135,8 +135,7 @@ public class UserController {
 	}
 
 	@PostMapping("/update/misc-info/{infoValue}/{activated}")
-	public void updateMiscInfo(@PathVariable long infoValue, @PathVariable String activated)
-			throws AlovoaException {
+	public void updateMiscInfo(@PathVariable long infoValue, @PathVariable String activated) throws AlovoaException {
 		userService.updateUserMiscInfo(infoValue, Tools.binaryStringToBoolean(activated));
 	}
 
@@ -226,6 +225,11 @@ public class UserController {
 	@GetMapping(value = "/status/new-alert")
 	public boolean newAlert() throws AlovoaException {
 		return userService.hasNewAlert();
+	}
+	
+	@RequestMapping(value = "/status/new-alert/{lang}")
+	public boolean newAlert2(@PathVariable String lang) throws AlovoaException {
+		return userService.hasNewAlert(lang);
 	}
 
 	@GetMapping(value = "/status/new-message")

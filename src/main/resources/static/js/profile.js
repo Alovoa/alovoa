@@ -392,7 +392,6 @@ $(function() {
 		$.ajax({
 			type: "POST",
 			url: "/user/delete-account/",
-			contentType: "text/plain",
 			success: function(e) {
 				alert(getText("profile.delete-account.success"));
 			},

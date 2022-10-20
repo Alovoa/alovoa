@@ -586,8 +586,9 @@ public class UserService {
 
 	public void deleteInterest(String interest) throws AlovoaException {
 		User user = authService.getCurrentUser(true);
-		
-		Optional<UserInterest> interestOpt = user.getInterests().stream().filter(i -> i.getText().equals(interest)).findFirst();
+
+		Optional<UserInterest> interestOpt = user.getInterests().stream().filter(i -> i.getText().equals(interest))
+				.findFirst();
 
 		if (interest.isEmpty()) {
 			throw new AlovoaException("interest_does_not_exists");
@@ -871,11 +872,15 @@ public class UserService {
 	}
 
 	public boolean hasNewAlert() throws AlovoaException {
+		return hasNewAlert(null);
+	}
+	
+	public boolean hasNewAlert(String lang) throws AlovoaException {
 		User user = authService.getCurrentUser(true);
 		// user always check their alerts periodically in the background, so just update
 		// it here
 		if (user != null) {
-			updateUserInfo(user);
+			updateUserInfo(user, lang);
 			return user.getDates().getNotificationDate().after(user.getDates().getNotificationCheckedDate());
 		} else {
 			return false;
@@ -891,12 +896,23 @@ public class UserService {
 			return false;
 		}
 	}
-
+	
 	public void updateUserInfo(User user) {
+		updateUserInfo(user, null);
+	}
+
+	public void updateUserInfo(User user, String language) {
 		if (user != null && user.getDates() != null) {
 			user.getDates().setActiveDate(new Date());
-			Locale locale = LocaleContextHolder.getLocale();
-			user.setLanguage(locale.getLanguage());
+			String lang;
+			if(language == null) {
+				lang = LocaleContextHolder.getLocale().getLanguage();
+			} else {
+				lang = language;
+			}
+			if (!lang.equals(user.getLanguage())) {
+				user.setLanguage(lang);
+			}
 			userRepo.saveAndFlush(user);
 		}
 	}
@@ -971,10 +987,10 @@ public class UserService {
 		if (validCountryIso) {
 			user.setCountry(countryIso);
 		} else {
-			//remove flag if user is not in a valid country
+			// remove flag if user is not in a valid country
 			user.setCountry(null);
 		}
-		
+
 		userRepo.saveAndFlush(user);
 	}
 
