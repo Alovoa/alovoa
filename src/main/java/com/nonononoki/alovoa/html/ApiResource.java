@@ -40,6 +40,9 @@ public class ApiResource {
 
 	@Autowired
 	private UserProfileResource userProfileResource;
+	
+	@Autowired
+	private ProfileOnboardingResource profileOnboardingResource;
 
 	@GetMapping("/resource/donate")
 	public Map<String, Object> resourceDonate() throws JsonProcessingException, InvalidKeyException,
@@ -88,5 +91,12 @@ public class ApiResource {
 			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
 			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		return searchResource.search().getModel();
+	}
+	
+	@GetMapping("/resource/user/onboarding")
+	public Map<String, Object> userOnboarding() throws JsonProcessingException, InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		return profileOnboardingResource.onboarding().getModel();
 	}
 }
