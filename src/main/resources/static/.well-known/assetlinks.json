@@ -19,7 +19,8 @@
 			"namespace": "android_app",
 			"package_name": "com.alovoa.alovoa_playstore",
 			"sha256_cert_fingerprints": [
-				"0B:AB:9A:A5:1B:14:A4:C5:73:3B:12:85:71:A8:69:89:54:F1:20:83:40:C7:9D:73:6D:BF:47:21:97:6B:CA:39"
+				"0B:AB:9A:A5:1B:14:A4:C5:73:3B:12:85:71:A8:69:89:54:F1:20:83:40:C7:9D:73:6D:BF:47:21:97:6B:CA:39",
+				"00:44:D0:BB:0E:1E:01:FB:9E:5D:FE:66:93:D9:C2:ED:A2:C5:1D:1C:0C:74:F4:77:CC:C7:3F:16:F0:5A:D5:1C"
 			]
 		}
 	},
