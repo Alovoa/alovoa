@@ -161,11 +161,6 @@
 			<version>1.6.9</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.ulisesbocchio</groupId>
-			<artifactId>jasypt-spring-boot-starter</artifactId>
-			<version>3.0.4</version>
-		</dependency>
-		<dependency>
 			<groupId>io.github.nonononoki</groupId>
 			<artifactId>reverse-country-code</artifactId>
 			<version>1.0.0</version>
