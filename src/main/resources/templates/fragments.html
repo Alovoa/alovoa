@@ -20,7 +20,7 @@
 		</div>
 	</div>
 
-	<div th:fragment="header-logged-out" id="header-logged-out" class="header">
+	<div th:fragment="header-logged-out" dir="ltr" id="header-logged-out" class="header">
 		<nav class="navbar">
 			<div class="navbar-brand">
 				<a class="navbar-item" href="/" id="navbar-text" th:text="#{app.name}"></a>
@@ -51,7 +51,7 @@
 		</script>
 	</div>
 	
-	<div th:fragment="header-index" id="header-index" class="header">
+	<div th:fragment="header-index" dir="ltr" id="header-index" class="header">
 		<nav class="navbar">
 			<div class="navbar-brand">
 				<a class="navbar-item" href="/" id="navbar-text" th:text="#{app.name}"></a>
@@ -82,7 +82,7 @@
 		</script>
 	</div>
 
-	<div th:fragment="header-logged-in" id="header-logged-in" class="header">
+	<div th:fragment="header-logged-in" dir="ltr" id="header-logged-in" class="header">
 		<nav class="navbar">
 			<div class="navbar-brand">
 				<a id="navbar-text" class="navbar-item" th:text="#{app.name}"></a>
@@ -102,7 +102,7 @@
 		</nav>
 	</div>
 
-	<div th:fragment="header-search" id="header-logged-in" class="header">
+	<div th:fragment="header-search"  dir="ltr" id="header-logged-in" class="header">
 		<nav class="navbar">
 			<div class="navbar-brand">
 				<a id="navbar-text" class="navbar-item" th:text="#{app.name}"></a>
@@ -127,7 +127,7 @@
 		</nav>
 	</div>
 	
-	<div th:fragment="header-donate" id="header-logged-in" class="header header-donate">
+	<div th:fragment="header-donate" dir="ltr" id="header-logged-in" class="header header-donate">
 		<nav class="navbar">
 			<div class="navbar-brand">
 				<a id="navbar-text" class="navbar-item" th:text="#{app.name}"></a>
@@ -163,7 +163,7 @@
 			<div class="columns">
 				<div class="column flex-center">
 					<div class="button" onclick="openModal('lang-modal')" style="margin-top: -8px;">
-						<i class="fas fa-globe" style="margin-right: 6px;"></i>
+						<i class="fas fa-globe" style="margin-right: 6px; margin-left: 6px;"></i>
 					<span th:text="#{language}"></span></div>
 				</div>
 				<div class="column">
@@ -237,7 +237,7 @@
 		</script>
 	</footer>
 
-	<div th:fragment="navigation">
+	<div th:fragment="navigation" class="center-parent">
 		<nav class="navbar is-link is-fixed-bottom" role="navigation" style="display: block;">
 			<div class="navbar-brand">
 				<a class="button is-inverted is-primary navigation-item" href="/profile" id="nav-profile">
@@ -333,7 +333,7 @@
 										<div class="content-background">
 											<div class="content">
 												<div class="media">
-													<div class="full-width">
+													<div class="full-width" dir="ltr">
 														<div class="left first-name" style="font-size: 2em" th:text="${user.firstName}"
 															th:classappend="${user.gender.text == 'male' ? 'male' : user.gender.text == 'female' ? 'female' : 'other'}"></div>
 														<div class="left" style="font-size: 1.5em; padding-top: 6px;">
@@ -426,7 +426,7 @@
 				<div class="card-content">
 					<div class="content">
 						<div class="media">
-							<div class="full-width">
+							<div class="full-width" dir="ltr">
 								<div class="left first-name" style="font-size: 2em" th:text="${user.firstName}"
 									th:classappend="${user.gender.text == 'male' ? 'male' : user.gender.text == 'female' ? 'female' : 'other'}"></div>
 								<div class="left" style="font-size: 1.5em; padding-top: 6px;">
@@ -576,7 +576,7 @@
 				<div class="container">
 					<div class="content">
 						<div class="media">
-							<div class="full-width">
+							<div class="full-width" dir="ltr">
 								<div class="left first-name" style="font-size: 2em" th:text="${user.firstName}"
 									th:classappend="${user.gender.text == 'male' ? 'male' : user.gender.text == 'female' ? 'female' : 'other'}">
 								</div>

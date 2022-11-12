@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:with="lang=${#locale.language}" th:lang="${lang}" th:attr="dir=#{app.direction}">
+<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto">
 
 <head>
 	<meta charset="utf-8">
@@ -46,7 +46,7 @@
 					</div>
 				</div>
 				
-				<div class="field center-parent">
+				<div class="field center-parent" dir="ltr">
 					<div class="left first-name" style="font-size: 2em" th:text="${user.firstName}"></div>
 					<div class="left" style="font-size: 1.5em; padding-top: 8px;">
 						<span>, </span><span th:text="${user.age}"></span> <span th:text="${user.country}"></span>
@@ -453,7 +453,7 @@
 				<div class="field" style="margin-top:48px;">
 					<button class="button is-info is-outlined"
 						onclick="location.reload()" style="width: 100%;">
-						<i class="fa fa-save" style="padding-right: 4px; font-size: 1.3em;"></i> <span th:text="#{save}"></span>
+						<i class="fa fa-save" style="padding-right: 4px; padding-left: 4px;  font-size: 1.3em;"></i> <span th:text="#{save}"></span>
 					</button>
 				</div>
 

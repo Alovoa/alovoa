@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:with="lang=${#locale.language}" th:lang="${lang}" th:attr="dir=#{app.direction}">
+<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -32,10 +32,10 @@
 					aria-label="more options"
 					style="display: flex; justify-content: center; background-color: initial;">
 					<i class="fa fa-envelope fa-lg"></i>
-					<span class="label" style="margin-bottom: initial; padding-left: 6px;"
+					<span class="label" style="margin-bottom: initial; padding-left: 6px; padding-right: 6px;"
 						th:text="#{register.email.sign-up}"></span>
 				</a>
-				<div class="container" style="margin-bottom: 24px;" id="oauth-div">
+				<div class="container" style="margin-bottom: 24px;" dir="ltr" id="oauth-div">
 					<div class="box no-shadow">
 						<div class="columns">
 							<button class="button colored" id="google-auth"

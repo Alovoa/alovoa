@@ -179,6 +179,7 @@ button, .button, .input, .select, select {
 
 .navigation-item div svg {
 	padding-right: 4px;
+	padding-left: 4px;
 }
 
 .navbar-item-icon:hover path {
@@ -409,11 +410,8 @@ input[type=range].slider {
 	}
 	.navbar.is-fixed-bottom {
 	    width: 1024px;
-	    left: 50%;
-	    transform: translateX(-50%);
-	}
-	.navigation-item div svg {
-		padding-right: 8px;
+        left: initial;
+    	right: initial;
 	}
 }
 
