@@ -137,7 +137,7 @@ public class RegisterService {
 			}
 		}
 
-		User user = userRepo.findByEmail(dto.getEmail().toLowerCase());
+		User user = userRepo.findByEmail(dto.getEmail());
 		if (user != null) {
 			throw new AlovoaException(publicService.text("backend.error.register.email-exists"));
 		}
