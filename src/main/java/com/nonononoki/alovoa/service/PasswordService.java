@@ -65,7 +65,7 @@ public class PasswordService {
 				throw new DisabledException("user_not_found");
 			}
 			
-			if (u.getPassword() != null) {
+			if (u.getPassword() == null) {
 				throw new AlovoaException("user_has_social_login");
 			}
 
@@ -89,7 +89,7 @@ public class PasswordService {
 	
 			return u.getPasswordToken();
 		} else {
-			return null;
+			throw new AlovoaException("user_has_social_login");
 		}
 	}
 
