@@ -20,7 +20,6 @@ import lombok.Setter;
 @Entity
 public class UserImage {
 	
-	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
