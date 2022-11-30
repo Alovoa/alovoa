@@ -83,8 +83,7 @@ function reportUser() {
 function reportUserSubmit(idEncoded) {
 	$.ajax({
 		type: "POST",
-		url: "/user/report/" + idEncoded + "/"
-			+ $("#captcha-id").val() + "/" + $("#captcha").val(),
+		url: "/user/report/" + idEncoded,
 		contentType: "text/plain",
 		data: $("#report-comment").val(),
 		success: function() {

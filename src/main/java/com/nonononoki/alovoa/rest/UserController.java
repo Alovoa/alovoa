@@ -214,12 +214,11 @@ public class UserController {
 		userService.unblockUser(idEnc);
 	}
 
-	@PostMapping(value = "/report/{idEnc}/{captchaId}/{captchaText}", consumes = "text/plain")
-	public void reportUser(@PathVariable String idEnc, @PathVariable long captchaId, @PathVariable String captchaText,
-			@RequestBody String comment) throws NumberFormatException, InvalidKeyException,
+	@PostMapping(value = "/report/{idEnc}", consumes = "text/plain")
+	public void reportUser(@PathVariable String idEnc, @RequestBody String comment) throws NumberFormatException, InvalidKeyException,
 			UnsupportedEncodingException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
-		userService.reportUser(idEnc, captchaId, captchaText, comment);
+		userService.reportUser(idEnc, comment);
 	}
 
 	@GetMapping(value = "/status/new-alert")

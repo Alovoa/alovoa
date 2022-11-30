@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
-import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
@@ -376,9 +375,7 @@ class SearchAndMessageServiceTest {
 		assertEquals(maxConvoMessages, messageRepo.count());
 
 		assertEquals(0, userReportRepo.count());
-		Captcha captchaReport = captchaService.generate();
-		userService.reportUser(UserDto.encodeId(user3.getId(), textEncryptor), captchaReport.getId(),
-				captchaReport.getText(), "report");
+		userService.reportUser(UserDto.encodeId(user3.getId(), textEncryptor), "report");
 		assertEquals(1, userReportRepo.count());
 	}
 

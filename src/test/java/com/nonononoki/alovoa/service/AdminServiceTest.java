@@ -161,9 +161,7 @@ class AdminServiceTest {
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 
 		assertEquals(0, userReportRepo.count());
-		Captcha captchaReport = captchaService.generate();
-		UserReport report = userService.reportUser(UserDto.encodeId(user2.getId(), textEncryptor),
-				captchaReport.getId(), captchaReport.getText(), "report");
+		UserReport report = userService.reportUser(UserDto.encodeId(user2.getId(), textEncryptor), "report");
 		assertEquals(1, userReportRepo.count());
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(adminUser);

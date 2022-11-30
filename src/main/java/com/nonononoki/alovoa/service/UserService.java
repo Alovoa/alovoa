@@ -838,18 +838,13 @@ public class UserService {
 		}
 	}
 
-	public UserReport reportUser(String idEnc, long captchaId, String captchaText, String comment)
+	public UserReport reportUser(String idEnc, String comment)
 			throws AlovoaException, UnsupportedEncodingException, NoSuchAlgorithmException, NumberFormatException,
 			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException,
 			InvalidAlgorithmParameterException {
 		User user = encodedIdToUser(idEnc);
 		User currUser = authService.getCurrentUser(true);
 		if (userReportRepo.findByUserFromAndUserTo(currUser, user) == null) {
-
-			boolean isValid = captchaService.isValid(captchaId, captchaText);
-			if (!isValid) {
-				throw new AlovoaException("captcha_invalid");
-			}
 			UserReport report = new UserReport();
 			report.setDate(new Date());
 			report.setUserFrom(currUser);
