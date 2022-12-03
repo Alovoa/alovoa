@@ -4,6 +4,7 @@ var reloadInterval = 3000;
 
 $(document).ready(function() {
 	
+	getUpdates();
 	showLoader();
 	reloadMessages(1);
 

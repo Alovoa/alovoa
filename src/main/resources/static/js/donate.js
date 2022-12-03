@@ -1,5 +1,6 @@
 $(function() {
 	search(1);
+	getUpdates();
 });
 
 function search(sort) {

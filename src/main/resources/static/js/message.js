@@ -1,3 +1,7 @@
+$(function() {	
+	getUpdates();
+});
+
 function viewMessageDetail(e, id) {
 	
     var senderElement = e.target;

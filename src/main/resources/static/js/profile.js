@@ -5,7 +5,8 @@ const maxAudioSeconds = 10;
 const twa_playstore = "android-app://com.alovoa.alovoa_playstore";
 
 $(function() {
-
+	
+	getUpdates();
 	//$(window).scrollTop(0);
 	bulmaSlider.attach();
 	bulmaCollapsible.attach();

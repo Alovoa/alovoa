@@ -6,6 +6,7 @@ var lon;
 
 $(function() {
 	
+	getUpdates();
 	lat = $("#lat").attr("value");
 	lon = $("#lon").attr("value");
 	

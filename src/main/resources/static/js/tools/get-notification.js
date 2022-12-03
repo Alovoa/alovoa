@@ -1,9 +1,32 @@
 //TODO
-var getNewAlertInterval = 10000;
-var getNewMessageInterval = 10000;
+var getUpdateInterval = 10000;
+var getUpdate = setInterval(getUpdates, getUpdateInterval);
+var newAlert = false;
+var newMessage = false;
 
-var alertTimeout = setInterval(getNewAlert, getNewAlertInterval);
-var messageTimeout = setInterval(getNewMessage, getNewMessageInterval);
+const alertTitleText = "(!) ";
+
+function getUpdates() {
+	var res = [];
+	res.push(getNewAlert());
+	res.push(getNewMessage());
+	$.when.apply(this, res).done(function() {
+		console.log(newAlert)
+		if (newAlert) {
+			$("#nav-alerts").addClass("new");
+		}		
+		if (newMessage) {
+			$("#nav-chats").addClass("new");
+		}
+		if((newAlert || newMessage) && !document.title.includes(alertTitleText)) {
+			document.title = alertTitleText + document.title;
+		}
+		else if(!(newAlert || newMessage) && document.title.includes(alertTitleText)) {
+			document.title = document.title.replace(alertTitleText, '');
+		}
+		
+	});
+}
 
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -21,14 +44,11 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function getNewAlert() {
-	$.ajax({
+	return $.ajax({
 		type: "GET",
 		url: "/user/status/new-alert",
 		success: function(bool) {
-			if (bool) {
-				$("#nav-alerts").addClass("new");
-				//				clearTimeout(alertTimeout);
-			}
+			newAlert = bool;
 		},
 		error: function(e) {
 			console.log(e);
@@ -41,14 +61,11 @@ function getNewAlert() {
 }
 
 function getNewMessage() {
-	$.ajax({
+	return $.ajax({
 		type: "GET",
 		url: "/user/status/new-message",
 		success: function(bool) {
-			if (bool) {
-				$("#nav-chats").addClass("new");
-				//				clearTimeout(messageTimeout);
-			}
+			newMessage = bool;
 		},
 		error: function(e) {
 			console.log(e);
