@@ -6,6 +6,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
@@ -64,6 +65,7 @@ public class UserDto {
 	private UserIntention intention;
 
 	private List<UserInterest> interests;
+	private List<UserInterest> commonInterests;
 
 	private String profilePicture;
 	private List<UserImage> images;
@@ -73,7 +75,7 @@ public class UserDto {
 	private String country;
 
 	private int distanceToUser;
-	private int sameInterests;
+	
 	private double totalDonations;
 
 	private Date activeDate;
@@ -207,14 +209,14 @@ public class UserDto {
 						.anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
 			}
 
-			int sameInterests = 0;
+			List<UserInterest> commonInterests = new ArrayList<>();
 			for (int i = 0; i < currentUser.getInterests().size(); i++) {
 				UserInterest interest = currentUser.getInterests().get(i);
 				if (user.getInterests().contains(interest)) {
-					sameInterests++;
+					commonInterests.add(interest);
 				}
 			}
-			dto.setSameInterests(sameInterests);
+			dto.setCommonInterests(commonInterests);
 
 			int dist = 99999;
 			if (!currentUser.isAdmin()) {

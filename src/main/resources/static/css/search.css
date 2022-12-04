@@ -106,6 +106,18 @@ html {
 	cursor: pointer;
 }
 
+.common-interests {
+	padding-top: 8px;
+}
+
+.common-interests > div {
+	padding: 0.4rem 0.8rem 0.4rem 0.8rem;
+}
+
+.description {
+	padding-top: 8px;
+}
+
 @media screen and (max-width: 1024px) {
 	.card.is-horizontal {
 		flex-direction: column !important;
@@ -169,6 +181,13 @@ html {
 		padding: 12px;
 		padding-top: 0px;
 	}
+	.common-interests > div {
+		font-size: 0.9em;
+		padding: 0.3rem 0.7rem 0.3rem 0.7rem;
+	}
+	.description {
+		padding-top: 6px;
+	}
 }
 @media screen and (max-width: 600px) {
 	.card.is-horizontal {
@@ -211,6 +230,13 @@ html {
 		height: 48px;
 		width: 48px;
 	}
+	.common-interests > div {
+		font-size: 0.7em;
+		padding: 0.2rem 0.4rem 0.2rem 0.4rem;
+	}
+	.description {
+		padding-top: 4px;
+	}
 }
 @media screen and (max-width: 350px) {
 	#donate-modal .media-left {
@@ -220,7 +246,7 @@ html {
 
 @media screen and (min-width: 1024px) {
 	.description {
-		display: initial !important;
+		/*display: initial !important;*/
 	}
 	.search-visibility {
 		display: none;

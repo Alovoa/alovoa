@@ -338,8 +338,9 @@ public class SearchService {
 			userDtos = userDtos.stream().sorted(Comparator.comparing(UserDto::getDistanceToUser))
 					.collect(Collectors.toList());
 		} else if (sort == SORT_INTEREST) {
-			userDtos = userDtos.stream().filter(f -> f.getSameInterests() > 0)
-					.sorted(Comparator.comparing(UserDto::getSameInterests).reversed()
+			Comparator<UserDto> comparatorCommonInterest = Comparator.comparing(f -> f.getCommonInterests().size());
+			userDtos = userDtos.stream().filter(f -> f.getCommonInterests().size() > 0)
+					.sorted(comparatorCommonInterest.reversed()
 							.thenComparing(Comparator.comparing(UserDto::getDistanceToUser).reversed()))
 					.collect(Collectors.toList());
 		}
