@@ -15,11 +15,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 
+import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AlovoaException;
 
@@ -243,12 +246,24 @@ public class Tools {
 	}
 
 	public static boolean isURLValid(String urlString) {
-	    try {
-	        URL url = new URL(urlString);
-	        url.toURI();
-	        return true;
-	    } catch (Exception e) {
-	        return false;
-	    }
+		try {
+			URL url = new URL(urlString);
+			url.toURI();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public static String getAuthParams(SecurityConfig securityConfig, String httpSessionId, String username,
+			String firstName, int page) {
+		String cookieData = securityConfig.getOAuthRememberMeServices().getRememberMeCookieData(username);
+		StringBuilder builder = new StringBuilder();
+		builder.append("?remember-me=").append(cookieData).append("&jsessionid=").append(httpSessionId)
+				.append("&page=").append(page);
+		if (firstName != null) {
+			builder.append("&firstName=").append(firstName);
+		}
+		return builder.toString();
 	}
 }

@@ -56,9 +56,6 @@ public class SecurityConfig {
 	private Environment env;
 
 	@Autowired
-	private SuccessHandler successHandler;
-
-	@Autowired
 	private FailureHandler failureHandler;
 
 	@Autowired
@@ -122,12 +119,17 @@ public class SecurityConfig {
 	AuthenticationManager authenticationManager() throws Exception {
 		return configuration.getAuthenticationManager();
 	}
+	
+	@Bean
+	SuccessHandler successHandler() {
+		return new SuccessHandler(this);
+	}
 
 	@Bean
 	AuthFilter authenticationFilter() throws Exception {
 		AuthFilter filter = new AuthFilter();
 		filter.setAuthenticationManager(authenticationManager());
-		filter.setAuthenticationSuccessHandler(successHandler);
+		filter.setAuthenticationSuccessHandler(successHandler());
 		filter.setAuthenticationFailureHandler(failureHandler);
 		filter.setRememberMeServices(rememberMeServices());
 		filter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy());

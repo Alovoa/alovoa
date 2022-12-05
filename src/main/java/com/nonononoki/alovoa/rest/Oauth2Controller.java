@@ -37,6 +37,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.html.LoginResource;
@@ -208,12 +209,6 @@ public class Oauth2Controller {
 	}
 
 	private String getOauthParams(String username, String firstName, int page) {
-		String cookieData = securityConfig.getOAuthRememberMeServices().getRememberMeCookieData(username);
-		StringBuilder builder = new StringBuilder();
-		builder.append("?remember-me=").append(cookieData).append("&jsessionid=").append(httpSession.getId()).append("&page=").append(page);
-		if (firstName != null) {
-			builder.append("&firstName=").append(firstName);
-		}
-		return builder.toString();
+		return Tools.getAuthParams(securityConfig, httpSession.getId(), username, firstName, page);
 	}
 }

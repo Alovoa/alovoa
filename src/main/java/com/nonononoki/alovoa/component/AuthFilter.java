@@ -16,6 +16,7 @@ public class AuthFilter extends UsernamePasswordAuthenticationFilter {
 	private static final String PASSWORD = "password";
 	private static final String CAPTCHA_ID = "captchaId";
 	private static final String CAPTCHA_TEXT = "captchaText";
+	public static final String REDIRECT_URL = "redirect-url";
 	
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -25,6 +26,7 @@ public class AuthFilter extends UsernamePasswordAuthenticationFilter {
 		String password = request.getParameter(PASSWORD);
 		long captchaId = Long.parseLong(request.getParameter(CAPTCHA_ID));
 		String captchaText = request.getParameter(CAPTCHA_TEXT);
+		request.getSession().setAttribute(REDIRECT_URL, request.getParameter(REDIRECT_URL));
 		
 		AuthToken auth = new AuthToken(username, password, captchaId, captchaText);
 		AuthenticationManager am = this.getAuthenticationManager();
