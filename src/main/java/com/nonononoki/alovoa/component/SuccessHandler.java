@@ -56,7 +56,7 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
 				if(user.getProfilePicture() == null && user.getDescription() == null) {
 					page = PAGE_ONBOARDING;
 				}
-				redirectUrl = redirectUrl + Tools.getAuthParams(securityConfig, httpSession.getId(), user.getEmail(), user.getFirstName(), page);
+				redirectUrl = redirectUrl + Tools.getAuthParams(securityConfig, httpSession.getId(), user.getEmail(), user.getFirstName(), page, user.getPassword());
 				response.sendRedirect(redirectUrl);
 				return;
 			} catch (AlovoaException e) {

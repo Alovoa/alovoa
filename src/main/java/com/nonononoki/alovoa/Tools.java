@@ -15,8 +15,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StreamUtils;
@@ -256,14 +254,19 @@ public class Tools {
 	}
 
 	public static String getAuthParams(SecurityConfig securityConfig, String httpSessionId, String username,
-			String firstName, int page) {
-		String cookieData = securityConfig.getOAuthRememberMeServices().getRememberMeCookieData(username);
+			String firstName, int page, String password) {
+		String cookieData = securityConfig.getOAuthRememberMeServices().getRememberMeCookieData(username, password);
 		StringBuilder builder = new StringBuilder();
-		builder.append("?remember-me=").append(cookieData).append("&jsessionid=").append(httpSessionId)
-				.append("&page=").append(page);
+		builder.append("?remember-me=").append(cookieData).append("&jsessionid=").append(httpSessionId).append("&page=")
+				.append(page);
 		if (firstName != null) {
 			builder.append("&firstName=").append(firstName);
 		}
 		return builder.toString();
+	}
+
+	public static String getAuthParams(SecurityConfig securityConfig, String httpSessionId, String username,
+			String firstName, int page) {
+		return getAuthParams(securityConfig, httpSessionId, username, firstName, page, null);
 	}
 }

@@ -87,12 +87,16 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
 	}
 
 	// Mostly copied from TokenBasedRememberMeServices
-	public String getRememberMeCookieData(String username) {
+	public String getRememberMeCookieData(String username, String password) {
 		long expiryTime = System.currentTimeMillis();
 		// SEC-949
 		expiryTime += 1000L * TWO_WEEKS_S;
-		String signatureValue = makeTokenSignature(expiryTime, username, null);
+		String signatureValue = makeTokenSignature(expiryTime, username, password);
 		String cookieValue = encodeCookie(new String[] { username, Long.toString(expiryTime), signatureValue });
 		return cookieValue;
+	}
+	
+	public String getRememberMeCookieData(String username) {
+		return getRememberMeCookieData(username, null);
 	}
 }
