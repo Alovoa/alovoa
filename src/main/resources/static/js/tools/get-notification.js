@@ -11,7 +11,6 @@ function getUpdates() {
 	res.push(getNewAlert());
 	res.push(getNewMessage());
 	$.when.apply(this, res).done(function() {
-		console.log(newAlert)
 		if (newAlert) {
 			$("#nav-alerts").addClass("new");
 		}		
