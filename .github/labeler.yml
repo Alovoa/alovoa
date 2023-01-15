@@ -1,0 +1,5 @@
+# Add labels to any any pull request with changes to the specified paths
+
+# Example for Alovoa i18n
+i18n:
+- src/main/resources/i18n/**/*

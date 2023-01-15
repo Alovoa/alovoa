@@ -118,7 +118,7 @@
 		<dependency>
 			<groupId>com.github.ulisesbocchio</groupId>
 			<artifactId>jasypt-spring-boot-starter</artifactId>
-			<version>3.0.4</version>
+			<version>3.0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
@@ -213,7 +213,7 @@
 			<plugin>
 				<groupId>com.github.ulisesbocchio</groupId>
 				<artifactId>jasypt-maven-plugin</artifactId>
-				<version>3.0.3</version>
+				<version>3.0.5</version>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
