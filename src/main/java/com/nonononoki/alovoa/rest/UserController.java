@@ -128,6 +128,12 @@ public class UserController {
 		userService.updateMaxAge(maxAge);
 	}
 
+	@PostMapping("/update/userGender/{genderId}")
+	public void updateUserGender(@PathVariable int genderId)
+			throws AlovoaException {
+		userService.updateUserGender(genderId);
+	}
+
 	@PostMapping("/update/preferedGender/{genderId}/{activated}")
 	public void updatePreferedGenders(@PathVariable int genderId, @PathVariable String activated)
 			throws AlovoaException {
