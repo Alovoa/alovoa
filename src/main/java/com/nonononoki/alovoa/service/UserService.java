@@ -500,6 +500,12 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
+	public void updateUserGender(long genderId) throws AlovoaException {
+		User user = authService.getCurrentUser(true);
+		Gender g = genderRepo.findById(genderId).orElse(null);
+		user.setGender(g);
+		userRepo.saveAndFlush(user);
+	}
 	public void updatePreferedGender(long genderId, boolean activated) throws AlovoaException {
 		User user = authService.getCurrentUser(true);
 		Set<Gender> list = user.getPreferedGenders();
