@@ -138,6 +138,27 @@ $(function() {
 		});
 	});
 
+	$("#gender").change(function(e) {
+
+		let obj = e.target;
+		let data = $(obj).val();
+
+		if (data) {
+			$.ajax({
+				type: "POST",
+				url: "/user/update/gender/" + data,
+				success: function(e) {
+					updateProfileWarning()
+				},
+				error: function(e) {
+					alert(getText("profile.warning.gender-change"));
+
+				}
+			});
+		}
+
+	});
+
 	var timerDescription;
 	var timeoutDescription = 500;
 
@@ -776,4 +797,8 @@ function canvasProtected(context) {
 	} else {
 		return true;
 	}
+}
+
+function changeGender() {
+		openModal("gender-change-modal");
 }

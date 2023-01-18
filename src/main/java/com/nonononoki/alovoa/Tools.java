@@ -211,6 +211,11 @@ public class Tools {
 		return Period.between(Tools.dateToLocalDate(userDateOfBirth), currentDate).getYears() + prefAge;
 	}
 
+	public static int diffInDays(Date date) {
+		LocalDate currentDate = LocalDate.now();
+		return Period.between(Tools.dateToLocalDate(date), currentDate).getDays();
+	}
+
 	private static final String STR_NUM_BILLION = "B";
 	private static final String STR_NUM_MILLION = "M";
 	private static final String STR_NUM_THOUSAND = "K";
