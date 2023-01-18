@@ -506,6 +506,7 @@ public class UserService {
 		user.setGender(g);
 		userRepo.saveAndFlush(user);
 	}
+
 	public void updatePreferedGender(long genderId, boolean activated) throws AlovoaException {
 		User user = authService.getCurrentUser(true);
 		Set<Gender> list = user.getPreferedGenders();
