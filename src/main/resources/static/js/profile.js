@@ -138,6 +138,30 @@ $(function() {
 		});
 	});
 
+	$("#gender").change(function(e) {
+
+		let obj = e.target;
+		let data = $(obj).val();
+
+		if (data) {
+			$.ajax({
+				type: "POST",
+				url: "/user/update/userGender/" + data,
+				success: function() {
+					updateProfileWarning();
+				},
+				error: function(e) {
+					console.log(e);
+					alert(getGenericErrorText());
+					if (e.status == 403) {
+						location.reload();
+					}
+				}
+			});
+		}
+
+	});
+
 	var timerDescription;
 	var timeoutDescription = 500;
 
