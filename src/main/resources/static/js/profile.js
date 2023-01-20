@@ -146,7 +146,7 @@ $(function() {
 		if (data) {
 			$.ajax({
 				type: "POST",
-				url: "/user/update/userGender/" + data,
+				url: "/user/update/gender/" + data,
 				success: function() {
 					updateProfileWarning();
 				},
