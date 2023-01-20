@@ -128,7 +128,7 @@ public class UserController {
 		userService.updateMaxAge(maxAge);
 	}
 
-	@PostMapping("/update/userGender/{genderId}")
+	@PostMapping("/update/gender/{genderId}")
 	public void updateUserGender(@PathVariable int genderId)
 			throws AlovoaException {
 		userService.updateUserGender(genderId);
