@@ -211,9 +211,9 @@ public class Tools {
 		return Period.between(Tools.dateToLocalDate(userDateOfBirth), currentDate).getYears() + prefAge;
 	}
 
-	public static int diffInDays(Date userDateOfBirth) {
+	public static int diffInDays(Date date) {
 		LocalDate currentDate = LocalDate.now();
-		return Period.between(Tools.dateToLocalDate(userDateOfBirth), currentDate).getDays();
+		return Period.between(Tools.dateToLocalDate(date), currentDate).getDays();
 	}
 
 	private static final String STR_NUM_BILLION = "B";
