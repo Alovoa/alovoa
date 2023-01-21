@@ -463,6 +463,21 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
+	public void updateUserGender(long genderId) throws AlovoaException {
+		User user = authService.getCurrentUser(true);
+
+		if (user.getDates().getGenderChangeDate() == null
+				|| Tools.diffInDays(user.getDates().getGenderChangeDate()) > 30){
+			Gender g = genderRepo.findById(genderId).orElse(null);
+			user.setGender(g);
+			user.getDates().setGenderChangeDate(new Date());
+			userRepo.saveAndFlush(user);
+		}
+		else {
+			throw new AlovoaException("Gender cooldown not finished");
+		}
+
+	}
 	public void updateIntention(long intention) throws AlovoaException {
 		User user = authService.getCurrentUser(true);
 
@@ -497,13 +512,6 @@ public class UserService {
 		}
 		User user = authService.getCurrentUser(true);
 		user.setPreferedMaxAge(userMaxAge);
-		userRepo.saveAndFlush(user);
-	}
-
-	public void updateUserGender(long genderId) throws AlovoaException {
-		User user = authService.getCurrentUser(true);
-		Gender g = genderRepo.findById(genderId).orElse(null);
-		user.setGender(g);
 		userRepo.saveAndFlush(user);
 	}
 
