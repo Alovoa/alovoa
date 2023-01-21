@@ -147,15 +147,12 @@ $(function() {
 			$.ajax({
 				type: "POST",
 				url: "/user/update/gender/" + data,
-				success: function() {
-					updateProfileWarning();
+				success: function(e) {
+					updateProfileWarning()
 				},
 				error: function(e) {
-					console.log(e);
-					alert(getGenericErrorText());
-					if (e.status == 403) {
-						location.reload();
-					}
+					alert(getText("profile.warning.gender-change"));
+
 				}
 			});
 		}
@@ -800,4 +797,8 @@ function canvasProtected(context) {
 	} else {
 		return true;
 	}
+}
+
+function changeGender() {
+		openModal("gender-change-modal");
 }
