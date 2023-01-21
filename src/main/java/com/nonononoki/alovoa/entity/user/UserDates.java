@@ -21,16 +21,16 @@ import lombok.Setter;
 @Entity
 @EqualsAndHashCode(exclude="user")
 public class UserDates {
-	
+
 	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	@JsonIgnore
 	@OneToOne
 	private User user;
-	
+
 	@Column(nullable = false)
 	private Date dateOfBirth;
 
@@ -42,4 +42,6 @@ public class UserDates {
 	private Date messageDate = new Date();
 	private Date messageCheckedDate = new Date();
 	private Date latestDonationDate = new Date();
+	private Date genderChangeDate = new Date();
 }
+
