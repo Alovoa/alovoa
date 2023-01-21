@@ -468,6 +468,33 @@ public class UserService {
 
 		if (user.getDates().getGenderChangeDate() == null
 				|| Tools.diffInDays(user.getDates().getGenderChangeDate()) > 30){
+
+			for (UserLike like : userLikeRepo.findByUserFrom(user)) {
+				User u = like.getUserTo();
+				if (u != null && u.getLikedBy() != null) {
+					if(u.getGender().getId() == genderId) {
+						u.getLikedBy().remove(like);
+						userRepo.save(u);
+					}
+				}
+				like.setUserTo(null);
+				userLikeRepo.save(like);
+
+			}
+			for (UserLike like : userLikeRepo.findByUserTo(user)) {
+				User u = like.getUserFrom();
+				if (u != null && u.getLikes() != null) {
+					if(u.getGender().getId() == genderId) {
+						u.getLikes().remove(like);
+						userRepo.save(u);
+					}
+				}
+				like.setUserFrom(null);
+				userLikeRepo.save(like);
+
+			}
+			userRepo.flush();
+			userLikeRepo.flush();
 			Gender g = genderRepo.findById(genderId).orElse(null);
 			user.setGender(g);
 			user.getDates().setGenderChangeDate(new Date());
