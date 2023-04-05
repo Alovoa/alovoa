@@ -4,9 +4,9 @@
 FROM maven:3.8.6-eclipse-temurin-17-alpine AS build
 ENV HOME=/home/app
 WORKDIR $HOME
-ADD pom.xml $HOME
+COPY pom.xml $HOME
 RUN mvn verify --fail-never
-ADD . /home/app
+COPY . /home/app
 RUN mvn clean package -Dmaven.test.skip=true
 
 #
