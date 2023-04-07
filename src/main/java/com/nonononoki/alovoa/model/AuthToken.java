@@ -7,8 +7,13 @@ import lombok.Value;
 
 @SuppressWarnings("serial")
 @Value
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class AuthToken extends UsernamePasswordAuthenticationToken {
+
+	private String username;
+	private String password;
+	private long captchaId;
+	private String captchaText;
 
 	public AuthToken(Object principal, Object credentials) {
 		super(principal, credentials);
@@ -17,7 +22,7 @@ public class AuthToken extends UsernamePasswordAuthenticationToken {
 		this.captchaId = -1;
 		this.captchaText = null;
 	}
-	
+
 	public AuthToken(String username, String password, long captchaId, String captchaText) {
 		super(null, null);
 		this.username = username;
@@ -25,10 +30,5 @@ public class AuthToken extends UsernamePasswordAuthenticationToken {
 		this.captchaId = captchaId;
 		this.captchaText = captchaText;
 	}
-	
-	private String username;
-	private String password;
-	private long captchaId;
-	private String captchaText;
 
 }

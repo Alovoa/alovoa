@@ -1,15 +1,13 @@
 package com.nonononoki.alovoa.html;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
+import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
+import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.AlovoaException;
+import com.nonononoki.alovoa.model.UserDto;
+import com.nonononoki.alovoa.repo.UserRepository;
+import com.nonononoki.alovoa.service.AuthService;
+import com.nonononoki.alovoa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -18,82 +16,86 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.nonononoki.alovoa.Tools;
-import com.nonononoki.alovoa.component.TextEncryptorConverter;
-import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.model.AlovoaException;
-import com.nonononoki.alovoa.model.UserDto;
-import com.nonononoki.alovoa.repo.UserRepository;
-import com.nonononoki.alovoa.service.AuthService;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 @Controller
 public class UserProfileResource {
 
-	@Autowired
-	private UserRepository userRepo;
+    @Autowired
+    private UserRepository userRepo;
 
-	@Autowired
-	private AuthService authService;
+    @Autowired
+    private AuthService authService;
 
-	@Autowired
-	private TextEncryptorConverter textEncryptor;
+    @Autowired
+    private UserService userService;
 
-	@GetMapping("/profile/view/{idEncoded}")
-	public ModelAndView profileView(@PathVariable String idEncoded) throws NumberFormatException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return data(idEncoded, "user-profile");
-	}
+    @Autowired
+    private TextEncryptorConverter textEncryptor;
 
-	@GetMapping("/profile/view/modal/{idEncoded}")
-	public ModelAndView profileViewModal(@PathVariable String idEncoded) throws AlovoaException,
-			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {	
-		return data(idEncoded, "fragments::user-profile-modal");
-	}
+    @GetMapping("/profile/view/{idEncoded}")
+    public ModelAndView profileView(@PathVariable String idEncoded) throws NumberFormatException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        return data(idEncoded, "user-profile");
+    }
 
-	public ModelAndView data(String idEncoded, String view) throws AlovoaException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException {
-		Optional<Long> idOptional = UserDto.decodeId(idEncoded, textEncryptor);
-		if (idOptional.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-		}
+    @GetMapping("/profile/view/modal/{idEncoded}")
+    public ModelAndView profileViewModal(@PathVariable String idEncoded) throws AlovoaException,
+            InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+        return data(idEncoded, "fragments::user-profile-modal");
+    }
 
-		Long id = idOptional.get();
-		User userView = userRepo.findById(id).orElse(null);
-		User user = authService.getCurrentUser(true);
+    public ModelAndView data(String idEncoded, String view) throws AlovoaException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, UnsupportedEncodingException {
+        Optional<Long> idOptional = UserDto.decodeId(idEncoded, textEncryptor);
+        if (idOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
 
-		if (user.getId().equals(id)) {
-			return new ModelAndView("redirect:" + ProfileResource.URL);
-		}
+        Long id = idOptional.get();
+        User userView = userRepo.findById(id).orElse(null);
+        User user = authService.getCurrentUser(true);
 
-		if (userView != null) {
-			if (userView.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
-				throw new AlovoaException("blocked");
-			}
+        if (user.getId().equals(id)) {
+            return new ModelAndView("redirect:" + ProfileResource.URL);
+        }
 
-			if (userView.isDisabled()) {
-				throw new AlovoaException("disabled");
-			}
+        if (userView != null) {
+            if (userView.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
+                throw new AlovoaException("blocked");
+            }
 
-			ModelAndView mav = new ModelAndView(view);
+            if (userView.isDisabled()) {
+                throw new AlovoaException("disabled");
+            }
 
-			userView.setNumberProfileViews(userView.getNumberProfileViews() + 1);
-			userView = userRepo.saveAndFlush(userView);
+            ModelAndView mav = new ModelAndView(view);
 
-			UserDto userDto = UserDto.userToUserDto(userView, user, textEncryptor, UserDto.NO_AUDIO);
-			UserDto currUserDto = UserDto.userToUserDto(user, user, textEncryptor, UserDto.NO_MEDIA);
+            userView.setNumberProfileViews(userView.getNumberProfileViews() + 1);
+            userView = userRepo.saveAndFlush(userView);
 
-			mav.addObject("user", userDto);
-			mav.addObject("currUser", currUserDto);
+            UserDto userDto = UserDto.userToUserDto(userView, user, userService, textEncryptor, UserDto.NO_AUDIO);
+            UserDto currUserDto = UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA);
 
-			mav.addObject("compatible", Tools.usersCompatible(user, userView));
+            mav.addObject("user", userDto);
+            mav.addObject("currUser", currUserDto);
 
-			return mav;
+            mav.addObject("compatible", Tools.usersCompatible(user, userView));
 
-		} else {
-			throw new AlovoaException("user_not_found");
-		}
-	}
+            return mav;
+
+        } else {
+            throw new AlovoaException("user_not_found");
+        }
+    }
 }

@@ -1,5 +1,24 @@
 package com.nonononoki.alovoa.service;
 
+import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
+import com.nonononoki.alovoa.entity.Contact;
+import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.UserDonation;
+import com.nonononoki.alovoa.entity.user.UserReport;
+import com.nonononoki.alovoa.entity.user.UserVerificationPicture;
+import com.nonononoki.alovoa.model.*;
+import com.nonononoki.alovoa.repo.*;
+import jakarta.mail.MessagingException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -10,267 +29,238 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import jakarta.mail.MessagingException;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.nonononoki.alovoa.Tools;
-import com.nonononoki.alovoa.component.TextEncryptorConverter;
-import com.nonononoki.alovoa.entity.Contact;
-import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.user.UserDonation;
-import com.nonononoki.alovoa.entity.user.UserReport;
-import com.nonononoki.alovoa.model.AdminAccountDeleteDto;
-import com.nonononoki.alovoa.model.AlovoaException;
-import com.nonononoki.alovoa.model.MailDto;
-import com.nonononoki.alovoa.model.UserDeleteParams;
-import com.nonononoki.alovoa.model.UserDto;
-import com.nonononoki.alovoa.repo.ContactRepository;
-import com.nonononoki.alovoa.repo.ConversationRepository;
-import com.nonononoki.alovoa.repo.UserBlockRepository;
-import com.nonononoki.alovoa.repo.UserHideRepository;
-import com.nonononoki.alovoa.repo.UserLikeRepository;
-import com.nonononoki.alovoa.repo.UserNotificationRepository;
-import com.nonononoki.alovoa.repo.UserReportRepository;
-import com.nonononoki.alovoa.repo.UserRepository;
-
 @Service
 public class AdminService {
 
-	@Autowired
-	private AuthService authService;
+    private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
+    @Autowired
+    private AuthService authService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private UserRepository userRepo;
+    @Autowired
+    private ContactRepository contactRepo;
+    @Autowired
+    private UserLikeRepository userLikeRepo;
+    @Autowired
+    private UserHideRepository userHideRepo;
+    @Autowired
+    private UserBlockRepository userBlockRepo;
+    @Autowired
+    private UserReportRepository userReportRepo;
+    @Autowired
+    private UserNotificationRepository userNotificationRepo;
+    @Autowired
+    private ConversationRepository conversationRepo;
+    @Autowired
+    private TextEncryptorConverter textEncryptor;
 
-	@Autowired
-	private MailService mailService;
+    public void hideContact(long id) throws AlovoaException {
 
-	@Autowired
-	private UserRepository userRepo;
+        checkRights();
 
-	@Autowired
-	private ContactRepository contactRepo;
+        Contact contact = contactRepo.findById(id).orElse(null);
 
-	@Autowired
-	private UserLikeRepository userLikeRepo;
+        if (contact == null) {
+            throw new AlovoaException("contact_not_found");
+        }
+        contact.setHidden(true);
+        contactRepo.saveAndFlush(contact);
+    }
 
-	@Autowired
-	private UserHideRepository userHideRepo;
+    public void sendMailSingle(MailDto dto) throws AlovoaException {
 
-	@Autowired
-	private UserBlockRepository userBlockRepo;
+        checkRights();
 
-	@Autowired
-	private UserReportRepository userReportRepo;
+        mailService.sendAdminMail(dto.getEmail(), dto.getSubject(), dto.getBody());
+    }
 
-	@Autowired
-	private UserNotificationRepository userNotificationRepo;
+    public void sendMailAll(MailDto dto) throws AlovoaException, MessagingException, IOException {
 
-	@Autowired
-	private ConversationRepository conversationRepo;
+        checkRights();
 
-	@Autowired
-	private TextEncryptorConverter textEncryptor;
+        List<User> users = userRepo.findByDisabledFalseAndAdminFalseAndConfirmedTrue();
+        mailService.sendAdminMailAll(dto.getSubject(), dto.getBody(), users);
+    }
 
-	private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
+    public void deleteReport(long id) throws AlovoaException {
 
-	public void hideContact(long id) throws AlovoaException {
+        checkRights();
 
-		checkRights();
+        UserReport report = userReportRepo.findById(id).orElse(null);
+        if (report == null) {
+            throw new AlovoaException("report_not_found");
+        }
+        try {
+            User u = report.getUserFrom();
+            u.getReported().remove(report);
+            userRepo.saveAndFlush(u);
+        } catch (Exception e) {
+            userReportRepo.delete(report);
+        }
+    }
 
-		Contact contact = contactRepo.findById(id).orElse(null);
+    public void removeImages(String id) throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 
-		if (contact == null) {
-			throw new AlovoaException("contact_not_found");
-		}
-		contact.setHidden(true);
-		contactRepo.saveAndFlush(contact);
-	}
+        checkRights();
 
-	public void sendMailSingle(MailDto dto) throws AlovoaException {
+        User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
 
-		checkRights();
+        if (user == null) {
+            throw new AlovoaException("user_not_found");
+        }
 
-		mailService.sendAdminMail(dto.getEmail(), dto.getSubject(), dto.getBody());
-	}
+        user.setProfilePicture(null);
+        user.getImages().clear();
+        userRepo.saveAndFlush(user);
+    }
 
-	public void sendMailAll(MailDto dto) throws AlovoaException, MessagingException, IOException {
+    public void removeDescription(String id) throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 
-		checkRights();
+        checkRights();
 
-		List<User> users = userRepo.findByDisabledFalseAndAdminFalseAndConfirmedTrue();
-		mailService.sendAdminMailAll(dto.getSubject(), dto.getBody(), users);
-	}
+        User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
 
-	public void deleteReport(long id) throws AlovoaException {
+        if (user == null) {
+            throw new AlovoaException("user_not_found");
+        }
 
-		checkRights();
+        user.setDescription(null);
+        userRepo.saveAndFlush(user);
+    }
 
-		UserReport report = userReportRepo.findById(id).orElse(null);
+    public void banUser(String id) throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 
-		try {
-			if (report == null) {
-				throw new AlovoaException("report_not_found");
-			}
+        checkRights();
 
-			User u = report.getUserFrom();
-			u.getReported().remove(report);
-			userRepo.saveAndFlush(u);
-		} catch (Exception e) {
-			userReportRepo.delete(report);
-		}
-	}
+        User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
 
-	public void removeImages(String id)
-			throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+        if (user == null) {
+            throw new AlovoaException("user_not_found");
+        }
 
-		checkRights();
+        if (user.isAdmin()) {
+            throw new AlovoaException("user_is_admin");
+        }
 
-		User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
+        UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo).userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo).userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
 
-		if (user == null) {
-			throw new AlovoaException("user_not_found");
-		}
+        try {
+            UserService.removeUserDataCascading(user, userDeleteParam);
+        } catch (Exception e) {
+            logger.warn(ExceptionUtils.getStackTrace(e));
+        }
 
-		user.setProfilePicture(null);
-		user.getImages().clear();
-		userRepo.saveAndFlush(user);
-	}
+        user = userRepo.findByEmail(user.getEmail());
 
-	public void removeDescription(String id)
-			throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+        user.setAudio(null);
+        user.setDates(null);
+        user.setDeleteToken(null);
+        user.setDescription(null);
+        user.setLanguage(null);
+        user.setAccentColor(null);
+        user.setCountry(null);
+        user.setUiDesign(null);
+        user.setDisabled(true);
+        user.getDonations().clear();
+        user.setFirstName(null);
+        user.setGender(null);
+        user.getImages().clear();
+        user.setIntention(null);
+        user.getInterests().clear();
+        user.setLocationLatitude(null);
+        user.setLocationLongitude(null);
+        user.setPassword(null);
+        user.setPasswordToken(null);
+        user.setPreferedGenders(null);
+        user.setPreferedMaxAge(0);
+        user.setPreferedMinAge(0);
+        user.setRegisterToken(null);
+        user.setTotalDonations(0);
+        user.setNumberProfileViews(0);
+        user.setNumberSearches(0);
+        user.setProfilePicture(null);
+        user.setVerificationCode(null);
+        user.setVerificationPicture(null);
+        user.getWebPush().clear();
+        user.setShowZodiac(false);
+        userRepo.saveAndFlush(user);
+    }
 
-		checkRights();
+    public void deleteAccount(AdminAccountDeleteDto dto) throws AlovoaException {
+        checkRights();
 
-		User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
+        User user = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
 
-		if (user == null) {
-			throw new AlovoaException("user_not_found");
-		}
+        if (user == null) {
+            throw new AlovoaException("user_not_found");
+        }
 
-		user.setDescription(null);
-		userRepo.saveAndFlush(user);
-	}
+        if (user.isDisabled()) {
+            throw new AlovoaException("user_is_banned");
+        }
 
-	public void banUser(String id)
-			throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
-			BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+        if (user.isAdmin()) {
+            throw new AlovoaException("cannot_delete_admin");
+        }
 
-		checkRights();
+        UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo).userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo).userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
+        UserService.removeUserDataCascading(user, userDeleteParam);
+        userRepo.delete(userRepo.findByEmail(user.getEmail()));
+        userRepo.flush();
+    }
 
-		User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
+    public boolean userExists(String email) throws AlovoaException {
+        checkRights();
+        User u = userRepo.findByEmail(Tools.cleanEmail(URLDecoder.decode(email, StandardCharsets.UTF_8)));
+        return u != null;
+    }
 
-		if (user == null) {
-			throw new AlovoaException("user_not_found");
-		}
-		
-		if (user.isAdmin()) {
-			throw new AlovoaException("user_is_admin");
-		}
+    public void addDonation(String email, double amount) throws AlovoaException, UnsupportedEncodingException {
+        checkRights();
+        User u = userRepo.findByEmail(Tools.cleanEmail(URLDecoder.decode(email, StandardCharsets.UTF_8)));
+        if (u != null) {
+            UserDonation userDonation = new UserDonation();
+            userDonation.setAmount(amount);
+            userDonation.setDate(new Date());
+            userDonation.setUser(u);
+            u.getDonations().add(userDonation);
+            u.setTotalDonations(u.getTotalDonations() + amount);
+            u.getDates().setLatestDonationDate(new Date());
+            userRepo.saveAndFlush(u);
+        } else {
+            throw new AlovoaException("User not found!");
+        }
+    }
 
-		UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
-				.userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
-				.userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
+    public void verifyVerificationPicture(String idEnc) throws AlovoaException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        checkRights();
+        User user = userService.encodedIdToUser(idEnc);
+        UserVerificationPicture verificationPicture = user.getVerificationPicture();
+        if (verificationPicture == null) {
+            return;
+        }
+        verificationPicture.setVerifiedByAdmin(true);
+        verificationPicture.setUserNo(null);
+        verificationPicture.setUserYes(null);
+        user.setVerificationPicture(verificationPicture);
+        userRepo.saveAndFlush(user);
+    }
 
-		try {
-			UserService.removeUserDataCascading(user, userDeleteParam);
-		} catch (Exception e) {
-			logger.warn(ExceptionUtils.getStackTrace(e));
-		}
+    public void deleteVerificationPicture(String idEnc) throws AlovoaException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        checkRights();
+        User user = userService.encodedIdToUser(idEnc);
+        user.setVerificationPicture(null);
+        userRepo.saveAndFlush(user);
+    }
 
-		user = userRepo.findByEmail(user.getEmail());
-
-		user.setAudio(null);
-		user.setDates(null);
-		user.setDeleteToken(null);
-		user.setDescription(null);
-		user.setLanguage(null);
-		user.setAccentColor(null);
-		user.setCountry(null);
-		user.setUiDesign(null);
-		user.setDisabled(true);
-		user.getDonations().clear();
-		user.setFirstName(null);
-		user.setGender(null);
-		user.getImages().clear();
-		user.setIntention(null);
-		user.getInterests().clear();
-		user.setLocationLatitude(null);
-		user.setLocationLongitude(null);
-		user.setPassword(null);
-		user.setPasswordToken(null);
-		user.setPreferedGenders(null);
-		user.setPreferedMaxAge(0);
-		user.setPreferedMinAge(0);
-		user.setRegisterToken(null);
-		user.setTotalDonations(0);
-		user.setNumberProfileViews(0);
-		user.setNumberSearches(0);
-		user.setProfilePicture(null);
-		user.getWebPush().clear();
-		user.setShowZodiac(false);
-		userRepo.saveAndFlush(user);
-	}
-
-	public void deleteAccount(AdminAccountDeleteDto dto) throws AlovoaException {
-		checkRights();
-
-		User user = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
-
-		if (user == null) {
-			throw new AlovoaException("user_not_found");
-		}
-		
-		if(user.isDisabled()) {
-			throw new AlovoaException("user_is_banned");
-		}
-
-		if (user.isAdmin()) {
-			throw new AlovoaException("cannot_delete_admin");
-		}
-
-		UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
-				.userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
-				.userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
-		UserService.removeUserDataCascading(user, userDeleteParam);
-		userRepo.delete(userRepo.findByEmail(user.getEmail()));
-		userRepo.flush();
-	}
-
-	public boolean userExists(String email) throws AlovoaException {
-		checkRights();
-		User u = userRepo.findByEmail(Tools.cleanEmail(URLDecoder.decode(email, StandardCharsets.UTF_8)));
-		return u != null;
-	}
-
-	public void addDonation(String email, double amount) throws AlovoaException, UnsupportedEncodingException {
-		checkRights();
-		User u = userRepo.findByEmail(Tools.cleanEmail(URLDecoder.decode(email, StandardCharsets.UTF_8)));
-		if (u != null) {
-			UserDonation userDonation = new UserDonation();
-			userDonation.setAmount(amount);
-			userDonation.setDate(new Date());
-			userDonation.setUser(u);
-			u.getDonations().add(userDonation);
-			u.setTotalDonations(u.getTotalDonations() + amount);
-			u.getDates().setLatestDonationDate(new Date());
-			userRepo.saveAndFlush(u);
-		} else {
-			throw new AlovoaException("User not found!");
-		}
-	}
-
-	private void checkRights() throws AlovoaException {
-		if (!authService.getCurrentUser(true).isAdmin()) {
-			throw new AlovoaException("not_admin");
-		}
-	}
+    private void checkRights() throws AlovoaException {
+        if (!authService.getCurrentUser(true).isAdmin()) {
+            throw new AlovoaException("not_admin");
+        }
+    }
 
 }

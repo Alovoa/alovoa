@@ -45,7 +45,7 @@ public class OxCaptcha {
 	private boolean _hollow;
 	private Font _font;
 	private FontRenderContext _fontRenderContext;
-	private char[] _charSet = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k', 'm', 'n', 'p', 'r', 'w', 'x',
+	private static char[] _charSet = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k', 'm', 'n', 'p', 'r', 'w', 'x',
 			'y', '2', '3', '4', '5', '6', '7', '8' };
 
 	public OxCaptcha(int width, int height) {
@@ -105,11 +105,15 @@ public class OxCaptcha {
 	}
 
 	public void text(int length) {
+		text(genText(length));
+	}
+
+	public static char[] genText(int length) {
 		char[] t = new char[length];
 		for (int i = 0; i < length; i++) {
 			t[i] = _charSet[RAND.nextInt(_charSet.length)];
 		}
-		text(t);
+		return t;
 	}
 
 	public void text(String chars) {
