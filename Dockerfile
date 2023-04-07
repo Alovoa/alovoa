@@ -1,16 +1,19 @@
 #
 # Build stage
 #
-FROM maven:3.6.0-jdk-11 AS build
+FROM maven:3.8.6-eclipse-temurin-17-alpine AS build
+ENV HOME=/home/app
+WORKDIR $HOME
+COPY pom.xml $HOME
+RUN mvn verify --fail-never
 COPY . /home/app
-WORKDIR /home/app
-RUN mvn -f /home/app/pom.xml clean install -DskipTests
+RUN mvn clean package -Dmaven.test.skip=true
 
 #
 # App stage
 #
-FROM openjdk:11-jre
-COPY --from=build /home/app/target/alovoa-1.0.0.jar /home/app/alovoa-1.0.0.jar
-WORKDIR /home/app
-EXPOSE 8080
-ENTRYPOINT ["java", "-XX:+HeapDumpOnOutOfMemoryError", "-Xmx128m", "-jar", "-Dfile.encoding=UTF-8", "-Dspring.profiles.active=prod", "alovoa-1.0.0.jar"]
+FROM eclipse-temurin:17.0.6_10-jre
+ENV HOME=/home/app
+WORKDIR $HOME
+COPY --from=build $HOME/target/alovoa-1.1.0.jar $HOME/alovoa-1.1.0.jar
+ENTRYPOINT ["java", "-XX:+HeapDumpOnOutOfMemoryError", "-Xmx128m", "-jar", "-Dfile.encoding=UTF-8", "-Dspring.profiles.active=prod", "alovoa-1.1.0.jar"]
