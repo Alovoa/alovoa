@@ -11,7 +11,7 @@ import java.util.List;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.jose4j.lang.JoseException;
