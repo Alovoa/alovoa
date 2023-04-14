@@ -97,7 +97,8 @@
 						<div class="swiper-pagination" style="bottom: 20px;"></div>
 					</div>
 				</div>
-				
+
+
 				<div class="box" onclick="window.open('/donate-list', '_blank');" id="donate-box">
 					<label class="label" th:text="#{donated}"></label>
 					<label th:text=" ${#numbers.formatDecimal(user.totalDonations, 1, 2, 'POINT') + ' €'}"></td>></label>
@@ -458,8 +459,44 @@
 				</div>
 
 				<div style="padding-top: 230px;"></div>
+				<div id="gender-change-modal" class="modal modal-fx-fadeInScale">
+					<div class="modal-background" onclick="closeModal()"></div>
+					<div class="modal-content">
+							<div class="box" id="gender">
+							<label class="label" th:text="#{gender}" style="float: left;"></label><span
+								class="asterisk"></span>
+							<div class="select">
+								<select name="gender" required>
+									<th:block th:each="gender : ${genders}">
+										<option th:value="${gender.id}" th:if="${gender.text == 'male'}"
+												th:selected="${user.gender.text == gender.text}"
+												th:text="${gender.text}"></option>
+										<option th:value="${gender.id}" th:if="${gender.text == 'female'}"
+												th:selected="${user.gender.text == gender.text}"
+												th:text="${gender.text}"></option>
+										<option th:value="${gender.id}" th:if="${gender.text == 'other'}"
+												th:selected="${user.gender.text == gender.text}"
+												th:text="${gender.text}"></option>
+									</th:block>
+								</select>
+							</div>
+								<br>
+								<br>
+								<div class="alert-text">
+								Warning! Once changed you will not be able to update for next 30 days.
+							</div>
+						</div>
+
+
+					</div>
+				</div>
+
 
 				<div class="box">
+
+					<div class="field">
+						<a th:text="#{gender.change}" onclick="changeGender()">ChangeGender</a>
+					</div>
 					<div class="field">
 						<a th:text="#{profile.webpush}" onclick="subscribe()"></a>
 					</div>

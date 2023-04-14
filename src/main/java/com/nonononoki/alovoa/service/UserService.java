@@ -463,6 +463,48 @@ public class UserService {
 		userRepo.saveAndFlush(user);
 	}
 
+	public void updateUserGender(long genderId) throws AlovoaException {
+		User user = authService.getCurrentUser(true);
+
+		if (user.getDates().getGenderChangeDate() == null
+				|| Tools.diffInDays(user.getDates().getGenderChangeDate()) > 30){
+
+			for (UserLike like : userLikeRepo.findByUserFrom(user)) {
+				User u = like.getUserTo();
+				if (u != null && u.getLikedBy() != null) {
+					if(u.getGender().getId() == genderId) {
+						u.getLikedBy().remove(like);
+						userRepo.save(u);
+					}
+				}
+				like.setUserTo(null);
+				userLikeRepo.save(like);
+
+			}
+			for (UserLike like : userLikeRepo.findByUserTo(user)) {
+				User u = like.getUserFrom();
+				if (u != null && u.getLikes() != null) {
+					if(u.getGender().getId() == genderId) {
+						u.getLikes().remove(like);
+						userRepo.save(u);
+					}
+				}
+				like.setUserFrom(null);
+				userLikeRepo.save(like);
+
+			}
+			userRepo.flush();
+			userLikeRepo.flush();
+			Gender g = genderRepo.findById(genderId).orElse(null);
+			user.setGender(g);
+			user.getDates().setGenderChangeDate(new Date());
+			userRepo.saveAndFlush(user);
+		}
+		else {
+			throw new AlovoaException("Gender cooldown not finished");
+		}
+
+	}
 	public void updateIntention(long intention) throws AlovoaException {
 		User user = authService.getCurrentUser(true);
 

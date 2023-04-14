@@ -54,6 +54,10 @@
 	font-weight: normal;
 }
 
+.alert-text {
+	color: #FF1414;
+}
+
 @media screen and (max-width: 460px) {
 	.box {
 		padding: 0px;
