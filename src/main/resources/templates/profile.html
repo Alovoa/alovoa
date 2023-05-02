@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto">
+<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
 	<meta charset="utf-8">
@@ -67,18 +67,27 @@
 										<i class="fa fa-plus fa-4x"></i>
 									</div>
 									<th:block th:if="${user.profilePicture}">
-										<img id="profilePicture" style="cursor: pointer;" class="profile-pic "
+										<img id="profilePicture" style="cursor: pointer;" class="profile-pic"
 											height=300 width=300 th:src="${user.profilePicture}" th:value=1 />
 									</th:block>
 									<input id="profilePictureUpload" type="file" accept="image/*" style="display: none">
 								</div>
 							</div>
+
+							<div th:if="${user.verificationPicture.data == null}" class="swiper-slide">
+								<div class="center-parent" style="display: flex; flex-direction: column;">
+									<img id="verification-image" style="cursor: pointer;" class="profile-pic" height=300 width=300 src="/img/onboarding/add-verification.svg" onclick="modalVerificationImage()" />
+									<div class="button is-primary is-small is-rounded colored" style="margin-top: -50px;" onclick="modalVerificationImage()">Verify yourself!</div>
+								</div>
+							</div>
+
 							<div th:each="img : ${user.images}" class="swiper-slide">
 								<div class="center-parent">
 									<img style="cursor: pointer;" class="profile-pic" height=300 width=300
 										th:src="${img.content}" th:onclick="deleteImage([[${img.id}]])" />
 								</div>
 							</div>
+
 							<th:block th:if="${#lists.size(user.images) != imageMax}">
 							<div class="swiper-slide center-parent" style="height: 100%;"
 								th:if="${user.profilePicture}">
@@ -91,6 +100,15 @@
 							</th:block>
 							<input id="addImageInput" type="file" accept="image/*"
 								style="display: none">
+
+							<div th:if="${user.verificationPicture.data != null}" class="swiper-slide">
+								<div class="center-parent" style="text-align: center;">
+									<div onclick="modalVerificationImage()">
+										<div th:text="#{profile.verification.your-verification}"></div>
+										<img style="cursor: pointer;" class="profile-pic" height=270 width=270 th:src="${user.verificationPicture.data}" />
+									</div>
+								</div>
+							</div>
 						</div>
 						<div class="swiper-button-next"></div>
 						<div class="swiper-button-prev"></div>
@@ -498,6 +516,38 @@
 
 			</div>
 		</div>
+	</div>
+
+	<div id="profilepic-change-modal" class="modal">
+		<div class="modal-background"></div>
+		<div class="modal-content center-parent" style="flex-direction: column">
+			<img src="/img/onboarding/profilepic.svg" class="modal-image">
+			<div class="modal-description">
+				<span th:text="#{profile.profile-picture.change.description-1}"></span><span> </span><span th:text="#{profile.profile-picture.change.description-2}"></span>
+			</div>
+			<div style="width: 100%;">
+				<button class="button" th:text="#{cancel}" onclick="hideModal()" style=""></button>
+				<button class="button right is-primary colored" th:text="#{submit}" onclick="updateProfilePic()"></button>
+			</div>
+		</div>
+	</div>
+
+	<div id="verification-modal" class="modal">
+		<div class="modal-background"></div>
+		<div class="modal-content center-parent" style="flex-direction: column">
+			<img src="/img/onboarding/verification.svg" class="modal-image">
+			<div class="modal-description">
+				<span th:text="#{profile.verification.description-1}"></span><span> </span>
+				<span style="font-weight: bold;" th:text="${user.verificationPicture.text}"></span>
+				<br>
+				<span th:text="#{profile.verification.description-2}"></span>
+			</div>
+			<div style="width: 100%;">
+				<button class="button" th:text="#{cancel}" onclick="hideModal()" style=""></button>
+				<button class="button right is-primary colored" th:text="#{submit}" id="submit-verification-button"></button>
+			</div>
+		</div>
+		<input id="verificationPictureUpload" type="file" accept="image/*" style="display: none">
 	</div>
 	
 	<div class="loader-parent" id="loader-parent">

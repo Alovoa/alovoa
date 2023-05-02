@@ -30,6 +30,12 @@
 	cursor: pointer;
 }
 
+.modal-image {
+    max-height: 50vh;
+    width: 420px;
+    margin-bottom: 24px;
+}
+
 #profile-warning-collapsible {
 	padding: 1.25rem; 
 	display: flex; 
@@ -54,6 +60,22 @@
 	font-weight: normal;
 }
 
+.modal-description {
+    margin-bottom: 8px;
+    padding: 8px;
+}
+
+.modal-content {
+    max-height: 100vh;
+}
+
+@media screen and (max-width: 769px) {
+    .modal-content {
+        margin: 0 auto;
+        width: 90%;
+    }
+}
+
 @media screen and (max-width: 460px) {
 	.box {
 		padding: 0px;
@@ -62,4 +84,13 @@
 	.section {
 		padding: 0.5rem 1rem;
 	}
+
+	.modal-image {
+        width: 80vw;
+        margin-bottom: 24px;
+    }
+
+    .modal-description {
+        font-size: 12px;
+    }
 }

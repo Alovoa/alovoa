@@ -13,32 +13,39 @@
     <link href="/css/lib/bulma.min.css" rel="stylesheet"/>
     <th:block th:replace="fragments.html::bulma"></th:block>
     <th:block th:replace="fragments.html::ui-design"></th:block>
-    <link href="/css/lib/bulma-slider.min.css" rel="stylesheet"/>
-    <link href="/css/lib/swiper.min.css" rel="stylesheet"/>
-    <link href="/css/lib/modal-fx.min.css" rel="stylesheet"/>
     <link href="/css/lib/animate.min.css" rel="stylesheet"/>
     <link href="/css/alovoa.css" rel="stylesheet"/>
-    <link href="/css/user-profile.css" rel="stylesheet"/>
-    <title th:value="${user.firstName}"></title>
+    <title th:text="#{admin.title}"></title>
 </head>
 
 <body>
-<div id="main-logged-in">
-    <div id="user-profile-content">
-        <th:block th:replace="fragments.html::user-profile"></th:block>
+<div id="main">
+    <div style="padding-top: 4px;"></div>
+    <div class="box" style="max-height: 330px; overflow: auto;">
+        <h3>Verify users</h3>
+        <div class="verification" style="padding-bottom: 16px;" th:each="contact : ${contacts}" th:id="${idEncoded}">
+            <div class="verification-images">
+                <img class="profile-pic" th:src="${verificationPicture}">
+                <img class="profile-pic" th:src="${profilePicture}">
+            </div>
+            <div class="verification-buttons">
+                <button class="button" th:onclick="verifyVerification([[${idEncoded}]])">Verify</button>
+                <button class="button" th:onclick="deleteVerification([[${idEncoded}]])">Delete</button>
+            </div>
+        </div>
     </div>
+
+    <div style="padding-bottom: 24px;"></div>
+
 </div>
 
 <script src="/sw.js"></script>
-<script src="/js/lib/fontawesome.all.js"></script>
 <script src="/js/lib/jquery.min.js"></script>
-<script src="/js/lib/swiper.min.js"></script>
-<script src="/js/lib/modal-fx.min.js"></script>
+<script src="/js/lib/fontawesome.all.js"></script>
 <script src="/js/lib/bulma-toast.min.js"></script>
-<script src="/js/tools/modal.js"></script>
 <script src="/js/tools/get-text.js"></script>
 <script src="/js/alovoa.js"></script>
-<script src="/js/user-profile.js"></script>
-<script src="/js/user-profile-lib.js"></script>
+<script src="/js/alovoa-verification.js"></script>
 </body>
+
 </html>

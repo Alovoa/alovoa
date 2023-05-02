@@ -18,7 +18,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serial;
 import java.util.*;
 
-@SuppressWarnings("serial")
 @Component
 @Data
 @Entity
@@ -236,7 +235,7 @@ public class User implements UserDetails {
     public void setPreferedMinAge(int preferedMinAge) {
         try {
             this.preferedMinAge = Tools.convertPrefAgeToRelativeYear(this.getDates().getDateOfBirth(), preferedMinAge);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -251,7 +250,7 @@ public class User implements UserDetails {
     public void setPreferedMaxAge(int preferedMaxAge) {
         try {
             this.preferedMaxAge = Tools.convertPrefAgeToRelativeYear(this.getDates().getDateOfBirth(), preferedMaxAge);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 

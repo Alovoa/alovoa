@@ -61,7 +61,8 @@ $(function() {
 	//updateProfileWarning();
 
 	$("#profilePicture").click(function(e) {
-		$("#profilePictureUpload").click();
+        //TODO check verificationStatus first
+        openModal("profilepic-change-modal");
 	});
 
 	$("#addImageDiv").click(function(e) {
@@ -71,11 +72,6 @@ $(function() {
 	$("#profilePictureUpload").change(function() {
 		showLoader();
 		let file = document.querySelector('#profilePictureUpload').files[0];
-		//		if (file.size > mediaMaxSize) {
-		//			hideLoader();
-		//			alert(getText("error.media.max-size-exceeded"));
-		//			return;
-		//		}
 
 		resizeImage(file, function(b64) {
 			if (b64) {
@@ -444,6 +440,43 @@ $(function() {
 			}
 		});
 	});
+
+	$("#submit-verification-button").click(function(e) {
+        $("#verificationPictureUpload").click();
+    });
+
+    $("#verificationPictureUpload").change(function() {
+        showLoader();
+        let file = document.querySelector('#verificationPictureUpload').files[0];
+
+        resizeImage(file, function(b64) {
+            if (b64) {
+                if (getBase64InMB(b64) > mediaMaxSize) {
+                    hideLoader();
+                    alert(getText("error.media.max-size-exceeded"));
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/user/update/verification-picture",
+                    contentType: "text/plain",
+                    data: b64,
+                    success: function() {
+                        location.reload();
+                    },
+                    error: function(e) {
+                        console.log(e);
+                        hideLoader();
+                        alert(getGenericErrorText());
+                        if (e.status == 403) {
+                            location.reload();
+                        }
+                    }
+                });
+            }
+        });
+    });
 });
 
 function copyClipboard(txt) {
@@ -690,6 +723,14 @@ function updateProfileWarning() {
 function getUserData(idEnc) {
 	let url = "/user/userdata/" + idEnc;
 	window.open(url);
+}
+
+function modalVerificationImage() {
+    openModal("verification-modal");
+}
+
+function updateProfilePic() {
+    $("#profilePictureUpload").click();
 }
 
 function resizeAudio(file, callback) {

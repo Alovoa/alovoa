@@ -8,7 +8,7 @@
  */
 
 
-const cacheName = '57';
+const cacheName = '58';
 const staticAssets = [
 
 	'/favicon.ico',
@@ -53,6 +53,7 @@ const staticAssets = [
 	'/js/register-oauth.js',
 	'/js/search.js',
 	'/js/user-profile.js',
+	'/js/user-profile-lib.js',
 
 	'/css/lib/bulma.min.css',
 	'/css/lib/bulma.orange.css',
@@ -106,7 +107,8 @@ const staticAssets = [
 	'/img/profile/8.png',
 	'/img/profile/9.png',
 	'/img/profile/10.png',
-	
+
+	'/img/onboarding/verification.svg',
 	'/img/onboarding/description.svg',
 	'/img/onboarding/genders.svg',
 	'/img/onboarding/intention.svg',

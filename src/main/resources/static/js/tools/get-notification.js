@@ -51,7 +51,7 @@ function getNewAlert() {
 		},
 		error: function(e) {
 			console.log(e);
-			clearTimeout(alertTimeout);
+			// clearTimeout(alertTimeout);
 			if (e.status == 403) {
 				location.reload();
 			}
@@ -68,7 +68,7 @@ function getNewMessage() {
 		},
 		error: function(e) {
 			console.log(e);
-			clearTimeout(messageTimeout);
+			// clearTimeout(messageTimeout);
 		}
 	});
 }

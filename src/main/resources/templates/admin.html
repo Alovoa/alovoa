@@ -1,130 +1,132 @@
 <!DOCTYPE html>
-<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto">
+<html dir="auto" th:lang="${lang}" th:with="lang=${#locale.language}" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-title" content="Alovoa">
-	<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
-	<link rel="manifest" href="/manifest/manifest.json">
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="Alovoa" name="apple-mobile-web-app-title">
+    <meta content="#121212" media="(prefers-color-scheme: dark)" name="theme-color">
+    <link href="/manifest/manifest.json" rel="manifest">
 
-	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-	<th:block th:replace="fragments.html::bulma"></th:block>
-	<th:block th:replace="fragments.html::ui-design"></th:block>
-	<link rel="stylesheet" href="/css/lib/animate.min.css" />
-	<link rel="stylesheet" href="/css/alovoa.css" />
-	<link rel="stylesheet" href="/css/privacy.css" />
-	<title th:text="#{admin.title}"></title>
+    <link href="/css/lib/bulma.min.css" rel="stylesheet"/>
+    <th:block th:replace="fragments.html::bulma"></th:block>
+    <th:block th:replace="fragments.html::ui-design"></th:block>
+    <link href="/css/lib/animate.min.css" rel="stylesheet"/>
+    <link href="/css/alovoa.css" rel="stylesheet"/>
+    <link href="/css/privacy.css" rel="stylesheet"/>
+    <title th:text="#{admin.title}"></title>
 </head>
 
 <body>
-	<div id="main">
-		<header th:insert="fragments.html::header-logged-in"></header>
-		<div style="padding-top: 4px;"></div>
-		<div id="contact" class="box" style="max-height: 330px; overflow: auto;">
-			<h3 th:text="#{contact}"></h3>
-			<div th:each="contact : ${contacts}" style="padding-bottom: 16px;" th:id="'contact' + ${contact.id}">
-				<input class="input" th:value="${contact.email}" readonly></input>
-				<div style="padding-top: 4px;"></div>
-				<textarea class="textarea" th:text="${contact.message}" readonly></textarea>
-				<div style="padding-top: 4px;"></div>
-				<button class="button" th:text="#{admin-delete-contact}"
-					th:onclick="hideContact([[${contact.id}]])"></button>
-			</div>
-		</div>
+<div id="main">
+    <header th:insert="fragments.html::header-logged-in"></header>
+    <div style="padding-top: 4px;"></div>
+    <div class="box" id="contact" style="max-height: 330px; overflow: auto;">
+        <h3 th:text="#{contact}"></h3>
+        <div style="padding-bottom: 16px;" th:each="contact : ${contacts}" th:id="'contact' + ${contact.id}">
+            <input class="input" readonly th:value="${contact.email}"></input>
+            <div style="padding-top: 4px;"></div>
+            <textarea class="textarea" readonly th:text="${contact.message}"></textarea>
+            <div style="padding-top: 4px;"></div>
+            <button class="button" th:onclick="hideContact([[${contact.id}]])"
+                    th:text="#{admin-delete-contact}"></button>
+        </div>
+    </div>
 
-		<div id="report" class="box" style="max-height: 693px; overflow: auto;">
-			<h3 th:text="#{reports}"></h3>
-			<div th:each="report : ${reports}" style="padding-bottom: 16px;" th:id="'report' + ${report.id}"
-				th:class="'user' + ${report.userTo.id}">
-				<h4 th:text="${report.userTo.firstName}"></h4>
-				<textarea class="textarea" th:text="${report.userTo.description}" readonly></textarea>
-				<div style="padding-top: 4px;"></div>
-				<textarea class="textarea" th:text="${report.comment}" readonly></textarea>
-				<div style="padding-top: 4px;"></div>
-				<button class="button" th:onclick="viewProfile([[${report.userToIdEnc}]])"><i
-						class="fa fa-user"></i></button>
-				<button class="button" th:text="#{admin.delete-report}"
-					th:onclick="deleteReport([[${report.id}]])"></button>
-				<button class="button" th:text="#{admin.remove-description}"
-					th:onclick="removeDescription([[${report.userToIdEnc}]])"></button>
-				<button class="button" th:text="#{admin.remove-images}"
-					th:onclick="removeImages([[${report.userToIdEnc}]])"></button>
-				<button class="button" th:text="#{admin.ban-user}"
-					th:onclick="banUser([[${report.userToIdEnc}]], [[${report.userTo.id}]])"></button>
-			</div>
-		</div>
+    <div class="box" id="report" style="max-height: 693px; overflow: auto;">
+        <h3 th:text="#{reports}"></h3>
+        <div style="padding-bottom: 16px;" th:class="'user' + ${report.userTo.id}" th:each="report : ${reports}"
+             th:id="'report' + ${report.id}">
+            <h4 th:text="${report.userTo.firstName}"></h4>
+            <textarea class="textarea" readonly th:text="${report.userTo.description}"></textarea>
+            <div style="padding-top: 4px;"></div>
+            <textarea class="textarea" readonly th:text="${report.comment}"></textarea>
+            <div style="padding-top: 4px;"></div>
+            <button class="button" th:onclick="viewProfile([[${report.userToIdEnc}]])"><i
+                    class="fa fa-user"></i></button>
+            <button class="button" th:onclick="deleteReport([[${report.id}]])"
+                    th:text="#{admin.delete-report}"></button>
+            <button class="button" th:onclick="removeDescription([[${report.userToIdEnc}]])"
+                    th:text="#{admin.remove-description}"></button>
+            <button class="button" th:onclick="removeImages([[${report.userToIdEnc}]])"
+                    th:text="#{admin.remove-images}"></button>
+            <button class="button" th:onclick="banUser([[${report.userToIdEnc}]], [[${report.userTo.id}]])"
+                    th:text="#{admin.ban-user}"></button>
+        </div>
+    </div>
 
-		<div id="mail-single" class="box">
-			<h3 th:text="#{admin.mail.send-single}"></h3>
-			<form id="mail-single-form" th:action="@{/admin/mail/single}" method="POST">
-				<input class="input" name="email" th:placeholder="#{email}" required>
-				<div style="padding-top: 4px;"></div>
-				<input class="input" name="subject" th:placeholder="#{subject}" required>
-				<div style="padding-top: 4px;"></div>
-				<textarea class="textarea" name="body" th:placeholder="#{message}" required></textarea>
-				<div style="padding-top: 4px;"></div>
-				<button class="button" th:text="#{submit}"></button>
-			</form>
-		</div>
+    <div class="box" id="mail-single">
+        <h3 th:text="#{admin.mail.send-single}"></h3>
+        <form id="mail-single-form" method="POST" th:action="@{/admin/mail/single}">
+            <input class="input" name="email" required th:placeholder="#{email}">
+            <div style="padding-top: 4px;"></div>
+            <input class="input" name="subject" required th:placeholder="#{subject}">
+            <div style="padding-top: 4px;"></div>
+            <textarea class="textarea" name="body" required th:placeholder="#{message}"></textarea>
+            <div style="padding-top: 4px;"></div>
+            <button class="button" th:text="#{submit}"></button>
+        </form>
+    </div>
 
-		<div id="mail-all" class="box">
-			<h3 th:text="#{admin.mail.send-all}"></h3>
-			<form id="mail-all-form" th:action="@{/admin/mail/all}" method="POST">
-				<input class="input" name="subject" th:placeholder="#{subject}" required>
-				<div style="padding-top: 4px;"></div>
-				<textarea class="textarea" name="body" th:placeholder="#{message}" required></textarea>
-				<div style="padding-top: 4px;"></div>
-				<button class="button" th:text="#{submit}"></button>
-			</form>
-		</div>
+    <div class="box" id="mail-all">
+        <h3 th:text="#{admin.mail.send-all}"></h3>
+        <form id="mail-all-form" method="POST" th:action="@{/admin/mail/all}">
+            <input class="input" name="subject" required th:placeholder="#{subject}">
+            <div style="padding-top: 4px;"></div>
+            <textarea class="textarea" name="body" required th:placeholder="#{message}"></textarea>
+            <div style="padding-top: 4px;"></div>
+            <button class="button" th:text="#{submit}"></button>
+        </form>
+    </div>
 
-		<div id="delete-account" class="box">
-			<h3 th:text="#{profile.account.delete}"></h3>
-			<form id="delete-account-form" th:action="@{/admin/delete-account}" method="POST">
-				<input class="input" name="email" th:placeholder="#{email}" required>
-				<div style="padding-top: 4px;"></div>
-				<button class="button" th:text="#{submit}"></button>
-			</form>
-		</div>
-		
-		<div id="user-exists" class="box">
-			<h3>Check user exists</h3>
-			<form id="user-exists-form" th:action="@{/admin/user-exists/}" method="POST">
-				<input class="input" name="email" th:placeholder="#{email}" id="user-exists-email" required>
-				<div style="padding-top: 4px;"></div>
-				<button class="button" th:text="#{submit}"></button>
-			</form>
-		</div>
-		
-		<div id="donation-add" class="box">
-			<h3>Add donation</h3>
-			<form id="donation-add-form" th:action="@{/admin/donation/add/}" method="POST">
-				<input class="input" name="email" th:placeholder="#{email}" id="donation-add-email" required>
-				<input class="input" type="number" step=".01" name="amount" th:placeholder="Amount" id="donation-add-amount" required>
-				<div style="padding-top: 4px;"></div>
-				<button class="button" th:text="#{submit}"></button>
-			</form>
-		</div>
-		
-		<div id="links" class="box">
-			<a href="/search">Search</a>
-		</div>
-		
-		<div style="padding-bottom: 24px;"></div>
+    <div class="box" id="delete-account">
+        <h3 th:text="#{profile.account.delete}"></h3>
+        <form id="delete-account-form" method="POST" th:action="@{/admin/delete-account}">
+            <input class="input" name="email" required th:placeholder="#{email}">
+            <div style="padding-top: 4px;"></div>
+            <button class="button" th:text="#{submit}"></button>
+        </form>
+    </div>
 
-	</div>
-	<footer th:replace="fragments.html::footer"></footer>
+    <div class="box" id="user-exists">
+        <h3>Check user exists</h3>
+        <form id="user-exists-form" method="POST" th:action="@{/admin/user-exists/}">
+            <input class="input" id="user-exists-email" name="email" required th:placeholder="#{email}">
+            <div style="padding-top: 4px;"></div>
+            <button class="button" th:text="#{submit}"></button>
+        </form>
+    </div>
 
-	<script src="/sw.js"></script>
-	<script src="/js/lib/jquery.min.js"></script>
-	<script src="/js/lib/fontawesome.all.js"></script>
-	<script src="/js/lib/bulma-toast.min.js"></script>
-	<script src="/js/tools/get-text.js"></script>
-	<script src="/js/alovoa.js"></script>
-	<script src="/js/admin.js"></script>
+    <div class="box" id="donation-add">
+        <h3>Add donation</h3>
+        <form id="donation-add-form" method="POST" th:action="@{/admin/donation/add/}">
+            <input class="input" id="donation-add-email" name="email" required th:placeholder="#{email}">
+            <input class="input" id="donation-add-amount" name="amount" required step=".01" th:placeholder="Amount"
+                   type="number">
+            <div style="padding-top: 4px;"></div>
+            <button class="button" th:text="#{submit}"></button>
+        </form>
+    </div>
+
+    <div class="box" id="links">
+        <a href="/search">Search</a>
+        <a href="/admin-verification">Verification</a>
+    </div>
+
+    <div style="padding-bottom: 24px;"></div>
+
+</div>
+<footer th:replace="fragments.html::footer"></footer>
+
+<script src="/sw.js"></script>
+<script src="/js/lib/jquery.min.js"></script>
+<script src="/js/lib/fontawesome.all.js"></script>
+<script src="/js/lib/bulma-toast.min.js"></script>
+<script src="/js/tools/get-text.js"></script>
+<script src="/js/alovoa.js"></script>
+<script src="/js/admin.js"></script>
 </body>
 
 </html>

@@ -916,6 +916,10 @@ public class UserService {
 
     public String getVerificationCode() throws AlovoaException {
         User user = authService.getCurrentUser(true);
+        return getVerificationCode(user);
+    }
+
+    public String getVerificationCode(User user) {
         if (user.getVerificationCode() != null) {
             return user.getVerificationCode();
         } else {

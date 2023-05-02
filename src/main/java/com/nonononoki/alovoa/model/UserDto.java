@@ -1,6 +1,5 @@
 package com.nonononoki.alovoa.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
@@ -23,20 +22,19 @@ import java.util.*;
 
 @Data
 public class UserDto {
-
     public static final int ALL = 0;
     public static final int PROFILE_PICTURE_ONLY = 1;
     public static final int NO_AUDIO = 2;
     public static final int NO_MEDIA = 3;
-    // in minutes
-    public static final int LA_STATE_ACTIVE_1 = 5;
+    public static final int LA_STATE_ACTIVE_1 = 5; // in minutes
     public static final int LA_STATE_ACTIVE_2 = 1;
-    public static final int LA_STATE_ACTIVE_3 = 3;
-    public static final int LA_STATE_ACTIVE_4 = 7;
+    public static final int LA_STATE_ACTIVE_3 = 7;
+    public static final int LA_STATE_ACTIVE_4 = 30;
+    public static final int VERIFICATION_MINUMUM = 5;
+    public static final int VERIFICATION_FACTOR = 5;
     private static final double MILES_TO_KM = 0.6214;
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDto.class);
-    @JsonIgnore
-    private long id;
+
     private String idEncoded;
     private String email;
     private String firstName;
@@ -77,7 +75,7 @@ public class UserDto {
     private boolean hasLocation;
     private Double locationLatitude;
     private Double locationLongitude;
-    private String verificationCode;
+    private UserDtoVerificationPicture verificationPicture;
     private int lastActiveState = 5;
 
     public static UserDto userToUserDto(User user, User currentUser, UserService userService, TextEncryptorConverter textEncryptor)
@@ -93,7 +91,6 @@ public class UserDto {
             return null;
         }
         UserDto dto = new UserDto();
-        dto.setId(user.getId());
         if (user.equals(currentUser)) {
             dto.setEmail(user.getEmail());
             dto.setLocationLatitude(user.getLocationLatitude());
@@ -113,7 +110,7 @@ public class UserDto {
         dto.setDescription(user.getDescription());
         dto.setFirstName(user.getFirstName());
         dto.setGender(user.getGender());
-        dto.setVerificationCode(userService.getVerificationCode());
+        dto.setVerificationPicture(UserDtoVerificationPicture.map(user, user.getVerificationPicture(), userService, mode));
 
         dto.setCountry(Tools.getCountryEmoji(user.getCountry()));
 
@@ -138,7 +135,7 @@ public class UserDto {
         dto.setNumBlockedByUsers(user.getBlockedByUsers().size());
         dto.setNumReports(user.getReportedByUsers().size());
         dto.setInterests(user.getInterests());
-        if ((mode != NO_AUDIO || mode != PROFILE_PICTURE_ONLY || mode != NO_MEDIA) && user.getAudio() != null) {
+        if ((mode != NO_AUDIO && mode != PROFILE_PICTURE_ONLY && mode != NO_MEDIA) && user.getAudio() != null) {
             dto.setAudio(user.getAudio().getData());
         }
         dto.setHasAudio(user.getAudio() != null);
@@ -206,7 +203,7 @@ public class UserDto {
 
     public static String encodeId(long id, TextEncryptorConverter textEncryptor)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-            NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+            NoSuchPaddingException, InvalidAlgorithmParameterException {
         return Base64.getEncoder()
                 .encodeToString(textEncryptor.encode(Long.toString(id)).getBytes(StandardCharsets.UTF_8));
     }
@@ -259,5 +256,39 @@ public class UserDto {
             return "sagittarius";
         return null;
 
+    }
+
+    public static boolean isVerifiedByUsers(UserVerificationPicture pic) {
+        if (pic.getUserYes().size() < VERIFICATION_MINUMUM) {
+            return false;
+        }
+        return pic.getUserNo().size() * VERIFICATION_FACTOR <= pic.getUserYes().size();
+    }
+
+    @Data
+    public static class UserDtoVerificationPicture {
+        private boolean verifiedByAdmin;
+        private boolean verifiedByUsers;
+        private String data;
+        private String text;
+        private int userYes;
+        private int userNo;
+
+        public static UserDtoVerificationPicture map(User user, UserVerificationPicture pic, UserService userService, int mode) {
+            UserDtoVerificationPicture verificationPicture = new UserDtoVerificationPicture();
+            verificationPicture.setText(userService.getVerificationCode(user));
+
+            if (pic == null) {
+                return verificationPicture;
+            }
+            if (mode == ALL) {
+                verificationPicture.setData(pic.getData());
+            }
+            verificationPicture.setUserNo(pic.getUserNo().size());
+            verificationPicture.setUserYes(pic.getUserYes().size());
+            verificationPicture.setVerifiedByUsers(UserDto.isVerifiedByUsers(pic));
+            verificationPicture.setVerifiedByAdmin(pic.isVerifiedByAdmin());
+            return verificationPicture;
+        }
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 
 <body>
 
@@ -575,6 +575,7 @@
 		</div>
 		<script>
 			$(function () {var swiper = new Swiper('.swiper-container-user-profile', {navigation: {nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev'}, pagination: {el: '.swiper-pagination'}});});
+			$(window).on("popstate", function(e) {closeModal();});
 		</script>
 	</div>
 
@@ -605,6 +606,7 @@
 						</div>
 					</div>
 					<div class="swiper-pagination"></div>
+					<div class="button" th:if="${!user.verificationPicture.verifiedByAdmin}">Verify user</div>
 				</div>
 				<div class="container">
 					<div class="content">
@@ -805,6 +807,31 @@
 				th:if="${user.likedByCurrentUser}" th:onclick="likeUser([[${user.idEncoded}]])" disabled>
 				<i class="fa fa-thumbs-up"></i>
 			</button>
+		</div>
+
+		<div th:if="${!user.verificationPicture.verifiedByAdmin}" id="verification-modal" class="modal">
+			<div class="modal-background"></div>
+				<div class="modal-content">
+				<div>
+					<img th:src="${user.profilePicture}" id="verification-profile-pic">
+					<div id="verification-text" th:text="${user.verificationPicture.text}"></div>
+				</div>
+				<img th:src="${user.verificationPicture.data}}" id="verification-picture">
+				<div th:replace="fragments.html::captcha" id="verification-captcha"></div>
+				<div>Do the pictures match?</div>
+				<div id="verification-switches">
+					<div class="field">
+						<input id="verification-switch-yes" type="checkbox" name="switchExample" class="switch is-success">
+						<label for="verification-switch-yes">Yes</label>
+					</div>
+					<div class="field">
+						<input id="verification-switch-no" type="checkbox" name="switchExample" class="switch is-danger">
+						<label for="verification-switch-no">No</label>
+					</div>
+				</div>
+				<button id="verification-submit" th:text="#{submit}"></button>
+			</div>
+			<button class="modal-close is-large" aria-label="close"></button>
 		</div>
 
 		<input id="user-id-enc" th:value="${user.idEncoded}" hidden>
