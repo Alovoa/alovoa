@@ -1,3 +1,11 @@
+function viewProfile(idEnc) {
+	history.pushState(null, null, '/profile/view/' + idEnc);
+	let url = '/profile/view/modal/' + idEnc;
+	$("#user-profile-container").load(url, function() {
+		setTimeout(function() { openModal("user-profile-modal") }, 1);
+	});
+}
+
 function downloadAndPlayAudio() {
 	let userIdEnc = $("#user-id-enc").val();
 	$.ajax({
