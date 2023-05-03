@@ -51,7 +51,7 @@ Like this project? Consider making a donation.
 
 
 ### How to build
-- Install a JDK >= 9 (OpenJDK 11 is officially supported)
+- Install OpenJDK 17
 - Install maven: https://maven.apache.org/install.html
 - Setup a database (MariaDB is officially supported)
 - Setup an email server or use an existing one (any provider with IMAP support should work)
