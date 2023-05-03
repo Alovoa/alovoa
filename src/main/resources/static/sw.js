@@ -108,6 +108,7 @@ const staticAssets = [
 	'/img/profile/9.png',
 	'/img/profile/10.png',
 
+    '/img/onboarding/add-verification.svg',
 	'/img/onboarding/verification.svg',
 	'/img/onboarding/description.svg',
 	'/img/onboarding/genders.svg',
