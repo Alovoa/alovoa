@@ -56,7 +56,7 @@ Like this project? Consider making a donation.
 - Setup a database (MariaDB is officially supported)
 - Setup an email server or use an existing one (any provider with IMAP support should work)
 - Enter credentials for database server, email server and encryption keys in application.properties
-- Execute "mvn install" in the folder where the pom.xml resides
+- Execute "mvn install" in the root folder
 
 Or you can use [Docker](https://docs.docker.com/engine/install/) and [Docker compose](https://docs.docker.com/compose/).
 To bring up the server, after setting the required values in ` src/main/resources/application.properties` you can just run below commands:
@@ -67,8 +67,8 @@ docker-compose logs -f
 ```
 
 ### Debugging
-- Spring Tool Suite is recommended for debugging
-- Find the lombok.jar (should be in the ~/.m2) and execute it with "java -jar"
+- Spring Tool Suite / IntelliJ is recommended for debugging
+- Install lombok for your IDE (Not needed for IntelliJ)
 
 ### Documentation:
 - Please read the [DOCUMENTATION.md](/DOCUMENTATION.md)
