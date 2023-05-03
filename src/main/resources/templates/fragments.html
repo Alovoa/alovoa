@@ -816,7 +816,7 @@
 					<img th:src="${user.profilePicture}" id="verification-profile-pic">
 					<div id="verification-text" th:text="${user.verificationPicture.text}"></div>
 				</div>
-				<img th:src="${user.verificationPicture.data}}" id="verification-picture">
+				<img th:src="${user.verificationPicture.data}" id="verification-picture">
 				<div th:replace="fragments.html::captcha" id="verification-captcha"></div>
 				<div>Do the pictures match?</div>
 				<div id="verification-switches">
