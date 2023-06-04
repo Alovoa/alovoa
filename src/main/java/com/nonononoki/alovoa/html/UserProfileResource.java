@@ -84,7 +84,7 @@ public class UserProfileResource {
             userView.setNumberProfileViews(userView.getNumberProfileViews() + 1);
             userView = userRepo.saveAndFlush(userView);
 
-            UserDto userDto = UserDto.userToUserDto(userView, user, userService, textEncryptor, UserDto.NO_AUDIO);
+            UserDto userDto = UserDto.userToUserDto(userView, user, userService, textEncryptor, UserDto.ALL);
             UserDto currUserDto = UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA);
 
             mav.addObject("user", userDto);

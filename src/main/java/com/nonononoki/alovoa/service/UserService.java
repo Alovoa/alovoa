@@ -950,16 +950,12 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-    public void upvoteVerificationPicture(String userIdEnc, long captchaId, String captchaText) throws AlovoaException, IOException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public void upvoteVerificationPicture(String userIdEnc) throws AlovoaException, IOException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         User currentUser = authService.getCurrentUser(true);
         User user = encodedIdToUser(userIdEnc);
 
         if (currentUser.equals(user)) {
             throw new AlovoaException("invalid_user");
-        }
-
-        if (!captchaService.isValid(captchaId, captchaText)) {
-            throw new AlovoaException("invalid_captcha");
         }
 
         if (user.getVerificationPicture() == null) {
@@ -974,16 +970,12 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-    public void downvoteVerificationPicture(String userIdEnc, long captchaId, String captchaText) throws AlovoaException, IOException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public void downvoteVerificationPicture(String userIdEnc) throws AlovoaException, IOException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         User currentUser = authService.getCurrentUser(true);
         User user = encodedIdToUser(userIdEnc);
 
         if (currentUser.equals(user)) {
             throw new AlovoaException("invalid_user");
-        }
-
-        if (!captchaService.isValid(captchaId, captchaText)) {
-            throw new AlovoaException("invalid_captcha");
         }
 
         if (user.getVerificationPicture() == null) {

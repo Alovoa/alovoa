@@ -334,32 +334,26 @@ class UserServiceTest {
 
         Mockito.when(authService.getCurrentUser()).thenReturn(user2);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
-        Captcha captcha1 = captchaService.generate();
-        userService.upvoteVerificationPicture(idEnc1, captcha1.getId(), captcha1.getText());
+        userService.upvoteVerificationPicture(idEnc1);
 
-        final Captcha captcha11 = captchaService.generate();
         Assertions.assertThrows(AlovoaException.class, () -> {
-            userService.downvoteVerificationPicture(idEnc1, captcha11.getId(), captcha11.getText());
+            userService.downvoteVerificationPicture(idEnc1);
         });
 
-        final Captcha captcha111 = captchaService.generate();
         Assertions.assertThrows(AlovoaException.class, () -> {
-            userService.upvoteVerificationPicture(idEnc1, captcha111.getId(), captcha111.getText());
+            userService.upvoteVerificationPicture(idEnc1);
         });
 
         Mockito.when(authService.getCurrentUser()).thenReturn(user3);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
-        Captcha captcha2 = captchaService.generate();
-        userService.downvoteVerificationPicture(idEnc1, captcha2.getId(), captcha2.getText());
+        userService.downvoteVerificationPicture(idEnc1);
 
-        final Captcha captcha22 = captchaService.generate();
         Assertions.assertThrows(AlovoaException.class, () -> {
-            userService.upvoteVerificationPicture(idEnc1, captcha22.getId(), captcha22.getText());
+            userService.upvoteVerificationPicture(idEnc1);
         });
-
-        final Captcha captcha222 = captchaService.generate();
+        
         Assertions.assertThrows(AlovoaException.class, () -> {
-            userService.downvoteVerificationPicture(idEnc1, captcha222.getId(), captcha222.getText());
+            userService.downvoteVerificationPicture(idEnc1);
         });
 
         user1 = userRepo.findById(user1.getId()).get();

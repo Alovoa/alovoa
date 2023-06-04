@@ -114,6 +114,7 @@ public class AdminService {
         }
 
         user.setProfilePicture(null);
+        user.setVerificationPicture(null);
         user.getImages().clear();
         userRepo.saveAndFlush(user);
     }

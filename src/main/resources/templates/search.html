@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto">
+<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
 	<meta charset="utf-8">
@@ -62,7 +62,7 @@
 
 							<button class="button is-danger is-outlined" th:text="#{cancel}"
 								style="margin-right: 4px;"
-								onclick="$('#donate-modal').removeClass('is-active')"></button>
+								onclick="closeModal('donate-modal');"></button>
 
 						</div>
 					</div>

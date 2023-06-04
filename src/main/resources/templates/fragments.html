@@ -573,6 +573,7 @@
 				</div>
 			</div>
 		</div>
+		<th:block th:replace="fragments.html::user-profile-verification"></th:block>
 		<script>
 			$(function () {var swiper = new Swiper('.swiper-container-user-profile', {navigation: {nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev'}, pagination: {el: '.swiper-pagination'}});});
 			$(window).on("popstate", function(e) {closeModal();});
@@ -606,7 +607,6 @@
 						</div>
 					</div>
 					<div class="swiper-pagination"></div>
-					<div class="button" th:if="${!user.verificationPicture.verifiedByAdmin}">Verify user</div>
 				</div>
 				<div class="container">
 					<div class="content">
@@ -625,6 +625,10 @@
 									<i class="fa fa-map-marker-alt"></i>
 									<span th:text="${user.distanceToUser}"></span><span> </span><span
 										th:text="#{km}"></span>
+								</div>
+								<div class="right" style="margin-right: 8px; padding-top: 10px;">
+									<div class="button is-primary is-outlined left is-small" th:if="${!user.verificationPicture.verifiedByAdmin && !user.verificationPicture.votedByCurrentUser}"
+										 onclick="verifyModal()" th:text="#{profile.verification.button}"></div>
 								</div>
 							</div>
 						</div>
@@ -808,33 +812,42 @@
 				<i class="fa fa-thumbs-up"></i>
 			</button>
 		</div>
-
-		<div th:if="${!user.verificationPicture.verifiedByAdmin}" id="verification-modal" class="modal">
-			<div class="modal-background"></div>
-				<div class="modal-content">
-				<div>
-					<img th:src="${user.profilePicture}" id="verification-profile-pic">
-					<div id="verification-text" th:text="${user.verificationPicture.text}"></div>
-				</div>
-				<img th:src="${user.verificationPicture.data}" id="verification-picture">
-				<div th:replace="fragments.html::captcha" id="verification-captcha"></div>
-				<div>Do the pictures match?</div>
-				<div id="verification-switches">
-					<div class="field">
-						<input id="verification-switch-yes" type="checkbox" name="switchExample" class="switch is-success">
-						<label for="verification-switch-yes">Yes</label>
-					</div>
-					<div class="field">
-						<input id="verification-switch-no" type="checkbox" name="switchExample" class="switch is-danger">
-						<label for="verification-switch-no">No</label>
-					</div>
-				</div>
-				<button id="verification-submit" th:text="#{submit}"></button>
-			</div>
-			<button class="modal-close is-large" aria-label="close"></button>
-		</div>
-
 		<input id="user-id-enc" th:value="${user.idEncoded}" hidden>
+	</div>
+
+	<div th:fragment="user-profile-verification">
+		<div th:if="${!user.verificationPicture.verifiedByAdmin && user.verificationPicture.data != null}" id="verification-modal" class="modal modal-fx-fadeInScale">
+			<div class="modal-background" onclick="closeModal()"></div>
+				<div class="modal-content" id="verification-modal-content">
+					<div class="box" id="verification-modal-box">
+						<div style="padding: 8px;"><i class="fa fa-times fa-2x" style="cursor:pointer; margin-left: 8px; margin-top: 4px" onclick="closeModal()"></i></div>
+							<div class="section" id="verification-modal-section">
+								<div class="columns">
+									<div class="column" style="padding-bottom: 12px;">
+										<img th:src="${user.profilePicture}" id="verification-profile-pic">
+										<div id="verification-text" class="notification is-primary" style="text-align: center;" th:text="${user.verificationPicture.text}"></div>
+									</div>
+									<div class="container column">
+										<img th:src="${user.verificationPicture.data}" id="verification-picture">
+									</div>
+								</div>
+								<div class="container" style="padding-top: 24px; padding-bottom: 42px;">
+									<ul style="list-style-type: disc;">
+										<li th:text="#{profile.verification.instruction-1}"></li>
+										<li th:text="#{profile.verification.instruction-2}"></li>
+										<li th:text="#{profile.verification.instruction-3}"></li>
+									</ul>
+								</div>
+								<div class="container">
+									<button class="button is-danger colored" th:text="#{no}" th:onclick="downvoteVerification([[${user.idEncoded}]])"></button>
+									<button class="button right is-primary colored" th:text="#{yes}" th:onclick="upvoteVerification([[${user.idEncoded}]])"></button>
+								</div>
+							</div>
+						</div>
+					<div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 </body>

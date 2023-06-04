@@ -110,7 +110,7 @@ public class UserDto {
         dto.setDescription(user.getDescription());
         dto.setFirstName(user.getFirstName());
         dto.setGender(user.getGender());
-        dto.setVerificationPicture(UserDtoVerificationPicture.map(user, user.getVerificationPicture(), userService, mode));
+        dto.setVerificationPicture(UserDtoVerificationPicture.map(user, currentUser, userService, mode));
 
         dto.setCountry(Tools.getCountryEmoji(user.getCountry()));
 
@@ -269,14 +269,16 @@ public class UserDto {
     public static class UserDtoVerificationPicture {
         private boolean verifiedByAdmin;
         private boolean verifiedByUsers;
+        private boolean votedByCurrentUser;
         private String data;
         private String text;
         private int userYes;
         private int userNo;
 
-        public static UserDtoVerificationPicture map(User user, UserVerificationPicture pic, UserService userService, int mode) {
+        public static UserDtoVerificationPicture map(User user, User currentUser, UserService userService, int mode) {
             UserDtoVerificationPicture verificationPicture = new UserDtoVerificationPicture();
             verificationPicture.setText(userService.getVerificationCode(user));
+            UserVerificationPicture pic = user.getVerificationPicture();
 
             if (pic == null) {
                 return verificationPicture;
@@ -288,6 +290,7 @@ public class UserDto {
             verificationPicture.setUserYes(pic.getUserYes().size());
             verificationPicture.setVerifiedByUsers(UserDto.isVerifiedByUsers(pic));
             verificationPicture.setVerifiedByAdmin(pic.isVerifiedByAdmin());
+            verificationPicture.setVotedByCurrentUser(pic.getUserYes().contains(currentUser) || pic.getUserNo().contains(currentUser));
             return verificationPicture;
         }
     }

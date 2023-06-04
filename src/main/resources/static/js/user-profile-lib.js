@@ -114,3 +114,49 @@ function hideUser(idEnc) {
 		}
 	});
 }
+
+function verifyModal() {
+    let userProfileModalActive = false;
+    let userProfileModal = document.getElementById("user-profile-modal");
+    if(userProfileModal) {
+        userProfileModalActive = userProfileModal.classList.contains("is-active");
+    }
+    console.log(userProfileModalActive)
+	if (userProfileModalActive) {
+		closeModal("user-profile-modal");
+		history.back();
+        setTimeout(function() {openModal("verification-modal")}, 400);
+	} else {
+	    openModal("verification-modal");
+	}
+}
+
+function upvoteVerification(idEnc) {
+    closeModal("verification-modal");
+	$.ajax({
+		type : "POST",
+		url : "/user/update/verification-picture/upvote/" + idEnc,
+		success : function() {
+            alert(getText("profile.verification.vote.success"));
+		},
+		error : function(e) {
+			console.log(e);
+			alert(getGenericErrorText());
+		}
+	});
+}
+
+function downvoteVerification(idEnc) {
+    closeModal("verification-modal")
+	$.ajax({
+		type : "POST",
+		url : "/user/update/verification-picture/downvote/" + idEnc,
+		success : function() {
+		    alert(getText("profile.verification.vote.success"));
+		},
+		error : function(e) {
+			console.log(e);
+			alert(getGenericErrorText());
+		}
+	});
+}

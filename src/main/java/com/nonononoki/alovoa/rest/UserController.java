@@ -88,20 +88,18 @@ public class UserController {
         userService.updateVerificationPicture(imageB64);
     }
 
-    @PostMapping(value = "/update/verification-picture/upvote/{userIdEnc}/{captchaId}/{captchaText}")
-    public void upvoteVerificationPicture(@PathVariable String userIdEnc, @PathVariable long captchaId,
-                                          @PathVariable String captchaText) throws AlovoaException, IOException,
+    @PostMapping(value = "/update/verification-picture/upvote/{userIdEnc}")
+    public void upvoteVerificationPicture(@PathVariable String userIdEnc) throws AlovoaException, IOException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException,
             BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        userService.upvoteVerificationPicture(userIdEnc, captchaId, captchaText);
+        userService.upvoteVerificationPicture(userIdEnc);
     }
 
-    @PostMapping(value = "/update/verification-picture/downvote/{userIdEnc}/{captchaId}/{captchaText}")
-    public void downvoteVerificationPicture(@PathVariable String userIdEnc, @PathVariable long captchaId,
-                                            @PathVariable String captchaText) throws AlovoaException, IOException,
+    @PostMapping(value = "/update/verification-picture/downvote/{userIdEnc}")
+    public void downvoteVerificationPicture(@PathVariable String userIdEnc) throws AlovoaException, IOException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException,
             BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        userService.downvoteVerificationPicture(userIdEnc, captchaId, captchaText);
+        userService.downvoteVerificationPicture(userIdEnc);
     }
 
     @GetMapping(value = "/get/audio/{userIdEnc}")

@@ -3,8 +3,14 @@ function openModal(id) {
 	$(document.body).addClass("is-clipped");
 }
 
-function closeModal() {
-	$('.modal').removeClass("is-active");
+function closeModal(id) {
+    if(id) {
+        $('#'+id).removeClass("is-active");
+	}
+	else {
+		$('.modal').removeClass("is-active");
+	}
+
 	$(document.body).removeClass("is-clipped");
 }
 
