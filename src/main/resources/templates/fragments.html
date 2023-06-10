@@ -48,21 +48,6 @@
 				locale.scrollIntoView({behavior: 'smooth', block: 'center'});
 				setTimeout(function () {locale.focus()}, 700);
 			}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </script>
 </div>
 
@@ -94,21 +79,6 @@
 				locale.scrollIntoView({behavior: 'smooth', block: 'center'});
 				setTimeout(function () {locale.focus()}, 700);
 			}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </script>
 </div>
 
@@ -120,13 +90,13 @@
 
         <div style="width: 100%; display: flex;">
             <div class="navbar-end">
-					<span class="navbar-item">
-						<form th:action="@{/logout}" method="post">
-							<button class="button is-outlined is-info" href="/logout" id="logout">
-								<span th:text="#{logout}"></span>
-							</button>
-						</form>
-					</span>
+                <span class="navbar-item">
+                    <form th:action="@{/logout}" method="post">
+                        <button class="button is-outlined is-info" href="/logout" id="logout">
+                            <span th:text="#{logout}"></span>
+                        </button>
+                    </form>
+                </span>
             </div>
         </div>
     </nav>
@@ -146,12 +116,12 @@
                                                                  class="fas fa-cog"></i></a>
 					</span>
                 <span class="navbar-item">
-						<form th:action="@{/logout}" method="post">
-							<button class="button is-outlined is-info" href="/logout" id="logout">
-								<span th:text="#{logout}"></span>
-							</button>
-						</form>
-					</span>
+                    <form th:action="@{/logout}" method="post">
+                        <button class="button is-outlined is-info" href="/logout" id="logout">
+                            <span th:text="#{logout}"></span>
+                        </button>
+                    </form>
+                </span>
             </div>
         </div>
     </nav>
@@ -172,10 +142,9 @@
 					</span>
                 <span class="navbar-item" style="padding-right: 0px;">
 						<a class="button colored is-info navbar-item-icon" href="/donate-list" target="_blank"
-                           style="min-width: 76px; height: 40px;"><i style="padding-right: 0px;"
-                                                                     class="fas fa-coins"></i><span
+                           style="min-width: 76px; height: 40px;"><i style="padding-right: 0px;" class="fas fa-coins"></i><span
                                 th:text="#{donate.donate-now}" style="padding-left: 8px;"
-                                id="donate-now-text"></a>
+                                id="donate-now-text"></span></a>
 					</span>
                 <span class="navbar-item">
 						<form th:action="@{/logout}" method="post">
@@ -297,21 +266,6 @@
 					window.location.search = val;
 				}
 			}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </script>
 </footer>
 
@@ -493,9 +447,8 @@
                 </div>
             </div>
         </div>
+    </th:block>
 </div>
-</th:block>
-
 <div th:fragment="message-detail">
     <div th:each="message : ${messages}" style="display: inline-block; width: 100%;">
 
@@ -646,21 +599,6 @@
 				function onWarningGenderClicked() {
 					document.getElementById('gender-field').scrollIntoView({behavior: 'smooth', block: 'center'});
 				}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         </script>
     </div>
 </div>
@@ -674,14 +612,15 @@
                                               style="cursor:pointer; margin-left: 8px; margin-top: 4px"
                                               onclick="history.back()"></i>
                 </div>
-                <th:block th:replace="fragments.html::user-profile"></th:block>
+                <th:block th:insert="fragments.html::user-profile"></th:block>
             </div>
         </div>
     </div>
-    <th:block th:replace="fragments.html::user-profile-verification"></th:block>
+    <th:block th:insert="fragments.html::user-profile-verification"></th:block>
     <script>
 			$(function () {var swiper = new Swiper('.swiper-container-user-profile', {navigation: {nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev'}, pagination: {el: '.swiper-pagination'}});});
 			$(window).on("popstate", function(e) {closeModal();});
+
 
 
     </script>
@@ -736,8 +675,10 @@
                             </div>
                             <div class="right" style="margin-right: 8px; padding-top: 10px;">
                                 <div class="button is-primary is-outlined left is-small"
-                                     th:if="${user.verificationPicture != null && user.verificationPicture.data != null && !user.verificationPicture.verifiedByAdmin
-                                        && !user.verificationPicture.votedByCurrentUser}"
+                                     th:if="${!user.verificationPicture.verifiedByAdmin
+                                        && !user.verificationPicture.votedByCurrentUser
+                                        && user.verificationPicture.hasPicture
+                                        && currUser.verificationPicture.hasPicture}"
                                      onclick="verifyModal()" th:text="#{profile.verification.button}"></div>
                             </div>
                         </div>
@@ -926,7 +867,7 @@
 </div>
 
 <div th:fragment="user-profile-verification">
-    <div th:if="${!user.verificationPicture.verifiedByAdmin && user.verificationPicture.data != null}"
+    <div th:if="${!user.verificationPicture.verifiedByAdmin && user.verificationPicture.hasPicture}"
          id="verification-modal" class="modal modal-fx-fadeInScale">
         <div class="modal-background" onclick="closeModal()"></div>
         <div class="modal-content" id="verification-modal-content">
@@ -959,8 +900,6 @@
                                 th:onclick="upvoteVerification([[${user.idEncoded}]])"></button>
                     </div>
                 </div>
-            </div>
-            <div>
             </div>
         </div>
     </div>

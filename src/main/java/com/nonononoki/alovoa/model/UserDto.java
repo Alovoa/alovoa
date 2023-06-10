@@ -25,7 +25,7 @@ public class UserDto {
     public static final int ALL = 0;
     public static final int PROFILE_PICTURE_ONLY = 1;
     public static final int NO_AUDIO = 2;
-    public static final int NO_MEDIA = 3;
+    public static final int NO_MEDIA = 3; //always send verification picture unless verified by admin
     public static final int LA_STATE_ACTIVE_1 = 5; // in minutes
     public static final int LA_STATE_ACTIVE_2 = 1;
     public static final int LA_STATE_ACTIVE_3 = 7;
@@ -270,6 +270,7 @@ public class UserDto {
         private boolean verifiedByAdmin;
         private boolean verifiedByUsers;
         private boolean votedByCurrentUser;
+        private boolean hasPicture;
         private String data;
         private String text;
         private int userYes;
@@ -278,25 +279,28 @@ public class UserDto {
         public static UserDtoVerificationPicture map(User user, User currentUser, UserService userService, int mode) {
             UserDtoVerificationPicture verificationPicture = new UserDtoVerificationPicture();
             verificationPicture.setText(userService.getVerificationCode(user));
-
-            //only show verification for users with verification
-            if (currentUser != user && currentUser.getVerificationPicture() == null && !currentUser.isAdmin()) {
-                return verificationPicture;
-            }
-
             UserVerificationPicture pic = user.getVerificationPicture();
+            verificationPicture.setHasPicture(pic != null && pic.getData() != null);
 
             if (pic == null) {
                 return verificationPicture;
             }
-            if (mode == ALL) {
+
+            if (mode == ALL && !pic.isVerifiedByAdmin()) {
                 verificationPicture.setData(pic.getData());
             }
+
+            //only show verification for users with verification
+            if (currentUser == user || currentUser.getVerificationPicture() == null && !currentUser.isAdmin()) {
+                return verificationPicture;
+            }
+
             verificationPicture.setUserNo(pic.getUserNo().size());
             verificationPicture.setUserYes(pic.getUserYes().size());
             verificationPicture.setVerifiedByUsers(UserDto.isVerifiedByUsers(pic));
             verificationPicture.setVerifiedByAdmin(pic.isVerifiedByAdmin());
             verificationPicture.setVotedByCurrentUser(pic.getUserYes().contains(currentUser) || pic.getUserNo().contains(currentUser));
+
             return verificationPicture;
         }
     }
