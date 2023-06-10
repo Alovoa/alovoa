@@ -60,6 +60,9 @@
 
 
 
+
+
+
     </script>
 </div>
 
@@ -91,6 +94,9 @@
 				locale.scrollIntoView({behavior: 'smooth', block: 'center'});
 				setTimeout(function () {locale.focus()}, 700);
 			}
+
+
+
 
 
 
@@ -303,6 +309,9 @@
 
 
 
+
+
+
     </script>
 </footer>
 
@@ -414,7 +423,8 @@
                                                     </div>
                                                     <div class="left"
                                                          style="font-size: 1.5em; padding-top: 6px; display: flex; gap: 4px;">
-                                                        <div><span>,&nbsp;</span><span th:text="${user.age}"></span></div>
+                                                        <div><span>,&nbsp;</span><span th:text="${user.age}"></span>
+                                                        </div>
                                                         <th:block
                                                                 th:insert="fragments.html :: verification-state"></th:block>
                                                         <th:block
@@ -648,6 +658,9 @@
 
 
 
+
+
+
         </script>
     </div>
 </div>
@@ -669,6 +682,8 @@
     <script>
 			$(function () {var swiper = new Swiper('.swiper-container-user-profile', {navigation: {nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev'}, pagination: {el: '.swiper-pagination'}});});
 			$(window).on("popstate", function(e) {closeModal();});
+
+
     </script>
 </div>
 
@@ -721,7 +736,8 @@
                             </div>
                             <div class="right" style="margin-right: 8px; padding-top: 10px;">
                                 <div class="button is-primary is-outlined left is-small"
-                                     th:if="${!user.verificationPicture.verifiedByAdmin && !user.verificationPicture.votedByCurrentUser}"
+                                     th:if="${user.verificationPicture != null && user.verificationPicture.data != null && !user.verificationPicture.verifiedByAdmin
+                                        && !user.verificationPicture.votedByCurrentUser}"
                                      onclick="verifyModal()" th:text="#{profile.verification.button}"></div>
                             </div>
                         </div>
