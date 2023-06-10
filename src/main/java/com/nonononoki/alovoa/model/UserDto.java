@@ -278,6 +278,12 @@ public class UserDto {
         public static UserDtoVerificationPicture map(User user, User currentUser, UserService userService, int mode) {
             UserDtoVerificationPicture verificationPicture = new UserDtoVerificationPicture();
             verificationPicture.setText(userService.getVerificationCode(user));
+
+            //only show verification for users with verification
+            if (currentUser != user && currentUser.getVerificationPicture() == null && !currentUser.isAdmin()) {
+                return verificationPicture;
+            }
+
             UserVerificationPicture pic = user.getVerificationPicture();
 
             if (pic == null) {

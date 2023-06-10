@@ -319,10 +319,6 @@ input[type=range].slider {
 	margin-bottom: 4px;
 }
 
-.active-state-icon {
-	font-size: 0.7em;
-}
-
 .active-state-1 path, .active-state-2 path {
 	color: #68bb6c !important;
 }
@@ -381,6 +377,10 @@ input[type=range].slider {
 
 .ui-state-active {
 	background-color: #eeeeee;
+}
+
+.badge .verified-community {
+    opacity: .6;
 }
 
 @media screen and (max-width: 1050px) {
@@ -473,7 +473,7 @@ input[type=range].slider {
 	.option {
 		color: #121212 !important;
 	}
-	body *:not(a), container *, .subtitle, .label, .content h4, .textarea, .select select
+	body *:not(a):not(svg.colored > path), container *, .subtitle, .label, .content h4, .textarea, .select select
 		{
 		color: white;
 	}
