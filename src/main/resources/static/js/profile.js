@@ -388,7 +388,7 @@ $(function() {
 
 		$.ajax({
 			type: "POST",
-			url: "/user/delete-account/",
+			url: "/user/delete-account",
 			success: function(e) {
 				alert(getText("profile.delete-account.success"));
 			},

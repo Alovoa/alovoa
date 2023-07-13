@@ -56,6 +56,8 @@ public class AdminService {
     @Autowired
     private ConversationRepository conversationRepo;
     @Autowired
+    private UserVerificationPictureRepository userVerificationPictureRepo;
+    @Autowired
     private TextEncryptorConverter textEncryptor;
 
     public void hideContact(long id) throws AlovoaException {
@@ -147,7 +149,10 @@ public class AdminService {
             throw new AlovoaException("user_is_admin");
         }
 
-        UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo).userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo).userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
+        UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
+                .userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
+                .userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo)
+                .userVerificationPictureRepo(userVerificationPictureRepo).build();
 
         try {
             UserService.removeUserDataCascading(user, userDeleteParam);

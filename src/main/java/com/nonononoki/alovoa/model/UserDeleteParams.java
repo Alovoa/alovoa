@@ -1,31 +1,26 @@
 package com.nonononoki.alovoa.model;
 
-import com.nonononoki.alovoa.repo.ConversationRepository;
-import com.nonononoki.alovoa.repo.UserBlockRepository;
-import com.nonononoki.alovoa.repo.UserHideRepository;
-import com.nonononoki.alovoa.repo.UserLikeRepository;
-import com.nonononoki.alovoa.repo.UserNotificationRepository;
-import com.nonononoki.alovoa.repo.UserReportRepository;
-import com.nonononoki.alovoa.repo.UserRepository;
-
+import com.nonononoki.alovoa.repo.*;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
 public class UserDeleteParams {
-	
-	private UserRepository userRepo;
 
-	private UserLikeRepository userLikeRepo;
+    private UserRepository userRepo;
 
-	private UserHideRepository userHideRepo;
+    private UserLikeRepository userLikeRepo;
 
-	private UserBlockRepository userBlockRepo;
+    private UserHideRepository userHideRepo;
 
-	private UserReportRepository userReportRepo;
-	
-	private UserNotificationRepository userNotificationRepo;
+    private UserBlockRepository userBlockRepo;
 
-	private ConversationRepository conversationRepo;
+    private UserReportRepository userReportRepo;
+
+    private UserNotificationRepository userNotificationRepo;
+
+    private ConversationRepository conversationRepo;
+
+    private UserVerificationPictureRepository userVerificationPictureRepo;
 }

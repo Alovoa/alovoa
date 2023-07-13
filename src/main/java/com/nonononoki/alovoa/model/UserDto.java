@@ -61,7 +61,6 @@ public class UserDto {
     private String country;
     private int distanceToUser;
     private double totalDonations;
-    private Date activeDate;
     private long numBlockedByUsers;
     private long numReports;
     private boolean blockedByCurrentUser;
@@ -100,7 +99,6 @@ public class UserDto {
         }
         dto.setIdEncoded(encodeId(user.getId(), textEncryptor));
         if (user.getDates() != null) {
-            dto.setActiveDate(user.getDates().getActiveDate());
             dto.setAge(Tools.calcUserAge(user));
         }
         if (user.getLocationLatitude() != null) {
@@ -190,10 +188,6 @@ public class UserDto {
                 if (currentUser.getUnits() == User.UNIT_IMPERIAL) {
                     dist = (int) (dist * MILES_TO_KM);
                 }
-//				if(dist == 0) {
-//					LOGGER.warn("ZERO DISTANCE: User1 [ID, LAT, LONG]: ".concat(currentUser.getId().toString()).concat(",").concat(currentUser.getLocationLatitude().toString()).concat(",").concat(currentUser.getLocationLongitude().toString()));
-//					LOGGER.warn("ZERO DISTANCE: User2 [ID, LAT, LONG]: ".concat(user.getId().toString()).concat(",").concat(user.getLocationLatitude().toString()).concat(",").concat(user.getLocationLongitude().toString()));
-//				}
             }
             dto.setDistanceToUser(dist);
         }

@@ -82,6 +82,8 @@ public class UserService {
     @Autowired
     private UserNotificationRepository userNotificationRepo;
     @Autowired
+    private UserVerificationPictureRepository userVerificationPictureRepo;
+    @Autowired
     private ConversationRepository conversationRepo;
     @Autowired
     private CaptchaService captchaService;
@@ -129,6 +131,7 @@ public class UserService {
         UserHideRepository userHideRepo = userDeleteParam.getUserHideRepo();
         UserBlockRepository userBlockRepo = userDeleteParam.getUserBlockRepo();
         UserReportRepository userReportRepo = userDeleteParam.getUserReportRepo();
+        UserVerificationPictureRepository userVerificationPictureRepo = userDeleteParam.getUserVerificationPictureRepo();
 
         // DELETE USER LIKE
         for (UserLike like : userLikeRepo.findByUserFrom(user)) {
@@ -149,7 +152,6 @@ public class UserService {
             }
             like.setUserFrom(null);
             userLikeRepo.save(like);
-
         }
         userRepo.flush();
         userLikeRepo.flush();
@@ -254,8 +256,19 @@ public class UserService {
             conversationRepo.delete(c);
         }
 
-        userRepo.flush();
+        // DELETE USER VERIFICATION
+        for (UserVerificationPicture v : userVerificationPictureRepo.findByUserNo(user)) {
+            v.getUserNo().remove(user);
+            userVerificationPictureRepo.save(v);
+        }
+        for (UserVerificationPicture v : userVerificationPictureRepo.findByUserYes(user)) {
+            v.getUserYes().remove(user);
+            userVerificationPictureRepo.save(v);
+        }
+
+        userVerificationPictureRepo.flush();
         conversationRepo.flush();
+        userRepo.flush();
     }
 
     public static String stripB64Type(String s) {
@@ -324,7 +337,8 @@ public class UserService {
 
         UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
                 .userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
-                .userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
+                .userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo)
+                .userVerificationPictureRepo(userVerificationPictureRepo).build();
 
         removeUserDataCascading(user, userDeleteParam);
 
@@ -379,7 +393,7 @@ public class UserService {
             interest.setText(i.toLowerCase());
             interest.setUser(user);
             return interest;
-        }).collect(Collectors.toList())));
+        }).toList()));
 
         userRepo.saveAndFlush(user);
     }
@@ -502,12 +516,12 @@ public class UserService {
         interest.setText(value.toLowerCase());
         interest.setUser(user);
 
-        if (user.getInterests().contains(interest)) {
-            throw new AlovoaException("interest_already_exists");
-        }
-
         if (user.getInterests() == null) {
             user.setInterests(new ArrayList<>());
+        }
+
+        if (user.getInterests().contains(interest)) {
+            throw new AlovoaException("interest_already_exists");
         }
 
         user.getInterests().add(interest);

@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/delete-account-confirm", consumes = "application/json")
-    public void deleteAccount(@RequestBody UserDeleteAccountDto dto) throws NoSuchAlgorithmException,
+    public void deleteAccountConfirm(@RequestBody UserDeleteAccountDto dto) throws NoSuchAlgorithmException,
             MessagingException, IOException, AlovoaException {
         userService.deleteAccountConfirm(dto);
     }
