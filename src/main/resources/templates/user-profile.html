@@ -11,8 +11,8 @@
     <link href="/manifest/manifest.json" rel="manifest">
 
     <link href="/css/lib/bulma.min.css" rel="stylesheet"/>
-    <th:block th:replace="fragments.html::bulma"></th:block>
-    <th:block th:replace="fragments.html::ui-design"></th:block>
+    <th:block th:replace="~{fragments.html::bulma}"></th:block>
+    <th:block th:replace="~{fragments.html::ui-design}"></th:block>
     <link href="/css/lib/bulma-slider.min.css" rel="stylesheet"/>
     <link href="/css/lib/swiper.min.css" rel="stylesheet"/>
     <link href="/css/lib/modal-fx.min.css" rel="stylesheet"/>
@@ -25,8 +25,8 @@
 <body>
 <div id="main-logged-in">
     <div id="user-profile-content">
-        <th:block th:replace="fragments.html::user-profile"></th:block>
-        <th:block th:replace="fragments.html::user-profile-verification"></th:block>
+        <th:block th:replace="~{fragments.html::user-profile}"></th:block>
+        <th:block th:replace="~{fragments.html::user-profile-verification}"></th:block>
     </div>
 </div>
 

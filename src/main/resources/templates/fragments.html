@@ -380,9 +380,9 @@
                                                         <div><span>,&nbsp;</span><span th:text="${user.age}"></span>
                                                         </div>
                                                         <th:block
-                                                                th:insert="fragments.html :: verification-state"></th:block>
+                                                                th:insert="~{fragments.html :: verification-state}"></th:block>
                                                         <th:block
-                                                                th:insert="fragments.html :: last-active-state"></th:block>
+                                                                th:insert="~{fragments.html :: last-active-state}"></th:block>
                                                     </div>
                                                     <div class="right" style="font-size: 1.2em; padding-top: 10px;">
                                                         <i class="fa fa-map-marker-alt"></i>
@@ -487,7 +487,7 @@
                             </div>
                             <div class="left" style="font-size: 1.5em; padding-top: 6px;">
                                 <span>, </span><span th:text="${user.age}"></span>
-                                <th:block th:insert="fragments.html :: last-active-state"></th:block>
+                                <th:block th:insert="~{fragments.html :: last-active-state}"></th:block>
                             </div>
                             <div class="right" style="font-size: 1.2em; padding-top: 10px;">
                                 <i class="fa fa-map-marker-alt"></i>
@@ -612,11 +612,11 @@
                                               style="cursor:pointer; margin-left: 8px; margin-top: 4px"
                                               onclick="history.back()"></i>
                 </div>
-                <th:block th:insert="fragments.html::user-profile"></th:block>
+                <th:block th:insert="~{fragments.html::user-profile}"></th:block>
             </div>
         </div>
     </div>
-    <th:block th:insert="fragments.html::user-profile-verification"></th:block>
+    <th:block th:insert="~{fragments.html::user-profile-verification}"></th:block>
     <script>
 			$(function () {var swiper = new Swiper('.swiper-container-user-profile', {navigation: {nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev'}, pagination: {el: '.swiper-pagination'}});});
 			$(window).on("popstate", function(e) {closeModal();});
@@ -663,10 +663,10 @@
                             </div>
                             <div class="left" style="font-size: 1.5em; padding-top: 8px; display: flex; gap: 4px;">
                                 <div><span>,&nbsp;</span><span th:text="${user.age}"></span></div>
-                                <th:block th:insert="fragments.html :: verification-state"></th:block>
-                                <th:block th:insert="fragments.html :: last-active-state"></th:block>
+                                <th:block th:insert="~{fragments.html :: verification-state}"></th:block>
+                                <th:block th:insert="~{fragments.html :: last-active-state}"></th:block>
                                 <span th:text="${user.country}"></span>
-                                <th:block th:insert="fragments.html :: zodiac"></th:block>
+                                <th:block th:insert="~{fragments.html :: zodiac}"></th:block>
                             </div>
                             <div class="right" style="font-size: 1.2em; padding-top: 12px;">
                                 <i class="fa fa-map-marker-alt"></i>

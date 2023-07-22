@@ -11,8 +11,8 @@
 	<link rel="manifest" href="/manifest/manifest.json">
 
 	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-	<th:block th:replace="fragments.html::bulma"></th:block>
-	<th:block th:replace="fragments.html::ui-design"></th:block>
+	<th:block th:replace="~{fragments.html::bulma}"></th:block>
+	<th:block th:replace="~{fragments.html::ui-design}"></th:block>
 	<link rel="stylesheet" href="/css/lib/bulma-switch.min.css" />
 	<link rel="stylesheet" href="/css/lib/swiper.min.css" />
 	<link rel="stylesheet" href="/css/lib/css-loaders.css" />
@@ -28,7 +28,7 @@
 	<div class="loader-parent" id="preloader-parent" style="display: flex">
 		<div class="loader" id="preloader"></div>
 	</div>
-	<header th:insert="fragments.html::header-logged-in"></header>
+	<header th:insert="~{fragments.html::header-logged-in}"></header>
 	<form th:action="@{/}" method="POST"></form>
 	<div class="swiper onboarding-swiper" id="main">
 		<div class="swiper-wrapper">

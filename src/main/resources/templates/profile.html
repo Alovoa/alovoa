@@ -11,8 +11,8 @@
     <link rel="manifest" href="/manifest/manifest.json">
 
     <link rel="stylesheet" href="/css/lib/bulma.min.css"/>
-    <th:block th:replace="fragments.html::bulma"></th:block>
-    <th:block th:replace="fragments.html::ui-design"></th:block>
+    <th:block th:replace="~{fragments.html::bulma}"></th:block>
+    <th:block th:replace="~{fragments.html::ui-design}"></th:block>
     <link rel="stylesheet" href="/css/lib/bulma-switch.min.css"/>
     <link rel="stylesheet" href="/css/lib/bulma-slider.min.css"/>
     <link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css"/>
@@ -31,12 +31,12 @@
     <div class="loader" id="preloader"></div>
 </div>
 <div id="main-logged-in">
-    <header th:insert="fragments.html::header-logged-in"></header>
+    <header th:insert="~{fragments.html::header-logged-in}"></header>
     <div class="section" style="scrollbar-width: auto !important; ">
         <div class="container">
             <div class="field">
                 <div id="profile-warning">
-                    <div th:replace="fragments.html::profile-warning"></div>
+                    <div th:replace="~{fragments.html::profile-warning}"></div>
                 </div>
             </div>
 
@@ -604,8 +604,8 @@
 <input type="hidden" th:value="${vapidPublicKey}" id="vapidPublicKey"></input>
 <input type="hidden" th:value="${mediaMaxSize}" id="mediaMaxSize"></input>
 
-<footer th:replace="fragments.html::navigation"></footer>
-<footer th:replace="fragments.html::footer"></footer>
+<footer th:replace="~{fragments.html::navigation}"></footer>
+<footer th:replace="~{fragments.html::footer}"></footer>
 
 <script src="/sw.js"></script>
 <script src="/js/lib/fontawesome.all.js"></script>

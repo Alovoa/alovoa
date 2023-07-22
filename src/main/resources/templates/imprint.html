@@ -10,8 +10,8 @@
 	<link rel="manifest" href="/manifest/manifest.json">
 	
 	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-	<th:block th:replace="fragments.html::bulma"></th:block>
-	<th:block th:replace="fragments.html::ui-design"></th:block>
+	<th:block th:replace="~{fragments.html::bulma}"></th:block>
+	<th:block th:replace="~{fragments.html::ui-design}"></th:block>
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<link rel="stylesheet" href="/css/lib/animate.min.css" />
 	<link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
@@ -21,7 +21,7 @@
 <body>
 	<div id="main">
 
-		<header th:insert="fragments.html::header-logged-out"></header>
+		<header th:insert="~{fragments.html::header-logged-out}"></header>
 		<div class="section">
 			<div class="box">
 				<h2 th:text="#{email} + ':'"></h2>
@@ -48,7 +48,7 @@
 									th:placeholder="#{message}" required></textarea>
 							</div>
 							<div style="padding-top: 12px;"></div>
-							<div th:replace="fragments.html::captcha"></div>
+							<div th:replace="~{fragments.html::captcha}"></div>
 							<button class="button colored is-primary" th:text="#{submit}"></button>
 						</form>
 					</div>
@@ -63,7 +63,7 @@
 			</div>
 		</div>
 	</div>
-	<footer th:replace="fragments.html::footer"></footer>
+	<footer th:replace="~{fragments.html::footer}"></footer>
 
 	<script src="/sw.js"></script>
 	<script src="/js/lib/jquery.min.js"></script>

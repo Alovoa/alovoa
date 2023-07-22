@@ -12,8 +12,8 @@
 
 	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
 	<link rel="stylesheet" href="/css/lib/animate.min.css" />
-	<th:block th:replace="fragments.html::bulma"></th:block>
-	<th:block th:replace="fragments.html::ui-design"></th:block>
+	<th:block th:replace="~{fragments.html::bulma}"></th:block>
+	<th:block th:replace="~{fragments.html::ui-design}"></th:block>
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<link rel="stylesheet" href="/css/donate-list.css" />
 	<title th:text="#{donate.title}"></title>
@@ -21,7 +21,7 @@
 
 <body>
 	<div id="main">
-		<header th:insert="fragments.html::header-logged-out"></header>
+		<header th:insert="~{fragments.html::header-logged-out}"></header>
 		<div class="section" id="main-section">
 			<div class="container">
 				<div id="donation-links">
@@ -48,7 +48,7 @@
 				</div>
 			</div>
 		</div>
-		<footer th:replace="fragments.html::footer"></footer>
+		<footer th:replace="~{fragments.html::footer}"></footer>
 	</div>
 
 	<script src="/sw.js"></script>

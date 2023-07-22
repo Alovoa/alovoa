@@ -10,8 +10,8 @@
 	<link rel="manifest" href="/manifest/manifest.json">
 	
 	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-	<th:block th:replace="fragments.html::bulma"></th:block>
-	<th:block th:replace="fragments.html::ui-design"></th:block>
+	<th:block th:replace="~{fragments.html::bulma}"></th:block>
+	<th:block th:replace="~{fragments.html::ui-design}"></th:block>
 	<link rel="stylesheet" href="/css/lib/bulma-switch.min.css" />
 	<link rel="stylesheet" href="/css/lib/animate.min.css" />
 	<link rel="stylesheet" href="/css/alovoa.css" />
@@ -19,7 +19,7 @@
 </head>
 <body>
 	<div id="main">
-		<header th:replace="fragments.html::header-logged-out"></header>
+		<header th:replace="~{fragments.html::header-logged-out}"></header>
 		<div class="section">
 			<div class="container">
 				<h3 class="title" th:text="#{register.title}"></h3>
@@ -108,7 +108,7 @@
 		</div>
 	</div>
 
-	<footer th:replace="fragments.html::footer"></footer>
+	<footer th:replace="~{fragments.html::footer}"></footer>
 
 	<script src="/sw.js"></script>
 	<script src="/js/lib/fontawesome.all.js"></script>

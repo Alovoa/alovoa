@@ -11,8 +11,8 @@
 	<link rel="manifest" href="/manifest/manifest.json">
 
 	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-	<th:block th:replace="fragments.html::bulma"></th:block>
-	<th:block th:replace="fragments.html::ui-design"></th:block>
+	<th:block th:replace="~{fragments.html::bulma}"></th:block>
+	<th:block th:replace="~{fragments.html::ui-design}"></th:block>
 	<link rel="stylesheet" href="/css/lib/leaflet.min.css" />
 	<link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
 	<link rel="stylesheet" href="/css/lib/swiper.min.css" />
@@ -36,7 +36,7 @@
 	<div id="lon" th:value="${user.locationLongitude}"></div>
 	
 	<div id="main-logged-in">
-		<header th:insert="fragments.html::header-search"></header>
+		<header th:insert="~{fragments.html::header-search}"></header>
 	
 		<section class="container" id="main-container"></section>
 		
@@ -131,7 +131,7 @@
 		<div class="loader" id="loader"></div>
 	</div>
 
-	<footer th:replace="fragments.html::navigation"></footer>
+	<footer th:replace="~{fragments.html::navigation}"></footer>
 
 	<script src="/sw.js"></script>
 	<script src="/js/lib/fontawesome.all.js"></script>
