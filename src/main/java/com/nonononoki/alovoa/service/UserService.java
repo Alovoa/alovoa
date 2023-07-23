@@ -958,6 +958,7 @@ public class UserService {
         UserVerificationPicture verificationPicture = new UserVerificationPicture();
         verificationPicture.setData(newImgB64);
         verificationPicture.setDate(new Date());
+        verificationPicture.setUser(user);
         verificationPicture.setUserNo(new ArrayList<>());
         verificationPicture.setUserYes(new ArrayList<>());
         user.setVerificationPicture(verificationPicture);
