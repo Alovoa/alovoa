@@ -27,7 +27,7 @@ import java.util.List;
 @Controller
 public class AdminVerificationResource {
 
-    public static final String URL = "/admin/verification";
+    public static final String URL = "/admin-verification";
     @Autowired
     private UserVerificationPictureRepository userVerificationPictureRepo;
     @Autowired
@@ -48,7 +48,9 @@ public class AdminVerificationResource {
 
         List<UserVerificationDto> verificationDtos = new ArrayList<>();
         for (UserVerificationPicture v : verificationPictures) {
-            verificationDtos.add(UserVerificationDto.map(v.getUser(), userService, textEncryptor));
+            if (v.getUser() != null) {
+                verificationDtos.add(UserVerificationDto.map(v.getUser(), userService, textEncryptor));
+            }
         }
 
         mav.addObject("verifications", verificationDtos);

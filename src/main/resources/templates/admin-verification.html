@@ -16,21 +16,31 @@
     <link href="/css/lib/animate.min.css" rel="stylesheet"/>
     <link href="/css/alovoa.css" rel="stylesheet"/>
     <title th:text="#{admin.title}"></title>
+
+
+    <style>
+        .profile-pic {
+            height: 300px;
+        }
+    </style>
 </head>
 
 <body>
 <div id="main">
     <div style="padding-top: 4px;"></div>
-    <div class="box" style="max-height: 330px; overflow: auto;">
+    <div class="box">
         <h3>Verify users</h3>
-        <div class="verification" style="padding-bottom: 16px;" th:each="contact : ${contacts}" th:id="${idEncoded}">
+        <div class="verification" style="padding-bottom: 16px;" th:each="verification : ${verifications}" th:id="${verification.idEnc}">
             <div class="verification-images">
-                <img class="profile-pic" th:src="${verificationPicture}">
-                <img class="profile-pic" th:src="${profilePicture}">
+                <img class="profile-pic" th:src="${verification.verificationPicture}">
+                <img class="profile-pic" th:src="${verification.profilePicture}">
+            </div>
+            <div>
+                <div id="verification-text" th:text="${verification.verificationString}"></div>
             </div>
             <div class="verification-buttons">
-                <button class="button" th:onclick="verifyVerification([[${idEncoded}]])">Verify</button>
-                <button class="button" th:onclick="deleteVerification([[${idEncoded}]])">Delete</button>
+                <button class="button" th:onclick="verifyVerification([[${verification.idEnc}]])">Verify</button>
+                <button class="button" th:onclick="deleteVerification([[${verification.idEnc}]])">Delete</button>
             </div>
         </div>
     </div>
@@ -45,7 +55,7 @@
 <script src="/js/lib/bulma-toast.min.js"></script>
 <script src="/js/tools/get-text.js"></script>
 <script src="/js/alovoa.js"></script>
-<script src="/js/alovoa-verification.js"></script>
+<script src="/js/admin-verification.js"></script>
 </body>
 
 </html>
