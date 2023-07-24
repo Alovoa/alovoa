@@ -701,7 +701,7 @@ public class UserService {
             not.setUserFrom(currUser);
             not.setUserTo(user);
             currUser.getNotifications().add(not);
-            //notificationService.newLike(user);
+            notificationService.newLike(user);
 
             user.getDates().setNotificationDate(new Date());
 
