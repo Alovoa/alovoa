@@ -11,7 +11,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.nonononoki.alovoa.model.UserDto;
 import org.jose4j.lang.JoseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -58,6 +61,8 @@ public class NotificationService {
 
 	private PushAsyncService pushService;
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(NotificationService.class);
+
 	public PushAsyncService pushService()
 			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
 		if (pushService == null) {
@@ -85,18 +90,22 @@ public class NotificationService {
 	}
 
 	public void newLike(User user) throws GeneralSecurityException, IOException, JoseException {
-		user.getDates().setNotificationDate(new Date());
-		user = userRepo.saveAndFlush(user);
+		try {
+			user.getDates().setNotificationDate(new Date());
+			user = userRepo.saveAndFlush(user);
 
-		Locale locale = Tools.getUserLocale(user);
-		String title = messageSource.getMessage("backend.webpush.like.message", null, locale);
-		String msg = messageSource.getMessage("backend.webpush.like.subject", null, locale);
+			Locale locale = Tools.getUserLocale(user);
+			String title = messageSource.getMessage("backend.webpush.like.message", null, locale);
+			String msg = messageSource.getMessage("backend.webpush.like.subject", null, locale);
 
-		WebPushMessage message = new WebPushMessage();
-		message.setClickTarget(appDomain + NotificationResource.URL);
-		message.setTitle(title);
-		message.setMessage(msg);
-		send(user, message);
+			WebPushMessage message = new WebPushMessage();
+			message.setClickTarget(appDomain + NotificationResource.URL);
+			message.setTitle(title);
+			message.setMessage(msg);
+			send(user, message);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
 	}
 
 	public void newMatch(User user) throws GeneralSecurityException, IOException, JoseException {
