@@ -24,7 +24,7 @@ unset JASYPT_ENCRYPTOR_PASSWORD
 
 sleep 55
 
-if [ "$port2_used"=true ] ; then
+if [ "$port2_used" = true ] ; then
     if [[ "$(fuser $port1/tcp)" ]] ; then
         cp ../scripts/root/etc/apache2/sites-available/beta.alovoa.com.conf /etc/apache2/sites-available/beta.alovoa.com.conf 
         systemctl reload apache2
