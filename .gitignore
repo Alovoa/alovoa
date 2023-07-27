@@ -44,4 +44,5 @@ alovoa.txt
 ### Keys Properties ###
 application-dev.properties
 application-prod.properties
+application-prod2.properties
 
