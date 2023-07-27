@@ -1,6 +1,6 @@
 #!/bin/bash
 cd ..
-git pull origin master
+git pull
 mvn clean install -DskipTests
 cd target
 read -sp 'Password: ' pw
