@@ -13,7 +13,7 @@ if ls -A | fuser $port2/tcp ; then
     fuser -k $port1/tcp
     nohup java -XX:+HeapDumpOnOutOfMemoryError -Xmx128m -jar -Dfile.encoding=UTF-8 -Dspring.profiles.active=prod alovoa-1.0.0.jar &
 else
-    port2_used = false
+    port2_used=false
     fuser -k $port2/tcp
     nohup java -XX:+HeapDumpOnOutOfMemoryError -Xmx128m -jar -Dfile.encoding=UTF-8 -Dspring.profiles.active=prod2 alovoa-1.0.0.jar &
 fi
@@ -22,7 +22,7 @@ unset JASYPT_ENCRYPTOR_PASSWORD
 
 sleep 55
 
-if [ "$port2_used" = true ] ; then
+if [ "$port2_used"=true ] ; then
     if ls -A | fuser $port1/tcp ; then
         cp ../scripts/root/etc/apache2/sites-available/beta.alovoa.com.conf /etc/apache2/sites-available/beta.alovoa.com.conf 
         systemctl reload apache2
