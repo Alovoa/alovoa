@@ -9,7 +9,7 @@ port1=8844
 port2=8944
 
 export JASYPT_ENCRYPTOR_PASSWORD=$pw
-if ls -A | fuser $port2/tcp ; then
+if [[ "$(fuser $port2/tcp)" ]] ; then
     echo "port2 is used"
     fuser -k $port1/tcp
     nohup java -XX:+HeapDumpOnOutOfMemoryError -Xmx128m -jar -Dfile.encoding=UTF-8 -Dspring.profiles.active=prod alovoa-1.0.0.jar &
@@ -25,7 +25,7 @@ unset JASYPT_ENCRYPTOR_PASSWORD
 sleep 55
 
 if [ "$port2_used"=true ] ; then
-    if ls -A | fuser $port1/tcp ; then
+    if [[ "$(fuser $port1/tcp)" ]] ; then
         cp ../scripts/root/etc/apache2/sites-available/beta.alovoa.com.conf /etc/apache2/sites-available/beta.alovoa.com.conf 
         systemctl reload apache2
         fuser -k $port2/tcp
@@ -33,7 +33,7 @@ if [ "$port2_used"=true ] ; then
         echo "Spring Server failed to start in time"
     fi
 else
-    if ls -A | fuser $port2/tcp ; then
+    if [[ "$(fuser $port2/tcp)" ]] ; then
         cp ../scripts/root/etc/apache2/sites-available/port2/beta.alovoa.com.conf /etc/apache2/sites-available/beta.alovoa.com.conf 
         systemctl reload apache2
         fuser -k $port1/tcp
