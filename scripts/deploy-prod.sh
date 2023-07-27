@@ -10,9 +10,11 @@ port2=8943
 
 export JASYPT_ENCRYPTOR_PASSWORD=$pw
 if ls -A | fuser $port2/tcp ; then
+    echo "port2 is used"
     fuser -k $port1/tcp
     nohup java -XX:+HeapDumpOnOutOfMemoryError -Xmx128m -jar -Dfile.encoding=UTF-8 -Dspring.profiles.active=prod alovoa-1.0.0.jar &
 else
+    echo "port2 is NOT used"
     port2_used=false
     fuser -k $port2/tcp
     nohup java -XX:+HeapDumpOnOutOfMemoryError -Xmx128m -jar -Dfile.encoding=UTF-8 -Dspring.profiles.active=prod2 alovoa-1.0.0.jar &
@@ -28,7 +30,7 @@ if [ "$port2_used"=true ] ; then
         systemctl reload apache2
         fuser -k $port2/tcp
     else
-        "Spring Server failed to start in time"
+        echo "Spring Server failed to start in time"
     fi
 else
     if ls -A | fuser $port2/tcp ; then
@@ -36,6 +38,6 @@ else
         systemctl reload apache2
         fuser -k $port1/tcp
     else
-        "Spring Server failed to start in time"
+        echo "Spring Server failed to start in time"
     fi
 fi
