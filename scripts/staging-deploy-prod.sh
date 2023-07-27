@@ -22,20 +22,20 @@ unset JASYPT_ENCRYPTOR_PASSWORD
 
 sleep 55
 
-if ["$port2_used" = true] ; then
+if [ "$port2_used" = true ] ; then
     if ls -A | fuser $port1/tcp ; then
-        cp ./root/etc/apache2/sites-available/beta.alovoa.com.conf /etc/apache2/sites-available/beta.alovoa.com.conf 
+        cp ../scripts/root/etc/apache2/sites-available/beta.alovoa.com.conf /etc/apache2/sites-available/beta.alovoa.com.conf 
         systemctl reload apache2
         fuser -k $port2/tcp
     else
-        "Spring Server failed to start"
+        "Spring Server failed to start in time"
     fi
 else
     if ls -A | fuser $port2/tcp ; then
-        cp ./root/etc/apache2/sites-available/port2/beta.alovoa.com.conf /etc/apache2/sites-available/beta.alovoa.com.conf 
+        cp ../scripts/root/etc/apache2/sites-available/port2/beta.alovoa.com.conf /etc/apache2/sites-available/beta.alovoa.com.conf 
         systemctl reload apache2
         fuser -k $port1/tcp
     else
-        "Spring Server failed to start"
+        "Spring Server failed to start in time"
     fi
 fi
