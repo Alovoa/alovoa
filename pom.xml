@@ -139,7 +139,7 @@
 		<dependency>
 			<groupId>com.giffing.bucket4j.spring.boot.starter</groupId>
 			<artifactId>bucket4j-spring-boot-starter</artifactId>
-			<version>0.7.0</version>
+			<version>0.9.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sipgate</groupId>
