@@ -13,7 +13,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import jakarta.persistence.AttributeConverter;
+import javax.persistence.AttributeConverter;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

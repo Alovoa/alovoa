@@ -11,7 +11,7 @@ import java.util.Base64;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
