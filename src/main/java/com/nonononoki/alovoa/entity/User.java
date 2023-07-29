@@ -45,7 +45,7 @@ public class User implements UserDetails {
     @JsonIgnore
     long numberSearches;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @JsonIgnore
     private String password;

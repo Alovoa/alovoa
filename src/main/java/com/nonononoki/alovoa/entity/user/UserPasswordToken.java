@@ -22,7 +22,7 @@ import lombok.Setter;
 public class UserPasswordToken{
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	@OneToOne

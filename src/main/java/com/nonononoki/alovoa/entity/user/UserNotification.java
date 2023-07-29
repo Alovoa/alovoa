@@ -24,7 +24,7 @@ public class UserNotification {
 	public static final String USER_LIKE = "USER_LIKE";
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	@ManyToOne
