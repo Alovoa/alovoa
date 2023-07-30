@@ -23,7 +23,7 @@ What makes Alovoa different from other platforms?
 
 ### Mobile apps
 
-Alovoa is also available as a mobile app. Check out Android app [source code repo](https://github.com/Alovoa/alovoa-android), download an app on [F-Droid](https://f-droid.org/en/packages/com.alovoa.alovoa/) or [Google Play](https://play.google.com/store/apps/details?id=com.alovoa.alovoa_playstore)
+Alovoa is also available as a mobile app. Check out Android app [source code repo](https://github.com/Alovoa/alovoa-expo), download an app on [F-Droid](https://f-droid.org/en/packages/com.alovoa.expo/) or [Google Play](https://play.google.com/store/apps/details?id=com.alovoa.expo)
 
 ### Contribute
 - Tell your friends about it and share on social media! This is the best way to make it grow.
