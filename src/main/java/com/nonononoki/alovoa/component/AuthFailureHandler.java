@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.stereotype.Component;
 
 @Component
-public class FailureHandler implements AuthenticationFailureHandler{
+public class AuthFailureHandler implements AuthenticationFailureHandler{
 
 	@Value("${app.url.auth.failure}")
 	private String url;

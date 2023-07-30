@@ -22,7 +22,7 @@ import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.service.AuthService;
 
 @Component
-public class SuccessHandler implements AuthenticationSuccessHandler {
+public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 
 	@Value("${app.url.auth.success}")
 	private String url;
@@ -32,10 +32,10 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
 	@Autowired
 	private AuthService authService;
 	
-	private int PAGE_ONBOARDING = 2;
-	private int PAGE_DEFAULT = 3;
+	private static final int PAGE_ONBOARDING = 2;
+	private static final int PAGE_DEFAULT = 3;
 
-	public SuccessHandler(SecurityConfig securityConfig) {
+	public AuthSuccessHandler(SecurityConfig securityConfig) {
 		super();
 		this.securityConfig = securityConfig;
 	}

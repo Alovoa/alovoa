@@ -36,8 +36,8 @@ import com.nonononoki.alovoa.component.AuthFilter;
 import com.nonononoki.alovoa.component.AuthProvider;
 import com.nonononoki.alovoa.component.CustomTokenBasedRememberMeServices;
 import com.nonononoki.alovoa.component.CustomUserDetailsService;
-import com.nonononoki.alovoa.component.FailureHandler;
-import com.nonononoki.alovoa.component.SuccessHandler;
+import com.nonononoki.alovoa.component.AuthFailureHandler;
+import com.nonononoki.alovoa.component.AuthSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
 
@@ -56,7 +56,7 @@ public class SecurityConfig {
 	private Environment env;
 
 	@Autowired
-	private FailureHandler failureHandler;
+	private AuthFailureHandler failureHandler;
 
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
@@ -121,8 +121,8 @@ public class SecurityConfig {
 	}
 	
 	@Bean
-	SuccessHandler successHandler() {
-		return new SuccessHandler(this);
+	AuthSuccessHandler successHandler() {
+		return new AuthSuccessHandler(this);
 	}
 
 	@Bean

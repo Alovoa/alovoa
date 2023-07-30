@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.service;
 
+import com.nonononoki.alovoa.component.ExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +42,9 @@ public class AuthService {
 
 		User user = userRepo.findByEmail(Tools.cleanEmail(email));
 		if (user != null && user.isDisabled()) {
-			throw new AlovoaException("user_not_found");
+			throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
 		} else if (user == null && throwExceptionWhenNull) {
-			throw new AlovoaException("user_not_found");
+			throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
 		}
 
 		return user;

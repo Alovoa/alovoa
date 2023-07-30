@@ -6,6 +6,7 @@ import com.linkedin.urls.Url;
 import com.linkedin.urls.detection.UrlDetector;
 import com.linkedin.urls.detection.UrlDetectorOptions;
 import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.component.ExceptionHandler;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.*;
@@ -685,7 +686,7 @@ public class UserService {
         }
 
         if (!Tools.usersCompatible(currUser, user)) {
-            throw new AlovoaException("users_not_compatible");
+            throw new AlovoaException(ExceptionHandler.USER_NOT_COMPATIBLE);
         }
 
         if (userLikeRepo.findByUserFromAndUserTo(currUser, user) == null) {

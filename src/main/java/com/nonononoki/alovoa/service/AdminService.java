@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.service;
 
 import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.component.ExceptionHandler;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
@@ -112,7 +113,7 @@ public class AdminService {
         User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
 
         if (user == null) {
-            throw new AlovoaException("user_not_found");
+            throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
         }
 
         user.setProfilePicture(null);
@@ -128,7 +129,7 @@ public class AdminService {
         User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
 
         if (user == null) {
-            throw new AlovoaException("user_not_found");
+            throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
         }
 
         user.setDescription(null);
@@ -142,7 +143,7 @@ public class AdminService {
         User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
 
         if (user == null) {
-            throw new AlovoaException("user_not_found");
+            throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
         }
 
         if (user.isAdmin()) {
@@ -202,7 +203,7 @@ public class AdminService {
         User user = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
 
         if (user == null) {
-            throw new AlovoaException("user_not_found");
+            throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
         }
 
         if (user.isDisabled()) {

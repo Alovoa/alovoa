@@ -12,6 +12,8 @@ import java.util.Optional;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+
+import com.nonononoki.alovoa.component.ExceptionHandler;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
@@ -226,7 +228,7 @@ public class RegisterService {
 		User user = token.getUser();
 
 		if (user == null) {
-			throw new AlovoaException("user_not_found");
+			throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
 		}
 
 		if (user.isConfirmed()) {

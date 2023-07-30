@@ -102,7 +102,7 @@ class PasswordServiceTest {
 
 		assertEquals(0, userPasswordTokenRepository.count());
 
-		UserPasswordToken userPasswordToken = passwordService.resetPasword(passwordResetDto);
+		UserPasswordToken userPasswordToken = passwordService.resetPassword(passwordResetDto);
 
 		assertEquals(1, userPasswordTokenRepository.count());
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
+import com.nonononoki.alovoa.component.ExceptionHandler;
 import jakarta.mail.MessagingException;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -50,7 +51,7 @@ public class PasswordService {
 	@Value("${app.user.password-reset.duration.valid}")
 	private int userPasswordResetDuration;
 
-	public UserPasswordToken resetPasword(PasswordResetDto dto)
+	public UserPasswordToken resetPassword(PasswordResetDto dto)
 			throws AlovoaException, NoSuchAlgorithmException, MessagingException, IOException {
 
 		User u = authService.getCurrentUser();
@@ -62,7 +63,7 @@ public class PasswordService {
 			u = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
 
 			if (u == null) {
-				throw new DisabledException("user_not_found");
+				throw new DisabledException(ExceptionHandler.USER_NOT_FOUND);
 			}
 			
 			if (u.getPassword() == null) {

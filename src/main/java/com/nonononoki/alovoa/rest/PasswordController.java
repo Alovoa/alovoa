@@ -26,7 +26,7 @@ public class PasswordController {
 	@PostMapping(value = "/reset", consumes = "application/json")
 	public void resetPasword(@RequestBody PasswordResetDto dto)
 			throws NoSuchAlgorithmException, AlovoaException, MessagingException, IOException {
-		passwordService.resetPasword(dto);
+		passwordService.resetPassword(dto);
 	}
 
 	@PostMapping(value = "/change", consumes = "application/json")
