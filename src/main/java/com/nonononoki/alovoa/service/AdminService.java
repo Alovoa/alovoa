@@ -214,7 +214,10 @@ public class AdminService {
             throw new AlovoaException("cannot_delete_admin");
         }
 
-        UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo).userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo).userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
+        UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
+                .userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
+                .userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo)
+                .userVerificationPictureRepo(userVerificationPictureRepo).build();
         UserService.removeUserDataCascading(user, userDeleteParam);
         userRepo.delete(userRepo.findByEmail(user.getEmail()));
         userRepo.flush();
