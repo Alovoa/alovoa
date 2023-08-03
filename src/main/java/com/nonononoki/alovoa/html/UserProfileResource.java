@@ -72,7 +72,7 @@ public class UserProfileResource {
         }
 
         if (userView != null) {
-            if (userView.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
+            if (userView.getBlockedUsers().stream().filter(o -> o.getUserTo() != null).anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
                 throw new AlovoaException("blocked");
             }
 
