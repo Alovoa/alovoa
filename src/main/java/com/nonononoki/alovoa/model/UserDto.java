@@ -121,6 +121,9 @@ public class UserDto {
         dto.setPreferedGenders(user.getPreferedGenders());
         dto.setPreferedMinAge(user.getPreferedMinAge());
         dto.setPreferedMaxAge(user.getPreferedMaxAge());
+        if (dto.getPreferedMinAge() < Tools.AGE_LEGAL && dto.getAge() >= Tools.AGE_LEGAL) {
+            dto.setPreferedMinAge(Tools.AGE_LEGAL);
+        }
         if (mode != PROFILE_PICTURE_ONLY && mode != NO_MEDIA) {
             dto.setImages(user.getImages());
         }
