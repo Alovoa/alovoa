@@ -29,7 +29,6 @@ public class Gender {
 	@Transient
 	public static final long OTHER = 3;
 
-	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

@@ -43,8 +43,7 @@ public class UserMiscInfo {
 	public static final long KIDS_NO = 21;
 	@Transient
 	public static final long KIDS_YES = 22;
-	
-	@JsonIgnore
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
