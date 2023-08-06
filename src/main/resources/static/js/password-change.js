@@ -16,7 +16,7 @@ $(function() {
 
 		$.ajax({
 			type: "POST",
-			url: "/password/change/",
+			url: "/password/change",
 			data: JSON.stringify(data),
 			contentType: "application/json",
 			success: function(e) {
