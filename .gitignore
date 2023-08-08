@@ -1,3 +1,5 @@
+src/main/resources/application.properties
+
 HELP.md
 .directory
 target/

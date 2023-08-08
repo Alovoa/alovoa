@@ -29,6 +29,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.ClientRegistrations;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +52,9 @@ import com.nonononoki.alovoa.service.PublicService;
 @RestController
 @RequestMapping("/")
 public class Oauth2Controller {
+
+	@Autowired
+	private ClientRegistrationRepository clientRegistrationRepository;
 
 	@Autowired
 	private UserRepository userRepo;
@@ -98,11 +104,15 @@ public class Oauth2Controller {
 		return new ModelAndView(new RedirectView("/oauth2/authorization/facebook"));
 	}
 
+	@GetMapping("/oauth2/authorization/ip6li/{redirectUrlEncoded}")
+	public ModelAndView oauth2ip6li(@PathVariable String redirectUrlEncoded) {
+		httpSession.setAttribute(REDIRECT_URL, redirectUrlEncoded);
+		return new ModelAndView(new RedirectView("/oauth2/authorization/ip6li"));
+	}
+
 	@SuppressWarnings("rawtypes")
 	@GetMapping("/login/oauth2/success")
-	public ModelAndView oauth2Success()
-			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+	public ModelAndView oauth2Success() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		try {
@@ -211,4 +221,5 @@ public class Oauth2Controller {
 	private String getOauthParams(String username, String firstName, int page) {
 		return Tools.getAuthParams(securityConfig, httpSession.getId(), username, firstName, page);
 	}
+
 }

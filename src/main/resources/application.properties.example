@@ -2,6 +2,12 @@
 spring.profiles.active=test 
 
 server.port=${PORT:8080}
+server.forward-headers-strategy=native
+#server.tomcat.redirect-context-root=false
+server.tomcat.remoteip.host-header=x-forwarded-for
+server.tomcat.remoteip.port-header=x-forwarded-port
+server.tomcat.remoteip.protocol-header=x-forwarded-proto
+server.tomcat.remoteip.internal-proxies=.*
 
 #enable to force https for development
 #server.ssl.key-store-type=PKCS12
@@ -21,10 +27,15 @@ spring.datasource.url=jdbc:mariadb://localhost:3306/alovoa?createDatabaseIfNotEx
 #spring.datasource.hikari.maxLifetime=1800000
 
 #Insert your oauth2 ids and secrets here
-#spring.security.oauth2.client.registration.google.client-id=<your client id>
-#spring.security.oauth2.client.registration.google.client-secret=<your client secret>
-#spring.security.oauth2.client.registration.facebook.client-id=<your client id>
-#spring.security.oauth2.client.registration.facebook.client-secret=<your client secret>
+spring.security.oauth2.client.registration.google.client-id=test
+spring.security.oauth2.client.registration.google.client-secret=test
+spring.security.oauth2.client.registration.facebook.client-id=test
+spring.security.oauth2.client.registration.facebook.client-secret=test
+
+# This works with a Keycloak OpenID/Connect realm
+spring.security.oauth2.client.registration.ip6li.client-id=example-clientid
+spring.security.oauth2.client.registration.ip6li.client-secret=example-clientid-password
+spring.security.oauth2.client.provider.ip6li.issuer-uri=https://auth1.ip6.li/realms/a-keycloak-realm
 
 #we keep the default /login/oauth2/code/{registrationId} scheme
 
@@ -34,6 +45,7 @@ spring.security.oauth2.client.registration.google.scope[0]=email
 spring.security.oauth2.client.registration.google.scope[1]=profile
 spring.security.oauth2.client.registration.facebook.scope[0]=email
 spring.security.oauth2.client.registration.facebook.scope[1]=public_profile
+spring.security.oauth2.client.registration.ip6li.scope[0]=openid
 
 server.servlet.session.timeout=1h
 server.servlet.session.cookie.max-age=1h
@@ -55,17 +67,17 @@ spring.jpa.properties.hibernate.plan_parameter_metadata_max_size=16
 spring.jpa.properties.hibernate.query.in_clause_parameter_padding=true
 
 ### KEYS AND CREDENTIALS ###
-#spring.datasource.password=
-#spring.datasource.username=
+spring.datasource.password=MariaDB-Password-for-username
+spring.datasource.username=alovoa
 #keys for transparent database encryption
-#app.text.key= #key must be 16, 24 or 32 bytes long
-#app.text.salt= #salt must be 16 bytes long
-#app.admin.email=
-#app.admin.key=
-#spring.mail.password=<login password to smtp server>
-spring.mail.host=mail.gmx.net
+app.text.key= #key must be 16, 24 or 32 bytes long
+app.text.salt= #salt must be 16 bytes long
+app.admin.email=alovoa@example.com
+app.admin.key=AdminKey1234
+spring.mail.password=Mail Password for alovoa@example.com
+spring.mail.host=mail.example.com
 spring.mail.port=587
-spring.mail.username=nonononoki@gmx.de
+spring.mail.username=alovoa@example.com
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 spring.mail.test-connection=true
@@ -73,6 +85,7 @@ spring.mail.test-connection=true
 # logging
 logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n
 logging.level.org.springframework.web=INFO
+logging.level.root=warn
 logging.level.org.hibernate.SQL=ERROR
 logging.level.org.hibernate=ERROR
 logging.file.name=./logs/spring.log
