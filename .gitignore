@@ -1,4 +1,3 @@
-src/main/resources/application.properties
 
 HELP.md
 .directory
@@ -46,4 +45,6 @@ alovoa.txt
 ### Keys Properties ###
 application-dev.properties
 application-prod.properties
+
+src/main/resources/application.properties
 
