@@ -11,12 +11,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -85,83 +83,59 @@ public class SecurityConfig {
 				.getSharedObject(AuthenticationManagerBuilder.class);
 		authenticationManagerBuilder.authenticationProvider(authProvider());
 
-		http.authorizeHttpRequests(authorizeHttpRequests -> {
-					try {
-						authorizeHttpRequests
-								.requestMatchers("/admin").hasAnyAuthority(ROLE_ADMIN)
-								.requestMatchers("/admin/**").hasAnyAuthority(ROLE_ADMIN)
-								.requestMatchers("/css/**").permitAll()
-								.requestMatchers("/js/**").permitAll()
-								.requestMatchers("/img/**").permitAll()
-								.requestMatchers("/font/**").permitAll()
-								.requestMatchers("/json/**").permitAll()
-								.requestMatchers("/oauth2/**").permitAll()
-								.requestMatchers("/").permitAll()
-								.requestMatchers("/login/**").permitAll()
-								.requestMatchers("/terms-conditions").permitAll()
-								.requestMatchers("/imprint").permitAll()
-								.requestMatchers("/imprint/*").permitAll()
-								.requestMatchers("/privacy").permitAll()
-								.requestMatchers("/faq").permitAll()
-								.requestMatchers("/tos").permitAll()
-								.requestMatchers("/register").permitAll()
-								.requestMatchers("/register/**").permitAll()
-								.requestMatchers("/captcha/**").permitAll()
-								.requestMatchers("/donate-list").permitAll()
-								.requestMatchers("/donate/received/**").permitAll()
-								.requestMatchers("/password/**").permitAll()
-								.requestMatchers("/favicon.ico").permitAll()
-								.requestMatchers("/sw.js").permitAll()
-								.requestMatchers("/robots.txt").permitAll()
-								.requestMatchers("/.well-known/assetlinks.json").permitAll()
-								.requestMatchers("/text/*").permitAll()
-								.requestMatchers("/manifest/**").permitAll()
-								.requestMatchers("/fonts/**").permitAll()
-								.requestMatchers("/error").permitAll()
+		http.authorizeHttpRequests()
+				.requestMatchers("/admin").hasAnyAuthority(ROLE_ADMIN)
+				.requestMatchers("/admin/**").hasAnyAuthority(ROLE_ADMIN)
+				.requestMatchers("/css/**").permitAll()
+				.requestMatchers("/js/**").permitAll()
+				.requestMatchers("/img/**").permitAll()
+				.requestMatchers("/font/**").permitAll()
+				.requestMatchers("/json/**").permitAll()
+				.requestMatchers("/oauth2/**").permitAll()
+				.requestMatchers("/").permitAll()
+				.requestMatchers("/login/**").permitAll()
+				.requestMatchers("/terms-conditions").permitAll()
+				.requestMatchers("/imprint").permitAll()
+				.requestMatchers("/imprint/*").permitAll()
+				.requestMatchers("/privacy").permitAll()
+				.requestMatchers("/faq").permitAll()
+				.requestMatchers("/tos").permitAll()
+				.requestMatchers("/register").permitAll()
+				.requestMatchers("/register/**").permitAll()
+				.requestMatchers("/captcha/**").permitAll()
+				.requestMatchers("/donate-list").permitAll()
+				.requestMatchers("/donate/received/**").permitAll()
+				.requestMatchers("/password/**").permitAll()
+				.requestMatchers("/favicon.ico").permitAll()
+				.requestMatchers("/sw.js").permitAll()
+				.requestMatchers("/robots.txt").permitAll()
+				.requestMatchers("/.well-known/assetlinks.json").permitAll()
+				.requestMatchers("/text/*").permitAll()
+				.requestMatchers("/manifest/**").permitAll()
+				.requestMatchers("/fonts/**").permitAll()
+				.requestMatchers("/error").permitAll()
 
-								.anyRequest().authenticated()
-									.and().formLogin(formLogin -> formLogin.loginPage("/login"))
-									.logout()
-								.deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER)
-								.logoutUrl("/logout")
-								.logoutSuccessUrl("/?logout")
-								.and()
-								.oauth2Login(
-										oauth2Login -> oauth2Login
-												.loginPage("/login")
-												.defaultSuccessUrl("/login/oauth2/success")
-								)
-								.addFilterBefore(
-										authenticationFilter(),
-										UsernamePasswordAuthenticationFilter.class
-								)
-								.rememberMe(rememberMe -> rememberMe
-										.rememberMeServices(oAuthRememberMeServices())
-										.key(rememberKey)
-								);
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-				}
-		);
+				.anyRequest().authenticated()
+					.and().formLogin().loginPage("/login")
+					.and().logout()
+				.deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER).logoutUrl("/logout").logoutSuccessUrl("/?logout")
+					.and().oauth2Login().loginPage("/login").defaultSuccessUrl("/login/oauth2/success")
+					.and().addFilterBefore(authenticationFilter(),
+						UsernamePasswordAuthenticationFilter.class)
+				.rememberMe()
+				.rememberMeServices(oAuthRememberMeServices()).key(rememberKey);
 
-		http.sessionManagement(sessionManagement -> sessionManagement
+		http.sessionManagement()
 				.maximumSessions(10)
 				.expiredSessionStrategy(getSessionInformationExpiredStrategy())
-				.sessionRegistry(sessionRegistry())
-		);
-
-		http.csrf(AbstractHttpConfigurer::disable);
+				.sessionRegistry(sessionRegistry());
+		http.csrf().disable();
 
 		if (env.acceptsProfiles(Profiles.of("prod"))) {
-			http.requiresChannel(
-					requiresChannel -> requiresChannel
-							.anyRequest()
-							.requiresSecure()
-			);
+			http.requiresChannel().anyRequest().requiresSecure();
 		}
 
-		http.cors(Customizer.withDefaults());
+		http.cors();
 		return http.build();
 	}
 
