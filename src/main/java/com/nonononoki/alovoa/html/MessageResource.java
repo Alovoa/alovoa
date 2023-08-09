@@ -56,7 +56,8 @@ public class MessageResource {
 
         ModelAndView mav = new ModelAndView("messages");
         User user = authService.getCurrentUser(true);
-        user.getDates().setMessageCheckedDate(new Date());
+        if (user.getDates()!=null)
+            user.getDates().setMessageCheckedDate(new Date());
         userRepo.saveAndFlush(user);
         List<ConversationDto> convos = new ArrayList<>();
         List<Conversation> conversations = conversationRepo.findByUsers_Id(user.getId());

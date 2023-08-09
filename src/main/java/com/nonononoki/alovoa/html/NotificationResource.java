@@ -45,7 +45,8 @@ public class NotificationResource {
 
         ModelAndView mav = new ModelAndView("notification");
         User user = authService.getCurrentUser(true);
-        user.getDates().setNotificationCheckedDate(new Date());
+        if (user.getDates()!=null)
+            user.getDates().setNotificationCheckedDate(new Date());
         userRepo.saveAndFlush(user);
         List<UserNotification> nots = user.getNotifications();
         List<NotificationDto> notifications = new ArrayList<>();

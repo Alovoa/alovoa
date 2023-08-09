@@ -120,12 +120,15 @@ public class SecurityConfig {
 								.requestMatchers("/error").permitAll()
 
 								.anyRequest().authenticated()
-									.and().formLogin(formLogin -> formLogin.loginPage("/login"))
-									.logout()
-								.deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER)
-								.logoutUrl("/logout")
-								.logoutSuccessUrl("/?logout")
 								.and()
+								.formLogin(formLogin -> formLogin
+										.loginPage("/login")
+								)
+								.logout(logout -> logout
+											.deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER)
+											.logoutUrl("/logout")
+											.logoutSuccessUrl("/?logout")
+									)
 								.oauth2Login(
 										oauth2Login -> oauth2Login
 												.loginPage("/login")
