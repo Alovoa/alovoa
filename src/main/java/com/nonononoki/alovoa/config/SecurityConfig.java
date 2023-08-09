@@ -85,9 +85,7 @@ public class SecurityConfig {
 				.getSharedObject(AuthenticationManagerBuilder.class);
 		authenticationManagerBuilder.authenticationProvider(authProvider());
 
-		http.authorizeHttpRequests(authorizeHttpRequests -> {
-					try {
-						authorizeHttpRequests
+		http.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
 								.requestMatchers("/admin").hasAnyAuthority(ROLE_ADMIN)
 								.requestMatchers("/admin/**").hasAnyAuthority(ROLE_ADMIN)
 								.requestMatchers("/css/**").permitAll()
@@ -118,9 +116,7 @@ public class SecurityConfig {
 								.requestMatchers("/manifest/**").permitAll()
 								.requestMatchers("/fonts/**").permitAll()
 								.requestMatchers("/error").permitAll()
-
-								.anyRequest().authenticated()
-								.and()
+								.anyRequest().authenticated())
 								.formLogin(formLogin -> formLogin
 										.loginPage("/login")
 								)
@@ -142,11 +138,6 @@ public class SecurityConfig {
 										.rememberMeServices(oAuthRememberMeServices())
 										.key(rememberKey)
 								);
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-				}
-		);
 
 		http.sessionManagement(sessionManagement -> sessionManagement
 				.maximumSessions(10)
