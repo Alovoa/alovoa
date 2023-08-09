@@ -337,6 +337,10 @@ input[type=range].slider {
 	padding: 0.7rem !important;
 }
 
+#ip6li-auth {
+	background-color: #4285F4; width: 100%; margin-right: 4px; margin-bottom: 8px;
+}
+
 #google-auth {
 	background-color: #4285F4; width: 100%; margin-right: 4px; margin-bottom: 8px;
 }

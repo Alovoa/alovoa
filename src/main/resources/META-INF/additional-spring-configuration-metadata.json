@@ -130,6 +130,11 @@
     "description": "A description for 'app.password-token.length'"
   },
   {
+    "name": "app.captcha.enabled",
+    "type": "java.lang.String",
+    "description": "Enable or disable captcha"
+  },
+  {
     "name": "app.captcha.length",
     "type": "java.lang.String",
     "description": "A description for 'app.captcha.length'"

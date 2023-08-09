@@ -3,9 +3,9 @@ package com.nonononoki.alovoa.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -37,9 +37,12 @@ public class AuthProvider implements AuthenticationProvider {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	@Value("${app.captcha.enabled}")
+	private String captchaEnabled;
 	
 	@SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory.getLogger(AuthProvider.class);
+	private static final Logger logger = Logger.getLogger(AuthProvider.class);
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -50,15 +53,20 @@ public class AuthProvider implements AuthenticationProvider {
 		long captchaId = a.getCaptchaId();
 		String captchaText = a.getCaptchaText();
 
-		Captcha c = captchaRepo.findById(captchaId).orElse(null);
-		if (c == null) {
-			throw new BadCredentialsException("");
-		}
+		if (Boolean.parseBoolean(captchaEnabled)) {
+			logger.info("Captcha enabled, so check captcha");
+			Captcha c = captchaRepo.findById(captchaId).orElse(null);
+			if (c == null) {
+				throw new BadCredentialsException("");
+			}
 
-		captchaRepo.delete(c);
+			captchaRepo.delete(c);
 
-		if (!c.getText().equalsIgnoreCase(captchaText)) {
-			throw new BadCredentialsException("");
+			if (!c.getText().equalsIgnoreCase(captchaText)) {
+				throw new BadCredentialsException("");
+			}
+		} else {
+			logger.info("Captcha disabled, so we do not care about it");
 		}
 
 		User user = userRepo.findByEmail(email);
