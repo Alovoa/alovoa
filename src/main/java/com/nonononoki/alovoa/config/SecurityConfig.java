@@ -83,6 +83,7 @@ public class SecurityConfig {
 	private OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler() {
 		OidcClientInitiatedLogoutSuccessHandler successHandler =
 				new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
+
 		//successHandler.setPostLogoutRedirectUri("https://test2.felsing.net/"); // !!!
 
 		return successHandler;
