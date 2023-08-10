@@ -47,4 +47,5 @@ application-dev.properties
 application-prod.properties
 
 src/main/resources/application.properties
+alovoa.application.properties
 

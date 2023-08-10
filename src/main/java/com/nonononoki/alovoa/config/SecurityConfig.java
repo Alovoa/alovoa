@@ -1,9 +1,7 @@
 package com.nonononoki.alovoa.config;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.nonononoki.alovoa.component.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,35 +19,35 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
+import org.springframework.security.web.server.authentication.logout.DelegatingServerLogoutHandler;
+import org.springframework.security.web.server.authentication.logout.SecurityContextServerLogoutHandler;
+import org.springframework.security.web.server.authentication.logout.WebSessionServerLogoutHandler;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.security.web.session.SimpleRedirectSessionInformationExpiredStrategy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import com.nonononoki.alovoa.component.AuthFilter;
-import com.nonononoki.alovoa.component.AuthProvider;
-import com.nonononoki.alovoa.component.CustomTokenBasedRememberMeServices;
-import com.nonononoki.alovoa.component.CustomUserDetailsService;
-import com.nonononoki.alovoa.component.AuthFailureHandler;
-import com.nonononoki.alovoa.component.AuthSuccessHandler;
-
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-	@Value("${app.text.key}")
-	private String key;
 
 	@Value("${app.login.remember.key}")
 	private String rememberKey;
@@ -62,6 +60,10 @@ public class SecurityConfig {
 
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
+
+	@Autowired
+	ClientRegistrationRepository clientRegistrationRepository;
+
 
 	private final AuthenticationConfiguration configuration;
 
@@ -76,6 +78,14 @@ public class SecurityConfig {
 
 	public static String getRoleAdmin() {
 		return ROLE_ADMIN;
+	}
+
+	private OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler() {
+		OidcClientInitiatedLogoutSuccessHandler successHandler =
+				new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
+		//successHandler.setPostLogoutRedirectUri("https://test2.felsing.net/"); // !!!
+
+		return successHandler;
 	}
 
 	@Bean
@@ -121,14 +131,18 @@ public class SecurityConfig {
 										.loginPage("/login")
 								)
 								.logout(logout -> logout
-											.deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER)
-											.logoutUrl("/logout")
-											.logoutSuccessUrl("/?logout")
-									)
+										.deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER)
+										.logoutUrl("/logout")
+										.logoutSuccessHandler(oidcLogoutSuccessHandler())
+										.invalidateHttpSession(true)
+										.clearAuthentication(true)
+										.logoutSuccessUrl("/?logout")
+								)
 								.oauth2Login(
 										oauth2Login -> oauth2Login
 												.loginPage("/login")
 												.defaultSuccessUrl("/login/oauth2/success")
+
 								)
 								.addFilterBefore(
 										authenticationFilter(),
@@ -229,9 +243,9 @@ public class SecurityConfig {
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		final CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
-		config.setAllowedOriginPatterns(Arrays.asList("*"));
-		config.setAllowedHeaders(Arrays.asList("*"));
-		config.setAllowedMethods(Arrays.asList("*"));
+		config.setAllowedOriginPatterns(List.of("*"));
+		config.setAllowedHeaders(List.of("*"));
+		config.setAllowedMethods(List.of("*"));
 		source.registerCorsConfiguration("/**", config);
 		return new CorsFilter(source);
 	}
@@ -239,4 +253,5 @@ public class SecurityConfig {
 	public CustomTokenBasedRememberMeServices getOAuthRememberMeServices() {
 		return (CustomTokenBasedRememberMeServices) oAuthRememberMeServices();
 	}
+
 }

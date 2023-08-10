@@ -7,23 +7,12 @@ services:
       context: .
       dockerfile: Dockerfile
     image: alovoa
+    extra_hosts:
+      - "mysql:172.17.0.1"
     ports:
-      - "8081:8080"
+      - "8080:8080"
     stdin_open: true
     tty: true
-    links:
-      - mariadb
-  mariadb:
-    restart: always
-    image: mariadb:10.7
-    expose:
-      - 3306
-    environment:
-      MARIADB_DATABASE: alovoaDB
-      MARIADB_USER: root
-      MARIADB_PASSWORD: example
-      MARIADB_ROOT_PASSWORD: example
     volumes:
-      - db_data:/var/lib/mariadb
-volumes:
-  db_data:
+      - ./logs:/home/app/logs:cached
+

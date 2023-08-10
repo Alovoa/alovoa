@@ -54,7 +54,7 @@ public class AuthProvider implements AuthenticationProvider {
 		String captchaText = a.getCaptchaText();
 
 		if (Boolean.parseBoolean(captchaEnabled)) {
-			logger.info("Captcha enabled, so check captcha");
+			logger.debug("Captcha enabled, so check captcha");
 			Captcha c = captchaRepo.findById(captchaId).orElse(null);
 			if (c == null) {
 				throw new BadCredentialsException("");
@@ -66,7 +66,7 @@ public class AuthProvider implements AuthenticationProvider {
 				throw new BadCredentialsException("");
 			}
 		} else {
-			logger.info("Captcha disabled, so we do not care about it");
+			logger.debug("Captcha disabled, so we do not care about it");
 		}
 
 		User user = userRepo.findByEmail(email);

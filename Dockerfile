@@ -12,8 +12,20 @@ RUN mvn clean package -Dmaven.test.skip=true
 #
 # App stage
 #
-FROM eclipse-temurin:17.0.6_10-jre
+FROM debian:bookworm-slim
+RUN \
+  apt -q -y update && \
+  apt -q -y full-upgrade && \
+  apt install -q -y openjdk-17-jre-headless
+
 ENV HOME=/home/app
 WORKDIR $HOME
 COPY --from=build $HOME/target/alovoa-1.1.0.jar $HOME/alovoa-1.1.0.jar
-ENTRYPOINT ["java", "-XX:+HeapDumpOnOutOfMemoryError", "-Xmx128m", "-jar", "-Dfile.encoding=UTF-8", "-Dspring.profiles.active=prod", "alovoa-1.1.0.jar"]
+
+COPY ./entrypoint.sh /entrypoint.sh
+RUN \
+  chmod 755 /entrypoint.sh
+
+#ENTRYPOINT ["java", "-XX:+HeapDumpOnOutOfMemoryError", "-Xmx128m", "-jar", "-Dfile.encoding=UTF-8", "-Dspring.profiles.active=prod", "alovoa-1.1.0.jar"]
+ENTRYPOINT ["/entrypoint.sh"]
+
