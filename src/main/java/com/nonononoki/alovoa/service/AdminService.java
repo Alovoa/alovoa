@@ -62,7 +62,6 @@ public class AdminService {
     private TextEncryptorConverter textEncryptor;
 
     public void hideContact(long id) throws AlovoaException {
-
         checkRights();
 
         Contact contact = contactRepo.findById(id).orElse(null);
@@ -75,14 +74,12 @@ public class AdminService {
     }
 
     public void sendMailSingle(MailDto dto) throws AlovoaException {
-
         checkRights();
 
         mailService.sendAdminMail(dto.getEmail(), dto.getSubject(), dto.getBody());
     }
 
     public void sendMailAll(MailDto dto) throws AlovoaException, MessagingException, IOException {
-
         checkRights();
 
         List<User> users = userRepo.findByDisabledFalseAndAdminFalseAndConfirmedTrue();
@@ -90,7 +87,6 @@ public class AdminService {
     }
 
     public void deleteReport(long id) throws AlovoaException {
-
         checkRights();
 
         UserReport report = userReportRepo.findById(id).orElse(null);
@@ -106,8 +102,8 @@ public class AdminService {
         }
     }
 
-    public void removeImages(String id) throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-
+    public void removeImages(String id) throws AlovoaException, NumberFormatException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
         checkRights();
 
         User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
@@ -122,8 +118,8 @@ public class AdminService {
         userRepo.saveAndFlush(user);
     }
 
-    public void removeDescription(String id) throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-
+    public void removeDescription(String id) throws AlovoaException, NumberFormatException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
         checkRights();
 
         User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
@@ -136,8 +132,8 @@ public class AdminService {
         userRepo.saveAndFlush(user);
     }
 
-    public void banUser(String id) throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-
+    public void banUser(String id) throws AlovoaException, NumberFormatException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
         checkRights();
 
         User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
@@ -201,6 +197,12 @@ public class AdminService {
         checkRights();
 
         User user = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
+        if(user == null) {
+            try {
+                user = userRepo.findById(UserDto.decodeIdThrowing(Tools.cleanEmail(dto.getEmail()), textEncryptor))
+                        .orElse(null);
+            } catch (Exception ignored) {}
+        }
 
         if (user == null) {
             throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
@@ -229,24 +231,32 @@ public class AdminService {
         return u != null;
     }
 
-    public void addDonation(String email, double amount) throws AlovoaException, UnsupportedEncodingException {
+    public void addDonation(String email, double amount) throws AlovoaException {
         checkRights();
-        User u = userRepo.findByEmail(Tools.cleanEmail(URLDecoder.decode(email, StandardCharsets.UTF_8)));
-        if (u != null) {
+        User user = userRepo.findByEmail(Tools.cleanEmail(URLDecoder.decode(email, StandardCharsets.UTF_8)));
+        if(user == null) {
+            try {
+                user = userRepo.findById(UserDto.decodeIdThrowing(Tools.cleanEmail(email), textEncryptor))
+                        .orElse(null);
+            } catch (Exception ignored) {}
+        }
+
+        if (user != null) {
             UserDonation userDonation = new UserDonation();
             userDonation.setAmount(amount);
             userDonation.setDate(new Date());
-            userDonation.setUser(u);
-            u.getDonations().add(userDonation);
-            u.setTotalDonations(u.getTotalDonations() + amount);
-            u.getDates().setLatestDonationDate(new Date());
-            userRepo.saveAndFlush(u);
+            userDonation.setUser(user);
+            user.getDonations().add(userDonation);
+            user.setTotalDonations(user.getTotalDonations() + amount);
+            user.getDates().setLatestDonationDate(new Date());
+            userRepo.saveAndFlush(user);
         } else {
             throw new AlovoaException("User not found!");
         }
     }
 
-    public void verifyVerificationPicture(String idEnc) throws AlovoaException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public void verifyVerificationPicture(String idEnc) throws AlovoaException, InvalidAlgorithmParameterException,
+            IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         checkRights();
         User user = userService.encodedIdToUser(idEnc);
         UserVerificationPicture verificationPicture = user.getVerificationPicture();
@@ -260,7 +270,8 @@ public class AdminService {
         userRepo.saveAndFlush(user);
     }
 
-    public void deleteVerificationPicture(String idEnc) throws AlovoaException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public void deleteVerificationPicture(String idEnc) throws AlovoaException, InvalidAlgorithmParameterException,
+            IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         checkRights();
         User user = userService.encodedIdToUser(idEnc);
         user.setVerificationPicture(null);
