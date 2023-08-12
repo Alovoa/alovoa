@@ -29,6 +29,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdminService {
@@ -199,8 +200,10 @@ public class AdminService {
         User user = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
         if(user == null) {
             try {
-                user = userRepo.findById(UserDto.decodeIdThrowing(Tools.cleanEmail(dto.getEmail()), textEncryptor))
-                        .orElse(null);
+                Optional<Long> idOpt = UserDto.decodeId(dto.getEmail(), textEncryptor);
+                if(idOpt.isPresent()) {
+                    user = userRepo.findById(idOpt.get()).orElse(null);
+                }
             } catch (Exception ignored) {}
         }
 
@@ -236,8 +239,10 @@ public class AdminService {
         User user = userRepo.findByEmail(Tools.cleanEmail(URLDecoder.decode(email, StandardCharsets.UTF_8)));
         if(user == null) {
             try {
-                user = userRepo.findById(UserDto.decodeIdThrowing(Tools.cleanEmail(email), textEncryptor))
-                        .orElse(null);
+                Optional<Long> idOpt = UserDto.decodeId(email, textEncryptor);
+                if(idOpt.isPresent()) {
+                    user = userRepo.findById(idOpt.get()).orElse(null);
+                }
             } catch (Exception ignored) {}
         }
 
