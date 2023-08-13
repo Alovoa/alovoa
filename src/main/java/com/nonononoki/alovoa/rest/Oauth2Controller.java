@@ -1,21 +1,17 @@
 package com.nonononoki.alovoa.rest;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Map;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.config.SecurityConfig;
+import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.html.LoginResource;
+import com.nonononoki.alovoa.html.RegisterResource;
+import com.nonononoki.alovoa.model.AlovoaException;
+import com.nonononoki.alovoa.repo.UserRepository;
+import com.nonononoki.alovoa.service.PublicService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.ClientRegistrations;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,14 +34,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.nonononoki.alovoa.Tools;
-import com.nonononoki.alovoa.config.SecurityConfig;
-import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.html.LoginResource;
-import com.nonononoki.alovoa.html.RegisterResource;
-import com.nonononoki.alovoa.model.AlovoaException;
-import com.nonononoki.alovoa.repo.UserRepository;
-import com.nonononoki.alovoa.service.PublicService;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/")

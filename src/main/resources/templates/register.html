@@ -38,23 +38,30 @@
 				<div class="container" style="margin-bottom: 24px;" dir="ltr" id="oauth-div">
 					<div class="box no-shadow">
 						<div class="columns">
-							<button class="button colored" id="google-auth"
-								onclick="window.location='/oauth2/authorization/google'">
-								<img src="/img/g-icon.svg" style="height: 32px;"><span
-									style="padding-left: 6px; color: white;" th:text="#{register.oauth.google}"></span>
-							</button>
-							<button id="facebook-auth" class="button colored"
-								onclick="window.location='/oauth2/authorization/facebook'">
-								<img src="/img/f-icon.svg" style="height: 32px;"><span
-									style="padding-left: 6px; color: white;"
-									th:text="#{register.oauth.facebook}"></span>
-							</button>
-							<button id="ip6li-auth" class="button colored"
-									onclick="window.location='/oauth2/authorization/ip6li'">
-								<img src="/img/ip6li-icon.png" style="height: 32px;"><span
-									style="padding-left: 6px; color: white;"
-									th:text="#{register.oauth.ip6li}"></span>
-							</button>
+							<div th:if="${googleEnabled}">
+								<button class="button colored" id="google-auth"
+										onclick="window.location='/oauth2/authorization/google'">
+									<img src="/img/g-icon.svg" style="height: 32px;"><span
+										style="padding-left: 6px; color: white;"
+										th:text="#{register.oauth.google}"></span>
+								</button>
+							</div>
+							<div th:if="${facebookEnabled}">
+								<button id="facebook-auth" class="button colored"
+										onclick="window.location='/oauth2/authorization/facebook'">
+									<img src="/img/f-icon.svg" style="height: 32px;"><span
+										style="padding-left: 6px; color: white;"
+										th:text="#{register.oauth.facebook}"></span>
+								</button>
+							</div>
+							<div th:if="${ip6liEnabled}">
+								<button id="ip6li-auth" class="button colored"
+										onclick="window.location='/oauth2/authorization/ip6li'">
+									<img src="/img/ip6li-icon.png" style="height: 32px;"><span
+										style="padding-left: 6px; color: white;"
+										th:text="#{register.oauth.ip6li}"></span>
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
