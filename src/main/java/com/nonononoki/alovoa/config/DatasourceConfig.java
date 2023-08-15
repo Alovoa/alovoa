@@ -1,15 +1,18 @@
 package com.nonononoki.alovoa.config;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.cloud.endpoint.RefreshEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import javax.sql.DataSource;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -18,6 +21,7 @@ import java.net.URISyntaxException;
  */
 @ConfigurationProperties(prefix = "spring.datasource")
 @Configuration
+//@Component
 public class DatasourceConfig {
     private static final Logger logger = LoggerFactory.getLogger(DatasourceConfig.class);
 
@@ -39,21 +43,31 @@ public class DatasourceConfig {
 
     private MysqlCredentials mysqlCredentials;
 
+    private RefreshEndpoint refreshEndpoint;
+
+    @Autowired
+    public void ConfigRefreshJob(final RefreshEndpoint refreshEndpoint) {
+        this.refreshEndpoint = refreshEndpoint;
+    }
+
+    private static HikariConfig config = new HikariConfig();
+    private static HikariDataSource ds;
+
+
     @Bean
-    public DataSource getDataSource() {
+    public HikariDataSource getHikariDataSource() {
         try {
             loadCredentials();
         } catch (URISyntaxException e) {
             logger.error(String.format("getDataSource failed: %s", e.getMessage()));
         }
-
-        DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.driverClassName(dsDriver);
-        dataSourceBuilder.url(dsUrl);
-        dataSourceBuilder.username(mysqlCredentials.username);
-        dataSourceBuilder.password(mysqlCredentials.password);
-
-        return dataSourceBuilder.build();
+        config.setJdbcUrl(dsUrl);
+        config.setUsername(mysqlCredentials.username);
+        config.setPassword(mysqlCredentials.password);
+        config.addDataSourceProperty( "cachePrepStmts" , "true" );
+        config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
+        config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
+        return new HikariDataSource(config);
     }
 
     private void loadCredentials() throws URISyntaxException {
@@ -62,10 +76,18 @@ public class DatasourceConfig {
         logger.debug(String.format("Updated DataSource credentials: %s", mysqlCredentials.username));
     }
 
+    @PostConstruct
+    private void postConstruct() {
+
+    }
+
     @Scheduled(fixedDelay = 300000)
     private void updateCredentials() {
+        //logger.info("Refreshing Configurations - {}", refreshEndpoint.refresh());
         try {
             loadCredentials();
+            config.setUsername(mysqlCredentials.username);
+            config.setPassword(mysqlCredentials.password);
             // ToDo: Refresh DataSource
             logger.info(String.format("Scheduler updateCredentials got username %s", mysqlCredentials.username));
         } catch (URISyntaxException e) {
