@@ -78,7 +78,11 @@
 			<artifactId>spring-vault-core</artifactId>
 			<version>3.0.4</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-vault-config-databases</artifactId>
+			<version>4.0.1</version>
+		</dependency>
 
 		<!-- Spring 3rd party dependencies -->
 		<dependency>
@@ -123,7 +127,6 @@
 			<artifactId>ehcache</artifactId>
 			<classifier>jakarta</classifier>
 		</dependency>
-
 
 		<!-- External 3rd party dependencies -->
 		<dependency>
