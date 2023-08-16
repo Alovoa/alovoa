@@ -21,7 +21,8 @@ import java.security.Security;
 public class AlovoaApplication {
 
 	public static void main(String[] args) {
-		
+		System.setProperty("javax.net.ssl.trustStore", "classpath:truststore.jks");
+		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 		Security.addProvider(new BouncyCastleProvider());
 		SpringApplication.run(AlovoaApplication.class, args);
 	}
