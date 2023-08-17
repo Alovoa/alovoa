@@ -81,22 +81,13 @@ public class Oauth2Controller {
 	private static final int REDIRECT_DEFAULT = 3;
 	private static final int HOUR_S = 3600;
 
-	@GetMapping("/oauth2/authorization/google/{redirectUrlEncoded}")
-	public ModelAndView oauth2Google(@PathVariable String redirectUrlEncoded) {
+	@GetMapping("/oauth2/authorization/{idp}/{redirectUrlEncoded}")
+	public ModelAndView oauth2general(
+			@PathVariable String idp,
+			@PathVariable String redirectUrlEncoded
+	) {
 		httpSession.setAttribute(REDIRECT_URL, redirectUrlEncoded);
-		return new ModelAndView(new RedirectView("/oauth2/authorization/google"));
-	}
-
-	@GetMapping("/oauth2/authorization/facebook/{redirectUrlEncoded}")
-	public ModelAndView oauth2Facebook(@PathVariable String redirectUrlEncoded) {
-		httpSession.setAttribute(REDIRECT_URL, redirectUrlEncoded);
-		return new ModelAndView(new RedirectView("/oauth2/authorization/facebook"));
-	}
-
-	@GetMapping("/oauth2/authorization/ip6li/{redirectUrlEncoded}")
-	public ModelAndView oauth2ip6li(@PathVariable String redirectUrlEncoded) {
-		httpSession.setAttribute(REDIRECT_URL, redirectUrlEncoded);
-		return new ModelAndView(new RedirectView("/oauth2/authorization/ip6li"));
+		return new ModelAndView(new RedirectView(String.format("/oauth2/authorization/%s", idp)));
 	}
 
 	@SuppressWarnings("rawtypes")
