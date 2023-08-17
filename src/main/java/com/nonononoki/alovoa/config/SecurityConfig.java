@@ -2,6 +2,8 @@ package com.nonononoki.alovoa.config;
 
 import com.nonononoki.alovoa.component.*;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +22,12 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
@@ -36,11 +43,13 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+	private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
 	@Value("${app.login.remember.key}")
 	private String rememberKey;
@@ -54,7 +63,7 @@ public class SecurityConfig {
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
 
-	@Autowired
+	//@Autowired
 	ClientRegistrationRepository clientRegistrationRepository;
 
 
@@ -248,4 +257,65 @@ public class SecurityConfig {
 		return (CustomTokenBasedRememberMeServices) oAuthRememberMeServices();
 	}
 
+	@Bean
+	public ClientRegistrationRepository clientRegistrationRepository() {
+		clientRegistrationRepository = new InMemoryClientRegistrationRepository(
+				this.googleClientRegistration(),
+				this.ip6liClientRegistration()
+		);
+		return clientRegistrationRepository;
+	}
+
+	private ClientRegistration googleClientRegistration() {
+		logger.info("googleClientRegistration called");
+		Map<String, String> googleOAuthCredentialsData =
+				MysqlCredentials.getInstance().getOAuthCredentials("oauth-idp/data/google");
+		googleOAuthCredentialsData.forEach((k, v) -> {
+			logger.info(String.format("googleOAuthCredentialsData: %s : %s", k, v));
+		});
+
+		return ClientRegistration.withRegistrationId("google")
+				.clientId("google-client-id")
+				.clientSecret("google-client-secret")
+				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+				.redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+				.scope("profile", "email")
+				.authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
+				.tokenUri("https://www.googleapis.com/oauth2/v4/token")
+				.userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
+				.userNameAttributeName(IdTokenClaimNames.SUB)
+				.jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
+				.clientName("Google")
+				.clientId(googleOAuthCredentialsData.get("client-id"))
+				.clientSecret(googleOAuthCredentialsData.get("client-secret"))
+				.build();
+	}
+
+	private ClientRegistration ip6liClientRegistration() {
+		logger.info("ip6liClientRegistration called");
+		Map<String, String> oAuthCredentialsData =
+				MysqlCredentials.getInstance().getOAuthCredentials("oauth-idp/data/ip6li");
+		oAuthCredentialsData.forEach((k, v) -> {
+			logger.info(String.format("ip6liOAuthCredentialsData: %s : %s", k, v));
+		});
+
+		// https://auth1.ip6.li/realms/matrix/.well-known/openid-configuration
+		return ClientRegistration.withRegistrationId("ip6li")
+				.clientId("client-id")
+				.clientSecret("client-secret")
+				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+				.redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+				.issuerUri("https://auth1.ip6.li/realms/matrix")
+				.scope("openid")
+				.authorizationUri("https://auth1.ip6.li/realms/matrix/protocol/openid-connect/auth")
+				.tokenUri("https://auth1.ip6.li/realms/matrix/protocol/openid-connect/token")
+				.userInfoUri("https://auth1.ip6.li/realms/matrix/protocol/openid-connect/userinfo")
+				.userNameAttributeName(IdTokenClaimNames.SUB)
+				.clientName("ip6li")
+				.clientId(oAuthCredentialsData.get("client-id"))
+				.clientSecret(oAuthCredentialsData.get("client-secret"))
+				.build();
+	}
 }

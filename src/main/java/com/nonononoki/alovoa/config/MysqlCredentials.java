@@ -10,6 +10,7 @@ import org.springframework.vault.core.VaultTemplate;
 import org.springframework.vault.support.VaultResponse;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -49,17 +50,20 @@ public class MysqlCredentials {
         vaultTemplatePath = newVaultTemplatePath;
     }
 
-    @Scheduled(fixedDelay = 300000)
-    public void update() {
+    private VaultTemplate getVaultTemplate() {
         VaultEndpoint vaultEndpoint = new VaultEndpoint();
         vaultEndpoint.setHost(vaultUrl.getHost());
         vaultEndpoint.setScheme(vaultUrl.getScheme());
         vaultEndpoint.setPort(vaultUrl.getPort());
-        VaultTemplate vaultTemplate = new VaultTemplate(
+        return new VaultTemplate(
                 vaultEndpoint,
                 new TokenAuthentication(vaultToken)
         );
+    }
 
+    @Scheduled(fixedDelay = 300000)
+    public void update() {
+        VaultTemplate vaultTemplate = getVaultTemplate();
         VaultResponse vaultResponse = vaultTemplate.read(vaultTemplatePath);
         assert vaultResponse != null;
         Map<String, Object> vaultResponseData = vaultResponse.getData();
@@ -67,6 +71,16 @@ public class MysqlCredentials {
         username = vaultResponseData.get("username").toString();
         password = vaultResponseData.get("password").toString();
         logger.debug(String.format("MySQL Credentials updated with username %s", username));
+    }
+
+    public Map<String, String> getOAuthCredentials(String vaultPath) {
+        VaultTemplate vaultTemplate = getVaultTemplate();
+        // Path: oauth-idp/data/google
+        VaultResponse vaultResponse = vaultTemplate.read(vaultPath);
+        assert vaultResponse != null;
+        Map<String, Object> vaultResponseData = vaultResponse.getData();
+        assert vaultResponseData != null;
+        return (Map<String, String>) vaultResponseData.get("data");
     }
 
     public String getUsername() {
