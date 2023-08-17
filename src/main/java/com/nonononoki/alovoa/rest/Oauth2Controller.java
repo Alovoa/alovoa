@@ -42,8 +42,8 @@ import java.util.Map;
 @RequestMapping("/")
 public class Oauth2Controller {
 
-	@Autowired
-	private ClientRegistrationRepository clientRegistrationRepository;
+	//@Autowired
+	//private ClientRegistrationRepository clientRegistrationRepository;
 
 	@Autowired
 	private UserRepository userRepo;

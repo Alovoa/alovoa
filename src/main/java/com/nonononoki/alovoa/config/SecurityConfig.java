@@ -63,7 +63,7 @@ public class SecurityConfig {
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
 
-	//@Autowired
+	@Autowired
 	ClientRegistrationRepository clientRegistrationRepository;
 
 
@@ -183,6 +183,35 @@ public class SecurityConfig {
 	
 	@Bean
 	AuthSuccessHandler successHandler() {
+		if (clientRegistrationRepository!=null) {
+			/*
+				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+				.redirectUri("{baseUrl}/{action}/oauth2/code/{registrationId}")
+				.issuerUri("https://auth1.ip6.li/realms/matrix")
+				.scope("openid")
+				.authorizationUri("https://auth1.ip6.li/realms/matrix/protocol/openid-connect/auth")
+				.tokenUri("https://auth1.ip6.li/realms/matrix/protocol/openid-connect/token")
+				.userInfoUri("https://auth1.ip6.li/realms/matrix/protocol/openid-connect/userinfo")
+				.userNameAttributeName(IdTokenClaimNames.SUB)
+				.clientName("ip6li")
+				.clientId(oAuthCredentialsData.get("client-id"))
+				.clientSecret(oAuthCredentialsData.get("client-secret"))
+			 */
+			final String idp = "ip6li";
+			ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(idp);
+
+			clientRegistration.getProviderDetails().getConfigurationMetadata().forEach((k, v) -> {
+				logger.info(String.format("%s - %s : %s", idp, k, v));
+			});
+			logger.info(String.format("%s ClientSecret: %s", idp, clientRegistration.getClientSecret()));
+			logger.info(String.format("%s ClientAuthenticationMethod: %s", idp, clientRegistration.getClientAuthenticationMethod().getValue()));
+			logger.info(String.format("%s AuthorizationGrantType: %s", idp, clientRegistration.getAuthorizationGrantType().getValue()));
+			logger.info(String.format("%s RedirectUri: %s", idp, clientRegistration.getRedirectUri()));
+			logger.info(String.format("%s AuthorizationUri: %s", idp, clientRegistration.getProviderDetails().getAuthorizationUri()));
+			logger.info(String.format("%s TokenUri: %s", idp, clientRegistration.getProviderDetails().getTokenUri()));
+			logger.info(String.format("%s UserInfoEndpoint: %s", idp, clientRegistration.getProviderDetails().getUserInfoEndpoint().getUri()));
+		}
 		return new AuthSuccessHandler(this);
 	}
 
@@ -257,7 +286,7 @@ public class SecurityConfig {
 		return (CustomTokenBasedRememberMeServices) oAuthRememberMeServices();
 	}
 
-	@Bean
+	//@Bean
 	public ClientRegistrationRepository clientRegistrationRepository() {
 		clientRegistrationRepository = new InMemoryClientRegistrationRepository(
 				this.googleClientRegistration(),
@@ -269,17 +298,14 @@ public class SecurityConfig {
 	private ClientRegistration googleClientRegistration() {
 		logger.info("googleClientRegistration called");
 		Map<String, String> googleOAuthCredentialsData =
-				MysqlCredentials.getInstance().getOAuthCredentials("oauth-idp/data/google");
-		googleOAuthCredentialsData.forEach((k, v) -> {
-			logger.info(String.format("googleOAuthCredentialsData: %s : %s", k, v));
-		});
+				MysqlCredentials.getInstance().getOAuthCredentials("oauth-idp/google");
 
 		return ClientRegistration.withRegistrationId("google")
-				.clientId("google-client-id")
-				.clientSecret("google-client-secret")
+				.clientId(googleOAuthCredentialsData.get("client-id"))
+				.clientSecret(googleOAuthCredentialsData.get("client-secret"))
 				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
 				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-				.redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+				.redirectUri("{baseUrl}/{action}/oauth2/code/{registrationId}")
 				.scope("profile", "email")
 				.authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
 				.tokenUri("https://www.googleapis.com/oauth2/v4/token")
@@ -287,26 +313,21 @@ public class SecurityConfig {
 				.userNameAttributeName(IdTokenClaimNames.SUB)
 				.jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
 				.clientName("Google")
-				.clientId(googleOAuthCredentialsData.get("client-id"))
-				.clientSecret(googleOAuthCredentialsData.get("client-secret"))
 				.build();
 	}
 
 	private ClientRegistration ip6liClientRegistration() {
 		logger.info("ip6liClientRegistration called");
 		Map<String, String> oAuthCredentialsData =
-				MysqlCredentials.getInstance().getOAuthCredentials("oauth-idp/data/ip6li");
-		oAuthCredentialsData.forEach((k, v) -> {
-			logger.info(String.format("ip6liOAuthCredentialsData: %s : %s", k, v));
-		});
+				MysqlCredentials.getInstance().getOAuthCredentials("oauth-idp/ip6li");
 
 		// https://auth1.ip6.li/realms/matrix/.well-known/openid-configuration
 		return ClientRegistration.withRegistrationId("ip6li")
-				.clientId("client-id")
-				.clientSecret("client-secret")
+				.clientId(oAuthCredentialsData.get("client-id"))
+				.clientSecret(oAuthCredentialsData.get("client-secret"))
 				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
 				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-				.redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+				.redirectUri("{baseUrl}/{action}/oauth2/code/{registrationId}")
 				.issuerUri("https://auth1.ip6.li/realms/matrix")
 				.scope("openid")
 				.authorizationUri("https://auth1.ip6.li/realms/matrix/protocol/openid-connect/auth")
@@ -314,8 +335,6 @@ public class SecurityConfig {
 				.userInfoUri("https://auth1.ip6.li/realms/matrix/protocol/openid-connect/userinfo")
 				.userNameAttributeName(IdTokenClaimNames.SUB)
 				.clientName("ip6li")
-				.clientId(oAuthCredentialsData.get("client-id"))
-				.clientSecret(oAuthCredentialsData.get("client-secret"))
 				.build();
 	}
 }

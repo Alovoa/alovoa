@@ -75,12 +75,16 @@ public class MysqlCredentials {
 
     public Map<String, String> getOAuthCredentials(String vaultPath) {
         VaultTemplate vaultTemplate = getVaultTemplate();
-        // Path: oauth-idp/data/google
+        // Path: oauth-idp/google
         VaultResponse vaultResponse = vaultTemplate.read(vaultPath);
         assert vaultResponse != null;
         Map<String, Object> vaultResponseData = vaultResponse.getData();
+        Map<String, String> dataMap = new HashMap<>();
         assert vaultResponseData != null;
-        return (Map<String, String>) vaultResponseData.get("data");
+        vaultResponseData.forEach((k, v) -> {
+            dataMap.put(k, v.toString());
+        });
+        return dataMap;
     }
 
     public String getUsername() {

@@ -194,3 +194,16 @@ policies             ["alovoa-policy" "default"]
 
 You need "token" for Alovoa application.
 
+# OAuth2 Secrets
+
+
+```
+REMOTE_URL="-address=https://vault.example.com:8200"
+vault secrets enable ${REMOTE_URL} -path=vault-idp kv
+vault kv put ${REMOTE_URL} -mount=vault-idp ip6li client-id=oauthClientId client-secret=oauthClientSecret
+
+vault kv put ${REMOTE_URL} -mount=vault-idp google client-id=oauthClientId client-secret=oauthClientSecret
+
+vault kv put ${REMOTE_URL} -mount=vault-idp facebook client-id=oauthClientId client-secret=oauthClientSecret
+```
+
