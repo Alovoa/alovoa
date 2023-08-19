@@ -177,7 +177,29 @@ Test it, you should get temporary MySQL credentials.
 vault read database/creds/mysqlrole
 ```
 
-Now create a Token for Alovoa database. Set up a policy in Hashicorp Vault web gui.
+Set up a Vault policy.
+
+```
+./vault policy write alovoa-policy - << EOF
+path "database/creds/mysqlrole" {
+  capabilities = ["read"]
+}
+path "oauth-idp/ip6li" {
+  capabilities = ["read"]
+}
+path "oauth-idp/google" {
+  capabilities = ["read"]
+}
+path "oauth-idp/facebook" {
+  capabilities = ["read"]
+}
+path "alovoa/creds" {
+  capabilities = ["read"]
+}
+EOF
+```
+
+Now create a Token for Alovoa database.
 
 ```
 vault token create -policy=alovoa-policy
@@ -196,7 +218,6 @@ You need "token" for Alovoa application.
 
 # OAuth2 Secrets
 
-
 ```
 REMOTE_URL="-address=https://vault.example.com:8200"
 vault secrets enable ${REMOTE_URL} -path=vault-idp kv
@@ -207,3 +228,11 @@ vault kv put ${REMOTE_URL} -mount=vault-idp google client-id=oauthClientId clien
 vault kv put ${REMOTE_URL} -mount=vault-idp facebook client-id=oauthClientId client-secret=oauthClientSecret
 ```
 
+# Other Secrets
+
+```
+./vault secrets enable -path=alovoa kv
+
+./vault kv put -mount=alovoa creds \
+  app.text.key=*** app.text.salt=*** app.admin.key=*** app.admin.email=alovoa@example.com spring.mail.username=alovoa@example.com spring.mail.password=***
+```
