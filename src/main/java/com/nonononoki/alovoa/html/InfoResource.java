@@ -34,8 +34,8 @@ public class InfoResource {
 		ModelAndView mav = new ModelAndView("info");
 		mav.addObject("info",
 				objectMapper.writeValueAsString(InfoDto.builder().numConfirmedUsers(userRepo.countByConfirmed(true))
-						.numFemaleUser(userRepo.countByConfirmedAndGenderId(true, Tools.GENDER_FEMALE_ID))
-						.numMaleUsers(userRepo.countByConfirmedAndGenderId(true, Tools.GENDER_MALE_ID))
+						.numFemaleUser(userRepo.countByConfirmedAndGenderId(true, Tools.GENDER_LIST.FEMALE.ordinal()))
+						.numMaleUsers(userRepo.countByConfirmedAndGenderId(true, Tools.GENDER_LIST.MALE.ordinal()))
 						.numLikes(userLikeRepo.count()).numMatches(conversationRepo.count()).build()));
 		return mav;
 	}

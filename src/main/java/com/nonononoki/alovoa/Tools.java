@@ -49,10 +49,8 @@ public class Tools {
 
 	public static final int AGE_LEGAL = 18;
 
-	public static final long GENDER_MALE_ID = 1;
-	public static final long GENDER_FEMALE_ID = 2;
-	public static final long GENDER_OTHER_ID = 3;
-
+	public enum GENDER_LIST {NULL, MALE, FEMALE, CIS_MALE, CIS_FEMALE, TRANS_MALE, TRANS_FEMALE, NON_BINARY, OTHER}
+	
 	public static final double REFERRED_AMOUNT = 0.5;
 
 	public static String cleanEmail(String email) {
