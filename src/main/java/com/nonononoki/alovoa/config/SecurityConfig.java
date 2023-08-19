@@ -23,10 +23,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-<<<<<<< HEAD
-=======
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
->>>>>>> e59933c3a3239e6aff97a92eb9e5e712fd14071b
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
@@ -92,9 +88,6 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-		displayOAuthConfig(clientRegistrationRepository);
-
 		AuthenticationManagerBuilder authenticationManagerBuilder = http
 				.getSharedObject(AuthenticationManagerBuilder.class);
 		authenticationManagerBuilder.authenticationProvider(authProvider());
@@ -185,10 +178,6 @@ public class SecurityConfig {
 	
 	@Bean
 	AuthSuccessHandler successHandler() {
-<<<<<<< HEAD
-=======
-
->>>>>>> e59933c3a3239e6aff97a92eb9e5e712fd14071b
 		return new AuthSuccessHandler(this);
 	}
 
@@ -264,48 +253,4 @@ public class SecurityConfig {
 		return (CustomTokenBasedRememberMeServices) oAuthRememberMeServices();
 	}
 
-<<<<<<< HEAD
-=======
-	private void displayOAuthConfig (ClientRegistrationRepository c) {
-		final String idp = "ip6li";
-		ClientRegistration clientRegistration = c.findByRegistrationId(idp);
-
-		logger.info("=================================================================================");
-		//clientRegistration.getProviderDetails().getConfigurationMetadata().forEach((k, v) -> {
-		//	logger.info(String.format("%s - %s : %s", idp, k, v));
-		//});
-		logger.info(String.format("%s ClientID: %s", idp, clientRegistration.getClientId()));
-		logger.info(String.format("%s ClientSecret: %s", idp, clientRegistration.getClientSecret()));
-		logger.info(String.format("%s ClientAuthenticationMethod: %s", idp, clientRegistration.getClientAuthenticationMethod().getValue()));
-		logger.info(String.format("%s AuthorizationGrantType: %s", idp, clientRegistration.getAuthorizationGrantType().getValue()));
-		logger.info(String.format("%s RedirectUri: %s", idp, clientRegistration.getRedirectUri()));
-		logger.info(String.format("%s AuthorizationUri: %s", idp, clientRegistration.getProviderDetails().getAuthorizationUri()));
-		logger.info(String.format("%s TokenUri: %s", idp, clientRegistration.getProviderDetails().getTokenUri()));
-		logger.info(String.format("%s UserInfoEndpoint: %s", idp, clientRegistration.getProviderDetails().getUserInfoEndpoint().getUri()));
-		logger.info("=================================================================================");
-	}
-
-	private ClientRegistration getClientRegistration(String idp) {
-		Map<String, String> oAuthCredentials =
-				MysqlCredentials.getInstance().getOAuthCredentials(String.format("oauth-idp/%s", idp));
-
-		ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(idp);
-		ClientRegistration.Builder builder = ClientRegistration.withClientRegistration(clientRegistration);
-		return builder
-				.clientId(oAuthCredentials.get("client-id"))
-				.clientSecret(oAuthCredentials.get("client-secret"))
-				.build();
-	}
-
-	private ClientRegistration googleClientRegistration() {
-		logger.info("googleClientRegistration called");
-		return getClientRegistration("google");
-	}
-
-	private ClientRegistration ip6liClientRegistration() {
-		logger.info("ip6liClientRegistration called");
-		return getClientRegistration("ip6li");
-	}
-
->>>>>>> e59933c3a3239e6aff97a92eb9e5e712fd14071b
 }
