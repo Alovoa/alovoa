@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class MysqlCredentials {
-    private static final Logger logger = LoggerFactory.getLogger(MysqlCredentials.class);
+public class DatasourceCredentials {
+    private static final Logger logger = LoggerFactory.getLogger(DatasourceCredentials.class);
 
-    private static MysqlCredentials mysqlCredentials;
+    private static DatasourceCredentials datasourceCredentials;
     private static String username;
     private static String password;
 
@@ -25,17 +25,17 @@ public class MysqlCredentials {
     private static String vaultToken;
     private static String vaultTemplatePath;
 
-    private MysqlCredentials() {}
+    private DatasourceCredentials() {}
 
-    public static MysqlCredentials getInstance() {
+    public static DatasourceCredentials getInstance() {
 
-        if (mysqlCredentials == null) {
+        if (datasourceCredentials == null) {
             logger.info("Created new MysqlCredentials instance");
-            mysqlCredentials = new MysqlCredentials();
+            datasourceCredentials = new DatasourceCredentials();
         } else {
             logger.info("Using existing MysqlCredentials instance");
         }
-        return mysqlCredentials;
+        return datasourceCredentials;
     }
 
     public void setVaultUrl(URI newVaultUrl) {

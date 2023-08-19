@@ -7,21 +7,21 @@ import org.slf4j.LoggerFactory;
 public class VaultHikariDataSource extends HikariDataSource {
     private static final Logger logger = LoggerFactory.getLogger(VaultHikariDataSource.class);
 
-    private final MysqlCredentials mysqlCredentials = MysqlCredentials.getInstance();
+    private final DatasourceCredentials datasourceCredentials = DatasourceCredentials.getInstance();
 
     @Override
     public String getPassword() {
-        return mysqlCredentials.getPassword();
+        return datasourceCredentials.getPassword();
     }
 
     @Override
     public String getUsername() {
-        String username = mysqlCredentials.getUsername();
+        String username = datasourceCredentials.getUsername();
         logger.debug(String.format("Using username %s", username));
         return username;
     }
 
-    public MysqlCredentials getMysqlCredentials() {
-        return mysqlCredentials;
+    public DatasourceCredentials getMysqlCredentials() {
+        return datasourceCredentials;
     }
 }
