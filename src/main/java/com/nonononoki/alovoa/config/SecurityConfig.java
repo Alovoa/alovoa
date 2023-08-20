@@ -43,214 +43,216 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-	private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
-	@Value("${app.login.remember.key}")
-	private String rememberKey;
+    @Value("${app.login.remember.key}")
+    private String rememberKey;
 
-	@Autowired
-	private Environment env;
+    @Autowired
+    private Environment env;
 
-	@Autowired
-	private AuthFailureHandler failureHandler;
+    @Autowired
+    private AuthFailureHandler failureHandler;
 
-	@Autowired
-	private CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
-	@Autowired
-	private ClientRegistrationRepository clientRegistrationRepository;
-	private ClientRegistrationRepository customClientRegistrationRepository;
+    @Autowired
+    private ClientRegistrationRepository clientRegistrationRepository;
+    private ClientRegistrationRepository customClientRegistrationRepository;
 
 
-	private final AuthenticationConfiguration configuration;
+    private final AuthenticationConfiguration configuration;
 
-	public static final String ROLE_USER = "ROLE_USER";
-	public static final String ROLE_ADMIN = "ROLE_ADMIN";
-	public static final String COOKIE_SESSION = "JSESSIONID";
-	public static final String COOKIE_REMEMBER = "remember-me";
+    public static final String ROLE_USER = "ROLE_USER";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    public static final String COOKIE_SESSION = "JSESSIONID";
+    public static final String COOKIE_REMEMBER = "remember-me";
 
-	public static String getRoleUser() {
-		return ROLE_USER;
-	}
+    public static String getRoleUser() {
+        return ROLE_USER;
+    }
 
-	public static String getRoleAdmin() {
-		return ROLE_ADMIN;
-	}
+    public static String getRoleAdmin() {
+        return ROLE_ADMIN;
+    }
 
-	private OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler() {
-		OidcClientInitiatedLogoutSuccessHandler successHandler =
-				new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
+    private OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler() {
+        OidcClientInitiatedLogoutSuccessHandler successHandler =
+                new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
 
-		//successHandler.setPostLogoutRedirectUri("https://test2.felsing.net/"); // !!!
+        //successHandler.setPostLogoutRedirectUri("https://test2.felsing.net/"); // !!!
 
-		return successHandler;
-	}
+        return successHandler;
+    }
 
-	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		AuthenticationManagerBuilder authenticationManagerBuilder = http
-				.getSharedObject(AuthenticationManagerBuilder.class);
-		authenticationManagerBuilder.authenticationProvider(authProvider());
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = http
+                .getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(authProvider());
 
-		http.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-								.requestMatchers("/admin").hasAnyAuthority(ROLE_ADMIN)
-								.requestMatchers("/admin/**").hasAnyAuthority(ROLE_ADMIN)
-								.requestMatchers("/css/**").permitAll()
-								.requestMatchers("/js/**").permitAll()
-								.requestMatchers("/img/**").permitAll()
-								.requestMatchers("/font/**").permitAll()
-								.requestMatchers("/json/**").permitAll()
-								.requestMatchers("/oauth2/**").permitAll()
-								.requestMatchers("/").permitAll()
-								.requestMatchers("/login/**").permitAll()
-								.requestMatchers("/terms-conditions").permitAll()
-								.requestMatchers("/imprint").permitAll()
-								.requestMatchers("/imprint/*").permitAll()
-								.requestMatchers("/privacy").permitAll()
-								.requestMatchers("/faq").permitAll()
-								.requestMatchers("/tos").permitAll()
-								.requestMatchers("/register").permitAll()
-								.requestMatchers("/register/**").permitAll()
-								.requestMatchers("/captcha/**").permitAll()
-								.requestMatchers("/donate-list").permitAll()
-								.requestMatchers("/donate/received/**").permitAll()
-								.requestMatchers("/password/**").permitAll()
-								.requestMatchers("/favicon.ico").permitAll()
-								.requestMatchers("/sw.js").permitAll()
-								.requestMatchers("/robots.txt").permitAll()
-								.requestMatchers("/.well-known/assetlinks.json").permitAll()
-								.requestMatchers("/text/*").permitAll()
-								.requestMatchers("/manifest/**").permitAll()
-								.requestMatchers("/fonts/**").permitAll()
-								.requestMatchers("/error").permitAll()
-								.anyRequest().authenticated())
-								.formLogin(formLogin -> formLogin
-										.loginPage("/login")
-								)
-								.logout(logout -> logout
-										.deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER)
-										.logoutUrl("/logout")
-										.logoutSuccessHandler(oidcLogoutSuccessHandler())
-										.invalidateHttpSession(true)
-										.clearAuthentication(true)
-										.logoutSuccessUrl("/?logout")
-								)
-								.oauth2Login(
-										oauth2Login -> oauth2Login
-												.loginPage("/login")
-												.defaultSuccessUrl("/login/oauth2/success")
+        http.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
+                        .requestMatchers("/admin").hasAnyAuthority(ROLE_ADMIN)
+                        .requestMatchers("/admin/**").hasAnyAuthority(ROLE_ADMIN)
+						.requestMatchers("/static/element-web").permitAll()
+                        .requestMatchers("/static/element-web/**").permitAll()
+                        .requestMatchers("/css/**").permitAll()
+                        .requestMatchers("/js/**").permitAll()
+                        .requestMatchers("/img/**").permitAll()
+                        .requestMatchers("/font/**").permitAll()
+                        .requestMatchers("/json/**").permitAll()
+                        .requestMatchers("/oauth2/**").permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/login/**").permitAll()
+                        .requestMatchers("/terms-conditions").permitAll()
+                        .requestMatchers("/imprint").permitAll()
+                        .requestMatchers("/imprint/*").permitAll()
+                        .requestMatchers("/privacy").permitAll()
+                        .requestMatchers("/faq").permitAll()
+                        .requestMatchers("/tos").permitAll()
+                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/register/**").permitAll()
+                        .requestMatchers("/captcha/**").permitAll()
+                        .requestMatchers("/donate-list").permitAll()
+                        .requestMatchers("/donate/received/**").permitAll()
+                        .requestMatchers("/password/**").permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
+                        .requestMatchers("/sw.js").permitAll()
+                        .requestMatchers("/robots.txt").permitAll()
+                        .requestMatchers("/.well-known/assetlinks.json").permitAll()
+                        .requestMatchers("/text/*").permitAll()
+                        .requestMatchers("/manifest/**").permitAll()
+                        .requestMatchers("/fonts/**").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/login")
+                )
+                .logout(logout -> logout
+                        .deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER)
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler(oidcLogoutSuccessHandler())
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .logoutSuccessUrl("/?logout")
+                )
+                .oauth2Login(
+                        oauth2Login -> oauth2Login
+                                .loginPage("/login")
+                                .defaultSuccessUrl("/login/oauth2/success")
 
-								)
-								.addFilterBefore(
-										authenticationFilter(),
-										UsernamePasswordAuthenticationFilter.class
-								)
-								.rememberMe(rememberMe -> rememberMe
-										.rememberMeServices(oAuthRememberMeServices())
-										.key(rememberKey)
-								);
+                )
+                .addFilterBefore(
+                        authenticationFilter(),
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .rememberMe(rememberMe -> rememberMe
+                        .rememberMeServices(oAuthRememberMeServices())
+                        .key(rememberKey)
+                );
 
-		http.sessionManagement(sessionManagement -> sessionManagement
-				.maximumSessions(10)
-				.expiredSessionStrategy(getSessionInformationExpiredStrategy())
-				.sessionRegistry(sessionRegistry())
-		);
+        http.sessionManagement(sessionManagement -> sessionManagement
+                .maximumSessions(10)
+                .expiredSessionStrategy(getSessionInformationExpiredStrategy())
+                .sessionRegistry(sessionRegistry())
+        );
 
-		http.csrf(AbstractHttpConfigurer::disable);
+        http.csrf(AbstractHttpConfigurer::disable);
 
-		if (env.acceptsProfiles(Profiles.of("prod"))) {
-			http.requiresChannel(
-					requiresChannel -> requiresChannel
-							.anyRequest()
-							.requiresSecure()
-			);
-		}
+        if (env.acceptsProfiles(Profiles.of("prod"))) {
+            http.requiresChannel(
+                    requiresChannel -> requiresChannel
+                            .anyRequest()
+                            .requiresSecure()
+            );
+        }
 
-		http.cors(Customizer.withDefaults());
-		logger.debug("filterChain configured");
-		return http.build();
-	}
+        http.cors(Customizer.withDefaults());
+        logger.debug("filterChain configured");
+        return http.build();
+    }
 
-	@Bean
-	AuthenticationManager authenticationManager() throws Exception {
-		return configuration.getAuthenticationManager();
-	}
-	
-	@Bean
-	AuthSuccessHandler successHandler() {
-		return new AuthSuccessHandler(this);
-	}
+    @Bean
+    AuthenticationManager authenticationManager() throws Exception {
+        return configuration.getAuthenticationManager();
+    }
 
-	@Bean
-	AuthFilter authenticationFilter() throws Exception {
-		AuthFilter filter = new AuthFilter();
-		filter.setAuthenticationManager(authenticationManager());
-		filter.setAuthenticationSuccessHandler(successHandler());
-		filter.setAuthenticationFailureHandler(failureHandler);
-		filter.setRememberMeServices(rememberMeServices());
-		filter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy());
-		return filter;
-	}
+    @Bean
+    AuthSuccessHandler successHandler() {
+        return new AuthSuccessHandler(this);
+    }
 
-	// https://stackoverflow.com/questions/32463022/sessionregistry-is-empty-when-i-use-concurrentsessioncontrolauthenticationstrate
-	public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-		List<SessionAuthenticationStrategy> stratList = new ArrayList<>();
-		SessionFixationProtectionStrategy concStrat = new SessionFixationProtectionStrategy();
-		stratList.add(concStrat);
-		RegisterSessionAuthenticationStrategy regStrat = new RegisterSessionAuthenticationStrategy(sessionRegistry());
-		stratList.add(regStrat);
-		CompositeSessionAuthenticationStrategy compStrat = new CompositeSessionAuthenticationStrategy(stratList);
-		return compStrat;
-	}
+    @Bean
+    AuthFilter authenticationFilter() throws Exception {
+        AuthFilter filter = new AuthFilter();
+        filter.setAuthenticationManager(authenticationManager());
+        filter.setAuthenticationSuccessHandler(successHandler());
+        filter.setAuthenticationFailureHandler(failureHandler);
+        filter.setRememberMeServices(rememberMeServices());
+        filter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy());
+        return filter;
+    }
 
-	public SessionInformationExpiredStrategy getSessionInformationExpiredStrategy() {
-		SessionInformationExpiredStrategy strat = new SimpleRedirectSessionInformationExpiredStrategy("/logout");
-		return strat;
-	}
+    // https://stackoverflow.com/questions/32463022/sessionregistry-is-empty-when-i-use-concurrentsessioncontrolauthenticationstrate
+    public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+        List<SessionAuthenticationStrategy> stratList = new ArrayList<>();
+        SessionFixationProtectionStrategy concStrat = new SessionFixationProtectionStrategy();
+        stratList.add(concStrat);
+        RegisterSessionAuthenticationStrategy regStrat = new RegisterSessionAuthenticationStrategy(sessionRegistry());
+        stratList.add(regStrat);
+        CompositeSessionAuthenticationStrategy compStrat = new CompositeSessionAuthenticationStrategy(stratList);
+        return compStrat;
+    }
 
-	@Bean
-	SessionRegistry sessionRegistry() {
-		return new SessionRegistryImpl();
-	}
+    public SessionInformationExpiredStrategy getSessionInformationExpiredStrategy() {
+        SessionInformationExpiredStrategy strat = new SimpleRedirectSessionInformationExpiredStrategy("/logout");
+        return strat;
+    }
 
-	@Bean
-	TokenBasedRememberMeServices rememberMeServices() {
-		return new TokenBasedRememberMeServices(rememberKey, customUserDetailsService);
-	}
+    @Bean
+    SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
 
-	@Bean
-	TokenBasedRememberMeServices oAuthRememberMeServices() {
-		CustomTokenBasedRememberMeServices rememberMeService = new CustomTokenBasedRememberMeServices(rememberKey,
-				customUserDetailsService);
-		rememberMeService.setAlwaysRemember(true);
-		return rememberMeService;
-	}
+    @Bean
+    TokenBasedRememberMeServices rememberMeServices() {
+        return new TokenBasedRememberMeServices(rememberKey, customUserDetailsService);
+    }
 
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    TokenBasedRememberMeServices oAuthRememberMeServices() {
+        CustomTokenBasedRememberMeServices rememberMeService = new CustomTokenBasedRememberMeServices(rememberKey,
+                customUserDetailsService);
+        rememberMeService.setAlwaysRemember(true);
+        return rememberMeService;
+    }
 
-	@Bean
-	AuthProvider authProvider() {
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-		return new AuthProvider();
-	}
+    @Bean
+    AuthProvider authProvider() {
 
-	@Bean
-	CorsFilter corsFilter() {
-		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		final CorsConfiguration config = new CorsConfiguration();
-		config.setAllowCredentials(true);
-		config.setAllowedOriginPatterns(List.of("*"));
-		config.setAllowedHeaders(List.of("*"));
-		config.setAllowedMethods(List.of("*"));
-		source.registerCorsConfiguration("/**", config);
-		return new CorsFilter(source);
-	}
+        return new AuthProvider();
+    }
 
-	public CustomTokenBasedRememberMeServices getOAuthRememberMeServices() {
-		return (CustomTokenBasedRememberMeServices) oAuthRememberMeServices();
-	}
+    @Bean
+    CorsFilter corsFilter() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOriginPatterns(List.of("*"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedMethods(List.of("*"));
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+
+    public CustomTokenBasedRememberMeServices getOAuthRememberMeServices() {
+        return (CustomTokenBasedRememberMeServices) oAuthRememberMeServices();
+    }
 
 }

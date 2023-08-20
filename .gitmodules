@@ -1,0 +1,3 @@
+[submodule "element-web"]
+	path = element-web
+	url = https://github.com/vector-im/element-web.git

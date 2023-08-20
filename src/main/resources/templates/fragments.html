@@ -278,13 +278,18 @@
                 </div>
                 <span th:text="#{profile}" class="navigation-item-span-bottom"></span>
             </a>
-            <a class="button is-inverted is-primary navigation-item" id="nav-chats" href="/chats">
-                <div>
-                    <i class="fa fa-comments"></i><span th:text="#{chats}"
-                                                        class="navigation-item-span-right"></span>
-                </div>
-                <span th:text="#{chats}" class="navigation-item-span-bottom"></span>
-            </a>
+
+
+                    <a class="button is-inverted is-primary navigation-item" id="nav-chats"
+                       th:href="${chat_url}">
+                        <div>
+                            <i class="fa fa-comments"></i><span th:text="#{chats}"
+                                                                class="navigation-item-span-right"></span>
+                        </div>
+                        <span th:text="#{chats}" class="navigation-item-span-bottom"></span>
+                    </a>
+
+
             <a class="button is-inverted is-primary navigation-item" href="/search" id="nav-search">
                 <div>
                     <i class="fa fa-search"></i><span th:text="#{search}" class="navigation-item-span-right"></span>
