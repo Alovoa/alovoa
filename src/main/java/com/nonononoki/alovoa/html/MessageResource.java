@@ -12,6 +12,8 @@ import com.nonononoki.alovoa.repo.UserBlockRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +33,7 @@ import java.util.List;
 
 @Controller
 public class MessageResource {
+    private static final Logger logger = LoggerFactory.getLogger(MessageResource.class);
 
     @Autowired
     private AuthService authService;
@@ -56,30 +59,24 @@ public class MessageResource {
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 
         ModelAndView mav = new ModelAndView("messages");
-        if (ChatConfiguration.getChatEnabled()) {
-            if (ChatConfiguration.getChatType().equals(ChatConfiguration.CHAT_TYPE.INTERNAL)) {
-                User user = authService.getCurrentUser(true);
-                if (user.getDates() != null)
-                    user.getDates().setMessageCheckedDate(new Date());
-                userRepo.saveAndFlush(user);
-                List<ConversationDto> convos = new ArrayList<>();
-                List<Conversation> conversations = conversationRepo.findByUsers_Id(user.getId());
-                for (Conversation c : conversations) {
-                    if (!c.isBlocked(userBlockRepo)) {
-                        convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
-                    }
-                }
 
-                convos.sort((ConversationDto a, ConversationDto b) -> b.getLastUpdated().compareTo(a.getLastUpdated()));
-
-                mav.addObject("conversations", convos);
-                mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
-                mav.addObject("chat_url", "/chats");
-            } else {
-                mav.addObject("chat_url", "/element-web");
+        User user = authService.getCurrentUser(true);
+        if (user.getDates() != null)
+            user.getDates().setMessageCheckedDate(new Date());
+        userRepo.saveAndFlush(user);
+        List<ConversationDto> convos = new ArrayList<>();
+        List<Conversation> conversations = conversationRepo.findByUsers_Id(user.getId());
+        for (Conversation c : conversations) {
+            if (!c.isBlocked(userBlockRepo)) {
+                convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
             }
         }
-        mav.addObject("chat_enabled", ChatConfiguration.getChatEnabled());
+
+        convos.sort((ConversationDto a, ConversationDto b) -> b.getLastUpdated().compareTo(a.getLastUpdated()));
+
+        mav.addObject("conversations", convos);
+        mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+
         return mav;
     }
 

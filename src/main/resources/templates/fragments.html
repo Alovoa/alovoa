@@ -43,11 +43,13 @@
         </div>
     </nav>
     <script>
-			function onLanguageButtonClicked() {
-				let locale = document.getElementById('locale');
-				locale.scrollIntoView({behavior: 'smooth', block: 'center'});
-				setTimeout(function () {locale.focus()}, 700);
-			}
+        function onLanguageButtonClicked() {
+            let locale = document.getElementById('locale');
+            locale.scrollIntoView({behavior: 'smooth', block: 'center'});
+            setTimeout(function () {
+                locale.focus()
+            }, 700);
+        }
     </script>
 </div>
 
@@ -74,11 +76,13 @@
         </div>
     </nav>
     <script>
-			function onLanguageButtonClicked() {
-				let locale = document.getElementById('locale');
-				locale.scrollIntoView({behavior: 'smooth', block: 'center'});
-				setTimeout(function () {locale.focus()}, 700);
-			}
+        function onLanguageButtonClicked() {
+            let locale = document.getElementById('locale');
+            locale.scrollIntoView({behavior: 'smooth', block: 'center'});
+            setTimeout(function () {
+                locale.focus()
+            }, 700);
+        }
     </script>
 </div>
 
@@ -142,7 +146,8 @@
 					</span>
                 <span class="navbar-item" style="padding-right: 0px;">
 						<a class="button colored is-info navbar-item-icon" href="/donate-list" target="_blank"
-                           style="min-width: 76px; height: 40px;"><i style="padding-right: 0px;" class="fas fa-coins"></i><span
+                           style="min-width: 76px; height: 40px;"><i style="padding-right: 0px;"
+                                                                     class="fas fa-coins"></i><span
                                 th:text="#{donate.donate-now}" style="padding-left: 8px;"
                                 id="donate-now-text"></span></a>
 					</span>
@@ -260,12 +265,12 @@
         </div>
     </div>
     <script>
-			function onChangeLocal(val) {
-				console.log(val);
-				if (val.includes('?lang=') && val.length == 8) {
-					window.location.search = val;
-				}
-			}
+        function onChangeLocal(val) {
+            console.log(val);
+            if (val.includes('?lang=') && val.length == 8) {
+                window.location.search = val;
+            }
+        }
     </script>
 </footer>
 
@@ -278,18 +283,14 @@
                 </div>
                 <span th:text="#{profile}" class="navigation-item-span-bottom"></span>
             </a>
-
-
-                    <a class="button is-inverted is-primary navigation-item" id="nav-chats"
-                       th:href="${chat_url}">
-                        <div>
-                            <i class="fa fa-comments"></i><span th:text="#{chats}"
-                                                                class="navigation-item-span-right"></span>
-                        </div>
-                        <span th:text="#{chats}" class="navigation-item-span-bottom"></span>
-                    </a>
-
-
+            <a th:if="${@chatEnabled.getChatEnabled()}" class="button is-inverted is-primary navigation-item" id="nav-chats"
+               th:href="${@chatUrl.getChatUrl()}">
+                <div>
+                    <i class="fa fa-comments"></i><span th:text="#{chats}"
+                                                        class="navigation-item-span-right"></span>
+                </div>
+                <span th:text="#{chats}" class="navigation-item-span-bottom"></span>
+            </a>
             <a class="button is-inverted is-primary navigation-item" href="/search" id="nav-search">
                 <div>
                     <i class="fa fa-search"></i><span th:text="#{search}" class="navigation-item-span-right"></span>
@@ -594,18 +595,21 @@
         </div>
 
         <script>
-				function onWarningProfileClicked() {
-					$("#profilePictureUpload").click();
-				}
-				function onWarningDescriptionClicked() {
-					document.getElementById('description').scrollIntoView({behavior: 'smooth', block: 'center'});
-				}
-				function onWarningIntentionClicked() {
-					document.getElementById('intention-field').scrollIntoView({behavior: 'smooth', block: 'center'});
-				}
-				function onWarningGenderClicked() {
-					document.getElementById('gender-field').scrollIntoView({behavior: 'smooth', block: 'center'});
-				}
+            function onWarningProfileClicked() {
+                $("#profilePictureUpload").click();
+            }
+
+            function onWarningDescriptionClicked() {
+                document.getElementById('description').scrollIntoView({behavior: 'smooth', block: 'center'});
+            }
+
+            function onWarningIntentionClicked() {
+                document.getElementById('intention-field').scrollIntoView({behavior: 'smooth', block: 'center'});
+            }
+
+            function onWarningGenderClicked() {
+                document.getElementById('gender-field').scrollIntoView({behavior: 'smooth', block: 'center'});
+            }
         </script>
     </div>
 </div>
@@ -625,9 +629,17 @@
     </div>
     <th:block th:insert="~{fragments.html::user-profile-verification}"></th:block>
     <script>
-			$(function () {var swiper = new Swiper('.swiper-container-user-profile', {navigation: {nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev'}, pagination: {el: '.swiper-pagination'}});});
-			$(window).on("popstate", function(e) {closeModal();});
-
+        $(function () {
+            var swiper = new Swiper('.swiper-container-user-profile', {
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev'
+                }, pagination: {el: '.swiper-pagination'}
+            });
+        });
+        $(window).on("popstate", function (e) {
+            closeModal();
+        });
 
 
     </script>
