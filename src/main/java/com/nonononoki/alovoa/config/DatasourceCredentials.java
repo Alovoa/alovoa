@@ -30,10 +30,10 @@ public class DatasourceCredentials {
     public static DatasourceCredentials getInstance() {
 
         if (datasourceCredentials == null) {
-            logger.info("Created new MysqlCredentials instance");
+            logger.info(String.format("Created new %s instance", DatasourceCredentials.class));
             datasourceCredentials = new DatasourceCredentials();
         } else {
-            logger.info("Using existing MysqlCredentials instance");
+            logger.info(String.format("Using existing %s instance", DatasourceCredentials.class));
         }
         return datasourceCredentials;
     }

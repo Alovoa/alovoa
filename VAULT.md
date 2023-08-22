@@ -234,5 +234,5 @@ vault kv put ${REMOTE_URL} -mount=vault-idp facebook client-id=oauthClientId cli
 ./vault secrets enable -path=alovoa kv
 
 ./vault kv put -mount=alovoa creds \
-  app.text.key=*** app.text.salt=*** app.admin.key=*** app.admin.email=alovoa@example.com spring.mail.username=alovoa@example.com spring.mail.password=***
+  app.text.key=*** app.text.salt=*** app.admin.key=*** app.admin.email=alovoa@example.com spring.mail.username=alovoa@example.com spring.mail.password=*** app.login.remember.key=*** app.vapid.public=*** app.vapid.private=***
 ```

@@ -1,5 +1,7 @@
 package com.nonononoki.alovoa.config;
 
+// See also https://www.baeldung.com/spring-boot-keycloak
+
 import com.nonononoki.alovoa.component.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -48,6 +50,9 @@ public class SecurityConfig {
     @Value("${app.login.remember.key}")
     private String rememberKey;
 
+    @Value("${app.domain}")
+    private String appDomain;
+
     @Autowired
     private Environment env;
 
@@ -59,8 +64,6 @@ public class SecurityConfig {
 
     @Autowired
     private ClientRegistrationRepository clientRegistrationRepository;
-    private ClientRegistrationRepository customClientRegistrationRepository;
-
 
     private final AuthenticationConfiguration configuration;
 
@@ -81,7 +84,7 @@ public class SecurityConfig {
         OidcClientInitiatedLogoutSuccessHandler successHandler =
                 new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
 
-        //successHandler.setPostLogoutRedirectUri("https://test2.felsing.net/"); // !!!
+        successHandler.setPostLogoutRedirectUri(appDomain); // !!!
 
         return successHandler;
     }

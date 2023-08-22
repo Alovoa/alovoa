@@ -76,6 +76,9 @@ public class VaultPropertySource extends PropertySource<String> {
         if (propertyName.equals("app.text.key") ||
                 propertyName.equals("app.text.salt") ||
                 propertyName.equals("app.admin.email") ||
+                propertyName.equals("app.login.remember.key") ||
+                propertyName.equals("app.vapid.public") ||
+                propertyName.equals("app.vapid.private") ||
                 propertyName.equals("spring.mail.password") ||
                 propertyName.equals("spring.mail.username")
         ) {
