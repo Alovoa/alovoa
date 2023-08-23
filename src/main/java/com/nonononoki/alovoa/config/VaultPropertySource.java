@@ -8,9 +8,7 @@ import org.springframework.lang.Nullable;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +22,17 @@ public class VaultPropertySource extends PropertySource<String> {
     private static DatasourceCredentials datasourceCredentials;
     private static final Map<String, String> cachedVaultData = new HashMap<>();
     private static VaultPropertySource vaultPropertySource;
+
+    private static final List<String> VAULT_VARS = Arrays.asList(
+            "app.text.key",
+            "app.text.salt",
+            "app.admin.email",
+            "app.login.remember.key",
+            "app.vapid.public",
+            "app.vapid.private",
+            "spring.mail.password",
+            "spring.mail.username"
+    );
 
     private VaultPropertySource(String name, ConfigurableApplicationContext context) throws AlovoaException {
         super(name);
@@ -73,15 +82,7 @@ public class VaultPropertySource extends PropertySource<String> {
             return data;
         }
 
-        if (propertyName.equals("app.text.key") ||
-                propertyName.equals("app.text.salt") ||
-                propertyName.equals("app.admin.email") ||
-                propertyName.equals("app.login.remember.key") ||
-                propertyName.equals("app.vapid.public") ||
-                propertyName.equals("app.vapid.private") ||
-                propertyName.equals("spring.mail.password") ||
-                propertyName.equals("spring.mail.username")
-        ) {
+        if (VAULT_VARS.contains(propertyName.toLowerCase())) {
             String secret = readOtherCredentials("alovoa/creds", propertyName);
             cachedVaultData.put(propertyName, secret);
             return secret;
