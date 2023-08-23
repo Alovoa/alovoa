@@ -303,7 +303,7 @@
                 </div>
                 <span th:text="#{alerts}" class="navigation-item-span-bottom"></span>
             </a>
-            <a class="button is-inverted is-primary navigation-item" href="/donate" id="nav-donate">
+            <a th:if="${@donateEnabled.getDonateEnabled()}" class="button is-inverted is-primary navigation-item" href="/donate" id="nav-donate">
                 <div>
                     <i class="fa fa-coins"></i><span th:text="#{donate}" class="navigation-item-span-right"></span>
                 </div>

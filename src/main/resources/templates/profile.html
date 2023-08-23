@@ -129,7 +129,7 @@
                 </div>
             </div>
 
-            <div class="box" onclick="window.open('/donate-list', '_blank');" id="donate-box">
+            <div th:if="${@donateEnabled.getDonateEnabled()}" class="box" onclick="window.open('/donate-list', '_blank');" id="donate-box">
                 <label class="label" th:text="#{donated}"></label>
                 <label th:text=" ${#numbers.formatDecimal(user.totalDonations, 1, 2, 'POINT') + ' €'}"></td>></label>
             </div>

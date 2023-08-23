@@ -35,7 +35,7 @@ public class ChatConfiguration {
                 return () -> "/chats";
             }
             case MATRIX -> {
-                return () -> "/element-web/index.html";
+                return () -> "/matrix";
             }
             default -> {
                 return () -> "#";
