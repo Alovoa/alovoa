@@ -58,7 +58,7 @@ public class LoginResource {
 		mav.addObject("googleEnabled", googleEnabled);
 		mav.addObject("ip6liEnabled", ip6liEnabled);
 		mav.addObject("oktaEnabled", oktaEnabled);
-		logger.info(String.format("Captcha enabled: %s", captchaEnabled));
+		logger.trace(String.format("Captcha enabled: %s", captchaEnabled));
 		return mav;
 	}
 }
