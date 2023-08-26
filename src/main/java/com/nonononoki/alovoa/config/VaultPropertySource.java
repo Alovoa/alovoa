@@ -31,7 +31,9 @@ public class VaultPropertySource extends PropertySource<String> {
             "app.vapid.public",
             "app.vapid.private",
             "spring.mail.password",
-            "spring.mail.username"
+            "spring.mail.username",
+            "spring.data.redis.username",
+            "spring.data.redis.password"
     );
 
     private VaultPropertySource(String name, ConfigurableApplicationContext context) throws AlovoaException {

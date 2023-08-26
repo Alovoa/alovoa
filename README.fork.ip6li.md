@@ -15,3 +15,20 @@ JIEdQkCnF-YFAI-kOExRzPIDO4qxSFeHT-RGdxmTuFs=
 
 Save generated private and public key in vault as *app.vapid.public* and *app.vapid.private*.
 
+# Redis
+
+**Do not use yet**
+
+## Status
+
+* RedisConfiguration class is able to connect to a Redis cluster now
+* Save and retrieve key/value pair works
+* Is uses mTLS to connect Redis. For obvious reasons Redis cluster must be configured for mTLS, also. For security reasons it is strongly recommended to use mTLS.
+* Redis credentials are stored in vault.
+* Private key is still in resorces folder - this is a security flaw. ToDo: Move to vault.
+
+## Why?
+
+* Redis scales much better than MariaDB or Postgresql.
+* Redis cluster is not transaction aware, but this is mostly not required for Alovoa.
+* Primary usecase: Save user images or videos in Redis instead of MariaDB.
