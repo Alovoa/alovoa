@@ -22,6 +22,7 @@ Save generated private and public key in vault as *app.vapid.public* and *app.va
 ## Status
 
 * RedisConfiguration class is able to connect to a Redis cluster now
+* Single host is not tested yet
 * Save and retrieve key/value pair works
 * Is uses mTLS to connect Redis. For obvious reasons Redis cluster must be configured for mTLS, also. For security reasons it is strongly recommended to use mTLS.
 * Redis credentials are stored in vault.
