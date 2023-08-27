@@ -44,7 +44,7 @@ public class BlockedUsersResource {
         ModelAndView mav = new ModelAndView("blocked-users");
         List<UserBlock> userBlocks = user.getBlockedUsers();
         List<User> blockedUsers = userBlocks.stream().sorted(Comparator.comparing(UserBlock::getDate).reversed())
-                .limit(MAX_RESULTS).map(b -> b.getUserTo()).collect(Collectors.toList());
+                .limit(MAX_RESULTS).map(UserBlock::getUserTo).toList();
         List<UserDto> users = new ArrayList<>();
         for (User u : blockedUsers) {
             users.add(UserDto.userToUserDto(u, user, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));

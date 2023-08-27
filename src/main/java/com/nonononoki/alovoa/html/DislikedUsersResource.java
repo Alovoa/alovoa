@@ -44,7 +44,7 @@ public class DislikedUsersResource {
         ModelAndView mav = new ModelAndView("disliked-users");
         List<UserHide> userDislikes = user.getHiddenUsers();
         List<User> dislikedUsers = userDislikes.stream().sorted(Comparator.comparing(UserHide::getDate).reversed())
-                .limit(MAX_RESULTS).map(b -> b.getUserTo()).collect(Collectors.toList());
+                .limit(MAX_RESULTS).map(UserHide::getUserTo).toList();
         List<UserDto> users = new ArrayList<>();
         for (User u : dislikedUsers) {
             users.add(UserDto.userToUserDto(u, user, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
