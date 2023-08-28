@@ -51,4 +51,5 @@ alovoa.application.properties
 
 src/main/resources/redis-user.*
 src/test/resources/redis-user.*
+src/test/resources/application-test.properties
 
