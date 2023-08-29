@@ -24,13 +24,13 @@ public class PasswordController {
 	private PasswordService passwordService;
 
 	@PostMapping(value = "/reset", consumes = "application/json")
-	public void resetPasword(@RequestBody PasswordResetDto dto)
+	public void resetPassword(@RequestBody PasswordResetDto dto)
 			throws NoSuchAlgorithmException, AlovoaException, MessagingException, IOException {
 		passwordService.resetPassword(dto);
 	}
 
 	@PostMapping(value = "/change", consumes = "application/json")
-	public void changePasword(@RequestBody PasswordChangeDto dto) throws AlovoaException {
-		passwordService.changePasword(dto);
+	public void changePassword(@RequestBody PasswordChangeDto dto) throws AlovoaException {
+		passwordService.changePassword(dto);
 	}
 }

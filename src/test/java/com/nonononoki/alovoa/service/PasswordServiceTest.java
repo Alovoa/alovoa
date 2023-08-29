@@ -112,7 +112,7 @@ class PasswordServiceTest {
 		passwordChangeDto.setPassword(newPassword);
 		passwordChangeDto.setToken(userPasswordToken.getContent());
 
-		passwordService.changePasword(passwordChangeDto);
+		passwordService.changePassword(passwordChangeDto);
 
 		user1 = userRepo.findById(user1.getId()).get();
 

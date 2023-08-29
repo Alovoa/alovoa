@@ -65,6 +65,10 @@ public class PasswordService {
 			if (u == null) {
 				throw new DisabledException(ExceptionHandler.USER_NOT_FOUND);
 			}
+
+			if (u.isAdmin()) {
+				throw new AlovoaException("user_is_admin");
+			}
 			
 			if (u.getPassword() == null) {
 				throw new AlovoaException("user_has_social_login");
@@ -94,7 +98,7 @@ public class PasswordService {
 		}
 	}
 
-	public void changePasword(PasswordChangeDto dto) throws AlovoaException {
+	public void changePassword(PasswordChangeDto dto) throws AlovoaException {
 		UserPasswordToken token = userPasswordTokenRepo.findByContent(dto.getToken());
 		if (token == null) {
 			throw new AlovoaException("token_not_found");
@@ -103,8 +107,12 @@ public class PasswordService {
 			throw new AlovoaException("token_wrong_content");
 		}
 		User user = token.getUser();
+		
 		if (!user.getEmail().equals(Tools.cleanEmail(dto.getEmail()))) {
 			throw new AlovoaException("wrong_email");
+		}
+		if (user.isAdmin()) {
+			throw new AlovoaException("user_is_admin");
 		}
 		
 		long ms = new Date().getTime();
