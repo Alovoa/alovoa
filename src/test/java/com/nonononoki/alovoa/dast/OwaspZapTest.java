@@ -39,7 +39,7 @@ public class OwaspZapTest {
     private static final String ZAP_API_KEY = "NZax2DPZt41UmLTeHi4nqYUSIPGdFIGw";
     private static ClientApi api;
 
-    public static final DockerImageName OWASPZAP_IMAGE = DockerImageName.parse("softwaresecurityproject/zap-stable");
+    public static final DockerImageName OWASPZAP_IMAGE = DockerImageName.parse("softwaresecurityproject/zap-stable:latest");
 
     private static final int OWASP_PORT = 8080;
 
@@ -52,7 +52,7 @@ public class OwaspZapTest {
     private String PASSWORD;
 
     // Beware of Zap is running under Docker. Real report path is ./target/test-classes/zap-report.html
-    private static final String REPORT_PATH = "/tmp/reports";
+    private static final String DOCKER_REPORT_PATH = "/tmp/reports";
 
     private static ChromeDriver chromeDriver;
 
@@ -101,47 +101,60 @@ public class OwaspZapTest {
                 logger.info(String.format("Active scan progress : %s %%", progress));
             } while (progress < 100);
             logger.info("Active scan completed!");
-        } catch (Exception e) {
+        } catch (ClientApiException | InterruptedException e) {
             logger.error(String.format("Exception caught: %s", e.getMessage()));
         }
     }
 
     @BeforeAll
-    public static void setup() {
+    public static void setup() throws ClientApiException {
         zapEnv.add(String.format("ZAP_PORT=%s", OWASP_PORT));
         GenericContainer<?> container = new GenericContainer<>(OWASPZAP_IMAGE);
         container.setEnv(zapEnv);
         container.withExposedPorts(OWASP_PORT);
         container.withLogConsumer(new Slf4jLogConsumer(logger));
-        container.withClasspathResourceMapping(".", REPORT_PATH, BindMode.READ_WRITE);
+        container.withClasspathResourceMapping(".", DOCKER_REPORT_PATH, BindMode.READ_WRITE);
         container.setCommand(String.format("zap.sh -daemon -host 0.0.0.0 -port 8080 -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true -config api.key=%s", ZAP_API_KEY));
         container.start();
 
         int zapPort = container.getMappedPort(OWASP_PORT);
         api = new ClientApi(ZAP_ADDRESS, zapPort, ZAP_API_KEY);
+
+        // We do not want to scan Google, Facebook etc.
+        api.core.excludeFromProxy("^.*\\.googleapis\\.com.*$");
+        api.core.excludeFromProxy("^.*\\.google\\.com.*$");
+        api.core.excludeFromProxy("^.*\\.facebook\\.com.*$");
+        api.core.excludeFromProxy("^.*\\.fbcdn\\.net.*$");
+        api.core.excludeFromProxy("^.*\\.ip6\\.li.*$");
+
         ChromeOptions chromeOptions = getChromeOptions(zapPort);
-
-        ChromeDriverService chromeDriverService = new ChromeDriverService.Builder()
-                .withLogOutput(System.out)
-                .build();
-
+        ChromeDriverService chromeDriverService = getChromeDriverService();
         chromeDriver = new ChromeDriver(chromeDriverService, chromeOptions);
-
     }
 
+    // This is the glue between Selenium and OWASP Zap
     @NotNull
     private static ChromeOptions getChromeOptions(int zapPort) {
-        String proxyServerUrl = OwaspZapTest.ZAP_ADDRESS + ":" + zapPort;
+        String proxyServerUrl = String.format("%s:%d", OwaspZapTest.ZAP_ADDRESS, zapPort);
         Proxy proxy = new Proxy();
         proxy.setHttpProxy(proxyServerUrl);
         proxy.setSslProxy(proxyServerUrl);
 
         ChromeOptions chromeOptions = new ChromeOptions();
+        // OWASP Zap proxy uses a self signed server certificate
         chromeOptions.addArguments("--ignore-ssl-errors=yes");
         chromeOptions.addArguments("--ignore-certificate-errors");
+        chromeOptions.addArguments("--lang=en-US,en");
         chromeOptions.setAcceptInsecureCerts(true);
         chromeOptions.setProxy(proxy);
         return chromeOptions;
+    }
+
+    @NotNull
+    private static ChromeDriverService getChromeDriverService() {
+        return new ChromeDriverService.Builder()
+                .withLogOutput(System.err)
+                .build();
     }
 
     @AfterAll
@@ -149,7 +162,7 @@ public class OwaspZapTest {
         String title = "ZAP Selenium";
         String template = "traditional-html";
         String description = "This is a ZAP report for Alovoa";
-        String reportfilename = "zap-report.html";
+        String reportFilename = "zap-report.html";
         try {
             ApiResponse res = api.reports.generate(
                     title,
@@ -161,10 +174,10 @@ public class OwaspZapTest {
                     null,
                     null,
                     null,
-                    reportfilename,
+                    reportFilename,
                     null,
-                    REPORT_PATH, null);
-            System.out.println("ZAP report generated here: " + res.toString());
+                    DOCKER_REPORT_PATH, null);
+            logger.info(String.format("ZAP report generated here: %s", res.toString()));
         } catch (ClientApiException ex) {
             logger.error(String.format("closeAll report: %s", ex.getMessage()));
         }
@@ -184,7 +197,7 @@ public class OwaspZapTest {
         OwaspZapTest.executeSpiderScan(targetUrl);
         OwaspZapTest.executeActiveScan(targetUrl);
         Thread.sleep(2000);
-        driver.findElement(By.linkText("Anmelden")).click();
+        driver.findElement(By.id("login")).click();
         Thread.sleep(2000);
         driver.findElement(By.name("username")).sendKeys(EMAIL);
         driver.findElement(By.name("password")).sendKeys(PASSWORD);
