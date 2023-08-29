@@ -81,7 +81,7 @@ public class SearchService {
         if (user.isAdmin()) {
             return SearchDto.builder().users(searchResultstoUserDto(userRepo.adminSearch(), 0, user)).build();
         }
-        if (user.getLocationLatitude() != null && user.getLocationLatitude() != null) {
+        if (user.getLocationLatitude() != null) {
             return search(user.getLocationLatitude(), user.getLocationLongitude(), DEFAULT_DISTANCE,
                     SORT_DONATION_LATEST);
         } else {
@@ -106,24 +106,13 @@ public class SearchService {
             }
         }
 
-
-        Sort sort = Sort.by(Sort.Direction.DESC, "dates.latestDonationDate", "dates.creationDate");
-        switch (sortId) {
-            case SORT_ACTIVE_DATE:
-                sort = Sort.by(Sort.Direction.DESC, "dates.activeDate");
-                break;
-//		case SORT_DONATION_LATEST:
-//			sort = Sort.by(Sort.Direction.ASC, "dates.latestDonationDate");
-//			break;
-            case SORT_DONATION_TOTAL:
-                sort = Sort.by(Sort.Direction.DESC, "totalDonations");
-                break;
-            case SORT_NEWEST_USER:
-                sort = Sort.by(Sort.Direction.DESC, "dates.creationDate");
-                break;
-            default:
-                Sort.unsorted();
-        }
+        Sort sort = switch (sortId) {
+            case SORT_ACTIVE_DATE -> Sort.by(Sort.Direction.DESC, "dates.activeDate");
+            case SORT_DONATION_LATEST -> Sort.by(Sort.Direction.DESC, "dates.latestDonationDate", "dates.creationDate");
+            case SORT_DONATION_TOTAL -> Sort.by(Sort.Direction.DESC, "totalDonations");
+            case SORT_NEWEST_USER -> Sort.by(Sort.Direction.DESC, "dates.creationDate");
+            default -> Sort.unsorted();
+        };
 
         int ageLegal = Tools.AGE_LEGAL;
 
@@ -175,9 +164,7 @@ public class SearchService {
 
         List<User> users = userRepo.usersSearch(request, PageRequest.of(0, SEARCH_MAX, sort));
 
-        Set<Long> ignoreIds = new HashSet<>();
-        ignoreIds.addAll(
-                user.getBlockedByUsers().stream().map(o -> o.getUserFrom().getId()).collect(Collectors.toSet()));
+        Set<Long> ignoreIds = user.getBlockedByUsers().stream().map(o -> o.getUserFrom().getId()).collect(Collectors.toSet());
 
         List<User> filteredUsers = filterUsers(users, ignoreIds, user, false);
 
@@ -192,7 +179,6 @@ public class SearchService {
             return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
                     .stage(SearchStage.NORMAL).build();
         }
-        filteredUsers.clear();
 
         // NO COMPATIBLE USERS FOUND, SEARCH AROUND THE WORLD!
 
@@ -214,7 +200,6 @@ public class SearchService {
                     .message(publicService.text("search.warning.global")).global(true)
                     .stage(SearchStage.INCREASED_RADIUS_1).build();
         }
-        filteredUsers.clear();
 
         distance = SEARCH_STEP_2;
         deltaLat = distance / LATITUDE;
@@ -234,7 +219,6 @@ public class SearchService {
                     .message(publicService.text("search.warning.global")).global(true)
                     .stage(SearchStage.INCREASED_RADIUS_2).build();
         }
-        filteredUsers.clear();
 
         users = userRepo.usersSearchAllIgnoreLocation(request, PageRequest.of(0, SEARCH_MAX, sort));
         filteredUsers = filterUsers(users, ignoreIds, user, false);
@@ -244,7 +228,6 @@ public class SearchService {
                     .message(publicService.text("search.warning.global")).global(true).stage(SearchStage.WORLD).build();
         }
 
-        filteredUsers.clear();
         users = userRepo.usersSearchAllIgnoreLocationAndIntention(request, sort);
         filteredUsers = filterUsers(users, ignoreIds, user, false);
         if (!filteredUsers.isEmpty()) {
@@ -272,7 +255,6 @@ public class SearchService {
                     .build();
         }
 
-        filteredUsers.clear();
         users = userRepo.usersSearchAllIgnoreAll(request, sort);
         filteredUsers = filterUsers(users, ignoreIds, user, true);
         return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
@@ -314,7 +296,7 @@ public class SearchService {
                     .collect(Collectors.toList());
         } else if (sort == SORT_INTEREST) {
             Comparator<UserDto> comparatorCommonInterest = Comparator.comparing(f -> f.getCommonInterests().size());
-            userDtos = userDtos.stream().filter(f -> f.getCommonInterests().size() > 0)
+            userDtos = userDtos.stream().filter(f -> !f.getCommonInterests().isEmpty())
                     .sorted(comparatorCommonInterest.reversed()
                             .thenComparing(Comparator.comparing(UserDto::getDistanceToUser).reversed()))
                     .collect(Collectors.toList());
@@ -325,11 +307,7 @@ public class SearchService {
 
     public Optional<String> getCountryIsoByLocation(double lat, double lon) {
         Optional<Country> country = getGeocoder().getCountry(lat, lon);
-        if (country.isPresent()) {
-            return Optional.ofNullable(country.get().iso());
-        } else {
-            return Optional.empty();
-        }
+        return country.map(Country::iso);
     }
 
 }
