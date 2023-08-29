@@ -404,7 +404,7 @@ public class UserService {
             if (description.length() > descriptionSize) {
                 throw new AlovoaException("max_length_exceeded");
             }
-            if (description.trim().length() == 0) {
+            if (description.trim().isEmpty()) {
                 description = null;
             } else {
                 UrlDetector parser = new UrlDetector(description, UrlDetectorOptions.Default);
@@ -536,7 +536,7 @@ public class UserService {
         Optional<UserInterest> interestOpt = user.getInterests().stream().filter(i -> i.getText().equals(interest))
                 .findFirst();
 
-        if (interest.isEmpty()) {
+        if (interest.isEmpty() || interestOpt.isEmpty()) {
             throw new AlovoaException("interest_does_not_exists");
         }
 
@@ -547,7 +547,7 @@ public class UserService {
     public List<UserInterestDto> getInterestAutocomplete(String name) throws AlovoaException {
         User user = authService.getCurrentUser(true);
         name = "%" + URLDecoder.decode(name, StandardCharsets.UTF_8) + "%";
-        List<String> interestTexts = user.getInterests().stream().map(i -> i.getText()).collect(Collectors.toList());
+        List<String> interestTexts = user.getInterests().stream().map(UserInterest::getText).collect(Collectors.toList());
         if (interestTexts.isEmpty()) {
             interestTexts.add("");
         }
@@ -609,64 +609,54 @@ public class UserService {
         ByteArrayOutputStream bos = null;
         ByteArrayInputStream bis = null;
 
-        try {
-            // convert b64 to bufferedimage
-            BufferedImage image = null;
-            byte[] decodedBytes = Base64.getDecoder().decode(stripB64Type(imgB64));
-            bis = new ByteArrayInputStream(decodedBytes);
-            image = ImageIO.read(bis);
+        // convert b64 to bufferedimage
+        BufferedImage image = null;
+        byte[] decodedBytes = Base64.getDecoder().decode(stripB64Type(imgB64));
+        bis = new ByteArrayInputStream(decodedBytes);
+        image = ImageIO.read(bis);
 
-            if (image.getWidth() == imageLength && image.getHeight() == imageLength) {
-                return imgB64;
-            }
-
-            if (image.getWidth() != image.getHeight()) {
-
-                int idealLength = image.getHeight();
-                boolean heightShorter = true;
-                if (image.getWidth() < image.getHeight()) {
-                    heightShorter = false;
-                    idealLength = image.getWidth();
-                }
-
-                // cut to a square
-                int x = 0;
-                int y = 0;
-
-                if (heightShorter) {
-                    y = 0;
-                    x = image.getWidth() / 2 - image.getHeight() / 2;
-                } else {
-                    x = 0;
-                    y = image.getHeight() / 2 - image.getWidth() / 2;
-                }
-                image = image.getSubimage(x, y, idealLength, idealLength);
-            }
-
-            // all images are equal in size
-            BufferedImage scaledImage = new BufferedImage(imageLength, imageLength, image.getType());
-            Graphics2D graphics2D = scaledImage.createGraphics();
-
-            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-
-            graphics2D.drawImage(image, 0, 0, imageLength, imageLength, null);
-            graphics2D.dispose();
-            image = scaledImage;
-
-            // image to b64
-            bos = new ByteArrayOutputStream();
-            String fileType = "webp";
-            ImageIO.write(image, fileType, bos);
-            byte[] bytes = bos.toByteArray();
-            String base64bytes = Base64.getEncoder().encodeToString(bytes);
-            String src = Tools.B64IMAGEPREFIX + fileType + Tools.B64PREFIX + base64bytes;
-
-            return src;
-
-        } catch (Exception e) {
-            throw e;
+        if (image.getWidth() == imageLength && image.getHeight() == imageLength) {
+            return imgB64;
         }
 
+        if (image.getWidth() != image.getHeight()) {
+
+            int idealLength = image.getHeight();
+            boolean heightShorter = true;
+            if (image.getWidth() < image.getHeight()) {
+                heightShorter = false;
+                idealLength = image.getWidth();
+            }
+
+            // cut to a square
+            int x = 0;
+            int y = 0;
+
+            if (heightShorter) {
+                x = image.getWidth() / 2 - image.getHeight() / 2;
+            } else {
+                y = image.getHeight() / 2 - image.getWidth() / 2;
+            }
+            image = image.getSubimage(x, y, idealLength, idealLength);
+        }
+
+        // all images are equal in size
+        BufferedImage scaledImage = new BufferedImage(imageLength, imageLength, image.getType());
+        Graphics2D graphics2D = scaledImage.createGraphics();
+
+        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+        graphics2D.drawImage(image, 0, 0, imageLength, imageLength, null);
+        graphics2D.dispose();
+        image = scaledImage;
+
+        // image to b64
+        bos = new ByteArrayOutputStream();
+        String fileType = "webp";
+        ImageIO.write(image, fileType, bos);
+        byte[] bytes = bos.toByteArray();
+        String base64bytes = Base64.getEncoder().encodeToString(bytes);
+        return Tools.B64IMAGEPREFIX + fileType + Tools.B64PREFIX + base64bytes;
     }
 
     public void likeUser(String idEnc) throws AlovoaException, GeneralSecurityException, IOException, JoseException {
