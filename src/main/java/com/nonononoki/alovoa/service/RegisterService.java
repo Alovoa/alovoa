@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -210,7 +211,7 @@ public class RegisterService {
 
 	public UserRegisterToken generateToken(User user) {
 		UserRegisterToken token = new UserRegisterToken();
-		token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
+		token.setContent(RandomStringUtils.random(tokenLength, 0, 0, true, true, null, new SecureRandom()));
 		token.setDate(new Date());
 		token.setUser(user);
 		return token;

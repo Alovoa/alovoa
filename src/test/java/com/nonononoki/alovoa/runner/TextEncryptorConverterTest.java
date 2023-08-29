@@ -5,11 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import net.bytebuddy.implementation.bind.MethodDelegationBinder;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,5 +45,11 @@ class TextEncryptorConverterTest {
 		String encodedString = textEncryptorConverter.encode(unencryptedString);
 		assertNotNull(encodedString);
 		return;
+	}
+
+	@Test
+	public void randomTest() {
+		String rand = RandomStringUtils.random(10, 0, 0, true, true, null, new SecureRandom());
+		System.out.println(rand);
 	}
 }

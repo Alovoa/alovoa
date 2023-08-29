@@ -2,6 +2,7 @@ package com.nonononoki.alovoa.service;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Date;
 
 import com.nonononoki.alovoa.component.ExceptionHandler;
@@ -82,7 +83,7 @@ public class PasswordService {
 		//user has social login, do not assign new password!
 		if (u.getPassword() != null) {
 			UserPasswordToken token = new UserPasswordToken();
-			token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
+			token.setContent(RandomStringUtils.random(tokenLength, 0, 0, true, true, null, new SecureRandom()));
 			token.setDate(new Date());
 			token.setUser(u);
 			u.setPasswordToken(token);

@@ -39,10 +39,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.util.List;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -294,7 +291,7 @@ public class UserService {
         UserDeleteToken token = new UserDeleteToken();
         Date currentDate = new Date();
 
-        token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
+        token.setContent(RandomStringUtils.random(tokenLength, 0, 0, true, true, null, new SecureRandom()));
         token.setDate(currentDate);
         token.setUser(user);
         user.setDeleteToken(token);
