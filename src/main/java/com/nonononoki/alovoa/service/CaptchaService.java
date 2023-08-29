@@ -97,7 +97,7 @@ public class CaptchaService {
 		// don't need slow hashing algorithm because
 		MessageDigest md = MessageDigest.getInstance("MD5");
 		md.update(salt.getBytes()); // salting to prevent rainbow tables
-		md.update(ip.getBytes(StandardCharsets.UTF_8.name()));
+		md.update(ip.getBytes(StandardCharsets.UTF_8));
 		byte[] bytes = md.digest();
 		return Base64.getEncoder().encodeToString(bytes);
 	}
