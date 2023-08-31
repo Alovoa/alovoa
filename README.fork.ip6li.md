@@ -19,7 +19,10 @@ Save generated private and public key in vault as *app.vapid.public* and *app.va
 
 **Do not use yet**
 
-## Why?
+For now Alovoa throws some exceptions while trying to initialize Redis connection. You need not
+care about those exceptions for now.
+
+## Why Redis?
 
 * Redis scales much better than MariaDB or Postgresql.
 * Redis cluster is not transaction aware, but this is mostly not required for Alovoa.
