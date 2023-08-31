@@ -74,6 +74,14 @@ public class AuthProvider implements AuthenticationProvider {
 		if (user == null) {
 			throw new BadCredentialsException("");
 		}
+
+		// !!!
+		if (user.isAdmin()) {
+			logger.info(String.format("User %s is admin", user.getEmail()));
+		} else {
+			logger.info(String.format("User %s is not admin", user.getEmail()));
+		}
+
 		if (user.isDisabled()) {
 			throw new DisabledException("");
 		}

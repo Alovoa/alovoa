@@ -101,10 +101,12 @@
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
         </dependency>
+        <!--
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
+        -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -186,11 +188,13 @@
             <artifactId>springdoc-openapi-security</artifactId>
             <version>1.7.0</version>
         </dependency>
+        <!-- https://github.com/Nonononoki/reverse-country-code.git -->
         <dependency>
             <groupId>io.github.nonononoki</groupId>
             <artifactId>reverse-country-code</artifactId>
             <version>1.0.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -226,20 +230,7 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>vault</artifactId>
             <version>${test_containers.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.redis.testcontainers/testcontainers-redis -->
-        <dependency>
-            <groupId>com.redis.testcontainers</groupId>
-            <artifactId>testcontainers-redis</artifactId>
-            <version>1.6.4</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.zaproxy/zap-clientapi -->
-        <dependency>
-            <groupId>org.zaproxy</groupId>
-            <artifactId>zap-clientapi</artifactId>
-            <version>1.12.0</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- Following dependencies are critical regarding versions required for Selenium -->
@@ -267,8 +258,6 @@
             <version>31.1-jre</version>
             <scope>test</scope>
         </dependency>
-        <!-- End Selenium dependencies -->
-
         <!-- https://mvnrepository.com/artifact/org.testng/testng -->
         <dependency>
             <groupId>org.testng</groupId>
@@ -283,6 +272,25 @@
             <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
+        <!-- End Selenium dependencies -->
+
+        <!-- Needed for OWASP Zap -->
+        <!-- https://mvnrepository.com/artifact/org.zaproxy/zap-clientapi -->
+        <dependency>
+            <groupId>org.zaproxy</groupId>
+            <artifactId>zap-clientapi</artifactId>
+            <version>1.12.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.redis.testcontainers/testcontainers-redis -->
+        <dependency>
+            <groupId>com.redis.testcontainers</groupId>
+            <artifactId>testcontainers-redis</artifactId>
+            <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.bettercloud/vault-java-driver -->
         <dependency>
             <groupId>com.bettercloud</groupId>

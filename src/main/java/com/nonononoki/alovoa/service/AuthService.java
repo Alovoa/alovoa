@@ -30,6 +30,9 @@ public class AuthService {
 		if (auth instanceof OAuth2AuthenticationToken) {
 			DefaultOAuth2User principal = (DefaultOAuth2User) auth.getPrincipal();
 			email = principal.getAttribute("email");
+			if (principal.getAttribute("AlovoaAdmin")!=null) {
+				logger.info(String.format("User %s is admin", email));
+			}
 		} else {
 			if (auth == null) {
 				return null;
@@ -42,9 +45,19 @@ public class AuthService {
 
 		User user = userRepo.findByEmail(Tools.cleanEmail(email));
 		if (user != null && user.isDisabled()) {
-			throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+			throw new AlovoaException(
+					String.format("%s: User %s is disabled: %s",
+							AuthService.class.getName(),
+							email,
+							ExceptionHandler.USER_NOT_FOUND)
+			);
 		} else if (user == null && throwExceptionWhenNull) {
-			throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+			throw new AlovoaException(
+					String.format("%s: User %s is not in database: %s",
+							AuthService.class.getName(),
+							email,
+							ExceptionHandler.USER_NOT_FOUND)
+			);
 		}
 
 		return user;

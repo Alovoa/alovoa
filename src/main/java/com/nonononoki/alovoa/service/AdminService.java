@@ -15,6 +15,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.BadPaddingException;
@@ -60,6 +61,9 @@ public class AdminService {
     private UserVerificationPictureRepository userVerificationPictureRepo;
     @Autowired
     private TextEncryptorConverter textEncryptor;
+
+    @Value("${app.admin.email}")
+    private String superAdminEmail;
 
     public void hideContact(long id) throws AlovoaException {
 
@@ -146,8 +150,8 @@ public class AdminService {
             throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
         }
 
-        if (user.isAdmin()) {
-            throw new AlovoaException("user_is_admin");
+        if (user.isAdmin() && superAdminEmail.equals(user.getEmail())) {
+            throw new AlovoaException(String.format("user_is_admin %s", AdminService.class.getName()));
         }
 
         UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
@@ -210,8 +214,8 @@ public class AdminService {
             throw new AlovoaException("user_is_banned");
         }
 
-        if (user.isAdmin()) {
-            throw new AlovoaException("cannot_delete_admin");
+        if (user.isAdmin() && superAdminEmail.equals(user.getEmail())) {
+            throw new AlovoaException(String.format("cannot_delete_admin %s", AdminService.class.getName()));
         }
 
         UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)

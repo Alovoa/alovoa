@@ -19,12 +19,27 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
@@ -38,8 +53,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static com.nonononoki.alovoa.rest.Oauth2Controller.OAUTH_ROLE_ADMIN;
 
 @Configuration
 @EnableWebSecurity
@@ -84,7 +100,7 @@ public class SecurityConfig {
         OidcClientInitiatedLogoutSuccessHandler successHandler =
                 new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
 
-        successHandler.setPostLogoutRedirectUri(appDomain); // !!!
+        successHandler.setPostLogoutRedirectUri(appDomain);
 
         return successHandler;
     }
@@ -142,6 +158,8 @@ public class SecurityConfig {
                 )
                 .oauth2Login(
                         oauth2Login -> oauth2Login
+                                .userInfoEndpoint(userInfo -> userInfo
+                                        .userAuthoritiesMapper(this.userAuthoritiesMapper()))
                                 .loginPage("/login")
                                 .defaultSuccessUrl("/login/oauth2/success")
 
@@ -174,6 +192,46 @@ public class SecurityConfig {
         http.cors(Customizer.withDefaults());
         logger.debug("filterChain configured");
         return http.build();
+    }
+
+
+
+    private GrantedAuthoritiesMapper userAuthoritiesMapper() {
+        logger.info("userAuthoritiesMapper called");
+		return (authorities) -> {
+			Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
+            logger.info(String.format("userAuthoritiesMapper authorities: %s", authorities.getClass().getName()));
+            authorities.forEach(authority -> {
+				if (authority instanceof OidcUserAuthority oidcUserAuthority) {
+                    logger.info("userAuthoritiesMapper oidc path");
+                    OidcIdToken idToken = oidcUserAuthority.getIdToken();
+					OidcUserInfo userInfo = oidcUserAuthority.getUserInfo();
+					// Map the claims found in idToken and/or userInfo
+					// to one or more GrantedAuthority's and add it to mappedAuthorities
+                    getGroupMembership(mappedAuthorities, oidcUserAuthority.getAttributes());
+                } else if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
+                    logger.info("userAuthoritiesMapper oauth2 path");
+                    getGroupMembership(mappedAuthorities, oauth2UserAuthority.getAttributes());
+                } else {
+                    authorities.forEach((v) -> {
+                        logger.info(String.format("userAuthoritiesMapper other: %s", v));
+                    });
+                    logger.info("userAuthoritiesMapper other path");
+                }
+			});
+
+			return mappedAuthorities;
+		};
+	}
+
+    private void getGroupMembership(Set<GrantedAuthority> mappedAuthorities, Map<String, Object> attributes) {
+        ArrayList<String> roles = (ArrayList<String>) attributes.get("groups");
+        if (roles!=null && roles.contains(OAUTH_ROLE_ADMIN)) {
+            logger.info(String.format("User %s is Admin", attributes.get("email")));
+            mappedAuthorities.add(new SimpleGrantedAuthority(ROLE_ADMIN));
+        } else {
+            logger.info(String.format("User %s is not Admin", attributes.get("email")));
+        }
     }
 
     @Bean
@@ -238,7 +296,6 @@ public class SecurityConfig {
 
     @Bean
     AuthProvider authProvider() {
-
         return new AuthProvider();
     }
 

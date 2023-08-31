@@ -27,6 +27,7 @@ public class VaultPropertySource extends PropertySource<String> {
             "app.text.key",
             "app.text.salt",
             "app.admin.email",
+            "app.admin.key",
             "app.login.remember.key",
             "app.vapid.public",
             "app.vapid.private",

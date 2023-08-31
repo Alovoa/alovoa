@@ -156,8 +156,7 @@ public class RegisterService {
 	}
 
 	public void registerOauth(RegisterDto dto) throws MessagingException, IOException, AlovoaException,
-			NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+			NumberFormatException {
 
 		String email = Tools.cleanEmail(authService.getOauth2Email());
 		if (email == null) {

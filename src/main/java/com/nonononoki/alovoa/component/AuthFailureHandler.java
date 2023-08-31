@@ -19,7 +19,7 @@ public class AuthFailureHandler implements AuthenticationFailureHandler{
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-			AuthenticationException exception) throws IOException, ServletException {
+			AuthenticationException exception) throws IOException {
 		response.setStatus(HttpServletResponse.SC_OK);
         response.sendRedirect(url);	
 	}

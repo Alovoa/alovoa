@@ -154,6 +154,11 @@ public class EventListenerConfig {
 
 	public void setDefaultAdmin() {
 		if (userRepo.count() == 0) {
+			if (adminKey!=null && !adminKey.isEmpty()) {
+				logger.trace(String.format("Creating local admin: %s with non empty adminKey", adminEmail));
+			} else {
+				logger.error(String.format("Creating local admin: %s but adminKey is empty", adminEmail));
+			}
 			User user = new User(adminEmail);
 			user.setAdmin(true);
 			String enc = passwordEncoder.encode(adminKey);

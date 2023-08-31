@@ -35,8 +35,7 @@ public class RegisterController {
 
 	@PostMapping(value = "/register-oauth", consumes = "application/json")
 	public String registerOauth(@RequestBody RegisterDto dto) throws MessagingException, IOException, AlovoaException,
-			NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+			NumberFormatException {
 		registerService.registerOauth(dto);
 		return "profile";
 	}

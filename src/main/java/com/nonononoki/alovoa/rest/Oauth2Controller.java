@@ -34,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Map;
 
@@ -76,6 +77,8 @@ public class Oauth2Controller {
 	private static final int REDIRECT_ONBOARDING = 2;
 	private static final int REDIRECT_DEFAULT = 3;
 	private static final int HOUR_S = 3600;
+
+	public static final String OAUTH_ROLE_ADMIN = "AlovoaAdmin";
 
 	@GetMapping("/oauth2/authorization/{idp}/{redirectUrlEncoded}")
 	public ModelAndView oauth2general(
@@ -141,10 +144,13 @@ public class Oauth2Controller {
 
 				// administrator cannot use oauth for security reason e.g. password breach on
 				// oath provider
+				// ToDo: Not a problem on local IDP solution !!!
+				/*
 				if (user.isAdmin()) {
 					SecurityContextHolder.clearContext();
 					throw new AlovoaException("not_supported_for_admin");
 				}
+				*/
 
 				if (!user.isConfirmed()) {
 					if (httpSession.getAttribute(REDIRECT_URL) != null) {
