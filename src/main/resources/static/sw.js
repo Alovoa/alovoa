@@ -81,6 +81,7 @@ const staticAssets = [
 	'/css/profile.css',
 	'/css/profile-onboarding.css',
 	'/css/user-profile.css',
+	'/css/custom.css',
 
 	'/img/search-cover.webp',
 	'/img/ios-pwa.webp',
