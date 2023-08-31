@@ -11,11 +11,16 @@ public class ImprintResource {
 	@Value("${app.company.name}")
 	private String companyName;
 
+	@Value("${app.captcha.enabled}")
+	private String captchaEnabled;
+
 	@GetMapping("/imprint")
 	public ModelAndView imprint() {
 
 		ModelAndView mav = new ModelAndView("imprint");
 		mav.addObject("companyName", companyName);
+		mav.addObject("captchaEnabled", Boolean.valueOf(captchaEnabled));
+
 		return mav;
 	}
 }

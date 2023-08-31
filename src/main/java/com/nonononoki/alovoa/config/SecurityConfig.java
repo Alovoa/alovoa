@@ -197,26 +197,25 @@ public class SecurityConfig {
 
 
     private GrantedAuthoritiesMapper userAuthoritiesMapper() {
-        logger.info("userAuthoritiesMapper called");
 		return (authorities) -> {
 			Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
             logger.info(String.format("userAuthoritiesMapper authorities: %s", authorities.getClass().getName()));
             authorities.forEach(authority -> {
 				if (authority instanceof OidcUserAuthority oidcUserAuthority) {
-                    logger.info("userAuthoritiesMapper oidc path");
+                    logger.trace("userAuthoritiesMapper oidc path");
                     OidcIdToken idToken = oidcUserAuthority.getIdToken();
 					OidcUserInfo userInfo = oidcUserAuthority.getUserInfo();
 					// Map the claims found in idToken and/or userInfo
 					// to one or more GrantedAuthority's and add it to mappedAuthorities
                     getGroupMembership(mappedAuthorities, oidcUserAuthority.getAttributes());
                 } else if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
-                    logger.info("userAuthoritiesMapper oauth2 path");
+                    logger.trace("userAuthoritiesMapper oauth2 path");
                     getGroupMembership(mappedAuthorities, oauth2UserAuthority.getAttributes());
                 } else {
                     authorities.forEach((v) -> {
-                        logger.info(String.format("userAuthoritiesMapper other: %s", v));
+                        logger.trace(String.format("userAuthoritiesMapper other: %s", v));
                     });
-                    logger.info("userAuthoritiesMapper other path");
+                    logger.trace("userAuthoritiesMapper other path");
                 }
 			});
 
@@ -230,7 +229,7 @@ public class SecurityConfig {
             logger.info(String.format("User %s is Admin", attributes.get("email")));
             mappedAuthorities.add(new SimpleGrantedAuthority(ROLE_ADMIN));
         } else {
-            logger.info(String.format("User %s is not Admin", attributes.get("email")));
+            logger.trace(String.format("User %s is not Admin", attributes.get("email")));
         }
     }
 

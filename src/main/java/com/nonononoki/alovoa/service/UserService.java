@@ -123,6 +123,10 @@ public class UserService {
     @Value("${app.intention.delay}")
     private long intentionDelay;
 
+    @Value("${app.captcha.enabled}")
+    private String captchaEnabled;
+
+
     public static void removeUserDataCascading(User user, UserDeleteParams userDeleteParam) {
 
         UserRepository userRepo = userDeleteParam.getUserRepo();
@@ -332,8 +336,10 @@ public class UserService {
             throw new AlovoaException("deletion_wrong_email");
         }
 
-        if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
-            throw new AlovoaException("captcha_invalid");
+        if (Boolean.parseBoolean(captchaEnabled)) {
+            if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
+                throw new AlovoaException("captcha_invalid");
+            }
         }
 
         UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)

@@ -176,7 +176,7 @@ public class RegisterService {
 		try {
 			if (dto.getReferrerCode() != null && !dto.getReferrerCode().isEmpty()) {
 				Optional<Long> idOptional = UserDto.decodeId(dto.getReferrerCode(), textEncryptor);
-				if (!idOptional.isEmpty()) {	
+				if (idOptional.isPresent()) {
 					long id = idOptional.get();
 					User referrer = userRepo.findById(id).orElse(null);
 	

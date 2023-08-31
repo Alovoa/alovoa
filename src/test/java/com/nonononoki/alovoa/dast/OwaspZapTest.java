@@ -190,6 +190,7 @@ public class OwaspZapTest {
     @Test
     public void alovoaSecurityAssessment() throws InterruptedException {
 
+        // localhost does not work here, because OWASP Zap is running in a container
         final String targetUrl = String.format("http://alovoa.test.felsing.net:%d", alovoaPort);
 
         ChromeDriver driver = chromeDriver;

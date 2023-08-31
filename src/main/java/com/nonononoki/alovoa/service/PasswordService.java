@@ -51,15 +51,21 @@ public class PasswordService {
 	@Value("${app.user.password-reset.duration.valid}")
 	private int userPasswordResetDuration;
 
+	@Value("${app.captcha.enabled}")
+	private String captchaEnabled;
+
 	public UserPasswordToken resetPassword(PasswordResetDto dto)
 			throws AlovoaException, NoSuchAlgorithmException, MessagingException, IOException {
 
 		User u = authService.getCurrentUser();
 
 		if (u == null) {
-			if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
-				throw new AlovoaException("captcha_invalid");
+			if (Boolean.parseBoolean(captchaEnabled)) {
+				if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
+					throw new AlovoaException("captcha_invalid");
+				}
 			}
+
 			u = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
 
 			if (u == null) {
@@ -67,6 +73,7 @@ public class PasswordService {
 			}
 			
 			if (u.getPassword() == null) {
+				// ToDo: Redirect user to Keycloak password changer
 				throw new AlovoaException("user_has_social_login");
 			}
 
@@ -76,6 +83,7 @@ public class PasswordService {
 		}
 		
 		//user has social login, do not assign new password!
+		// ToDo: Redirect user to Keycloak password changer
 		if (u.getPassword() != null) {
 			UserPasswordToken token = new UserPasswordToken();
 			token.setContent(RandomStringUtils.randomAlphanumeric(tokenLength));
@@ -90,6 +98,7 @@ public class PasswordService {
 	
 			return u.getPasswordToken();
 		} else {
+			// ToDo: Redirect user to Keycloak password changer
 			throw new AlovoaException("user_has_social_login");
 		}
 	}
