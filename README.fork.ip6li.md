@@ -15,6 +15,74 @@ JIEdQkCnF-YFAI-kOExRzPIDO4qxSFeHT-RGdxmTuFs=
 
 Save generated private and public key in vault as *app.vapid.public* and *app.vapid.private*.
 
+# Vault
+
+It is a really bad idea to store credentials or private keys in source code or
+property files. Spring Boot support vault solutions like Hashicorp Vault.
+
+Before starting Alovoa the first time you should set up Hashicorp Vault.
+
+## Config
+
+Following config is able to store mostly everything which may be configurable
+in *application.properties*. Alovoa fork (ab)uses vault as an alternative
+properties store.
+
+Generate an individual vapi keypair as shown above.
+
+```
+vault secrets enable -path=alovoa kv
+vault kv put -mount=alovoa creds app.text.key=32charKey app.text.salt=16charSalt app.admin.key=InitialAdmiPassword app.admin.email=AdminEmail spring.mail.username=SmtpUsername spring.mail.password=SmtpPassword app.vapid.private=vapidPrivateKey app.vapid.public=vapidPublicKey
+```
+
+Feel free to add more properties you would not like to see in application.properties.
+
+## Database Credentials
+
+Add a MySQL user which is allowed to set passwords. Configure that user in Hashicorp Vault:
+
+```
+vault write database/config/alovoa \
+  plugin_name=mysql-database-plugin \
+  connection_url="{{username}}:{{password}}@tcp(mysql)/" \
+  allowed_roles="mysqlrole" \
+  username="vault" \
+  password="PasswordForMysqlUserVault"
+```
+
+Tell vault how to create a temp user. This user is retrieved and used by Alovoa:
+
+```
+vault write database/roles/mysqlrole \
+  db_name=alovoa \
+  creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}'; GRANT ALL PRIVILEGES ON alovoa.* TO {{name}}'@'%';" \
+  default_ttl="1h" \
+  max_ttl="24h"
+```
+
+Alovoa should not use root vault token, it should use a dedicated token with specific entitelments:
+
+```
+vault policy write alovoa-policy - << EOF
+path "database/creds/mysqlrole" {
+  capabilities = ["read"]
+}
+path "oauth-idp/keycloak" {
+  capabilities = ["read"]
+}
+path "alovoa/creds" {
+  capabilities = ["read"]
+}
+EOF
+```
+
+At least OAuth2 credentials are added:
+
+```
+vault secrets enable -path=oauth-idp kv
+vault kv put -mount=oauth-idp keycloak client-id=TheClientId client-secret=TheClientSecret
+```
+
 # Redis
 
 **Do not use yet**
@@ -71,7 +139,21 @@ admins needs Realm role *AlovoaAdmin*. At *Users* ⇒ *&lt;admin user&gt;* ⇒  
 
 Alovoa should no longer provide local authentication/authorization but should delegate it to an OpenID/Connect
 or OAuth2 solution. For non IDP experts: OpenID/Connect depends on OAuth2. Local registration and login should
-be disabled.
+be disabled. For now this fork makes local login/registration configurable. Check
+
+```
+app.local.login.enabled=true
+```
+
+If *true* Alovoa support local login/registration.
+
+# Donations
+
+Donation function is configurable with
+
+```
+donate.enabled
+```
 
 # Chat
 
