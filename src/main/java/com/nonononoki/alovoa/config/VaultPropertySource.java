@@ -61,7 +61,7 @@ public class VaultPropertySource extends PropertySource<String> {
     public String getProperty(@Nullable String propertyName) {
         logger.trace(String.format("getProperty: %s", propertyName));
         if (cachedVaultData.containsKey(propertyName)) {
-            logger.info(String.format("Returned cached value for %s", propertyName));
+            logger.trace(String.format("Returned cached value for %s", propertyName));
             return cachedVaultData.get(propertyName);
         }
 
@@ -75,19 +75,18 @@ public class VaultPropertySource extends PropertySource<String> {
         if (matcher.matches()) {
             String idp = matcher.group(1);
             String type = matcher.group(2);
-            String data = datasourceCredentials.getOAuthCredentials(String.format("oauth-idp/%s", idp)).get(type);
+            String data = datasourceCredentials.getVaultCredentials(String.format("oauth-idp/%s", idp)).get(type);
             cachedVaultData.put(String.format("spring.security.oauth2.client.registration.%s.%s", idp, type), data);
             if (data==null) {
-                logger.warn(String.format("getProperty: Cannot resolve %s from vault", propertyName));
+                logger.trace(String.format("getProperty: Cannot resolve %s from vault", propertyName));
             }
             return data;
         }
 
-        //String vaultValue = datasourceCredentials.getOAuthCredentials("alovoa/creds").get(propertyName);
-        String vaultValue = datasourceCredentials.getOAuthCredentials(vaultPropertiesPath).get(propertyName);
+        String vaultValue = datasourceCredentials.getVaultCredentials(vaultPropertiesPath).get(propertyName);
         cachedVaultData.put(propertyName, vaultValue);
         if (vaultValue == null) {
-            logger.warn(String.format("Vault does not contain a value for %s", propertyName));
+            logger.trace(String.format("Vault does not contain a value for %s", propertyName));
         }
         return vaultValue;
     }

@@ -70,12 +70,11 @@ public class DatasourceCredentials {
         assert vaultResponseData != null;
         username = vaultResponseData.get("username").toString();
         password = vaultResponseData.get("password").toString();
-        logger.debug(String.format("MySQL Credentials updated with username %s", username));
+        logger.debug(String.format("Database credentials updated with username %s", username));
     }
 
-    public Map<String, String> getOAuthCredentials(String vaultPath) {
+    public Map<String, String> getVaultCredentials(String vaultPath) {
         VaultTemplate vaultTemplate = getVaultTemplate();
-        // Path: oauth-idp/google
         VaultResponse vaultResponse = vaultTemplate.read(vaultPath);
         assert vaultResponse != null;
         Map<String, Object> vaultResponseData = vaultResponse.getData();
