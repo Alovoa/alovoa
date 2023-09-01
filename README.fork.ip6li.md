@@ -171,6 +171,17 @@ Donation function is configurable with
 donate.enabled
 ```
 
+# Captcha
+
+Most annoying "feature" in Alovoa is captcha. [#287](https://github.com/Alovoa/alovoa/issues/287) recommends
+to remove captcha. This fork has a better solution, it makes captcha configurable. Set *application.properties*
+to desired value:
+
+```
+app.captcha.enabled=false
+```
+⇒ No more captcha :-)
+
 # Chat
 
 Alovoa provides an internal chat solution. This fork adds Matrix client support with Element as alternative
