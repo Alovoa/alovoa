@@ -16,6 +16,10 @@ what happens here.
 * Selenium configures browser to use a proxy server. Proxy server is OWASP Zap, which is configured to attack Alovoa on localhost.
 * Now it should be obvious that Alovoa must be fully configured and operable, so it can be tested.
 
+# Requirements
+
+Local authentication **must** be enabled, set *app.local.login.enabled=true* otherwise Zap test will fail.
+
 # False Positives
 
 OWASP Zap delivers a report which shows some security flaws. That means from a network view on application.
