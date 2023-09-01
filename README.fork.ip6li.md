@@ -64,7 +64,7 @@ which can IDP better than Alovoa, because these solutions are made for IDP. One 
 [Keycloak](https://www.keycloak.org/). Keycloak supports also delegation to many external OIDC and OAuth2 IDPs,
 e.g. Github, Google, Microsoft and many others. **Warning: Never allow admin access to Alovoa authenticated
 by external IDPs.** Hint: Configure Keycloak realm for multi factor authentication for Alovoa admins. Alovoa
-admins needs Realm role *AlovoaAdmin*. At *Users* ⇒ *<admin user>* ⇒  *User details* ⇒  *Role mapping* add
+admins needs Realm role *AlovoaAdmin*. At *Users* ⇒ *&lt;admin user&gt;* ⇒  *User details* ⇒  *Role mapping* add
 *AlovoaAdmin*. Now this user has admin entitlement in Alovoa.
 
 ## Architecture change proposal
