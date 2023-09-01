@@ -7,6 +7,7 @@ import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,6 +32,9 @@ public class DonateResource {
     @Autowired
     private TextEncryptorConverter textEncryptor;
 
+    @Value("${donate.enabled}")
+    private String donateEnabled;
+
     @GetMapping("/donate")
     public ModelAndView donate()
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
@@ -38,6 +42,7 @@ public class DonateResource {
         ModelAndView mav = new ModelAndView("donate");
         User user = authService.getCurrentUser(true);
         mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        mav.addObject("donateEnabled", Boolean.parseBoolean(donateEnabled));
         return mav;
     }
 }

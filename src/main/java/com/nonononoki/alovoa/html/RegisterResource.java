@@ -42,6 +42,9 @@ public class RegisterResource {
 	@Value("${spring.security.oauth2.client.registration.ip6li.client-id:#{null}}")
 	private void ip6liEnabled(String clientId) { this.ip6liEnabled = clientId!=null; }
 
+	@Value("${app.local.login.enabled}")
+	private String localLoginEnabled;
+
 	public static final String URL = "/register";
 
 	@GetMapping(URL)
@@ -57,6 +60,7 @@ public class RegisterResource {
 		mav.addObject("facebookEnabled", facebookEnabled);
 		mav.addObject("googleEnabled", googleEnabled);
 		mav.addObject("ip6liEnabled", ip6liEnabled);
+		mav.addObject("localLoginEnabled", Boolean.parseBoolean(localLoginEnabled));
 		return mav;
 	}
 

@@ -23,7 +23,7 @@
 	<div id="main">
 		<header th:insert="~{fragments.html::header-logged-out}"></header>
 		<div class="section" id="main-section">
-			<div class="container">
+			<div class="container" th:if="${donateEnabled}">
 				<div id="donation-links">
 					<div class="box">
 						<i class="fa-lg fas fa-question-circle question-button" style="cursor:pointer; float: right;" onclick="donateInfo()"></i>

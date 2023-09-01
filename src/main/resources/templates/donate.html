@@ -34,18 +34,21 @@
     <section class="container" id="main-container" style="margin-bottom: 52px;"></section>
 </div>
 
-<div class="modal modal-fx-fadeInScale" id="donate-settings-modal">
-    <div class="modal-background" onclick="closeModal()"></div>
-    <div class="modal-content">
-        <div class="box">
-            <article class="media">
-                <div class="control radio-parent" id="donation-select">
-                    <label class="radio"><input checked name="sort" onchange="search(1)"
-                                                th:text="#{donate.latest-donations}" type="radio"></label>
-                    <label class="radio"><input name="sort" onchange="search(2)" th:text="#{donate.largest-donations}"
-                                                type="radio"></label>
-                </div>
-            </article>
+<div th:if="${donateEnabled}">
+    <div class="modal modal-fx-fadeInScale" id="donate-settings-modal">
+        <div class="modal-background" onclick="closeModal()"></div>
+        <div class="modal-content">
+            <div class="box">
+                <article class="media">
+                    <div class="control radio-parent" id="donation-select">
+                        <label class="radio"><input checked name="sort" onchange="search(1)"
+                                                    th:text="#{donate.latest-donations}" type="radio"></label>
+                        <label class="radio"><input name="sort" onchange="search(2)"
+                                                    th:text="#{donate.largest-donations}"
+                                                    type="radio"></label>
+                    </div>
+                </article>
+            </div>
         </div>
     </div>
 </div>

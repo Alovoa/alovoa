@@ -27,7 +27,7 @@
 			<div class="container container-narrow">
 				<h3 class="title" th:text="#{register.title}"></h3>
 				<p class="subtitle" th:text="#{register.subtitle}"></p>
-				<a id="email-auth" onclick="emailAuthClick()"
+				<a th:if="${localLoginEnabled}" id="email-auth" onclick="emailAuthClick()"
 					class=" full-width button is-colored is-rounded"
 					aria-label="more options"
 					style="display: flex; justify-content: center; background-color: initial;">
