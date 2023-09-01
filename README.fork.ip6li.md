@@ -60,6 +60,8 @@ vault write database/roles/mysqlrole \
   max_ttl="24h"
 ```
 
+## Vault Policy
+
 Alovoa should not use root vault token, it should use a dedicated token with specific entitelments:
 
 ```
@@ -76,12 +78,26 @@ path "alovoa/creds" {
 EOF
 ```
 
-At least OAuth2 credentials are added:
+## OAuth2 Credentials
+
+Now OAuth2 credentials are added:
 
 ```
 vault secrets enable -path=oauth-idp kv
 vault kv put -mount=oauth-idp keycloak client-id=TheClientId client-secret=TheClientSecret
 ```
+
+There are no entries for Google or Facebook. Keycloak does this delegation on my Alovoa site.
+
+## Vault Token
+
+Now generate a dedicated token for Alovoa.
+
+```
+vault token create -policy=alovoa-policy
+```
+
+Save output of that command.
 
 # Redis
 
