@@ -42,6 +42,9 @@ public class SearchResource {
     private int donationModulus;
     @Value("${app.donation.popup.time}")
     private int donationPopupTime;
+    @Value("${app.search.max.distance}")
+    private int searchMaxDistance;
+
 
     @GetMapping(URL)
     public ModelAndView search() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
@@ -77,6 +80,7 @@ public class SearchResource {
         ModelAndView mav = new ModelAndView("search");
         mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
         mav.addObject("showDonationPopup", showDonationPopup);
+        mav.addObject("searchMaxDistance", searchMaxDistance);
         return mav;
     }
 }
