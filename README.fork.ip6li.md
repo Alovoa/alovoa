@@ -187,3 +187,10 @@ single sign on is implemented for Matrix server and Alovoa. Keycloak is a good c
 * Private key is still in resorces folder - this is a security flaw. ToDo: Move to vault.
 * Admin login possible by private OIDC IDP.
 
+# Tests
+
+Most important change is a unit test for dynamic application security test (DAST) based
+on OWASP Zap and Selenium. See src/test/java/com/nonononoki/alovoa/dast/README.md for
+further information.
+Selenium is also good for testing web interface. May be helpful for [#284](https://github.com/Alovoa/alovoa/issues/284).
+
