@@ -22,39 +22,35 @@ public class VaultPropertySource extends PropertySource<String> {
     private static DatasourceCredentials datasourceCredentials;
     private static final Map<String, String> cachedVaultData = new HashMap<>();
     private static VaultPropertySource vaultPropertySource;
+    private static String vaultPropertiesPath;
 
-    private static final List<String> VAULT_VARS = Arrays.asList(
-            "app.text.key",
-            "app.text.salt",
-            "app.admin.email",
-            "app.admin.key",
-            "app.login.remember.key",
-            "app.vapid.public",
-            "app.vapid.private",
-            "spring.mail.password",
-            "spring.mail.username",
-            "spring.data.redis.username",
-            "spring.data.redis.password"
-    );
-
-    private VaultPropertySource(String name, ConfigurableApplicationContext context) throws AlovoaException {
+    private VaultPropertySource(String name, ConfigurableApplicationContext context)
+            throws AlovoaException {
         super(name);
         datasourceCredentials = DatasourceCredentials.getInstance();
         ConfigurableEnvironment contextEnvironment = context.getEnvironment();
         String vaultToken = contextEnvironment.getProperty("spring.cloud.vault.token");
+        vaultPropertiesPath = contextEnvironment.getProperty("app.vault.propertypath");
+        if (vaultPropertiesPath ==null) { vaultPropertiesPath = "alovoa/creds"; }
         if (vaultToken == null) {
-            throw new AlovoaException("spring.cloud.vault.token not defined in application.properties");
+            throw new AlovoaException(
+                    "spring.cloud.vault.token not defined in " +
+                    "application.properties or environment variable" +
+                    "'vault.token' not set"
+            );
         }
+
         try {
             URI vaultUrl = new URI(Objects.requireNonNull(contextEnvironment.getProperty("spring.cloud.vault.uri")));
             datasourceCredentials.setVaultUrl(vaultUrl);
+            datasourceCredentials.setVaultToken(vaultToken);
         } catch (URISyntaxException e) {
-            logger.error(String.format("setVaultUrl %s failed", e.getMessage()));
+            throw new AlovoaException(String.format("'spring.cloud.vault.uri' contains invalid URI: %s", e.getMessage()));
         }
-        datasourceCredentials.setVaultToken(vaultToken);
     }
 
-    public static VaultPropertySource getInstance(ConfigurableApplicationContext context) throws AlovoaException {
+    public static VaultPropertySource getInstance(ConfigurableApplicationContext context)
+            throws AlovoaException {
         if (vaultPropertySource == null) {
             vaultPropertySource = new VaultPropertySource("vault", context);
         }
@@ -64,8 +60,10 @@ public class VaultPropertySource extends PropertySource<String> {
     @Override
     public String getProperty(@Nullable String propertyName) {
         logger.trace(String.format("getProperty: %s", propertyName));
-        String cachedData = cachedVaultData.get(propertyName);
-        if (cachedData != null) return cachedData;
+        if (cachedVaultData.containsKey(propertyName)) {
+            logger.info(String.format("Returned cached value for %s", propertyName));
+            return cachedVaultData.get(propertyName);
+        }
 
         // Check vault entries for required OAuth credentials
         Pattern pattern = Pattern.compile(
@@ -77,30 +75,25 @@ public class VaultPropertySource extends PropertySource<String> {
         if (matcher.matches()) {
             String idp = matcher.group(1);
             String type = matcher.group(2);
-            String data = readOauthCredentials(idp, type);
-            if (data!=null)
-                cachedVaultData.put(String.format("spring.security.oauth2.client.registration.%s.%s", idp, type), data);
-            else
+            String data = datasourceCredentials.getOAuthCredentials(String.format("oauth-idp/%s", idp)).get(type);
+            cachedVaultData.put(String.format("spring.security.oauth2.client.registration.%s.%s", idp, type), data);
+            if (data==null) {
                 logger.warn(String.format("getProperty: Cannot resolve %s from vault", propertyName));
+            }
             return data;
         }
 
-        if (VAULT_VARS.contains(propertyName.toLowerCase())) {
-            String secret = readOtherCredentials("alovoa/creds", propertyName);
-            cachedVaultData.put(propertyName, secret);
-            return secret;
+        //String vaultValue = datasourceCredentials.getOAuthCredentials("alovoa/creds").get(propertyName);
+        String vaultValue = datasourceCredentials.getOAuthCredentials(vaultPropertiesPath).get(propertyName);
+        cachedVaultData.put(propertyName, vaultValue);
+        if (vaultValue == null) {
+            logger.warn(String.format("Vault does not contain a value for %s", propertyName));
         }
-
-        // No customization: Return null
-        return null;
+        return vaultValue;
     }
 
-    private String readOauthCredentials(String idp, String type) {
-        return datasourceCredentials.getOAuthCredentials(String.format("oauth-idp/%s", idp)).get(type);
-    }
-
-    private String readOtherCredentials(String path, String type) {
-        return datasourceCredentials.getOAuthCredentials(path).get(type);
+    public void clearCachedVaultProperties() {
+        cachedVaultData.clear();
     }
 
 }
