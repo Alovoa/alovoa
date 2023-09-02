@@ -83,7 +83,7 @@
 									<div style="flex-grow: 1">
 										<label class="label" th:text="#{search.max-distance}"></label>
 										<div class="slider-container" style="padding-top: 8px; padding-bottom: 8px;">
-											<input class="slider has-output " step="1" min="1" max="100" value="50" type="range"
+											<input class="slider has-output " step="1" min="1" th:attr="max=${searchMaxDistance}" value="50" type="range"
 												id="max-distance-slider">
 											<output for="max-distance-slider">50</output>
 											<div style="padding-left: 4px"></div>
