@@ -634,7 +634,7 @@ function updateShowZodiac() {
 		type: "POST",
 		url: "/user/show-zodiac/update/" + val,
 		success: function(e) {
-			location.reload();
+			return false;
 		},
 		error: function(e) {
 			console.log(e);
@@ -644,6 +644,7 @@ function updateShowZodiac() {
 			}
 		}
 	});
+	return false;
 }
 
 function updateUnits() {
@@ -652,7 +653,7 @@ function updateUnits() {
 		type: "POST",
 		url: "/user/units/update/" + val,
 		success: function(e) {
-			location.reload();
+			return false;
 		},
 		error: function(e) {
 			console.log(e);
@@ -662,6 +663,7 @@ function updateUnits() {
 			}
 		}
 	});
+	return false;
 }
 
 
