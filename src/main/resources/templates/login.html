@@ -60,7 +60,9 @@
 												name="password">
 										</div>
 									</div>
-									<div th:replace="~{fragments.html::captcha}"></div>
+									<div th:if="${captchaEnabled}">
+										<div th:replace="~{fragments.html::captcha}"></div>
+									</div>
 									<div class="field">
 										<label class="checkbox"> <input type="checkbox" name="remember-me" checked> <span
 												th:text="#{login.remember}"></span>

@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.nonononoki.alovoa.entity.Contact;
@@ -24,11 +25,16 @@ public class ImprintService {
 	@Autowired
 	private ContactRepository contactRepo;
 
+	@Value("${app.captcha.imprint.enabled}")
+	private String captchaImprintEnabled;
+
 	public Contact contact(ContactDto dto)
 			throws UnsupportedEncodingException, NoSuchAlgorithmException, AlovoaException {
-		boolean isValid = captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText());
-		if (!isValid) {
-			throw new AlovoaException(publicService.text("backend.error.captcha.invalid"));
+		if (Boolean.parseBoolean(captchaImprintEnabled)) {
+			boolean isValid = captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText());
+			if (!isValid) {
+				throw new AlovoaException(publicService.text("backend.error.captcha.invalid"));
+			}
 		}
 
 		Contact c = new Contact();

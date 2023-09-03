@@ -18,7 +18,10 @@ public class LoginResource {
 
 	@Value("${app.privacy.update-date}")
 	private String privacyDate;
-	
+
+	@Value("${app.captcha.login.enabled}")
+	private String captchaEnabled;
+
 	public static final String URL = "/login";
 
 	@GetMapping(URL)
@@ -30,6 +33,7 @@ public class LoginResource {
 		}
 
 		ModelAndView mav = new ModelAndView("login");
+		mav.addObject("captchaEnabled", Boolean.valueOf(captchaEnabled));
 		return mav;
 	}
 }
