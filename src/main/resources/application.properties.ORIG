@@ -1,31 +1,7 @@
 #only used when not configured in run configuration, dev profile always recommended to save in IDE
-spring.profiles.active=test
-
-chat.enabled=true
-chat.type=internal
-#chat.type=matrix
-
-donate.enabled=false
-app.local.login.enabled=true
-
-##############################################################################
-spring.cloud.vault.uri=https://vault.test.felsing.net:8200
-# vault.token must be provided by system environment
-spring.cloud.vault.token=${vault.token}
-spring.cloud.vault.templatepath=database/creds/mysqlrole
-app.vault.propertypath=alovoa/creds
-#spring.cloud.vault.ssl.trust-store=classpath:truststore.jks
-#spring.cloud.vault.ssl.trust-store-password=changeit
-##############################################################################
-# cp /etc/pki/ca-trust/extracted/java/cacerts truststore.jks
-# keytool -keystore truststore.jks  -alias vault-ca -import -file ca.crt -storepass changeit -noprompt
-##############################################################################
+spring.profiles.active=test 
 
 server.port=${PORT:8080}
-
-server.forward-headers-strategy=native
-server.tomcat.remote-ip-header=x-forwarded-for
-server.tomcat.protocol-header=x-forwarded-proto
 
 #enable to force https for development
 #server.ssl.key-store-type=PKCS12
@@ -37,28 +13,27 @@ spring.main.allow-bean-definition-overriding=true
 
 server.http2.enabled=true
 
-#spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
-#spring.datasource.url=jdbc:mariadb://mysql:3306/alovoa?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false
+spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
+spring.datasource.url=jdbc:mariadb://localhost:3306/alovoa?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false
 #spring.datasource.hikari.maximum-pool-size=10
 #spring.datasource.hikari.connectionTimeout=30000
 #spring.datasource.hikari.idleTimeout=600000
 #spring.datasource.hikari.maxLifetime=1800000
 
 #Insert your oauth2 ids and secrets here
-spring.security.oauth2.client.registration.google.scope[0]=email
-spring.security.oauth2.client.registration.google.scope[1]=profile
+#spring.security.oauth2.client.registration.google.client-id=<your client id>
+#spring.security.oauth2.client.registration.google.client-secret=<your client secret>
+#spring.security.oauth2.client.registration.facebook.client-id=<your client id>
+#spring.security.oauth2.client.registration.facebook.client-secret=<your client secret>
 
-spring.security.oauth2.client.registration.facebook.scope[0]=email
-spring.security.oauth2.client.registration.facebook.scope[1]=public_profile
-
-spring.security.oauth2.client.provider.ip6li.issuer-uri=https://auth1.ip6.li/realms/matrix
-spring.security.oauth2.authorizationserver.endpoint.oidc.logout-uri=https://auth1.ip6.li/realms/matrix/protocol/openid-connect/logout?redirect_uri=https://alovoa.test.felsing.net
-spring.security.oauth2.client.registration.ip6li.scope[0]=openid
-spring.security.oauth2.client.registration.ip6li.scope[1]=email
-spring.security.oauth2.client.registration.ip6li.scope[2]=profile
 #we keep the default /login/oauth2/code/{registrationId} scheme
 
 spring.web.locale=en_EN
+
+spring.security.oauth2.client.registration.google.scope[0]=email
+spring.security.oauth2.client.registration.google.scope[1]=profile
+spring.security.oauth2.client.registration.facebook.scope[0]=email
+spring.security.oauth2.client.registration.facebook.scope[1]=public_profile
 
 server.servlet.session.timeout=1h
 server.servlet.session.cookie.max-age=1h
@@ -69,7 +44,6 @@ server.compression.min-response-size=10240
 
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MariaDB103Dialect
 spring.jpa.database-platform=org.hibernate.dialect.MariaDB103Dialect
-spring.jpa.open-in-view=true
 spring.jpa.show-sql=false
 spring.jpa.generate-ddl=true
 spring.jpa.properties.hibernate.id.db_structure_naming_strategy=legacy
@@ -80,20 +54,28 @@ spring.jpa.properties.hibernate.plan_cache_max_size=16
 spring.jpa.properties.hibernate.plan_parameter_metadata_max_size=16
 spring.jpa.properties.hibernate.query.in_clause_parameter_padding=true
 
+### KEYS AND CREDENTIALS ###
+#spring.datasource.password=
+#spring.datasource.username=
+#keys for transparent database encryption
+#app.text.key= #key must be 16, 24 or 32 bytes long
+#app.text.salt= #salt must be 16 bytes long
+#app.admin.email=
+#app.admin.key=
+#spring.mail.password=<login password to smtp server>
+spring.mail.host=mail.gmx.net
+spring.mail.port=587
+spring.mail.username=nonononoki@gmx.de
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 spring.mail.test-connection=true
 
 # logging
 logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n
-logging.level.org.springframework.web=info
-logging.level.org.springframework.security=info
-logging.level.root=info
+logging.level.org.springframework.web=INFO
 logging.level.org.hibernate.SQL=ERROR
 logging.level.org.hibernate=ERROR
-logging.level.org.springframework.vault=info
-logging.file.name=/logs/spring.log
-logging.level.javax.net.ssl=info
+logging.file.name=./logs/spring.log
 
 #caching
 spring.cache.cache-names=bucket4j
@@ -176,7 +158,7 @@ bucket4j.filters[8].rate-limits[0].bandwidths[0].unit=seconds
 
 bucket4j.filters[9].cache-name=bucket4j
 bucket4j.filters[9].url=/user/update/profile-picture
-bucket4j.filters[9].metrics.tags[0].key=IPdataSource
+bucket4j.filters[9].metrics.tags[0].key=IP
 bucket4j.filters[9].metrics.tags[0].expression=getRemoteAddr()
 bucket4j.filters[9].rate-limits[0].bandwidths[0].capacity=5
 bucket4j.filters[9].rate-limits[0].bandwidths[0].time=60
@@ -208,7 +190,7 @@ bucket4j.filters[12].rate-limits[0].bandwidths[0].unit=seconds
 
 bucket4j.filters[13].cache-name=bucket4j
 bucket4j.filters[13].url=/profile/view/*
-bucket4j.filters[13].metrics.tags[0].key=IPdataSource
+bucket4j.filters[13].metrics.tags[0].key=IP
 bucket4j.filters[13].metrics.tags[0].expression=getRemoteAddr()
 bucket4j.filters[13].rate-limits[0].bandwidths[0].capacity=5
 bucket4j.filters[13].rate-limits[0].bandwidths[0].time=10
@@ -270,13 +252,13 @@ bucket4j.filters[20].rate-limits[0].bandwidths[0].capacity=10
 bucket4j.filters[20].rate-limits[0].bandwidths[0].time=10
 bucket4j.filters[20].rate-limits[0].bandwidths[0].unit=seconds
 
+
 # custom values
 app.company.name=Alovoa
 app.privacy.update-date=2021-06-16
 app.tos.update-date=2021-09-22
 app.name=Alovoa
-app.domain=https://alovoa.test.felsing.net
-app.captcha.enabled=false
+app.domain=http://localhost:8080
 
 #secret in url to verify that the transaction is legit, change in production!
 app.donate.kofi.key=kofi123
@@ -307,6 +289,11 @@ app.donate.users.max=100
 app.vapid.max=10
 app.referral.max=20
 
+#test values only, use proper keys for production!
+app.login.remember.key=CWjuiidCW23KnRWUnzVpcpE4pVFcVCC7pi5X9htZVxDPp5ztWDrj2ePahFXQQeTx
+app.vapid.public=BEfuzSVrY3s8fD1MpytGBncV-S_Wv4KdOvomVaiwpomu3sJwIkdI5ivmrs3D4RVTApxytQnY3761XlQGj-jv6XA
+app.vapid.private=QibUiZ7evckF5kC2S6ppG8EJQhWPnyel9DfQEs-k41I
+
 app.intention.delay=86400000
 app.interest.max=5
 app.interest.min-chars=3
@@ -333,4 +320,3 @@ app.schedule.delay.captcha=300000
 app.schedule.delay.hide=9720000000
 #90 days
 app.schedule.delay.contact=9720000000
-
