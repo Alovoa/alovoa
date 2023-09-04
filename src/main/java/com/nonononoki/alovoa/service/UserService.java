@@ -504,7 +504,7 @@ public class UserService {
             throw new AlovoaException("interest_invalid_size");
         }
 
-        Pattern pattern = Pattern.compile("[a-zA-Z0-9-]+");
+        Pattern pattern = Pattern.compile("[\\p{L}\\d-]+", Pattern.UNICODE_CHARACTER_CLASS);
         Matcher matcher = pattern.matcher(value);
         if (!matcher.matches()) {
             throw new AlovoaException("interest_unsupported_characters");
