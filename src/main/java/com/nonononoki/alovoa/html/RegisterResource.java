@@ -29,6 +29,9 @@ public class RegisterResource {
 	@Autowired
 	private AuthService authService;
 
+	@Value("${app.captcha.register.enabled}")
+	private String captchaRegisterEnabled;
+
 	public static final String URL = "/register";
 
 	@GetMapping(URL)
@@ -41,6 +44,7 @@ public class RegisterResource {
 		ModelAndView mav = new ModelAndView("register");
 		mav.addObject("genders", genderRepo.findAll());
 		mav.addObject("intentions", userIntentionRepo.findAll());
+		mav.addObject("captchaRegisterEnabled", Boolean.parseBoolean(captchaRegisterEnabled));
 		return mav;
 	}
 
