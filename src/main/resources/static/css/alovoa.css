@@ -345,6 +345,10 @@ input[type=range].slider {
 	background-color: #4267b2; width: 100%;
 }
 
+#keycloak-auth {
+	background-color: #4267b2; width: 100%;
+}
+
 .swiper-pagination:not(.swiper-pagination-vertical) {
 	width: 100%;
 }
@@ -571,7 +575,7 @@ input[type=range].slider {
 	#email-auth svg {
 		font-size: 0.8em;
 	}
-	#facebook-auth img, #google-auth img {
+	#facebook-auth img, #google-auth img, #keycloak-auth img {
 		height: 20px !important;
 	}
 }

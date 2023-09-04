@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.html;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,49 +17,76 @@ import com.nonononoki.alovoa.service.RegisterService;
 @Controller
 public class RegisterResource {
 
-	@Autowired
-	private RegisterService registerService;
+    private boolean facebookEnabled;
+    private boolean googleEnabled;
+    private boolean keycloakEnabled;
 
-	@Autowired
-	private GenderRepository genderRepo;
+    @Autowired
+    private RegisterService registerService;
 
-	@Autowired
-	private UserIntentionRepository userIntentionRepo;
+    @Autowired
+    private GenderRepository genderRepo;
 
-	@Autowired
-	private AuthService authService;
-	
-	public static final String URL = "/register";
+    @Autowired
+    private UserIntentionRepository userIntentionRepo;
 
-	@GetMapping(URL)
-	public ModelAndView register() throws AlovoaException {
+    @Autowired
+    private AuthService authService;
 
-		User user = authService.getCurrentUser();
-		if (user != null) {
-			return new ModelAndView("redirect:" + ProfileResource.URL);
-		}
-		ModelAndView mav = new ModelAndView("register");
-		mav.addObject("genders", genderRepo.findAll());
-		mav.addObject("intentions", userIntentionRepo.findAll());
-		return mav;
-	}
+    @Value("${spring.security.oauth2.client.registration.facebook.client-id:#{null}}")
+    private void facebookEnabled(String clientId) {
+        this.facebookEnabled = clientId != null;
+    }
 
-	public ModelAndView registerOauth(String firstName) {
-		ModelAndView mav = new ModelAndView("register-oauth");
-		mav.addObject("genders", genderRepo.findAll());
-		mav.addObject("intentions", userIntentionRepo.findAll());
-		mav.addObject("firstName", firstName);
-		return mav;
-	}
+    @Value("${spring.security.oauth2.client.registration.google.client-id:#{null}}")
+    private void googleEnabled(String clientId) {
+        this.googleEnabled = clientId != null;
+    }
 
-	@GetMapping("/register/confirm/{tokenString}")
-	public String registerConfirm(@PathVariable String tokenString) {
-		try {
-			registerService.registerConfirm(tokenString);
-			return "redirect:/?registration-confirm-success";
-		} catch (Exception e) {
-			return "redirect:/?registration-confirm-failed";
-		}
+    @Value("${spring.security.oauth2.client.registration.keycloak.client-id:#{null}}")
+    private void ip6liEnabled(String clientId) {
+        this.keycloakEnabled = clientId != null;
+    }
 
-	}
+    @Value("${app.local.login.enabled}")
+    private String localLoginEnabled;
+
+
+    public static final String URL = "/register";
+
+    @GetMapping(URL)
+    public ModelAndView register() throws AlovoaException {
+
+        User user = authService.getCurrentUser();
+        if (user != null) {
+            return new ModelAndView("redirect:" + ProfileResource.URL);
+        }
+        ModelAndView mav = new ModelAndView("register");
+        mav.addObject("genders", genderRepo.findAll());
+        mav.addObject("intentions", userIntentionRepo.findAll());
+        mav.addObject("facebookEnabled", facebookEnabled);
+        mav.addObject("googleEnabled", googleEnabled);
+        mav.addObject("keycloakEnabled", keycloakEnabled);
+        mav.addObject("localLoginEnabled", Boolean.parseBoolean(localLoginEnabled));
+        return mav;
+    }
+
+    public ModelAndView registerOauth(String firstName) {
+        ModelAndView mav = new ModelAndView("register-oauth");
+        mav.addObject("genders", genderRepo.findAll());
+        mav.addObject("intentions", userIntentionRepo.findAll());
+        mav.addObject("firstName", firstName);
+        return mav;
+    }
+
+    @GetMapping("/register/confirm/{tokenString}")
+    public String registerConfirm(@PathVariable String tokenString) {
+        try {
+            registerService.registerConfirm(tokenString);
+            return "redirect:/?registration-confirm-success";
+        } catch (Exception e) {
+            return "redirect:/?registration-confirm-failed";
+        }
+
+    }
 }

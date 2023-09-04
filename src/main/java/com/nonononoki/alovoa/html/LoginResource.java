@@ -13,23 +13,49 @@ import com.nonononoki.alovoa.service.AuthService;
 @Controller
 public class LoginResource {
 
-	@Autowired
-	private AuthService authService;
+    private boolean facebookEnabled;
+    private boolean googleEnabled;
+    private boolean keycloakEnabled;
 
-	@Value("${app.privacy.update-date}")
-	private String privacyDate;
-	
-	public static final String URL = "/login";
+    @Autowired
+    private AuthService authService;
 
-	@GetMapping(URL)
-	public ModelAndView login() throws AlovoaException {
+    @Value("${app.privacy.update-date}")
+    private String privacyDate;
 
-		User user = authService.getCurrentUser();
-		if (user != null) {
-			return new ModelAndView("redirect:" + SearchResource.URL);
-		}
+    @Value("${spring.security.oauth2.client.registration.facebook.client-id:#{null}}")
+    private void facebookEnabled(String clientId) {
+        this.facebookEnabled = clientId != null;
+    }
 
-		ModelAndView mav = new ModelAndView("login");
-		return mav;
-	}
+    @Value("${spring.security.oauth2.client.registration.google.client-id:#{null}}")
+    private void googleEnabled(String clientId) {
+        this.googleEnabled = clientId != null;
+    }
+
+    @Value("${spring.security.oauth2.client.registration.keycloak.client-id:#{null}}")
+    private void ip6liEnabled(String clientId) {
+        this.keycloakEnabled = clientId != null;
+    }
+
+    @Value("${app.local.login.enabled}")
+    private String localLoginEnabled;
+
+    public static final String URL = "/login";
+
+    @GetMapping(URL)
+    public ModelAndView login() throws AlovoaException {
+
+        User user = authService.getCurrentUser();
+        if (user != null) {
+            return new ModelAndView("redirect:" + SearchResource.URL);
+        }
+
+        ModelAndView mav = new ModelAndView("login");
+        mav.addObject("facebookEnabled", facebookEnabled);
+        mav.addObject("googleEnabled", googleEnabled);
+        mav.addObject("keycloakEnabled", keycloakEnabled);
+        mav.addObject("localLoginEnabled", Boolean.parseBoolean(localLoginEnabled));
+        return mav;
+    }
 }

@@ -86,23 +86,21 @@ public class Oauth2Controller {
 	private static final int REDIRECT_DEFAULT = 3;
 	private static final int HOUR_S = 3600;
 
-	@GetMapping("/oauth2/authorization/google/{redirectUrlEncoded}")
-	public ModelAndView oauth2Google(@PathVariable String redirectUrlEncoded) {
-		httpSession.setAttribute(REDIRECT_URL, redirectUrlEncoded);
-		return new ModelAndView(new RedirectView("/oauth2/authorization/google"));
-	}
+	@Value("${app.oauth2.issuer.adminallowed:#{null}}")
+	private String adminAllowedIssuer;
 
-	@GetMapping("/oauth2/authorization/facebook/{redirectUrlEncoded}")
-	public ModelAndView oauth2Facebook(@PathVariable String redirectUrlEncoded) {
+	@GetMapping("/oauth2/authorization/{idp}/{redirectUrlEncoded}")
+	public ModelAndView oauth2general(
+			@PathVariable String idp,
+			@PathVariable String redirectUrlEncoded
+	) {
 		httpSession.setAttribute(REDIRECT_URL, redirectUrlEncoded);
-		return new ModelAndView(new RedirectView("/oauth2/authorization/facebook"));
+		return new ModelAndView(new RedirectView(String.format("/oauth2/authorization/%s", idp)));
 	}
 
 	@SuppressWarnings("rawtypes")
 	@GetMapping("/login/oauth2/success")
-	public ModelAndView oauth2Success()
-			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+	public ModelAndView oauth2Success() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		try {
@@ -155,7 +153,7 @@ public class Oauth2Controller {
 
 				// administrator cannot use oauth for security reason e.g. password breach on
 				// oath provider
-				if (user.isAdmin()) {
+				if (!issuerIsAdminEnabled(client) && user.isAdmin()) {
 					SecurityContextHolder.clearContext();
 					throw new AlovoaException("not_supported_for_admin");
 				}
@@ -211,4 +209,14 @@ public class Oauth2Controller {
 	private String getOauthParams(String username, String firstName, int page) {
 		return Tools.getAuthParams(securityConfig, httpSession.getId(), username, firstName, page);
 	}
+
+	private boolean issuerIsAdminEnabled (OAuth2AuthorizedClient client) {
+		Map<String, Object> configurationMetadata = client
+				.getClientRegistration()
+				.getProviderDetails()
+				.getConfigurationMetadata();
+		String issuer = (String)configurationMetadata.get("issuer");
+		if (issuer==null || adminAllowedIssuer==null) return false;
+        return issuer.equalsIgnoreCase(adminAllowedIssuer);
+    }
 }
