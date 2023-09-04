@@ -11,7 +11,7 @@ public class ImprintResource {
 	@Value("${app.company.name}")
 	private String companyName;
 
-	@Value("${app.captcha.enabled}")
+	@Value("${app.captcha.imprint.enabled}")
     private String captchaImprintEnabled;
 
 	@GetMapping("/imprint")

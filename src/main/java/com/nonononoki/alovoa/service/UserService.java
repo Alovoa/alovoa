@@ -805,7 +805,7 @@ public class UserService {
         User user = authService.getCurrentUser(true);
         // user always check their alerts periodically in the background, so just update
         // it here
-        if (user != null) {
+        if (user != null && user.getDates()!=null) {
             updateUserInfo(user, lang);
             return user.getDates().getNotificationDate().after(user.getDates().getNotificationCheckedDate());
         } else {
@@ -815,7 +815,7 @@ public class UserService {
 
     public boolean hasNewMessage() throws AlovoaException {
         User user = authService.getCurrentUser(true);
-        if (user != null && user.getDates().getMessageDate() != null
+        if (user != null && user.getDates()!=null && user.getDates().getMessageDate() != null
                 && user.getDates().getMessageCheckedDate() != null) {
             return user.getDates().getMessageDate().after(user.getDates().getMessageCheckedDate());
         } else {
