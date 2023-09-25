@@ -105,6 +105,8 @@ public class SecurityConfig {
 
 		http.sessionManagement().maximumSessions(10).expiredSessionStrategy(getSessionInformationExpiredStrategy())
 				.sessionRegistry(sessionRegistry());
+        http.securityContext((securityContext) -> securityContext.requireExplicitSave(false));
+
 		http.csrf().disable();
 
 		if (env.acceptsProfiles(Profiles.of("prod"))) {
