@@ -32,8 +32,12 @@
     <section class="container" id="main-container">
         <div class="section">
             <div class="container container-narrow" style="width: 100%;">
-                <div class="card is-horizontal messages-card" th:each="convo : ${conversations}"
-                     th:onclick="viewMessageDetail(this, [[${convo.id}]])">
+                <th:block th:if="${conversations.isEmpty()}">
+                <div class="no-messages-message" th:text="${message.no-message}">
+                </div>
+            </th:block>
+            <th:block th:unless="${conversations.isEmpty()}">
+                <div th:each="convo : ${conversations}" class="card is-horizontal messages-card" th:onclick="viewMessageDetail(this, [[${convo.id}]])">
                     <div class="card-image">
                         <figure class="image" style="max-width: 200px; max-height: 200px; margin: 0">
                             <img class="profile-pic" th:src="${convo.userProfilePicture}"
