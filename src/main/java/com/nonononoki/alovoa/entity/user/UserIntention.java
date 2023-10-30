@@ -28,7 +28,6 @@ public class UserIntention {
 	@Transient
 	public static final long SEX = 3;
 
-	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
