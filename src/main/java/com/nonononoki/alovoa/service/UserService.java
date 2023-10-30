@@ -470,7 +470,7 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-    public void updateUserMiscInfo(long infoValue, boolean activated) throws AlovoaException {
+    public Set<UserMiscInfo> updateUserMiscInfo(long infoValue, boolean activated) throws AlovoaException {
         User user = authService.getCurrentUser(true);
         Set<UserMiscInfo> list = user.getMiscInfos();
         if (list == null) {
@@ -494,6 +494,7 @@ public class UserService {
         }
         user.setMiscInfos(list);
         userRepo.saveAndFlush(user);
+        return list;
     }
 
     public void addInterest(String value) throws AlovoaException {

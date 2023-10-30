@@ -2,6 +2,7 @@ package com.nonononoki.alovoa.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.entity.user.UserMiscInfo;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.ProfileOnboardingDto;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
@@ -26,6 +27,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/user")
@@ -149,8 +151,8 @@ public class UserController {
     }
 
     @PostMapping("/update/misc-info/{infoValue}/{activated}")
-    public void updateMiscInfo(@PathVariable long infoValue, @PathVariable String activated) throws AlovoaException {
-        userService.updateUserMiscInfo(infoValue, Tools.binaryStringToBoolean(activated));
+    public Set<UserMiscInfo> updateMiscInfo(@PathVariable long infoValue, @PathVariable String activated) throws AlovoaException {
+        return userService.updateUserMiscInfo(infoValue, Tools.binaryStringToBoolean(activated));
     }
 
     @PostMapping("/interest/add/{value}")
