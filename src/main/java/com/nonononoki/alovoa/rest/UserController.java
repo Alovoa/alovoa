@@ -2,6 +2,7 @@ package com.nonononoki.alovoa.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserMiscInfo;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.ProfileOnboardingDto;
@@ -191,11 +192,11 @@ public class UserController {
     }
 
     @PostMapping(value = "/image/add", consumes = "text/plain")
-    public void addImage(@RequestBody String imageB64) throws AlovoaException, IOException {
+    public List<UserImage> addImage(@RequestBody String imageB64) throws AlovoaException, IOException {
         if (Tools.getBase64Size(imageB64) > mediaMaxSize) {
             throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
         }
-        userService.addImage(imageB64);
+        return userService.addImage(imageB64);
     }
 
     @PostMapping("/image/delete/{imageId}")
