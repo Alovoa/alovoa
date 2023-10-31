@@ -38,7 +38,9 @@
                         <input class="input" name="email" required th:placeholder="#{email}" type="email">
                     </div>
                     <div style="padding-top: 32px;"></div>
-                    <div th:replace="~{fragments.html::captcha}"></div>
+                    <div th:if="${captchaEnabled}">
+                        <div th:replace="~{fragments.html::captcha}"></div>
+                    </div>
                     <div class="field">
                         <input class="switch" id="confirm" name="confirm" required style="position: absolute"
                                type="checkbox"> <label for="confirm"><span th:text="#{delete-account.confirm}"></span>

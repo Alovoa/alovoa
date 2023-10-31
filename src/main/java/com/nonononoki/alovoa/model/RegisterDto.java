@@ -17,4 +17,7 @@ public class RegisterDto {
 	
 	private boolean termsConditions;
 	private boolean privacy;
+
+	private String captchaText;
+	private long captchaId;
 }

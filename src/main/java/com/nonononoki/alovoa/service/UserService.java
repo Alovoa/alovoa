@@ -120,6 +120,9 @@ public class UserService {
     @Value("${app.intention.delay}")
     private long intentionDelay;
 
+    @Value("${app.captcha.delete.enabled}")
+    private String captchaDeleteEnabled;
+
     public static void removeUserDataCascading(User user, UserDeleteParams userDeleteParam) {
 
         UserRepository userRepo = userDeleteParam.getUserRepo();
@@ -329,8 +332,10 @@ public class UserService {
             throw new AlovoaException("deletion_wrong_email");
         }
 
-        if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
-            throw new AlovoaException("captcha_invalid");
+        if (Boolean.parseBoolean(captchaDeleteEnabled)) {
+            if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
+                throw new AlovoaException("captcha_invalid");
+            }
         }
 
         UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
@@ -802,7 +807,7 @@ public class UserService {
         User user = authService.getCurrentUser(true);
         // user always check their alerts periodically in the background, so just update
         // it here
-        if (user != null) {
+        if (user != null && user.getDates()!=null) {
             updateUserInfo(user, lang);
             return user.getDates().getNotificationDate().after(user.getDates().getNotificationCheckedDate());
         } else {
@@ -812,7 +817,7 @@ public class UserService {
 
     public boolean hasNewMessage() throws AlovoaException {
         User user = authService.getCurrentUser(true);
-        if (user != null && user.getDates().getMessageDate() != null
+        if (user != null && user.getDates()!=null && user.getDates().getMessageDate() != null
                 && user.getDates().getMessageCheckedDate() != null) {
             return user.getDates().getMessageDate().after(user.getDates().getMessageCheckedDate());
         } else {

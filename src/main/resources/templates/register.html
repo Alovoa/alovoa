@@ -142,7 +142,11 @@
 									th:utext="#{register.privacy-agree}"> </label>
 							</div>
 						</div>
-	
+
+						<div th:if="${captchaRegisterEnabled}">
+							<div th:replace="~{fragments.html::captcha}"></div>
+						</div>
+
 						<div class="register-warning" th:text="#{register.asterisk-warning}"></div>
 
 						<div class="field is-grouped" style="display: flex; justify-content: flex-start;">
@@ -166,6 +170,7 @@
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/modal-fx.min.js"></script>
 	<script src="/js/lib/bulma-toast.min.js"></script>
+	<script src="/js/tools/refresh-captcha.js"></script>
 	<script src="/js/tools/check-password.js"></script>
 	<script src="/js/tools/get-text.js"></script>
 	<script src="/js/tools/modal.js"></script>

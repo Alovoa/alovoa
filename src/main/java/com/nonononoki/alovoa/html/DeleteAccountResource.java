@@ -40,6 +40,9 @@ public class DeleteAccountResource {
     @Value("${app.user.delete.duration.valid}")
     private long accountDeleteDuration;
 
+    @Value("${app.captcha.delete.enabled}")
+    private String captchaDeleteEnabled;
+
     @GetMapping("/delete-account/{tokenString}")
     public ModelAndView deleteAccount(@PathVariable String tokenString) throws AlovoaException, InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
@@ -57,6 +60,7 @@ public class DeleteAccountResource {
             active = true;
         }
         mav.addObject("active", active);
+        mav.addObject("captchaEnabled", Boolean.valueOf(captchaDeleteEnabled));
 
         return mav;
     }

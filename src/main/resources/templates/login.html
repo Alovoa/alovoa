@@ -60,13 +60,15 @@
 												name="password">
 										</div>
 									</div>
-									<div th:replace="~{fragments.html::captcha}"></div>
+									<div th:if="${captchaEnabled}">
+										<div th:replace="~{fragments.html::captcha}"></div>
+									</div>
 									<div class="field">
 										<label class="checkbox"> <input type="checkbox" name="remember-me" checked> <span
 												th:text="#{login.remember}"></span>
 										</label>
 									</div>
-									<button class="button colored is-link" th:text="#{submit}"></button>
+									<button class="button colored is-link" th:text="#{submit}" id="send_login"></button>
 								</form>
 							</div>
 						</div>

@@ -108,6 +108,9 @@ public class RegisterService {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
+	@Value("${app.captcha.register.enabled}")
+	private String captchaRegisterEnabled;
+
 	private static final int MIN_PASSWORD_SIZE = 7;
 
 	private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
@@ -119,6 +122,13 @@ public class RegisterService {
 
 		if (!isValidEmailAddress(dto.getEmail())) {
 			throw new AlovoaException("email_invalid");
+		}
+
+		if (Boolean.parseBoolean(captchaRegisterEnabled)) {
+			boolean isValid = captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText());
+			if (!isValid) {
+				throw new AlovoaException(publicService.text("backend.error.captcha.invalid"));
+			}
 		}
 
 		if (!profile.equals(Tools.DEV)) {

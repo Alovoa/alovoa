@@ -7,6 +7,7 @@ import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,9 @@ public class PasswordResource {
     @Autowired
     private TextEncryptorConverter textEncryptor;
 
+    @Value("${app.captcha.password.enabled}")
+    private String captchaPasswordEnabled;
+
     @GetMapping("/reset")
     public ModelAndView passwordReset() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
             BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
@@ -41,6 +45,7 @@ public class PasswordResource {
         ModelAndView mav = new ModelAndView("password-reset");
         User user = authService.getCurrentUser();
         mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        mav.addObject("captchaEnabled", Boolean.valueOf(captchaPasswordEnabled));
         return mav;
     }
 

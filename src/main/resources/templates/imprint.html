@@ -48,7 +48,9 @@
 									th:placeholder="#{message}" required></textarea>
 							</div>
 							<div style="padding-top: 12px;"></div>
-							<div th:replace="~{fragments.html::captcha}"></div>
+							<div th:if="${captchaEnabled}">
+								<div th:replace="~{fragments.html::captcha}"></div>
+							</div>
 							<button class="button colored is-primary" th:text="#{submit}"></button>
 						</form>
 					</div>
