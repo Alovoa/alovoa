@@ -261,7 +261,7 @@
                     <div class="field">
                         <form id="interest-form" th:action="@{/}" method="POST">
                             <div style="display: flex">
-                                <input class="input" pattern="[a-zA-Z0-9-]{3,30}" id="interest" name="value"
+                                <input class="input" pattern="[\p{Letter}\d-]{3,30}" id="interest" name="value"
                                        style="flex: 1" th:placeholder="#{interest}" maxlength="30" required>
                                 <div style="padding-top: 4px;"></div>
                                 <button class="button is-info is-outlined" style="margin-left: 4px; margin-right: 4px;">

@@ -520,7 +520,7 @@ async function shareUrl(url) {
 }
 
 function getCleanInterest(userInput) {
-	return userInput.replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
+	return userInput.replace(/[^\p{Letter}\d-]/ug, '').toLowerCase();
 }
 
 function deleteAudio() {
