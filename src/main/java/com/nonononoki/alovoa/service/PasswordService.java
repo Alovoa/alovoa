@@ -52,14 +52,19 @@ public class PasswordService {
 	@Value("${app.user.password-reset.duration.valid}")
 	private int userPasswordResetDuration;
 
+	@Value("${app.captcha.password.enabled}")
+    private String captchaPasswordEnabled;
+
 	public UserPasswordToken resetPassword(PasswordResetDto dto)
 			throws AlovoaException, NoSuchAlgorithmException, MessagingException, IOException {
 
 		User u = authService.getCurrentUser();
 
 		if (u == null) {
-			if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
-				throw new AlovoaException("captcha_invalid");
+			if (Boolean.parseBoolean(captchaPasswordEnabled)) {
+				if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
+					throw new AlovoaException("captcha_invalid");
+				}
 			}
 			u = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
 
