@@ -82,12 +82,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	// used for sending mails to all
 	List<User> findByDisabledFalseAndAdminFalseAndConfirmedTrue();
 
-	List<User> findTop100ActiveUsersOrderedByCreationDate();
+	List<User> findTop100ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullOrderByDatesCreationDateDesc();
 
-	List<User> findTop200FilteredUsers(Date min, Date max, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds, Collection<Long> genderIds, Sort sort);
+	List<User> findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotInAndGenderIdIn(
+			Date min, Date max, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds,
+			Collection<Long> genderIds, Sort sort);
 
-	List<User> findTop50ActiveUsersWithProfileIntentionInRangeAndExcludedIds(Date min, Date max, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds, Sort sort);
+	List<User> findTop50ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotIn(
+			Date min, Date max, Collection<Long> likeIds, Collection<Long> hideIds, Collection<Long> blockIds,
+			Sort sort);
 
 	// users donate
-	List<User> findTop20ActiveDonors(Date minDate, Date maxDate);
+	List<User> findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualOrderByTotalDonationsDesc(
+			Date minDate, Date maxDate);
 }
