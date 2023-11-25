@@ -211,6 +211,7 @@ public class Tools {
 
 	public static String largeNumberToString(long num) {
 		if (num < THOUSAND) {
+			
 			return String.valueOf(num);
 		}
 		DecimalFormat df = new DecimalFormat("#.###");
@@ -225,25 +226,6 @@ public class Tools {
 		} else {
 			double d = (double) num / THOUSAND;
 			return df.format(d) + STR_NUM_THOUSAND;
-		}
-	}
-
-	public static String getCountryEmoji(String countryIso) {
-		if (countryIso != null) {
-			int firstLetter = Character.codePointAt(countryIso, 0) - 0x41 + 0x1F1E6;
-			int secondLetter = Character.codePointAt(countryIso, 1) - 0x41 + 0x1F1E6;
-			return new String(Character.toChars(firstLetter)) + new String(Character.toChars(secondLetter));
-		}
-		return null;
-	}
-
-	public static boolean isURLValid(String urlString) {
-		try {
-			URL url = new URL(urlString);
-			url.toURI();
-			return true;
-		} catch (Exception e) {
-			return false;
 		}
 	}
 

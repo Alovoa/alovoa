@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.model;
 
 import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.CountryUtils;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.*;
@@ -110,7 +111,7 @@ public class UserDto {
         dto.setGender(user.getGender());
         dto.setVerificationPicture(UserDtoVerificationPicture.map(user, currentUser, userService, mode));
 
-        dto.setCountry(Tools.getCountryEmoji(user.getCountry()));
+        dto.setCountry(CountryUtils.getCountryEmoji(user.getCountry()));
 
         if (currentUser.isShowZodiac()) {
             dto.setZodiac(getUserZodiac(user));

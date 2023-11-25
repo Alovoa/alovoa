@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.ValidationUtils;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
 import com.nonononoki.alovoa.entity.user.ConversationCheckedDate;
@@ -73,7 +73,7 @@ public class MessageService {
 		m.setUserFrom(user);
 		m.setUserTo(c.getPartner(user));
 		
-		if(Tools.isURLValid(message)) {
+		if(ValidationUtils.isURLValid(message)) {
 			m.setAllowedFormatting(true);
 		}
 		c.getMessages().add(m);
