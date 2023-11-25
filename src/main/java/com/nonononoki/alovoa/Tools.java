@@ -197,12 +197,12 @@ public class Tools {
 	// This method subtracts user date of birth with passed preferred min/max age
 	public static int convertPrefAgeToRelativeYear(Date userDateOfBirth, int prefAge) {
 		LocalDate currentDate = LocalDate.now();
-		return prefAge - Period.between(Tools.dateToLocalDate(userDateOfBirth), currentDate).getYears();
+		return AgeUtils.convertPrefAge(userDateOfBirth, prefAge, currentDate, "RelativeYear");
 	}
 
 	public static int convertPrefAgeToExactYear(Date userDateOfBirth, int prefAge) {
 		LocalDate currentDate = LocalDate.now();
-		return Period.between(Tools.dateToLocalDate(userDateOfBirth), currentDate).getYears() + prefAge;
+			return AgeUtils.convertPrefAge(userDateOfBirth, prefAge, currentDate,"ExactYear");
 	}
 
 	private static final String STR_NUM_BILLION = "B";
@@ -228,5 +228,5 @@ public class Tools {
 			return df.format(d) + STR_NUM_THOUSAND;
 		}
 	}
-	
+
 }
