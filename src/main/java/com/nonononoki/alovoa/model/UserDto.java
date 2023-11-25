@@ -185,7 +185,8 @@ public class UserDto {
             }
             dto.setCommonInterests(commonInterests);
 
-            int dist = 99999;
+            final int MAX_DISTANCE = 99999;
+            int dist = MAX_DISTANCE;
             if (!currentUser.isAdmin()) {
                 dist = Tools.getDistanceToUser(user, currentUser);
                 if (currentUser.getUnits() == User.UNIT_IMPERIAL) {
