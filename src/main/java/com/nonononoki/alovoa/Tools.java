@@ -211,7 +211,7 @@ public class Tools {
 
 	public static String largeNumberToString(long num) {
 		if (num < THOUSAND) {
-			
+
 			return String.valueOf(num);
 		}
 		DecimalFormat df = new DecimalFormat("#.###");
@@ -228,21 +228,5 @@ public class Tools {
 			return df.format(d) + STR_NUM_THOUSAND;
 		}
 	}
-
-	public static String getAuthParams(SecurityConfig securityConfig, String httpSessionId, String username,
-			String firstName, int page, String password) {
-		String cookieData = securityConfig.getOAuthRememberMeServices().getRememberMeCookieData(username, password);
-		StringBuilder builder = new StringBuilder();
-		builder.append("?remember-me=").append(cookieData).append("&jsessionid=").append(httpSessionId).append("&page=")
-				.append(page);
-		if (firstName != null) {
-			builder.append("&firstName=").append(firstName);
-		}
-		return builder.toString();
-	}
-
-	public static String getAuthParams(SecurityConfig securityConfig, String httpSessionId, String username,
-			String firstName, int page) {
-		return getAuthParams(securityConfig, httpSessionId, username, firstName, page, null);
-	}
+	
 }

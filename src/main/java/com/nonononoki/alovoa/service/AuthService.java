@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.service;
 
 import com.nonononoki.alovoa.component.ExceptionHandler;
+import com.nonononoki.alovoa.config.SecurityConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,5 +63,22 @@ public class AuthService {
 			email = principal.getAttribute("email");
 		}
 		return email;
+	}
+
+	public static String getAuthParams(SecurityConfig securityConfig, String httpSessionId, String username,
+									   String firstName, int page, String password) {
+		String cookieData = securityConfig.getOAuthRememberMeServices().getRememberMeCookieData(username, password);
+		StringBuilder builder = new StringBuilder();
+		builder.append("?remember-me=").append(cookieData).append("&jsessionid=").append(httpSessionId).append("&page=")
+				.append(page);
+		if (firstName != null) {
+			builder.append("&firstName=").append(firstName);
+		}
+		return builder.toString();
+	}
+
+	public static String getAuthParams(SecurityConfig securityConfig, String httpSessionId, String username,
+									   String firstName, int page) {
+		return getAuthParams(securityConfig, httpSessionId, username, firstName, page, null);
 	}
 }
