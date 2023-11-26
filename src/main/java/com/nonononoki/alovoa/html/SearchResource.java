@@ -46,6 +46,7 @@ public class SearchResource {
     private int searchMaxDistance;
 
 
+    //Used by admin, do not delete!
     @GetMapping(URL)
     public ModelAndView search() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
             BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,

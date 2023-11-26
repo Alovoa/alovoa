@@ -63,8 +63,6 @@ public class ProfileResource {
         User user = authService.getCurrentUser(true);
         if (user.isAdmin()) {
             return new ModelAndView("redirect:" + AdminResource.URL);
-        } else if (user.getProfilePicture() == null && user.getDescription() == null) {
-            return new ModelAndView("redirect:" + ProfileOnboardingResource.URL);
         } else {
             int age = Tools.calcUserAge(user);
             boolean isLegal = age >= Tools.AGE_LEGAL;

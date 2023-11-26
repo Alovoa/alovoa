@@ -40,7 +40,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.html.LoginResource;
 import com.nonononoki.alovoa.html.RegisterResource;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.repo.UserRepository;
