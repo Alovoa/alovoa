@@ -265,34 +265,47 @@ public class RegisterService {
 
 	// used by normal registration and oauth
 	private BaseRegisterDto registerBase(RegisterDto dto, boolean isOauth) throws AlovoaException {
+		validateFirstName(dto.getFirstName());
+		checkUserAge(dto.getDateOfBirth());
+		if (!isOauth) {
+			validatePassword(dto.getPassword());
+		}
+		User user = createUser(dto);
+		user = saveUser(user);
+		userService.updateUserInfo(user);
+		BaseRegisterDto baseRegisterDto = createBaseRegisterDto(dto, user);
+		return baseRegisterDto;
+	}
 
-		if (dto.getFirstName().length() > firstNameLengthMax || dto.getFirstName().length() < firstNameLengthMin) {
+	private void validateFirstName(String firstName) throws AlovoaException {
+		if (firstName.length() > firstNameLengthMax || firstName.length() < firstNameLengthMin) {
 			throw new AlovoaException("name_invalid");
 		}
+	}
 
-		// check minimum age
-		int userAge = Tools.calcUserAge(dto.getDateOfBirth());
+	private void checkUserAge(Date dateOfBirth) throws AlovoaException {
+		int userAge = Tools.calcUserAge(dateOfBirth);
 		if (userAge < minAge) {
 			throw new AlovoaException(publicService.text("backend.error.register.min-age"));
 		}
 		if (userAge > maxAge) {
 			throw new AlovoaException(publicService.text("max_age_exceeded"));
 		}
+	}
 
-		if (!isOauth) {
-			if (dto.getPassword().length() < MIN_PASSWORD_SIZE) {
-				throw new AlovoaException("password_too_short");
-			}
-
-			if (!dto.getPassword().matches(".*\\d.*") || !dto.getPassword().matches(".*[a-zA-Z].*")) {
-				throw new AlovoaException("password_too_simple");
-			}
+	private void validatePassword(String password) throws AlovoaException {
+		if (password.length() < MIN_PASSWORD_SIZE) {
+			throw new AlovoaException("password_too_short");
 		}
+		if (!password.matches(".*\\d.*") || !password.matches(".*[a-zA-Z].*")) {
+			throw new AlovoaException("password_too_simple");
+		}
+	}
 
+	private User createUser(RegisterDto dto) {
 		User user = new User(Tools.cleanEmail(dto.getEmail()));
 		user.setFirstName(dto.getFirstName());
-
-		// default age bracket, user can change it later in their profile
+		int userAge = Tools.calcUserAge(dto.getDateOfBirth());
 		int userMinAge = userAge - ageRange;
 		int userMaxAge = userAge + ageRange;
 		if (userMinAge < minAge) {
@@ -301,28 +314,36 @@ public class RegisterService {
 		if (userMaxAge > maxAge) {
 			userMaxAge = maxAge;
 		}
-
 		user.setPreferedMinAge(dto.getDateOfBirth(), userMinAge);
 		user.setPreferedMaxAge(dto.getDateOfBirth(), userMaxAge);
 		user.setGender(genderRepo.findById(dto.getGender()).orElse(null));
 		user.setIntention(userIntentionRepo.findById(UserIntention.MEET).orElse(null));
 		user.setPreferedGenders(new HashSet<>(genderRepo.findAll()));
+		UserDates dates = createUserDates(dto.getDateOfBirth(), user);
+		user.setDates(dates);
+		initializeCollections(user);
+		user.setNumberProfileViews(0);
+		user.setNumberSearches(0);
+		user.setNumberReferred(0);
+		return user;
+	}
 
+	private UserDates createUserDates(Date dateOfBirth, User user) {
 		UserDates dates = new UserDates();
 		Date today = new Date();
 		dates.setActiveDate(today);
 		dates.setCreationDate(today);
-		dates.setDateOfBirth(dto.getDateOfBirth());
+		dates.setDateOfBirth(dateOfBirth);
 		dates.setIntentionChangeDate(new Date(today.getTime() - intentionDelay));
 		dates.setMessageCheckedDate(today);
 		dates.setMessageDate(today);
 		dates.setNotificationCheckedDate(today);
 		dates.setNotificationDate(today);
 		dates.setUser(user);
-		user.setDates(dates);
+		return dates;
+	}
 
-		// resolves hibernate issue with null Collections with orphanremoval
-		// https://hibernate.atlassian.net/browse/HHH-9940
+	private void initializeCollections(User user) {
 		user.setInterests(new ArrayList<>());
 		user.setImages(new ArrayList<>());
 		user.setDonations(new ArrayList<>());
@@ -340,20 +361,19 @@ public class RegisterService {
 		user.setReported(new ArrayList<>());
 		user.setReportedByUsers(new ArrayList<>());
 		user.setWebPush(new ArrayList<>());
+	}
 
-		user.setNumberProfileViews(0);
-		user.setNumberSearches(0);
-		user.setNumberReferred(0);
+	private User saveUser(User user) {
+		return userRepo.saveAndFlush(user);
+	}
 
-		user = userRepo.saveAndFlush(user);
-
-		userService.updateUserInfo(user);
-
+	private BaseRegisterDto createBaseRegisterDto(RegisterDto dto, User user) {
 		BaseRegisterDto baseRegisterDto = new BaseRegisterDto();
 		baseRegisterDto.setRegisterDto(dto);
 		baseRegisterDto.setUser(user);
 		return baseRegisterDto;
 	}
+
 
 	private static boolean isValidEmailAddress(String email) {
 		if (email == null) {

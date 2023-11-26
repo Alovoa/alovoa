@@ -197,12 +197,12 @@ public class Tools {
 	// This method subtracts user date of birth with passed preferred min/max age
 	public static int convertPrefAgeToRelativeYear(Date userDateOfBirth, int prefAge) {
 		LocalDate currentDate = LocalDate.now();
-		return prefAge - Period.between(Tools.dateToLocalDate(userDateOfBirth), currentDate).getYears();
+		return AgeUtils.convertPrefAge(userDateOfBirth, prefAge, currentDate, "RelativeYear");
 	}
 
 	public static int convertPrefAgeToExactYear(Date userDateOfBirth, int prefAge) {
 		LocalDate currentDate = LocalDate.now();
-		return Period.between(Tools.dateToLocalDate(userDateOfBirth), currentDate).getYears() + prefAge;
+			return AgeUtils.convertPrefAge(userDateOfBirth, prefAge, currentDate,"ExactYear");
 	}
 
 	private static final String STR_NUM_BILLION = "B";
@@ -211,6 +211,7 @@ public class Tools {
 
 	public static String largeNumberToString(long num) {
 		if (num < THOUSAND) {
+
 			return String.valueOf(num);
 		}
 		DecimalFormat df = new DecimalFormat("#.###");
@@ -228,39 +229,4 @@ public class Tools {
 		}
 	}
 
-	public static String getCountryEmoji(String countryIso) {
-		if (countryIso != null) {
-			int firstLetter = Character.codePointAt(countryIso, 0) - 0x41 + 0x1F1E6;
-			int secondLetter = Character.codePointAt(countryIso, 1) - 0x41 + 0x1F1E6;
-			return new String(Character.toChars(firstLetter)) + new String(Character.toChars(secondLetter));
-		}
-		return null;
-	}
-
-	public static boolean isURLValid(String urlString) {
-		try {
-			URL url = new URL(urlString);
-			url.toURI();
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	public static String getAuthParams(SecurityConfig securityConfig, String httpSessionId, String username,
-			String firstName, int page, String password) {
-		String cookieData = securityConfig.getOAuthRememberMeServices().getRememberMeCookieData(username, password);
-		StringBuilder builder = new StringBuilder();
-		builder.append("?remember-me=").append(cookieData).append("&jsessionid=").append(httpSessionId).append("&page=")
-				.append(page);
-		if (firstName != null) {
-			builder.append("&firstName=").append(firstName);
-		}
-		return builder.toString();
-	}
-
-	public static String getAuthParams(SecurityConfig securityConfig, String httpSessionId, String username,
-			String firstName, int page) {
-		return getAuthParams(securityConfig, httpSessionId, username, firstName, page, null);
-	}
 }
