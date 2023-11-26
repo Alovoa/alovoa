@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+
+import com.nonononoki.alovoa.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -209,6 +211,6 @@ public class Oauth2Controller {
 	}
 
 	private String getOauthParams(String username, String firstName, int page) {
-		return Tools.getAuthParams(securityConfig, httpSession.getId(), username, firstName, page);
+		return AuthService.getAuthParams(securityConfig, httpSession.getId(), username, firstName, page);
 	}
 }
