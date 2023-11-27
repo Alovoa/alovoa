@@ -58,25 +58,24 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			@Param("genderIds") Collection<Long> genderIds, Pageable page);
 
 	default List<User> usersSearchAllIgnoreLocationAndIntention(UserSearchRequest request, Sort sort) {
-		return findTop200ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotInAndGenderIdIn(
+		return findTop200FilteredUsers(
 				request.getMinDateDob(), request.getMaxDateDob(), request.getLikeIds(), request.getHideIds(),
 				request.getBlockIds(), request.getGenderIds(), sort);
 	}
 
 	// almost all, must have complete profile and not blocked
 	default List<User> usersSearchAllIgnoreAll(UserSearchRequest request, Sort sort) {
-		return findTop50ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualAndIdNotInAndIdNotInAndIdNotIn(
+		return findTop50ActiveUsersWithProfileIntentionInRangeAndExcludedIds(
 				request.getMinDateDob(), request.getMaxDateDob(), request.getLikeIds(), request.getHideIds(),
 				request.getBlockIds(), sort);
 	}
 
 	default List<User> usersDonate(Date minDate, Date maxDate) {
-		return findTop20ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullAndDatesDateOfBirthGreaterThanEqualAndDatesDateOfBirthLessThanEqualOrderByTotalDonationsDesc(
-				minDate, maxDate);
+		return findTop20ActiveDonors(minDate, maxDate);
 	}
 
 	default List<User> adminSearch() {
-		return findTop100ByDisabledFalseAndAdminFalseAndConfirmedTrueAndIntentionNotNullAndLocationLatitudeNotNullAndProfilePictureNotNullOrderByDatesCreationDateDesc();
+		return findTop100ActiveUsersOrderedByCreationDate();
 	}
 
 	// used for sending mails to all
