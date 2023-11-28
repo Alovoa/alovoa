@@ -117,7 +117,7 @@ public class RegisterService {
 
 		dto.setEmail(Tools.cleanEmail(dto.getEmail()));
 
-		if (!isValidEmailAddress(dto.getEmail())) {
+		if (!MailService.isValidEmailAddress(dto.getEmail())) {
 			throw new AlovoaException("email_invalid");
 		}
 
@@ -353,18 +353,5 @@ public class RegisterService {
 		baseRegisterDto.setRegisterDto(dto);
 		baseRegisterDto.setUser(user);
 		return baseRegisterDto;
-	}
-
-	private static boolean isValidEmailAddress(String email) {
-		if (email == null) {
-			return false;
-		}
-		try {
-			InternetAddress a = new InternetAddress(email);
-			a.validate();
-			return true;
-		} catch (AddressException ex) {
-			return false;
-		}
 	}
 }

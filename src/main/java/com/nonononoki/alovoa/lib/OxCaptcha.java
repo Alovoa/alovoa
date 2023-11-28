@@ -30,8 +30,9 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class OxCaptcha {
-    private static final Random RAND = new SecureRandom();
-//	private static final Random RAND = new Random();
+	private static final Random RAND = new SecureRandom();
+	//	private static final Random RAND = new Random();
+	private static final double TWO_PI = 6.2831853071795862D;
 
 	private BufferedImage _img;
 	private Graphics2D _img_g;
@@ -1045,7 +1046,8 @@ public class OxCaptcha {
 		int frames = 15;
 
 		for (int i = 0; i < height; i++) {
-			double d = (period >> 1) * Math.sin((double) i / (double) period + (6.2831853071795862D * phase) / frames);
+			double angle = (double) i / (double) period + (TWO_PI * phase) / frames;
+			double d = (period >> 1) * Math.sin(angle);
 			g.copyArea(0, i, width, 1, (int) d, 0);
 			g.setColor(_bg_color);
 			if (d >= 0) {
@@ -1062,7 +1064,7 @@ public class OxCaptcha {
 		int frames = 15;
 
 		for (int i = 0; i < width; i++) {
-			double d = (period >> 1) * Math.sin((float) i / period + (6.2831853071795862D * phase) / frames);
+			double d = (period >> 1) * Math.sin((float) i / period + (TWO_PI * phase) / frames);
 			g.copyArea(i, 0, 1, height, 0, (int) d);
 			g.setColor(_bg_color);
 			if (d >= 0) {

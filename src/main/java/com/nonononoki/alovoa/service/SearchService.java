@@ -67,6 +67,9 @@ public class SearchService {
     @Value("${app.search.estimate.max}")
     private int searchEstimateMax;
 
+    private final SortStrategy sortByDistance = new SortByDistance();
+    private final SortStrategy sortByInterest = new SortByInterest();
+
     public ReverseGeocoder getGeocoder() {
         if (geocoder == null) {
             geocoder = new ReverseGeocoder();
@@ -290,19 +293,17 @@ public class SearchService {
             UserDto dto = UserDto.userToUserDto(u, user, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY);
             userDtos.add(dto);
         }
+        return sortUserDtos(userDtos, sort);
+    }
 
+    private List<UserDto> sortUserDtos(List<UserDto> userDtos, int sort) {
         if (sort == SORT_DISTANCE) {
-            userDtos = userDtos.stream().sorted(Comparator.comparing(UserDto::getDistanceToUser))
-                    .collect(Collectors.toList());
+            return sortByDistance.sort(userDtos);
         } else if (sort == SORT_INTEREST) {
-            Comparator<UserDto> comparatorCommonInterest = Comparator.comparing(f -> f.getCommonInterests().size());
-            userDtos = userDtos.stream().filter(f -> !f.getCommonInterests().isEmpty())
-                    .sorted(comparatorCommonInterest.reversed()
-                            .thenComparing(Comparator.comparing(UserDto::getDistanceToUser).reversed()))
-                    .collect(Collectors.toList());
+            return sortByInterest.sort(userDtos);
+        } else {
+            return userDtos;
         }
-
-        return userDtos;
     }
 
     public Optional<String> getCountryIsoByLocation(double lat, double lon) {

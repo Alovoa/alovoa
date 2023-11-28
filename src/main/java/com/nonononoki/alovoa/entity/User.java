@@ -24,14 +24,6 @@ import java.util.*;
 public class User implements UserDetails {
 
     @Transient
-    public static final String ACCENT_COLOR_PINK = "pink";
-    @Transient
-    public static final String ACCENT_COLOR_BLUE = "blue";
-    @Transient
-    public static final String ACCENT_COLOR_ORANGE = "orange";
-    @Transient
-    public static final String ACCENT_COLOR_PURPLE = "purple";
-    @Transient
     public static final int UNIT_SI = 0;
     @Transient
     public static final int UNIT_IMPERIAL = 1;

@@ -122,16 +122,16 @@ public class UserService {
 
     public static void removeUserDataCascading(User user, UserDeleteParams userDeleteParam) {
 
-        UserRepository userRepo = userDeleteParam.getUserRepo();
-        UserLikeRepository userLikeRepo = userDeleteParam.getUserLikeRepo();
-        ConversationRepository conversationRepo = userDeleteParam.getConversationRepo();
-        UserNotificationRepository userNotificationRepo = userDeleteParam.getUserNotificationRepo();
-        UserHideRepository userHideRepo = userDeleteParam.getUserHideRepo();
-        UserBlockRepository userBlockRepo = userDeleteParam.getUserBlockRepo();
-        UserReportRepository userReportRepo = userDeleteParam.getUserReportRepo();
-        UserVerificationPictureRepository userVerificationPictureRepo = userDeleteParam.getUserVerificationPictureRepo();
+        removeUserLikes(user, userDeleteParam.getUserLikeRepo(), userDeleteParam.getUserRepo());
+        removeUserNotifications(user, userDeleteParam.getUserNotificationRepo(), userDeleteParam.getUserRepo());
+        removeUserHides(user, userDeleteParam.getUserHideRepo(), userDeleteParam.getUserRepo());
+        removeUserBlocks(user, userDeleteParam.getUserBlockRepo(), userDeleteParam.getUserRepo());
+        removeUserReports(user, userDeleteParam.getUserReportRepo(), userDeleteParam.getUserRepo());
+        removeUserConversations(user, userDeleteParam.getConversationRepo(), userDeleteParam.getUserRepo());
+        removeUserVerifications(user, userDeleteParam.getUserVerificationPictureRepo());
+    }
 
-        // DELETE USER LIKE
+    private static void removeUserLikes(User user, UserLikeRepository userLikeRepo, UserRepository userRepo) {
         for (UserLike like : userLikeRepo.findByUserFrom(user)) {
             User u = like.getUserTo();
             if (u != null && u.getLikedBy() != null) {
@@ -153,8 +153,9 @@ public class UserService {
         }
         userRepo.flush();
         userLikeRepo.flush();
+    }
 
-        // DELETE USER NOTIFICATION
+    private static void removeUserNotifications(User user, UserNotificationRepository userNotificationRepo, UserRepository userRepo) {
         for (UserNotification notification : userNotificationRepo.findByUserFrom(user)) {
             User u = notification.getUserTo();
             if (u != null && u.getNotificationsFrom() != null) {
@@ -175,8 +176,9 @@ public class UserService {
         }
         userRepo.flush();
         userNotificationRepo.flush();
+    }
 
-        // DELETE USER HIDE
+    private static void removeUserHides(User user, UserHideRepository userHideRepo, UserRepository userRepo) {
         for (UserHide hide : userHideRepo.findByUserFrom(user)) {
             User u = hide.getUserTo();
             if (u != null && u.getHiddenByUsers() != null) {
@@ -198,8 +200,9 @@ public class UserService {
         }
         userRepo.flush();
         userHideRepo.flush();
+    }
 
-        // DELETE USER BLOCK
+    private static void removeUserBlocks(User user, UserBlockRepository userBlockRepo, UserRepository userRepo) {
         for (UserBlock block : userBlockRepo.findByUserFrom(user)) {
             User u = block.getUserTo();
             if (u != null && u.getBlockedByUsers() != null) {
@@ -220,8 +223,9 @@ public class UserService {
         }
         userRepo.flush();
         userBlockRepo.flush();
+    }
 
-        // DELETE USER REPORT
+    private static void removeUserReports(User user, UserReportRepository userReportRepo, UserRepository userRepo) {
         for (UserReport report : userReportRepo.findByUserFrom(user)) {
             User u = report.getUserTo();
             if (u != null && u.getReportedByUsers() != null) {
@@ -242,8 +246,9 @@ public class UserService {
         }
         userRepo.flush();
         userReportRepo.flush();
+    }
 
-        // DELETE USER CONVERSATION
+    private static void removeUserConversations(User user, ConversationRepository conversationRepo, UserRepository userRepo) {
         for (Conversation c : conversationRepo.findByUsers_Id(user.getId())) {
             for (User u : c.getUsers()) {
                 if (u != null && u.getConversations() != null) {
@@ -253,8 +258,11 @@ public class UserService {
             }
             conversationRepo.delete(c);
         }
+        conversationRepo.flush();
+        userRepo.flush();
+    }
 
-        // DELETE USER VERIFICATION
+    private static void removeUserVerifications(User user, UserVerificationPictureRepository userVerificationPictureRepo) {
         for (UserVerificationPicture v : userVerificationPictureRepo.findByUserNo(user)) {
             v.getUserNo().remove(user);
             userVerificationPictureRepo.save(v);
@@ -265,8 +273,6 @@ public class UserService {
         }
 
         userVerificationPictureRepo.flush();
-        conversationRepo.flush();
-        userRepo.flush();
     }
 
     public static String stripB64Type(String s) {
