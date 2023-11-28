@@ -200,6 +200,8 @@ public class SecurityConfig {
                     logger.trace("userAuthoritiesMapper oidc path");
                     OidcIdToken idToken = oidcUserAuthority.getIdToken();
 					OidcUserInfo userInfo = oidcUserAuthority.getUserInfo();
+                    logger.trace(String.format("idToken: %s", idToken));
+                    logger.trace(String.format("userInfo: %s", userInfo.toString()));
 					// Map the claims found in idToken and/or userInfo
 					// to one or more GrantedAuthority's and add it to mappedAuthorities
                     getGroupMembership(mappedAuthorities, oidcUserAuthority.getAttributes());
@@ -219,8 +221,10 @@ public class SecurityConfig {
 	}
 
     private void getGroupMembership(Set<GrantedAuthority> mappedAuthorities, Map<String, Object> attributes) {
-        ArrayList<String> roles = (ArrayList<String>) attributes.get("groups");
-        if (roles!=null && roles.contains(oauthRoleAdmin)) {
+        ArrayList<String> roles = new ArrayList<>();
+        ((ArrayList<?>) attributes.get("groups")).forEach((v) ->
+                roles.add(v.toString()));
+        if (!roles.isEmpty() && roles.contains(oauthRoleAdmin)) {
             logger.info(String.format("User %s is Admin", attributes.get("email")));
             mappedAuthorities.add(new SimpleGrantedAuthority(ROLE_ADMIN));
         } else {
