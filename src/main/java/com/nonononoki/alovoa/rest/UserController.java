@@ -244,7 +244,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/status/new-alert/{lang}")
-    public boolean newAlert2(@PathVariable String lang) throws AlovoaException {
+    public boolean hasNewAlertForLanguage(@PathVariable String lang) throws AlovoaException {
         return userService.hasNewAlert(lang);
     }
 
