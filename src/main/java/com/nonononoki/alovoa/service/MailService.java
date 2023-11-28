@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Locale;
 
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
@@ -134,5 +136,18 @@ public class MailService {
         String body = messageSource.getMessage("backend.mail.account-confirmed.body",
                 new String[]{user.getFirstName(), appName, appDomain}, "", locale);
         sendMail(user.getEmail(), defaultFrom, subject, body);
+    }
+
+    public static boolean isValidEmailAddress(String email) {
+        if (email == null) {
+            return false;
+        }
+        try {
+            InternetAddress a = new InternetAddress(email);
+            a.validate();
+            return true;
+        } catch (AddressException ex) {
+            return false;
+        }
     }
 }
