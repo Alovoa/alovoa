@@ -29,7 +29,7 @@
         <div style="width: 100%; display: flex;">
             <div class="navbar-end">
                 <div class="navbar-item">
-                    <a class="button is-info is-outlined" href="/login" th:text="#{login}"> </a>
+                    <a class="button is-info is-outlined" th:href="${@environment.getProperty('app.url.front-end')}" th:text="#{login}"> </a>
                 </div>
             </div>
         </div>

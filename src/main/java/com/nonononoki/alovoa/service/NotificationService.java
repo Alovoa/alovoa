@@ -92,7 +92,6 @@ public class NotificationService {
 		String msg = messageSource.getMessage("backend.webpush.like.subject", null, locale);
 
 		WebPushMessage message = new WebPushMessage();
-		message.setClickTarget(appDomain + NotificationResource.URL);
 		message.setTitle(title);
 		message.setMessage(msg);
 		send(user, message);
@@ -107,7 +106,6 @@ public class NotificationService {
 		String msg = messageSource.getMessage("backend.webpush.match.subject", null, locale);
 
 		WebPushMessage message = new WebPushMessage();
-		message.setClickTarget(appDomain + NotificationResource.URL);
 		message.setTitle(title);
 		message.setMessage(msg);
 		send(user, message);
@@ -122,7 +120,6 @@ public class NotificationService {
 		String msg = messageSource.getMessage("backend.webpush.message.subject", null, locale);
 
 		WebPushMessage message = new WebPushMessage();
-		message.setClickTarget(appDomain + NotificationResource.URL);
 		message.setTitle(title);
 		message.setMessage(msg);
 		send(user, message);

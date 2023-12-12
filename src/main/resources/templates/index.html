@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto">
+<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,8 +16,6 @@
 	<link rel="apple-touch-icon" href="/img/android-chrome-192x192.png">
 
 	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-	<th:block th:replace="~{fragments.html::bulma}"></th:block>
-	<th:block th:replace="~{fragments.html::ui-design}"></th:block>
 	<link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
 	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
 	<link rel="stylesheet" href="/css/lib/animate.min.css" />

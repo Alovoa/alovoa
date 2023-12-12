@@ -29,7 +29,7 @@ import java.util.List;
 @Controller
 public class SearchResource {
 
-    public static final String URL = "/search";
+    public static final String URL = "/admin/search";
     @Autowired
     private AuthService authService;
     @Autowired
@@ -54,7 +54,7 @@ public class SearchResource {
         User user = authService.getCurrentUser(true);
 
         if (!user.isAdmin() && user.getProfilePicture() == null && user.getDescription() == null) {
-            return new ModelAndView("redirect:" + ProfileOnboardingResource.URL);
+            throw new AlovoaException("not authorized");
         }
 
         user.setNumberSearches(user.getNumberSearches() + 1);

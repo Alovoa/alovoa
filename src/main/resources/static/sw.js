@@ -88,8 +88,6 @@ const staticAssets = [
 	'/img/android-chrome-512x512.png',
 	'/img/apple-touch-icon.png',
 	'/img/share.png',
-	'/img/f-icon.svg',
-	'/img/g-icon.svg',
 	'/img/m-icon.svg',
 	'/img/r-icon.svg',
 	'/img/t-icon.svg',
