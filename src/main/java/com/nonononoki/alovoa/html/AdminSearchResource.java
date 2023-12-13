@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-public class SearchResource {
+public class AdminSearchResource {
 
     public static final String URL = "/admin/search";
     @Autowired
@@ -42,46 +42,22 @@ public class SearchResource {
     private int donationModulus;
     @Value("${app.donation.popup.time}")
     private int donationPopupTime;
-    @Value("${app.search.max.distance}")
-    private int searchMaxDistance;
 
-
-    //Used by admin, do not delete!
     @GetMapping(URL)
     public ModelAndView search() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
             BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
             UnsupportedEncodingException {
         User user = authService.getCurrentUser(true);
 
-        if (!user.isAdmin() && user.getProfilePicture() == null && user.getDescription() == null) {
+        if (!user.isAdmin()) {
             throw new AlovoaException("not authorized");
         }
 
         user.setNumberSearches(user.getNumberSearches() + 1);
         userRepo.saveAndFlush(user);
 
-        boolean showDonationPopup = false;
-        if (user.getNumberSearches() % donationModulus == 0) {
-
-            List<UserDonation> userDonations = user.getDonations();
-            if (userDonations != null && !userDonations.isEmpty()) {
-                UserDonation lastDonation = Collections.max(userDonations, Comparator.comparing(UserDonation::getDate));
-                Date date = new Date();
-                long ms = lastDonation.getDate().getTime();
-                long diff = date.getTime() - ms;
-
-                if (diff >= donationPopupTime) {
-                    showDonationPopup = true;
-                }
-            } else {
-                showDonationPopup = true;
-            }
-        }
-
         ModelAndView mav = new ModelAndView("search");
         mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
-        mav.addObject("showDonationPopup", showDonationPopup);
-        mav.addObject("searchMaxDistance", searchMaxDistance);
         return mav;
     }
 }

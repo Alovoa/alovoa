@@ -25,11 +25,6 @@ import java.security.NoSuchAlgorithmException;
 @RequestMapping("/password")
 public class PasswordResource {
 
-    @GetMapping("/reset")
-    public ModelAndView passwordReset() {
-        return new ModelAndView("password-reset");
-    }
-
     @GetMapping("/change/{tokenString}")
     public ModelAndView passwordChange(@PathVariable String tokenString) {
         ModelAndView mav = new ModelAndView("password-change");

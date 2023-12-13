@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -44,7 +43,7 @@ public class ApiResource {
     private ProfileResource profileResource;
 
     @Autowired
-    private SearchResource searchResource;
+    private AdminSearchResource searchResource;
 
     @Autowired
     private GenderRepository genderRepo;
