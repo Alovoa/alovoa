@@ -29,7 +29,7 @@ import java.util.List;
 @Controller
 public class AdminSearchResource {
 
-    public static final String URL = "/admin/search";
+    public static final String URL = "/admin-search";
     @Autowired
     private AuthService authService;
     @Autowired
@@ -56,7 +56,7 @@ public class AdminSearchResource {
         user.setNumberSearches(user.getNumberSearches() + 1);
         userRepo.saveAndFlush(user);
 
-        ModelAndView mav = new ModelAndView("search");
+        ModelAndView mav = new ModelAndView("admin-search");
         mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
         return mav;
     }

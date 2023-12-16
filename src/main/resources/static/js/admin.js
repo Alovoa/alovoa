@@ -13,7 +13,7 @@ function hideContact(id) {
 }
 
 function viewProfile(idEnc) {
-	let url = '/profile/view/' + idEnc;
+	let url = '/admin/profile/view/' + idEnc;
 	window.open(url, '_blank').focus();
 }
 

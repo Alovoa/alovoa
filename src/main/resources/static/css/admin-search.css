@@ -1,0 +1,119 @@
+html {
+	background-image: url(/img/search-cover.webp);
+}
+
+#map {
+	height: 90vh;
+	min-height: 360px;
+	width: 100%;
+}
+
+.image img {
+	max-height: 400px;
+	max-width: 400px;
+}
+
+.card {
+	padding: 24px;
+	box-sizing: border-box;
+	border-bottom: 1px solid;
+	border-color: #dbdbdb;
+	border-radius: initial;
+}
+
+.button.colored svg {
+	color: white;
+}
+
+.profile-bottom .button {
+	height: 56px;
+	width: 56px;
+}
+
+.card-content .content {
+	height: 339px;
+}
+
+.content {
+	padding-top: 36px;
+}
+
+#max-distance-slider {
+	margin-right: 8px;
+}
+
+.swiper-container {
+	width: 100%;
+	height: 100%;
+}
+
+.swiper-slide {
+	height: auto;
+}
+
+.card.is-horizontal {
+	flex-direction: row;
+	display: flex;
+	box-shadow: none;
+	margin-bottom: 16px;
+}
+
+.card.is-horizontal .card-image {
+	align-self: center;
+}
+
+.card.is-horizontal .image {
+	min-height: 100%;
+}
+
+.card.is-horizontal .card-content {
+	flex: 1;
+}
+
+.card.is-horizontal .card-content {
+	padding-left: 4em;
+	padding-top: 0;
+	padding-bottom: 0;
+	font-size: 0.8em;
+}
+
+.hidden {
+	visibility: hidden;
+}
+
+.user-search-card {
+	scroll-snap-align: start;
+}
+
+.user-search-div {
+	margin-bottom: 24px;
+	overflow-y: scroll;
+	scrollbar-width: thin;
+}
+
+.content-background {
+	padding-bottom: 8px;
+}
+
+.leaflet-popup-content {
+	width: 56px !important;
+}
+.search-button-padding {
+	padding-right: 24px;
+}
+
+.card-image {
+	cursor: pointer;
+}
+
+.common-interests {
+	padding-top: 8px;
+}
+
+.common-interests > div {
+	padding: 0.4rem 0.8rem 0.4rem 0.8rem;
+}
+
+.description {
+	padding-top: 8px;
+}

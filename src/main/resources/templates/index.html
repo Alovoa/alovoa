@@ -56,7 +56,7 @@
 					<h2 class="subtitle is-size-4 hero-text" th:text="#{index.subtitle}" style="color: white;"></h2>
 					<div id="hero-padding"></div>
 					<a class="button is-info colored" id="hero-register-button" th:utext="#{index.sign-up-now}"
-						href="/register"></a>
+					   th:href="${@environment.getProperty('app.url.front-end')}"></a>
 					<div class="hero-text" th:text="#{index.subtitle-2}" style="color: white;"></div>
 					<div class="hero-text" th:text="#{index.notice}" style="font-size: 0.6em; color: white;"></div>
 				</div>
