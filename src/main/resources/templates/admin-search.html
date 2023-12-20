@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Alovoa">
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+    <link rel="manifest" href="/manifest/manifest.json">
+
+    <link rel="stylesheet" href="/css/lib/bulma.min.css" />
+    <link rel="stylesheet" href="/css/lib/bulma-slider.min.css" />
+    <link rel="stylesheet" href="/css/lib/swiper.min.css" />
+    <link rel="stylesheet" href="/css/lib/css-loaders.css" />
+    <link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
+    <link rel="stylesheet" href="/css/lib/animate.min.css" />
+    <link rel="stylesheet" href="/css/alovoa.css" />
+    <link rel="stylesheet" href="/css/admin-search.css" />
+    <title th:text="#{search.title}"></title>
+</head>
+
+<body class="preload">
+
+<div class="loader-parent" id="preloader-parent" style="display: flex">
+    <div class="loader" id="preloader"></div>
+</div>
+
+<div id="has-location" th:if="${user.hasLocation}"></div>
+<div id="lat" th:value="${user.locationLatitude}"></div>
+<div id="lon" th:value="${user.locationLongitude}"></div>
+
+<div id="main-logged-in">
+
+    <section class="container" id="main-container"></section>
+
+    <div class="loader-parent" id="loader-parent">
+        <div class="loader" id="loader"></div>
+    </div>
+</div>
+
+    <script src="/sw.js"></script>
+    <script src="/js/lib/fontawesome.all.js"></script>
+    <script src="/js/lib/jquery.min.js"></script>
+    <script src="/js/lib/swiper.min.js"></script>
+    <script src="/js/lib/bulma-slider.min.js"></script>
+    <script src="/js/lib/modal-fx.min.js"></script>
+    <script src="/js/lib/bulma-toast.min.js"></script>
+    <script src="/js/tools/get-text.js"></script>
+    <script src="/js/tools/loader.js"></script>
+    <script src="/js/tools/modal.js"></script>
+    <script src="/js/alovoa.js"></script>
+    <script src="/js/admin-search.js"></script>
+</body>
+
+</html>

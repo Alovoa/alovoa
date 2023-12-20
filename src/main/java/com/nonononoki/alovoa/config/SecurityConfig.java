@@ -95,7 +95,8 @@ public class SecurityConfig {
 				.requestMatchers("/password/**").permitAll().requestMatchers("/favicon.ico").permitAll().requestMatchers("/sw.js")
 				.permitAll().requestMatchers("/robots.txt").permitAll().requestMatchers("/.well-known/assetlinks.json")
 				.permitAll().requestMatchers("/text/*").permitAll().requestMatchers("/manifest/**").permitAll()
-				.requestMatchers("/fonts/**").permitAll().requestMatchers("/error").permitAll()
+				.requestMatchers("/fonts/**").permitAll().requestMatchers("/error").permitAll().requestMatchers("/info").permitAll()
+				.requestMatchers("/user/delete-account-confirm").permitAll()
 
 				.anyRequest().authenticated().and().formLogin().loginPage("/login").and().logout()
 				.deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER).logoutUrl("/logout").logoutSuccessUrl("/?logout").and()

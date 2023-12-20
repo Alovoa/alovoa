@@ -11,6 +11,9 @@ import java.util.Map;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+
+import com.nonononoki.alovoa.html.IndexResource;
+import com.nonononoki.alovoa.html.LoginResource;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,8 +43,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.html.LoginResource;
-import com.nonononoki.alovoa.html.RegisterResource;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.PublicService;
@@ -57,7 +58,7 @@ public class Oauth2Controller {
 	private OAuth2AuthorizedClientService clientService;
 
 	@Autowired
-	private RegisterResource registerResource;
+	private IndexResource indexResource;
 
 	@Autowired
 	private PublicService publicService;
@@ -169,7 +170,7 @@ public class Oauth2Controller {
 						httpSession.removeAttribute(REDIRECT_URL);
 						return new ModelAndView(new RedirectView(url + params));
 					}
-					return registerResource.registerOauth(firstName);
+					return indexResource.index();
 				} else {
 					if (httpSession.getAttribute(REDIRECT_URL) != null) {
 						int page = REDIRECT_DEFAULT;
@@ -187,7 +188,7 @@ public class Oauth2Controller {
 				}
 			}
 		} catch (AlovoaException e) {
-			return new ModelAndView("redirect:" + RegisterResource.URL + "?register.oauth.email-invalid");
+			return new ModelAndView("redirect:/?register.oauth.email-invalid");
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}

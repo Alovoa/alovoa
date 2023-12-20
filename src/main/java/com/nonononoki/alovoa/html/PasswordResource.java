@@ -25,33 +25,10 @@ import java.security.NoSuchAlgorithmException;
 @RequestMapping("/password")
 public class PasswordResource {
 
-    @Autowired
-    private AuthService authService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private TextEncryptorConverter textEncryptor;
-
-    @GetMapping("/reset")
-    public ModelAndView passwordReset() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
-            BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-            UnsupportedEncodingException {
-        ModelAndView mav = new ModelAndView("password-reset");
-        User user = authService.getCurrentUser();
-        mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
-        return mav;
-    }
-
     @GetMapping("/change/{tokenString}")
-    public ModelAndView passwordChange(@PathVariable String tokenString) throws AlovoaException, InvalidKeyException,
-            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidAlgorithmParameterException, UnsupportedEncodingException {
+    public ModelAndView passwordChange(@PathVariable String tokenString) {
         ModelAndView mav = new ModelAndView("password-change");
         mav.addObject("tokenString", tokenString);
-        User user = authService.getCurrentUser();
-        mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
         return mav;
     }
 }

@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserWebPush;
-import com.nonononoki.alovoa.html.NotificationResource;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.WebPushMessage;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -93,7 +92,6 @@ public class NotificationService {
 		String msg = messageSource.getMessage("backend.webpush.like.subject", null, locale);
 
 		WebPushMessage message = new WebPushMessage();
-		message.setClickTarget(appDomain + NotificationResource.URL);
 		message.setTitle(title);
 		message.setMessage(msg);
 		send(user, message);
@@ -108,7 +106,6 @@ public class NotificationService {
 		String msg = messageSource.getMessage("backend.webpush.match.subject", null, locale);
 
 		WebPushMessage message = new WebPushMessage();
-		message.setClickTarget(appDomain + NotificationResource.URL);
 		message.setTitle(title);
 		message.setMessage(msg);
 		send(user, message);
@@ -123,7 +120,6 @@ public class NotificationService {
 		String msg = messageSource.getMessage("backend.webpush.message.subject", null, locale);
 
 		WebPushMessage message = new WebPushMessage();
-		message.setClickTarget(appDomain + NotificationResource.URL);
 		message.setTitle(title);
 		message.setMessage(msg);
 		send(user, message);

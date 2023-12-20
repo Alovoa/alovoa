@@ -9,5 +9,7 @@ import com.nonononoki.alovoa.entity.user.UserDeleteToken;
 
 public interface UserDeleteTokenRepository extends JpaRepository<UserDeleteToken, Long> {
 	List<UserDeleteToken> findTop100ByDateAfter(Date d);
+
+	UserDeleteToken findByContent(String content);
 }
 

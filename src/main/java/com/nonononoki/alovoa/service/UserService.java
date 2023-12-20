@@ -304,7 +304,12 @@ public class UserService {
 
     public void deleteAccountConfirm(UserDeleteAccountDto dto)
             throws MessagingException, IOException, AlovoaException, NoSuchAlgorithmException {
-        User user = authService.getCurrentUser(true);
+        User user = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
+
+        if (user == null) {
+            throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+        }
+
         UserDeleteToken deleteToken = user.getDeleteToken();
 
         if (!dto.isConfirm() || deleteToken == null) {
@@ -312,8 +317,6 @@ public class UserService {
         }
 
         String userTokenString = deleteToken.getContent();
-
-        dto.setEmail(Tools.cleanEmail(dto.getEmail()));
 
         long ms = new Date().getTime();
         if (ms - user.getDeleteToken().getDate().getTime() > userDeleteDuration) {
@@ -323,10 +326,6 @@ public class UserService {
         if (!dto.getTokenString().equals(userTokenString)) {
             LOGGER.debug("Expected:" + userTokenString + ". Got: " + dto.getTokenString());
             throw new AlovoaException("deletion_wrong_token");
-        }
-
-        if (!dto.getEmail().equals(user.getEmail())) {
-            throw new AlovoaException("deletion_wrong_email");
         }
 
         if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
@@ -340,7 +339,6 @@ public class UserService {
 
         removeUserDataCascading(user, userDeleteParam);
 
-        user = authService.getCurrentUser(true);
         user = userRepo.saveAndFlush(user);
         userRepo.delete(user);
         userRepo.flush();

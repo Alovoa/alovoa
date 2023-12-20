@@ -18,18 +18,11 @@ public class LoginResource {
 
 	@Value("${app.privacy.update-date}")
 	private String privacyDate;
-	
+
 	public static final String URL = "/login";
 
 	@GetMapping(URL)
 	public ModelAndView login() throws AlovoaException {
-
-		User user = authService.getCurrentUser();
-		if (user != null) {
-			return new ModelAndView("redirect:" + SearchResource.URL);
-		}
-
-		ModelAndView mav = new ModelAndView("login");
-		return mav;
+		return new ModelAndView("login");
 	}
 }

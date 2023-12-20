@@ -197,7 +197,7 @@ public class SearchService {
         filteredUsers = filterUsers(users, ignoreIds, user, false);
         if (!filteredUsers.isEmpty()) {
             return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-                    .message(publicService.text("search.warning.global")).global(true)
+                    .global(true)
                     .stage(SearchStage.INCREASED_RADIUS_1).build();
         }
 
@@ -216,7 +216,7 @@ public class SearchService {
         filteredUsers = filterUsers(users, ignoreIds, user, false);
         if (!filteredUsers.isEmpty()) {
             return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-                    .message(publicService.text("search.warning.global")).global(true)
+                    .global(true)
                     .stage(SearchStage.INCREASED_RADIUS_2).build();
         }
 
@@ -225,14 +225,14 @@ public class SearchService {
 
         if (!filteredUsers.isEmpty()) {
             return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-                    .message(publicService.text("search.warning.global")).global(true).stage(SearchStage.WORLD).build();
+                    .global(true).stage(SearchStage.WORLD).build();
         }
 
         users = userRepo.usersSearchAllIgnoreLocationAndIntention(request, sort);
         filteredUsers = filterUsers(users, ignoreIds, user, false);
         if (!filteredUsers.isEmpty()) {
             return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-                    .message(publicService.text("search.warning.incompatible")).incompatible(true).global(true).stage(SearchStage.IGNORE_1)
+                    .incompatible(true).global(true).stage(SearchStage.IGNORE_1)
                     .build();
         }
 
@@ -251,14 +251,14 @@ public class SearchService {
         filteredUsers = filterUsers(users, ignoreIds, user, false);
         if (!filteredUsers.isEmpty()) {
             return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-                    .message(publicService.text("search.warning.incompatible")).incompatible(true).global(true).stage(SearchStage.IGNORE_2)
+                    .incompatible(true).global(true).stage(SearchStage.IGNORE_2)
                     .build();
         }
 
         users = userRepo.usersSearchAllIgnoreAll(request, sort);
         filteredUsers = filterUsers(users, ignoreIds, user, true);
         return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-                .message(publicService.text("search.warning.incompatible")).incompatible(true).global(true)
+                .incompatible(true).global(true)
                 .stage(SearchStage.IGNORE_ALL).build();
 
     }
@@ -286,8 +286,9 @@ public class SearchService {
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         List<UserDto> userDtos = new ArrayList<>();
+        int mediaMode = user.isAdmin() ? UserDto.ALL : UserDto.PROFILE_PICTURE_ONLY;
         for (User u : userList) {
-            UserDto dto = UserDto.userToUserDto(u, user, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY);
+            UserDto dto = UserDto.userToUserDto(u, user, userService, textEncryptor, mediaMode);
             userDtos.add(dto);
         }
 

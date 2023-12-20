@@ -11,8 +11,6 @@
     <link href="/manifest/manifest.json" rel="manifest">
 
     <link href="/css/lib/bulma.min.css" rel="stylesheet"/>
-    <th:block th:replace="~{fragments.html::bulma}"></th:block>
-    <th:block th:replace="~{fragments.html::ui-design}"></th:block>
     <link href="/css/lib/animate.min.css" rel="stylesheet"/>
     <link href="/css/alovoa.css" rel="stylesheet"/>
     <link href="/css/privacy.css" rel="stylesheet"/>
@@ -21,7 +19,7 @@
 
 <body>
 <div id="main">
-    <header th:insert="~{fragments.html::header-logged-in}"></header>
+    <header th:insert="~{fragments.html::header}"></header>
     <div style="padding-top: 4px;"></div>
     <div class="box" id="contact" style="max-height: 330px; overflow: auto;">
         <h3 th:text="#{contact}"></h3>
@@ -111,7 +109,7 @@
     </div>
 
     <div class="box" id="links">
-        <a href="/search">Search</a>
+        <a href="/admin-search">Search</a>
         <a href="/admin-verification">Verification</a>
     </div>
 

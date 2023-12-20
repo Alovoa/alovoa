@@ -11,8 +11,6 @@
 	<link rel="manifest" href="/manifest/manifest.json">
 
 	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-	<th:block th:replace="~{fragments.html::bulma}"></th:block>
-	<th:block th:replace="~{fragments.html::ui-design}"></th:block>
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<title th:text="#{faq.title}"></title>
 </head>
@@ -20,7 +18,7 @@
 <body>
 	<div id="main">
 
-		<header th:insert="~{fragments.html::header-logged-out}"></header>
+		<header th:insert="~{fragments.html::header}"></header>
 		<div class="section">
 			<div class="box" id="privacy">
 				<p class="title is-4" th:text="#{faq.privacy.question}"></p>

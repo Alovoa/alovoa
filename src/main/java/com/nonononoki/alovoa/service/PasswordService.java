@@ -55,48 +55,40 @@ public class PasswordService {
 	public UserPasswordToken resetPassword(PasswordResetDto dto)
 			throws AlovoaException, NoSuchAlgorithmException, MessagingException, IOException {
 
-		User u = authService.getCurrentUser();
+		if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
+			throw new AlovoaException("captcha_invalid");
+		}
+		User u = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
 
 		if (u == null) {
-			if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
-				throw new AlovoaException("captcha_invalid");
-			}
-			u = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
-
-			if (u == null) {
-				throw new DisabledException(ExceptionHandler.USER_NOT_FOUND);
-			}
-
-			if (u.isAdmin()) {
-				throw new AlovoaException("user_is_admin");
-			}
-			
-			if (u.getPassword() == null) {
-				throw new AlovoaException("user_has_social_login");
-			}
-
-			if (u.isDisabled()) {
-				throw new DisabledException("user_disabled");
-			}
+			throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
 		}
-		
+
+		if (u.isAdmin()) {
+			throw new AlovoaException("user_is_admin");
+		}
+
 		//user has social login, do not assign new password!
-		if (u.getPassword() != null) {
-			UserPasswordToken token = new UserPasswordToken();
-			token.setContent(RandomStringUtils.random(tokenLength, 0, 0, true, true, null, new SecureRandom()));
-			token.setDate(new Date());
-			token.setUser(u);
-			u.setPasswordToken(token);
-			u = userRepo.saveAndFlush(u);
-	
-			mailService.sendPasswordResetMail(u);
-			
-			SecurityContextHolder.clearContext();
-	
-			return u.getPasswordToken();
-		} else {
+		if (u.getPassword() == null) {
 			throw new AlovoaException("user_has_social_login");
 		}
+
+		if (u.isDisabled()) {
+			throw new AlovoaException("user_disabled");
+		}
+
+		UserPasswordToken token = new UserPasswordToken();
+		token.setContent(RandomStringUtils.random(tokenLength, 0, 0, true, true, null, new SecureRandom()));
+		token.setDate(new Date());
+		token.setUser(u);
+		u.setPasswordToken(token);
+		u = userRepo.saveAndFlush(u);
+
+		mailService.sendPasswordResetMail(u);
+
+		SecurityContextHolder.clearContext();
+
+		return u.getPasswordToken();
 	}
 
 	public void changePassword(PasswordChangeDto dto) throws AlovoaException {

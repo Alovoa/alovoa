@@ -10,8 +10,6 @@
 	<link rel="manifest" href="/manifest/manifest.json">
 	
 	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-	<th:block th:replace="~{fragments.html::bulma}"></th:block>
-	<th:block th:replace="~{fragments.html::ui-design}"></th:block>
 	<link rel="stylesheet" href="/css/alovoa.css" />
 	<link rel="stylesheet" href="/css/lib/animate.min.css" />
 	<link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
@@ -21,7 +19,7 @@
 <body>
 	<div id="main">
 
-		<header th:insert="~{fragments.html::header-logged-out}"></header>
+		<header th:insert="~{fragments.html::header}"></header>
 		<div class="section">
 			<div class="box">
 				<h2 th:text="#{email} + ':'"></h2>

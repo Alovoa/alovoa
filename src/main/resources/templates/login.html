@@ -1,120 +1,90 @@
 <!DOCTYPE html>
-<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto">
+<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-title" content="Alovoa">
-	<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
-	<link rel="manifest" href="/manifest/manifest.json">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Alovoa">
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+    <link rel="manifest" href="/manifest/manifest.json">
 
-	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-	<link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
-	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
-	<link rel="stylesheet" href="/css/lib/animate.min.css" />
-	<th:block th:replace="~{fragments.html::bulma}"></th:block>
-	<th:block th:replace="~{fragments.html::ui-design}"></th:block>
-	<link rel="stylesheet" href="/css/alovoa.css" />
-	<title th:text="#{login.title}"></title>
+    <link rel="stylesheet" href="/css/lib/bulma.min.css" />
+    <link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
+    <link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
+    <link rel="stylesheet" href="/css/lib/animate.min.css" />
+    <link rel="stylesheet" href="/css/alovoa.css" />
+    <title th:text="#{login.title}"></title>
 </head>
 
 <body>
-	<div id="main">
-		<header th:insert="~{fragments.html::header-logged-out}"></header>
-		<div class="section">
+<div id="main">
+    <div class="section">
 
-			<div class="container container-narrow">
-				<div>
-					<h3 class="title" th:text="#{login.title}"></h3>
-					<p class="subtitle" th:text="#{login.subtitle}"></p>
+        <div class="container container-narrow">
+            <div>
+                <h3 class="title" th:text="#{login.title}"></h3>
+                <p class="subtitle" th:text="#{login.subtitle}"></p>
 
-					<div class="box no-shadow" style="padding: 0px; margin-bottom: 0px;">
-						<header class="card-header collapsible-header no-shadow">
-							<a href="#collapsible-card" data-action="collapse" id="email-auth"
-								class="card-header-icon is-hidden-fullscreen full-width button is-rounded"
-								style="display: flex; justify-content: center; background-color: initial;">
-								<i class="fa fa-envelope fa-lg"></i>
-								<span class="label" style="margin-bottom: initial; padding-left: 6px;"
-									th:text="#{login.email.sign-in}"></span>
-							</a>
-						</header>
-						<div id="collapsible-card" class="is-collapsible">
-							<div style="margin: 8px; margin-bottom: 48px;" class="box">
-								<div style="padding-top: 4px;" class="collapsible-mobile"></div>
-								<h3 th:text="#{login.email.sign-in}" class="collapsible-desktop"
-									style="font-size: 1.3em; font-weight: 600; margin-bottom: 12px;"></h3>
-								<form th:action="@{/login}" method="POST">
-									<div class="field">
-										<label class="label" th:text="#{email}"></label>
-										<div class="control">
-											<input class="input" type="email" autofocus=""
-												name="username">
-										</div>
-									</div>
+                <div class="box no-shadow" style="padding: 0px; margin-bottom: 0px;">
+                    <header class="card-header collapsible-header no-shadow">
+                        <a href="#collapsible-card" data-action="collapse" id="email-auth"
+                           class="card-header-icon is-hidden-fullscreen full-width button is-rounded"
+                           style="display: flex; justify-content: center; background-color: initial;">
+                            <i class="fa fa-envelope fa-lg"></i>
+                            <span class="label" style="margin-bottom: initial; padding-left: 6px;"
+                                  th:text="#{login.email.sign-in}"></span>
+                        </a>
+                    </header>
+                    <div id="collapsible-card" class="is-collapsible">
+                        <div style="margin: 8px; margin-bottom: 48px;" class="box">
+                            <div style="padding-top: 4px;" class="collapsible-mobile"></div>
+                            <h3 th:text="#{login.email.sign-in}" class="collapsible-desktop"
+                                style="font-size: 1.3em; font-weight: 600; margin-bottom: 12px;"></h3>
+                            <form th:action="@{/login}" method="POST">
+                                <div class="field">
+                                    <label class="label" th:text="#{email}"></label>
+                                    <div class="control">
+                                        <input class="input" type="email" autofocus=""
+                                               name="username">
+                                    </div>
+                                </div>
 
-									<div class="field">
-										<label class="label" th:text="#{password}"></label>
-										<div class="control">
-											<input class="input" type="password"
-												name="password">
-										</div>
-									</div>
-									<div th:replace="~{fragments.html::captcha}"></div>
-									<div class="field">
-										<label class="checkbox"> <input type="checkbox" name="remember-me" checked> <span
-												th:text="#{login.remember}"></span>
-										</label>
-									</div>
-									<button class="button colored is-link" th:text="#{submit}"></button>
-								</form>
-							</div>
-						</div>
-					</div>
+                                <div class="field">
+                                    <label class="label" th:text="#{password}"></label>
+                                    <div class="control">
+                                        <input class="input" type="password"
+                                               name="password">
+                                    </div>
+                                </div>
+                                <div th:replace="~{fragments.html::captcha}"></div>
+                                <div class="field">
+                                    <label class="checkbox"> <input type="checkbox" name="remember-me" checked> <span
+                                            th:text="#{login.remember}"></span>
+                                    </label>
+                                </div>
+                                <button class="button colored is-link" th:text="#{submit}"></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="~{fragments.html::footer}"></footer>
 
-					<div class="container" style="margin-bottom: 24px;" dir="ltr" id="oauth-div">
-						<div class="box no-shadow">
-							<div class="columns">
-								<button class="button colored"
-									id="google-auth"
-									onclick="window.location='/oauth2/authorization/google'">
-									<img src="/img/g-icon.svg" style="height: 32px;"><span
-										style="padding-left: 6px; color: white;" th:text="#{login.oauth.google}"></span>
-								</button>
-								<button class="button colored" id="facebook-auth"
-									onclick="window.location='/oauth2/authorization/facebook'">
-									<img src="/img/f-icon.svg" style="height: 32px;"><span
-										style="padding-left: 6px; color: white;"
-										th:text="#{login.oauth.facebook}"></span>
-								</button>
-							</div>
-						</div>
-					</div>
-					<div>
-						<p>
-							<a href="/password/reset" th:text="#{login.forgot-password}"></a>
-						</p>
-						<p>
-							<a href="/register" th:text="#{login.register}"></a>
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<footer th:replace="~{fragments.html::footer}"></footer>
-
-	<script src="/sw.js"></script>
-	<script src="/js/lib/jquery.min.js"></script>
-	<script src="/js/lib/fontawesome.all.js"></script>
-	<script src="/js/lib/bulma-collapsible.min.js"></script>
-	<script src="/js/lib/modal-fx.min.js"></script>
-	<script src="/js/lib/bulma-toast.min.js"></script>
-	<script src="/js/tools/refresh-captcha.js"></script>
-	<script src="/js/tools/get-text.js"></script>
-	<script src="/js/tools/modal.js"></script>
-	<script src="/js/alovoa.js"></script>
-	<script src="/js/login.js"></script>
+<script src="/sw.js"></script>
+<script src="/js/lib/jquery.min.js"></script>
+<script src="/js/lib/fontawesome.all.js"></script>
+<script src="/js/lib/bulma-collapsible.min.js"></script>
+<script src="/js/lib/modal-fx.min.js"></script>
+<script src="/js/lib/bulma-toast.min.js"></script>
+<script src="/js/tools/refresh-captcha.js"></script>
+<script src="/js/tools/get-text.js"></script>
+<script src="/js/tools/modal.js"></script>
+<script src="/js/alovoa.js"></script>
+<script src="/js/login.js"></script>
 </body>
 
 </html>

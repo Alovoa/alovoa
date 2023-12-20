@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto">
+<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,8 +16,6 @@
 	<link rel="apple-touch-icon" href="/img/android-chrome-192x192.png">
 
 	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-	<th:block th:replace="~{fragments.html::bulma}"></th:block>
-	<th:block th:replace="~{fragments.html::ui-design}"></th:block>
 	<link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
 	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
 	<link rel="stylesheet" href="/css/lib/animate.min.css" />
@@ -48,7 +46,7 @@
 		<div class="loader" id="preloader"></div>
 	</div>
 	<div id="main">
-		<header th:replace="~{fragments.html::header-index}"></header>
+		<header th:insert="~{fragments.html::header}"></header>
 		<div id="hero-gravity"></div>
 		
 		<section id="hero">
@@ -58,7 +56,7 @@
 					<h2 class="subtitle is-size-4 hero-text" th:text="#{index.subtitle}" style="color: white;"></h2>
 					<div id="hero-padding"></div>
 					<a class="button is-info colored" id="hero-register-button" th:utext="#{index.sign-up-now}"
-						href="/register"></a>
+					   th:href="${@environment.getProperty('app.url.front-end')}"></a>
 					<div class="hero-text" th:text="#{index.subtitle-2}" style="color: white;"></div>
 					<div class="hero-text" th:text="#{index.notice}" style="font-size: 0.6em; color: white;"></div>
 				</div>

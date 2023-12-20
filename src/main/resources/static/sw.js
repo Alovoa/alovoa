@@ -8,7 +8,7 @@
  */
 
 
-const cacheName = '60';
+const cacheName = '61';
 const staticAssets = [
 
 	'/favicon.ico',
@@ -17,48 +17,29 @@ const staticAssets = [
 	'/js/lib/bulma-collapsible.min.js',
 	'/js/lib/bulma-slider.min.js',
 	'/js/lib/bulma-toast.min.js',
-	'/js/lib/cutter.min.js',
 	'/js/lib/fontawesome.all.js',
 	'/js/lib/jquery.min.js',
 	'/js/lib/jquery-ui.min.js',
 	'/js/lib/matter.min.js',
-	'/js/lib/Mp3LameEncoder.min.js',
 	'/js/lib/notification.js',
-	'/js/lib/swiper.min.js',
-	'/js/lib/leaflet.min.js',
 	'/js/lib/modal-fx.min.js',
 
-	'/js/tools/check-password.js',
-	'/js/tools/get-notification.js',
+    '/js/tools/check-password.js',
 	'/js/tools/get-text.js',
 	'/js/tools/loader.js',
 	'/js/tools/modal.js',
 	'/js/tools/refresh-captcha.js',
-	'/js/tools/copy-clipboard.js',
 
 	'/js/alovoa.js',
 	'/js/delete-account.js',
-	'/js/donate.js',
 	'/js/donate-list.js',
 	'/js/imprint.js',
 	'/js/index.js',
 	'/js/login.js',
-	'/js/message.js',
-	'/js/message-detail.js',
 	'/js/password-change.js',
-	'/js/password-reset.js',
-	'/js/profile.js',
-	'/js/profile-onboarding.js',
-	'/js/register.js',
-	'/js/register-oauth.js',
 	'/js/search.js',
-	'/js/user-profile.js',
-	'/js/user-profile-lib.js',
 
 	'/css/lib/bulma.min.css',
-	'/css/lib/bulma.orange.css',
-	'/css/lib/bulma.purple.css',
-	'/css/lib/bulma.blue.css',
 	'/css/lib/bulma-collapsible.min.css',
 	'/css/lib/bulma-slider.min.css',
 	'/css/lib/bulma-switch.min.css',
@@ -68,19 +49,11 @@ const staticAssets = [
 	'/css/lib/modal-fx.min.css',
 	'/css/lib/animate.min.css',
 
-	'/css/snips/ui-angular.css',
-
 	'/css/alovoa.css',
-	'/css/donate.css',
 	'/css/donate-list.css',
 	'/css/index.css',
-	'/css/message-detail.css',
-	'/css/notification.css',
 	'/css/privacy.css',
 	'/css/search.css',
-	'/css/profile.css',
-	'/css/profile-onboarding.css',
-	'/css/user-profile.css',
 
 	'/img/search-cover.webp',
 	'/img/ios-pwa.webp',
@@ -88,8 +61,6 @@ const staticAssets = [
 	'/img/android-chrome-512x512.png',
 	'/img/apple-touch-icon.png',
 	'/img/share.png',
-	'/img/f-icon.svg',
-	'/img/g-icon.svg',
 	'/img/m-icon.svg',
 	'/img/r-icon.svg',
 	'/img/t-icon.svg',
@@ -106,16 +77,7 @@ const staticAssets = [
 	'/img/profile/7.png',
 	'/img/profile/8.png',
 	'/img/profile/9.png',
-	'/img/profile/10.png',
-
-    '/img/onboarding/add-verification.svg',
-	'/img/onboarding/verification.svg',
-	'/img/onboarding/description.svg',
-	'/img/onboarding/genders.svg',
-	'/img/onboarding/intention.svg',
-	'/img/onboarding/interests.svg',
-	'/img/onboarding/match.svg',
-	'/img/onboarding/profilepic.svg'
+	'/img/profile/10.png'
 	
 ];
 

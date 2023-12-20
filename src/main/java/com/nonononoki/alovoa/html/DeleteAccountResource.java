@@ -29,35 +29,15 @@ import java.util.Date;
 public class DeleteAccountResource {
 
     @Autowired
-    private AuthService authService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
     private TextEncryptorConverter textEncryptor;
 
     @Value("${app.user.delete.duration.valid}")
     private long accountDeleteDuration;
 
     @GetMapping("/delete-account/{tokenString}")
-    public ModelAndView deleteAccount(@PathVariable String tokenString) throws AlovoaException, InvalidKeyException,
-            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidAlgorithmParameterException, UnsupportedEncodingException {
-        User user = authService.getCurrentUser(true);
-
+    public ModelAndView deleteAccount(@PathVariable String tokenString) {
         ModelAndView mav = new ModelAndView("delete-account");
         mav.addObject("tokenString", tokenString);
-        mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
-
-        UserDeleteToken token = user.getDeleteToken();
-        boolean active = false;
-        long ms = new Date().getTime();
-        if (token != null && token.getDate().getTime() + accountDeleteDuration >= ms) {
-            active = true;
-        }
-        mav.addObject("active", active);
-
         return mav;
     }
 }

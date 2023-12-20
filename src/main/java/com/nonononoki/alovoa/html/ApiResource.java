@@ -1,132 +1,294 @@
 package com.nonononoki.alovoa.html;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.component.ExceptionHandler;
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
+import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.*;
+import com.nonononoki.alovoa.model.AlovoaException;
+import com.nonononoki.alovoa.model.ConversationDto;
+import com.nonononoki.alovoa.model.NotificationDto;
+import com.nonononoki.alovoa.model.UserDto;
+import com.nonononoki.alovoa.repo.*;
+import com.nonononoki.alovoa.service.AuthService;
+import com.nonononoki.alovoa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.nonononoki.alovoa.model.AlovoaException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/resource")
 public class ApiResource {
 
-	@Autowired
-	private DonateResource donateResource;
+    @Autowired
+    private UserRepository userRepo;
 
-	@Autowired
-	private MessageResource messageResource;
+    @Autowired
+    private ProfileResource profileResource;
 
-	@Autowired
-	private NotificationResource notificationResource;
+    @Autowired
+    private AdminSearchResource searchResource;
 
-	@Autowired
-	private ProfileResource profileResource;
+    @Autowired
+    private GenderRepository genderRepo;
 
-	@Autowired
-	private SearchResource searchResource;
+    @Autowired
+    private UserIntentionRepository userIntentionRepo;
 
-	@Autowired
-	private UserProfileResource userProfileResource;
-	
-	@Autowired
-	private ProfileOnboardingResource profileOnboardingResource;
+    @Autowired
+    private ConversationRepository conversationRepo;
 
-	@Autowired
-	private LikedUsersResource likedUsersResource;
+    @Autowired
+    private UserBlockRepository userBlockRepo;
 
-	@Autowired
-	private DislikedUsersResource dislikedUsersResource;
+    @Autowired
+    private AuthService authService;
 
-	@Autowired
-	private BlockedUsersResource blockedUsersResource;
+    @Autowired
+    private UserService userService;
 
-	@GetMapping("/donate")
-	public Map<String, Object> resourceDonate() throws JsonProcessingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return donateResource.donate().getModel();
-	}
+    @Autowired
+    private TextEncryptorConverter textEncryptor;
 
-	@GetMapping("/chats")
-	public Map<String, Object> resourceChats()
-			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return messageResource.chats().getModel();
-	}
+    private static final long MAX_RESULTS = 50;
 
-	@GetMapping("/chats/{id}")
-	public Map<String, Object> resourceChatsDetail(@PathVariable long id) throws JsonProcessingException,
-			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return messageResource.chatsDetail(id).getModel();
-	}
+    @Value("${app.media.max-size}")
+    private int mediaMaxSize;
 
-	@GetMapping("/alerts")
-	public Map<String, Object> resourceNotification() throws JsonProcessingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return notificationResource.notification().getModel();
-	}
+    @Value("${app.interest.max}")
+    private int interestMaxSize;
 
-	@GetMapping("/profile")
-	public Map<String, Object> resourceProfile() throws JsonProcessingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return profileResource.profile().getModel();
-	}
-	
-	@GetMapping("/profile/view/{idEncoded}")
-	public Map<String, Object> resourceProfileView(@PathVariable String idEncoded) throws JsonProcessingException,
-			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return userProfileResource.profileView(idEncoded).getModel();
-	}
+    @GetMapping("/donate")
+    public Map<String, Object> resourceDonate() throws JsonProcessingException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        ModelMap map = new ModelMap();
+        User user = authService.getCurrentUser(true);
+        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        return map;
+    }
 
-	@GetMapping("/search")
-	public Map<String, Object> resourceSearch() throws JsonProcessingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return searchResource.search().getModel();
-	}
-	
-	@GetMapping("/user/onboarding")
-	public Map<String, Object> userOnboarding() throws JsonProcessingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return profileOnboardingResource.onboarding().getModel();
-	}
+    @GetMapping("/chats")
+    public Map<String, Object> resourceChats()
+            throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        ModelMap map = new ModelMap();
+        User user = authService.getCurrentUser(true);
+        user.getDates().setMessageCheckedDate(new Date());
+        userRepo.saveAndFlush(user);
+        List<ConversationDto> convos = new ArrayList<>();
+        List<Conversation> conversations = conversationRepo.findByUsers_Id(user.getId());
+        for (Conversation c : conversations) {
+            if (!c.isBlocked(userBlockRepo)) {
+                convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
+            }
+        }
 
-	@GetMapping("/blocked-users")
-	public Map<String, Object> blockedUsers() throws JsonProcessingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return blockedUsersResource.blockedUsers().getModel();
-	}
+        convos.sort((ConversationDto a, ConversationDto b) -> b.getLastUpdated().compareTo(a.getLastUpdated()));
 
-	@GetMapping("/liked-users")
-	public Map<String, Object> likedUsers() throws JsonProcessingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return likedUsersResource.likedUsers().getModel();
-	}
+        map.addAttribute("conversations", convos);
+        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        return map;
+    }
 
-	@GetMapping("/disliked-users")
-	public Map<String, Object> dislikedUsers() throws JsonProcessingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		return dislikedUsersResource.dislikedUsers().getModel();
-	}
+    @GetMapping("/chats/{id}")
+    public Map<String, Object> resourceChatsDetail(@PathVariable long id) throws JsonProcessingException,
+            InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        ModelMap map = new ModelMap();
+        User user = authService.getCurrentUser(true);
+        Conversation c = conversationRepo.findById(id).orElse(null);
+
+        if (c == null) {
+            throw new AlovoaException("conversation_not_found");
+        }
+
+        if (!c.containsUser(user)) {
+            throw new AlovoaException("user_not_in_conversation");
+        }
+
+        User u = c.getPartner(user);
+
+        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        map.addAttribute("convoId", id);
+        map.addAttribute("partner", UserDto.userToUserDto(u, user, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
+
+        c.setLastOpened(new Date());
+        conversationRepo.saveAndFlush(c);
+        return map;
+    }
+
+    @GetMapping("/alerts")
+    public Map<String, Object> resourceNotification() throws JsonProcessingException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        ModelMap map = new ModelMap();
+        User user = authService.getCurrentUser(true);
+        user.getDates().setNotificationCheckedDate(new Date());
+        userRepo.saveAndFlush(user);
+        List<UserNotification> nots = user.getNotifications();
+        List<NotificationDto> notifications = new ArrayList<>();
+        for (int i = 0; i < nots.size(); i++) {
+            UserNotification n = nots.get(i);
+
+            boolean blockedMe = user.getBlockedByUsers().stream()
+                    .anyMatch(b -> b.getUserFrom().getId().equals(n.getUserFrom().getId()));
+            boolean blockedYou = user.getBlockedUsers().stream()
+                    .anyMatch(b -> b.getUserTo().getId().equals(n.getUserFrom().getId()));
+
+            if (!blockedMe && !blockedYou) {
+                NotificationDto dto = NotificationDto.notificationToNotificationDto(n, user, userService, textEncryptor);
+                notifications.add(dto);
+            }
+        }
+
+        notifications.sort((NotificationDto a, NotificationDto b) -> b.getDate().compareTo(a.getDate()));
+
+        map.addAttribute("notifications", notifications);
+        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        return map;
+    }
+
+    @GetMapping("/profile")
+    public Map<String, Object> resourceProfile() throws JsonProcessingException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        return profileResource.profile().getModel();
+    }
+
+    @GetMapping("/profile/view/{idEncoded}")
+    public Map<String, Object> resourceProfileView(@PathVariable String idEncoded) throws JsonProcessingException,
+            InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        Optional<Long> idOptional = UserDto.decodeId(idEncoded, textEncryptor);
+        if (idOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        Long id = idOptional.get();
+        User userView = userRepo.findById(id).orElse(null);
+        User user = authService.getCurrentUser(true);
+
+        if (user.getId().equals(id)) {
+            throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+        }
+
+        if (userView != null) {
+            if (userView.getBlockedUsers().stream().filter(o -> o.getUserTo() != null).anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
+                throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+            }
+
+            if (userView.isDisabled()) {
+                throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+            }
+
+            ModelMap map = new ModelMap();
+
+            userView.setNumberProfileViews(userView.getNumberProfileViews() + 1);
+            userView = userRepo.saveAndFlush(userView);
+
+            UserDto userDto = UserDto.userToUserDto(userView, user, userService, textEncryptor, UserDto.ALL);
+            UserDto currUserDto = UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA);
+
+            map.addAttribute("user", userDto);
+            map.addAttribute("currUser", currUserDto);
+            map.addAttribute("compatible", Tools.usersCompatible(user, userView));
+
+            return map;
+
+        } else {
+            throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/search")
+    public Map<String, Object> resourceSearch() throws JsonProcessingException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        return searchResource.search().getModel();
+    }
+
+    @GetMapping("/user/onboarding")
+    public Map<String, Object> userOnboarding() throws AlovoaException {
+        User user = authService.getCurrentUser(true);
+        int age = Tools.calcUserAge(user);
+        boolean isLegal = age >= Tools.AGE_LEGAL;
+        ModelMap mav = new ModelMap();
+        mav.addAttribute("genders", genderRepo.findAll());
+        mav.addAttribute("intentions", userIntentionRepo.findAll());
+        mav.addAttribute("isLegal", isLegal);
+        mav.addAttribute("mediaMaxSize", mediaMaxSize);
+        mav.addAttribute("interestMaxSize", interestMaxSize);
+        return mav;
+    }
+
+    @GetMapping("/blocked-users")
+    public Map<String, Object> blockedUsers() throws JsonProcessingException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        User user = authService.getCurrentUser(true);
+        ModelMap map = new ModelMap();
+        List<UserBlock> userBlocks = user.getBlockedUsers();
+        List<User> blockedUsers = userBlocks.stream().sorted(Comparator.comparing(UserBlock::getDate).reversed())
+                .limit(MAX_RESULTS).map(UserBlock::getUserTo).toList();
+        List<UserDto> users = new ArrayList<>();
+        for (User u : blockedUsers) {
+            users.add(UserDto.userToUserDto(u, user, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
+        }
+        map.addAttribute("users", users);
+        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        return map;
+    }
+
+    @GetMapping("/liked-users")
+    public Map<String, Object> likedUsers() throws JsonProcessingException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        User user = authService.getCurrentUser(true);
+        ModelMap map = new ModelMap();
+        List<UserLike> userLikes = user.getLikes();
+        List<User> likedUsers = userLikes.stream().sorted(Comparator.comparing(UserLike::getDate).reversed())
+                .limit(MAX_RESULTS).map(UserLike::getUserTo).toList();
+        List<UserDto> users = new ArrayList<>();
+        for (User u : likedUsers) {
+            users.add(UserDto.userToUserDto(u, user, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
+        }
+        map.addAttribute("users", users);
+        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        return map;
+    }
+
+    @GetMapping("/disliked-users")
+    public Map<String, Object> dislikedUsers() throws JsonProcessingException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        User user = authService.getCurrentUser(true);
+        ModelMap map = new ModelMap();
+        List<UserHide> userDislikes = user.getHiddenUsers();
+        List<User> dislikedUsers = userDislikes.stream().sorted(Comparator.comparing(UserHide::getDate).reversed())
+                .limit(MAX_RESULTS).map(UserHide::getUserTo).toList();
+        List<UserDto> users = new ArrayList<>();
+        for (User u : dislikedUsers) {
+            users.add(UserDto.userToUserDto(u, user, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
+        }
+        map.addAttribute("users", users);
+        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        return map;
+    }
 }

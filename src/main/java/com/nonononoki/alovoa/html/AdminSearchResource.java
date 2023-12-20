@@ -2,12 +2,14 @@ package com.nonononoki.alovoa.html;
 
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.user.UserHide;
+import com.nonononoki.alovoa.entity.user.UserDonation;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.UserDto;
+import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,37 +21,42 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
-public class DislikedUsersResource {
+public class AdminSearchResource {
 
-    private static final long MAX_RESULTS = 50;
+    public static final String URL = "/admin-search";
     @Autowired
     private AuthService authService;
     @Autowired
     private UserService userService;
     @Autowired
+    private UserRepository userRepo;
+    @Autowired
     private TextEncryptorConverter textEncryptor;
+    @Value("${app.donation.modulus}")
+    private int donationModulus;
+    @Value("${app.donation.popup.time}")
+    private int donationPopupTime;
 
-    @GetMapping("/user/disliked-users")
-    public ModelAndView dislikedUsers() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
+    @GetMapping(URL)
+    public ModelAndView search() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
             BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
             UnsupportedEncodingException {
-
         User user = authService.getCurrentUser(true);
-        ModelAndView mav = new ModelAndView("disliked-users");
-        List<UserHide> userDislikes = user.getHiddenUsers();
-        List<User> dislikedUsers = userDislikes.stream().sorted(Comparator.comparing(UserHide::getDate).reversed())
-                .limit(MAX_RESULTS).map(UserHide::getUserTo).toList();
-        List<UserDto> users = new ArrayList<>();
-        for (User u : dislikedUsers) {
-            users.add(UserDto.userToUserDto(u, user, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
+
+        if (!user.isAdmin()) {
+            throw new AlovoaException("not authorized");
         }
-        mav.addObject("users", users);
+
+        user.setNumberSearches(user.getNumberSearches() + 1);
+        userRepo.saveAndFlush(user);
+
+        ModelAndView mav = new ModelAndView("admin-search");
         mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
         return mav;
     }
