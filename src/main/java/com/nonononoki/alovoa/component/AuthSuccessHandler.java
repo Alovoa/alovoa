@@ -58,6 +58,9 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 				}
 				redirectUrl = redirectUrl + Tools.getAuthParams(securityConfig, httpSession.getId(), user.getEmail(), user.getFirstName(), page, user.getPassword());
 				response.setHeader(AuthFilter.REDIRECT_URL, redirectUrl);
+				//sometimes(?) the header is read-only, so, just add the redirectUrl as body as fallback
+				response.getWriter().write(redirectUrl);
+				response.getWriter().flush();
 				return;
 			} catch (AlovoaException e) {
 				e.printStackTrace();
