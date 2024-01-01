@@ -207,7 +207,13 @@ public class UserController {
     @PostMapping(value = "/like/{idEnc}")
     public void likeUser(@PathVariable String idEnc) throws AlovoaException, GeneralSecurityException, IOException,
             JoseException {
-        userService.likeUser(idEnc);
+        userService.likeUser(idEnc, null);
+    }
+
+    @PostMapping(value = "/like/{idEnc}/{message}")
+    public void likeUser(@PathVariable String idEnc, @PathVariable String message) throws AlovoaException,
+            GeneralSecurityException, IOException, JoseException {
+        userService.likeUser(idEnc, message);
     }
 
     @PostMapping(value = "/hide/{idEnc}")

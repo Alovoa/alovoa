@@ -119,6 +119,8 @@ public class UserService {
     private long userDeleteDuration;
     @Value("${app.intention.delay}")
     private long intentionDelay;
+    @Value("${app.like.message.length}")
+    private int likeMessageLength;
 
     public static void removeUserDataCascading(User user, UserDeleteParams userDeleteParam) {
 
@@ -656,7 +658,7 @@ public class UserService {
         return Tools.B64IMAGEPREFIX + fileType + Tools.B64PREFIX + base64bytes;
     }
 
-    public void likeUser(String idEnc) throws AlovoaException, GeneralSecurityException, IOException, JoseException {
+    public void likeUser(String idEnc, String message) throws AlovoaException, GeneralSecurityException, IOException, JoseException {
         User user = encodedIdToUser(idEnc);
         User currUser = authService.getCurrentUser(true);
 
@@ -676,6 +678,10 @@ public class UserService {
             throw new AlovoaException(ExceptionHandler.USER_NOT_COMPATIBLE);
         }
 
+        if(message != null && message.length() > likeMessageLength) {
+            throw new AlovoaException("max_length_exceeded");
+        }
+
         if (userLikeRepo.findByUserFromAndUserTo(currUser, user) == null) {
             UserLike like = new UserLike();
             like.setDate(new Date());
@@ -688,6 +694,7 @@ public class UserService {
             not.setDate(new Date());
             not.setUserFrom(currUser);
             not.setUserTo(user);
+            not.setMessage(message);
             currUser.getNotifications().add(not);
             notificationService.newLike(user);
 
