@@ -17,7 +17,6 @@ import org.springframework.util.StringUtils;
 public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServices {
 	
 	public static final String COOKIE_REMEMBER = "remember-me";
-	public static final String COOKIE_REMEMBER_EXPIRE = "remember-me-expire";
 
 	public CustomTokenBasedRememberMeServices(String key, UserDetailsService userDetailsService) {
 		super(key, userDetailsService);
