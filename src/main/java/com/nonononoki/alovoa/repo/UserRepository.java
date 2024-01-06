@@ -15,8 +15,7 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.UserSearchRequest;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-
-	@Cacheable("UserRepository.findByEmail")
+	
 	User findByEmail(String email);
 
 	long countByConfirmed(boolean confirmed);
