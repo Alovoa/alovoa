@@ -44,7 +44,11 @@ public class AuthService {
 		if (user != null && user.isDisabled()) {
 			throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
 		} else if (user == null && throwExceptionWhenNull) {
-			throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+			//try again
+			user = userRepo.findByEmail(Tools.cleanEmail(email));
+			if (user == null) {
+				throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+			}
 		}
 
 		return user;
