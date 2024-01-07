@@ -24,6 +24,8 @@ public class NotificationDto {
 
     private UserDto userFromDto;
 
+    private String message;
+
     public static NotificationDto notificationToNotificationDto(UserNotification n, User currentUser, UserService userService,
                                                                 TextEncryptorConverter textEncryptor)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
@@ -31,6 +33,7 @@ public class NotificationDto {
         NotificationDto dto = new NotificationDto();
         dto.setDate(n.getDate());
         dto.setId(n.getId());
+        dto.setMessage(n.getMessage());
         dto.setUserFromDto(
                 UserDto.userToUserDto(n.getUserFrom(), currentUser, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
         return dto;

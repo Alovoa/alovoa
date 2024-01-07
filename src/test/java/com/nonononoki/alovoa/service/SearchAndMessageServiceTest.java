@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.nonononoki.alovoa.model.AlovoaException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,6 +98,9 @@ class SearchAndMessageServiceTest {
 
 	@Value("${app.first-name.length-min}")
 	private int firstNameLengthMin;
+
+	@Value("${app.like.message.length}")
+	private int likeMessageLength;
 
 	@MockBean
 	private AuthService authService;
@@ -283,7 +287,11 @@ class SearchAndMessageServiceTest {
 		// likeUser
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
-		userService.likeUser(UserDto.encodeId(user1.getId(), textEncryptor));
+		String longMessage = StringUtils.repeat("*", likeMessageLength);
+		assertThrows(AlovoaException.class, () -> {
+			userService.likeUser(UserDto.encodeId(user1.getId(), textEncryptor), longMessage + "a");
+		});
+		userService.likeUser(UserDto.encodeId(user1.getId(), textEncryptor), StringUtils.repeat("*", likeMessageLength));
 		assertEquals(1, userLikeRepo.count());
 		assertEquals(1, user3.getLikes().size());
 		assertEquals(1, userNotificationRepo.count());
@@ -309,7 +317,7 @@ class SearchAndMessageServiceTest {
 		String user2IdEnc = UserDto.encodeId(user2.getId(), textEncryptor);
 		assertThrows(Exception.class, () -> {
 			// cannot like user when blocked
-			userService.likeUser(user2IdEnc);
+			userService.likeUser(user2IdEnc, null);
 		});
 
 		userService.unblockUser(UserDto.encodeId(user2.getId(), textEncryptor));
@@ -318,12 +326,12 @@ class SearchAndMessageServiceTest {
 		// like back
 		String user3IdEnc = UserDto.encodeId(user3.getId(), textEncryptor);
 		assertThrows(Exception.class, () -> {
-			userService.likeUser(user3IdEnc);
+			userService.likeUser(user3IdEnc, null);
 		});
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-		userService.likeUser(UserDto.encodeId(user3.getId(), textEncryptor));
+		userService.likeUser(UserDto.encodeId(user3.getId(), textEncryptor), null);
 
 		assertEquals(2, userLikeRepo.count());
 		assertEquals(2, userNotificationRepo.count());

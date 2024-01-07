@@ -31,67 +31,67 @@ import lombok.Data;
 @RequestMapping("/api/v1")
 public class ApiController {
 
-	@Autowired
-	private DonateController donateController;
+    @Autowired
+    private DonateController donateController;
 
-	@Autowired
-	private MessageController messageController;
+    @Autowired
+    private MessageController messageController;
 
-	@Autowired
-	private SearchController searchController;
+    @Autowired
+    private SearchController searchController;
 
-	@SuppressWarnings("unchecked")
-	@GetMapping("/donate/recent/{filter}")
-	public DonationDtoListModel donateRecent(Model model, @PathVariable int filter) throws JsonProcessingException,
-			InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		Map<String, Object> map = donateController.filterRecentModel(model, filter).asMap();
-		List<DonationDto> donations = (List<DonationDto>) map.get("donations");
-		return DonationDtoListModel.builder().list(donations).build();
-	}
+    @SuppressWarnings("unchecked")
+    @GetMapping("/donate/recent/{filter}")
+    public DonationDtoListModel donateRecent(Model model, @PathVariable int filter) throws JsonProcessingException,
+            InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        Map<String, Object> map = donateController.filterRecentModel(model, filter).asMap();
+        List<DonationDto> donations = (List<DonationDto>) map.get("donations");
+        return DonationDtoListModel.builder().list(donations).build();
+    }
 
-	@SuppressWarnings("unchecked")
-	@GetMapping("/message/update/{convoId}/{first}")
-	public MessageDtoListModel messageUpdate(@PathVariable long convoId, @PathVariable int first)
-			throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			UnsupportedEncodingException, AlovoaException {
-		Map<String, Object> map = messageController.getMessagesModel(null, convoId, first).asMap();
-		boolean show = (boolean) map.get("show");
-		if (show) {
-			return MessageDtoListModel.builder().list((List<MessageDto>) map.get("messages")).build();
-		} else {
-			return null;
-		}
-	}
+    @SuppressWarnings("unchecked")
+    @GetMapping("/message/update/{convoId}/{first}")
+    public MessageDtoListModel messageUpdate(@PathVariable long convoId, @PathVariable int first)
+            throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
+            NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+            UnsupportedEncodingException, AlovoaException {
+        Map<String, Object> map = messageController.getMessagesModel(null, convoId, first).asMap();
+        boolean show = (boolean) map.get("show");
+        if (show) {
+            return MessageDtoListModel.builder().list((List<MessageDto>) map.get("messages")).build();
+        } else {
+            return null;
+        }
+    }
 
-	@GetMapping("/search/users/{latitude}/{longitude}/{distance}/{search}")
-	public SearchDto searchUsers(@PathVariable Double latitude, @PathVariable Double longitude,
-			@PathVariable int distance, @PathVariable int search) throws JsonProcessingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		Map<String, Object> map = searchController.getUsersModel(null, latitude, longitude, distance, search).asMap();
-		return (SearchDto) map.get("dto");
-	}
+    @GetMapping("/search/users/{latitude}/{longitude}/{distance}/{search}")
+    public SearchDto searchUsers(@PathVariable Double latitude, @PathVariable Double longitude,
+                                 @PathVariable int distance, @PathVariable int search) throws JsonProcessingException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        Map<String, Object> map = searchController.getUsersModel(null, latitude, longitude, distance, search).asMap();
+        return (SearchDto) map.get("dto");
+    }
 
-	@GetMapping("/search/users/default")
-	public SearchDto searchUsersDefault() throws JsonProcessingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		Map<String, Object> map = searchController.getUsersDefaultModel(null).asMap();
-		return (SearchDto) map.get("dto");
-	}
+    @GetMapping("/search/users/default")
+    public SearchDto searchUsersDefault() throws JsonProcessingException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        Map<String, Object> map = searchController.getUsersDefaultModel(null).asMap();
+        return (SearchDto) map.get("dto");
+    }
 
-	@Data
-	@Builder
-	private static class DonationDtoListModel {
-		List<DonationDto> list;
-	}
+    @Data
+    @Builder
+    private static class DonationDtoListModel {
+        List<DonationDto> list;
+    }
 
-	@Data
-	@Builder
-	private static class MessageDtoListModel {
-		List<MessageDto> list;
-	}
+    @Data
+    @Builder
+    private static class MessageDtoListModel {
+        List<MessageDto> list;
+    }
 
 }

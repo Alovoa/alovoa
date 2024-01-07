@@ -35,6 +35,9 @@ public class UserNotification {
 	private User userTo;
 	
 	private String content;
+
+	private String message;
+
 	private Date date;
 	
 }
