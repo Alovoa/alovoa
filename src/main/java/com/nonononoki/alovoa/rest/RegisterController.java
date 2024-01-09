@@ -10,11 +10,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import jakarta.mail.MessagingException;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.RegisterDto;
@@ -39,5 +37,15 @@ public class RegisterController {
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 		registerService.registerOauth(dto);
 		return "profile";
+	}
+
+	@GetMapping("/register/confirm/{tokenString}")
+	public void registerConfirm(@PathVariable String tokenString, HttpServletResponse response) throws IOException {
+		try {
+			registerService.registerConfirm(tokenString);
+			response.sendRedirect("/?registration-confirm-success");
+		} catch (Exception e) {
+			response.sendRedirect("/?registration-confirm-failed");
+		}
 	}
 }
