@@ -26,10 +26,8 @@ What makes Alovoa different from other platforms?
 Alovoa is also available as a mobile app. Check out Android app [source code repo](https://github.com/Alovoa/alovoa-expo), download an app on [F-Droid](https://f-droid.org/en/packages/com.alovoa.expo/) or [Google Play](https://play.google.com/store/apps/details?id=com.alovoa.expo)
 
 ### Contribute
-> :warning: **Alovoa is currently updating its frontend**: Please do not submit or request new GUI features and translations here, but [here](https://github.com/Alovoa/alovoa-expo)
 - Tell your friends about it and share on social media! This is the best way to make it grow.
-- Improve the project by posting in [Issues](https://github.com/aha999/markdown-templates/issues) and make a PR upon Issue discussion.
-- Chat/support to the development community on [Matrix](https://matrix.to/#/#alovoa_love:matrix.org)
+- Improve the project by posting in [Issues](https://github.com/Alovoa/alovoa/issues) and make a PR upon Issue discussion.
 - Translate this project into your preferred language on [Weblate](https://hosted.weblate.org/projects/alovoa/alovoa/)
 
 <details>
