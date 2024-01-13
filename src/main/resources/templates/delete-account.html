@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html dir="auto" th:lang="${lang}" th:with="lang=${#locale.language}" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="Alovoa" name="apple-mobile-web-app-title">
+    <meta content="#121212" media="(prefers-color-scheme: dark)" name="theme-color">
+    <link href="/manifest/manifest.json" rel="manifest">
+
+    <link href="/css/lib/bulma.min.css" rel="stylesheet"/>
+    <link href="/css/lib/bulma-switch.min.css" rel="stylesheet"/>
+    <link href="/css/lib/css-loaders.css" rel="stylesheet"/>
+    <link href="/css/lib/animate.min.css" rel="stylesheet"/>
+    <link href="/css/alovoa.css" rel="stylesheet"/>
+    <title th:text="#{delete-account.title}"></title>
+</head>
+
+<body>
+<div class="loader-parent" id="preloader-parent" style="display: flex">
+    <div class="loader" id="preloader"></div>
+</div>
+<div id="main">
+    <header th:insert="~{fragments.html::header}"></header>
+
+    <div class="section">
+        <div class="container">
+            <h3 class="title" th:text="#{delete-account.title}"></h3>
+            <th:block>
+                <form id="delete-account-form" method="POST" th:action="@{/user/delete-account-confirm}">
+                    <input name="tokenString" required th:value="${tokenString}" type="hidden">
+                    <div class="field">
+                        <input class="input" name="email" required th:placeholder="#{email}" type="email">
+                    </div>
+                    <div th:replace="~{fragments.html::captcha}"></div>
+                    <div class="field">
+                        <input class="switch" id="confirm" name="confirm" required style="position: absolute"
+                               type="checkbox"> <label for="confirm"><span th:text="#{delete-account.confirm}"></span>
+                    </label>
+                    </div>
+                    <button class="button" th:text="#{submit}"></button>
+                </form>
+            </th:block>
+        </div>
+    </div>
+
+    <div class="loader-parent" id="loader-parent">
+        <div class="loader" id="loader"></div>
+    </div>
+
+</div>
+<footer th:replace="~{fragments.html::footer}"></footer>
+
+<script src="/sw.js"></script>
+<script src="/js/lib/fontawesome.all.js"></script>
+<script src="/js/lib/jquery.min.js"></script>
+<script src="/js/lib/bulma-toast.min.js"></script>
+<script src="/js/tools/refresh-captcha.js"></script>
+<script src="/js/tools/get-text.js"></script>
+<script src="/js/tools/modal.js"></script>
+<script src="/js/tools/loader.js"></script>
+<script src="/js/alovoa.js"></script>
+<script src="/js/delete-account.js"></script>
+</body>
+
+</html>
