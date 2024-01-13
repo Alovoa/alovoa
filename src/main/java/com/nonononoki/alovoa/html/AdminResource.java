@@ -49,7 +49,9 @@ public class AdminResource {
         List<UserReport> reports = userReportRepo.findTop20ByOrderByDateAsc();
 
         for (UserReport r : reports) {
-            r.setUserToIdEnc(UserDto.encodeId(r.getUserTo().getId(), textEncryptor));
+            if(r != null) {
+                r.setUserToIdEnc(UserDto.encodeId(r.getUserTo().getId(), textEncryptor));
+            }
         }
 
         List<Contact> contacts = contactRepository.findTop20ByHiddenFalse();

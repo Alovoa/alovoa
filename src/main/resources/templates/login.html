@@ -10,7 +10,6 @@
     <link rel="manifest" href="/manifest/manifest.json">
 
     <link rel="stylesheet" href="/css/lib/bulma.min.css" />
-    <link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
     <link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
     <link rel="stylesheet" href="/css/lib/animate.min.css" />
     <link rel="stylesheet" href="/css/alovoa.css" />
@@ -27,20 +26,9 @@
                 <p class="subtitle" th:text="#{login.subtitle}"></p>
 
                 <div class="box no-shadow" style="padding: 0px; margin-bottom: 0px;">
-                    <header class="card-header collapsible-header no-shadow">
-                        <a href="#collapsible-card" data-action="collapse" id="email-auth"
-                           class="card-header-icon is-hidden-fullscreen full-width button is-rounded"
-                           style="display: flex; justify-content: center; background-color: initial;">
-                            <i class="fa fa-envelope fa-lg"></i>
-                            <span class="label" style="margin-bottom: initial; padding-left: 6px;"
-                                  th:text="#{login.email.sign-in}"></span>
-                        </a>
-                    </header>
-                    <div id="collapsible-card" class="is-collapsible">
+                    <div>
                         <div style="margin: 8px; margin-bottom: 48px;" class="box">
                             <div style="padding-top: 4px;" class="collapsible-mobile"></div>
-                            <h3 th:text="#{login.email.sign-in}" class="collapsible-desktop"
-                                style="font-size: 1.3em; font-weight: 600; margin-bottom: 12px;"></h3>
                             <form th:action="@{/login}" method="POST">
                                 <div class="field">
                                     <label class="label" th:text="#{email}"></label>
@@ -77,7 +65,6 @@
 <script src="/sw.js"></script>
 <script src="/js/lib/jquery.min.js"></script>
 <script src="/js/lib/fontawesome.all.js"></script>
-<script src="/js/lib/bulma-collapsible.min.js"></script>
 <script src="/js/lib/modal-fx.min.js"></script>
 <script src="/js/lib/bulma-toast.min.js"></script>
 <script src="/js/tools/refresh-captcha.js"></script>
