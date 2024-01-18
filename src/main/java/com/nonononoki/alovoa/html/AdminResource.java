@@ -49,7 +49,7 @@ public class AdminResource {
         List<UserReport> reports = userReportRepo.findTop20ByOrderByDateAsc();
 
         for (UserReport r : reports) {
-            if(r != null) {
+            if(r != null && r.getUserTo() != null) {
                 r.setUserToIdEnc(UserDto.encodeId(r.getUserTo().getId(), textEncryptor));
             }
         }
