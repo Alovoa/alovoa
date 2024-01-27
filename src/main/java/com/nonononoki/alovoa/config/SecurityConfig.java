@@ -96,7 +96,7 @@ public class SecurityConfig {
 				.permitAll().requestMatchers("/robots.txt").permitAll().requestMatchers("/.well-known/assetlinks.json")
 				.permitAll().requestMatchers("/text/*").permitAll().requestMatchers("/manifest/**").permitAll()
 				.requestMatchers("/fonts/**").permitAll().requestMatchers("/error").permitAll().requestMatchers("/info").permitAll()
-				.requestMatchers("/user/delete-account-confirm").permitAll()
+				.requestMatchers("/user/delete-account-confirm").permitAll().requestMatchers("/delete-account/*").permitAll()
 
 				.anyRequest().authenticated().and().formLogin().loginPage("/login").and().logout()
 				.deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER).logoutUrl("/logout").logoutSuccessUrl("/?logout").and()
