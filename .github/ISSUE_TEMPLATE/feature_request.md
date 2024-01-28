@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 ** Check if you're in the correct repository **
-This repository only covers bugs in the backend and web UI.
+This repository only covers bugs in the backend and web UI of alovoa.com only.
 
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
