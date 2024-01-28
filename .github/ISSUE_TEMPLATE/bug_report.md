@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 ** Check if you're in the correct repository **
-This repository only covers bugs in the backend and web UI.
+This repository only covers bugs in the backend and web UI of alovoa.com only.
 
 **Describe the bug**
 A clear and concise description of what the bug is.
