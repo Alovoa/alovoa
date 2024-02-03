@@ -54,6 +54,8 @@ public class ProfileResource {
     private String domain;
     @Value("${app.referral.max}")
     private int maxReferrals;
+    @Value("${app.search.ignore-intention}")
+    private boolean ignoreIntention;
 
     @GetMapping(URL)
     public ModelAndView profile() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
@@ -68,7 +70,8 @@ public class ProfileResource {
             boolean isLegal = age >= Tools.AGE_LEGAL;
             int referralsLeft = maxReferrals - user.getNumberReferred();
             ModelAndView mav = new ModelAndView("profile");
-            mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.ALL));
+            mav.addObject("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                    .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).mode(UserDto.ALL).build()));
             mav.addObject("genders", genderRepo.findAll());
             mav.addObject("intentions", userIntentionRepo.findAll());
             mav.addObject("imageMax", imageMax);

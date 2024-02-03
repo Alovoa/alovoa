@@ -121,6 +121,8 @@ public class UserService {
     private long intentionDelay;
     @Value("${app.like.message.length}")
     private int likeMessageLength;
+    @Value("${app.search.ignore-intention}")
+    private boolean ignoreIntention;
 
     public static void removeUserDataCascading(User user, UserDeleteParams userDeleteParam) {
 
@@ -674,7 +676,7 @@ public class UserService {
             throw new AlovoaException("is_blocked");
         }
 
-        if (!Tools.usersCompatible(currUser, user)) {
+        if (!Tools.usersCompatible(currUser, user, ignoreIntention)) {
             throw new AlovoaException(ExceptionHandler.USER_NOT_COMPATIBLE);
         }
 

@@ -57,7 +57,8 @@ public class AdminSearchResource {
         userRepo.saveAndFlush(user);
 
         ModelAndView mav = new ModelAndView("admin-search");
-        mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        mav.addObject("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(true)
+                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
         return mav;
     }
 }

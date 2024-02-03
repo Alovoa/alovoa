@@ -27,7 +27,7 @@ public class NotificationDto {
     private String message;
 
     public static NotificationDto notificationToNotificationDto(UserNotification n, User currentUser, UserService userService,
-                                                                TextEncryptorConverter textEncryptor)
+                                                                TextEncryptorConverter textEncryptor, boolean ignoreIntention)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         NotificationDto dto = new NotificationDto();
@@ -35,7 +35,8 @@ public class NotificationDto {
         dto.setId(n.getId());
         dto.setMessage(n.getMessage());
         dto.setUserFromDto(
-                UserDto.userToUserDto(n.getUserFrom(), currentUser, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
+                UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                        .currentUser(currentUser).user(n.getUserFrom()).textEncryptor(textEncryptor).userService(userService).build()));
         return dto;
     }
 }

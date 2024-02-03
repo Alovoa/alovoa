@@ -74,13 +74,17 @@ public class ApiResource {
     @Value("${app.interest.max}")
     private int interestMaxSize;
 
+    @Value("${app.search.ignore-intention}")
+    private boolean ignoreIntention;
+
     @GetMapping("/donate")
     public Map<String, Object> resourceDonate() throws JsonProcessingException, InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         ModelMap map = new ModelMap();
         User user = authService.getCurrentUser(true);
-        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
         return map;
     }
 
@@ -103,7 +107,8 @@ public class ApiResource {
         convos.sort((ConversationDto a, ConversationDto b) -> b.getLastUpdated().compareTo(a.getLastUpdated()));
 
         map.addAttribute("conversations", convos);
-        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
         return map;
     }
 
@@ -125,9 +130,11 @@ public class ApiResource {
 
         User u = c.getPartner(user);
 
-        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
         map.addAttribute("convoId", id);
-        map.addAttribute("partner", UserDto.userToUserDto(u, user, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
+        map.addAttribute("partner", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).build()));
 
         c.setLastOpened(new Date());
         conversationRepo.saveAndFlush(c);
@@ -153,7 +160,7 @@ public class ApiResource {
                     .anyMatch(b -> b.getUserTo().getId().equals(n.getUserFrom().getId()));
 
             if (!blockedMe && !blockedYou) {
-                NotificationDto dto = NotificationDto.notificationToNotificationDto(n, user, userService, textEncryptor);
+                NotificationDto dto = NotificationDto.notificationToNotificationDto(n, user, userService, textEncryptor, ignoreIntention);
                 notifications.add(dto);
             }
         }
@@ -161,7 +168,8 @@ public class ApiResource {
         notifications.sort((NotificationDto a, NotificationDto b) -> b.getDate().compareTo(a.getDate()));
 
         map.addAttribute("notifications", notifications);
-        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
         return map;
     }
 
@@ -203,12 +211,14 @@ public class ApiResource {
             userView.setNumberProfileViews(userView.getNumberProfileViews() + 1);
             userView = userRepo.saveAndFlush(userView);
 
-            UserDto userDto = UserDto.userToUserDto(userView, user, userService, textEncryptor, UserDto.ALL);
-            UserDto currUserDto = UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA);
+            UserDto userDto = UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                    .currentUser(user).user(userView).textEncryptor(textEncryptor).userService(userService).build());
+            UserDto currUserDto = UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                    .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build());
 
             map.addAttribute("user", userDto);
             map.addAttribute("currUser", currUserDto);
-            map.addAttribute("compatible", Tools.usersCompatible(user, userView));
+            map.addAttribute("compatible", Tools.usersCompatible(user, userView, ignoreIntention));
 
             return map;
 
@@ -249,10 +259,12 @@ public class ApiResource {
                 .limit(MAX_RESULTS).map(UserBlock::getUserTo).toList();
         List<UserDto> users = new ArrayList<>();
         for (User u : blockedUsers) {
-            users.add(UserDto.userToUserDto(u, user, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
+            users.add(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).mode(UserDto.PROFILE_PICTURE_ONLY).build()));
         }
         map.addAttribute("users", users);
-        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
         return map;
     }
 
@@ -267,10 +279,12 @@ public class ApiResource {
                 .limit(MAX_RESULTS).map(UserLike::getUserTo).toList();
         List<UserDto> users = new ArrayList<>();
         for (User u : likedUsers) {
-            users.add(UserDto.userToUserDto(u, user, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
+            users.add(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).mode(UserDto.PROFILE_PICTURE_ONLY).build()));
         }
         map.addAttribute("users", users);
-        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
         return map;
     }
 
@@ -285,10 +299,12 @@ public class ApiResource {
                 .limit(MAX_RESULTS).map(UserHide::getUserTo).toList();
         List<UserDto> users = new ArrayList<>();
         for (User u : dislikedUsers) {
-            users.add(UserDto.userToUserDto(u, user, userService, textEncryptor, UserDto.PROFILE_PICTURE_ONLY));
+            users.add(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).mode(UserDto.PROFILE_PICTURE_ONLY).build()));
         }
         map.addAttribute("users", users);
-        map.addAttribute("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
         return map;
     }
 }

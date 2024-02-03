@@ -45,6 +45,7 @@ public class SearchService {
     private static final int SEARCH_STEP_2 = 1000;
     private static final int DEFAULT_DISTANCE = 50;
     private static final int SEARCH_MAX = 200;
+    private static final long INTENTION_ALL = -1;
     private static ReverseGeocoder geocoder = null;
     @Autowired
     private TextEncryptorConverter textEncryptor;
@@ -66,6 +67,8 @@ public class SearchService {
     private int ageMax;
     @Value("${app.search.estimate.max}")
     private int searchEstimateMax;
+    @Value("${app.search.ignore-intention}")
+    private boolean ignoreIntention;
 
     public ReverseGeocoder getGeocoder() {
         if (geocoder == null) {
@@ -151,7 +154,7 @@ public class SearchService {
         double maxLong = longitude + deltaLong;
 
         UserSearchRequest request = UserSearchRequest.builder().age(age).minLat(minLat).minLong(minLong).maxLat(maxLat)
-                .maxLong(maxLong).maxDateDob(maxDate).minDateDob(minDate).intentionId(user.getIntention().getId())
+                .maxLong(maxLong).maxDateDob(maxDate).minDateDob(minDate).intentionId(ignoreIntention ? INTENTION_ALL : user.getIntention().getId())
                 .likeIds(user.getLikes().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
                 .blockIds(user.getBlockedUsers().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
                 .hideIds(user.getHiddenUsers().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
@@ -288,7 +291,8 @@ public class SearchService {
         List<UserDto> userDtos = new ArrayList<>();
         int mediaMode = user.isAdmin() ? UserDto.ALL : UserDto.PROFILE_PICTURE_ONLY;
         for (User u : userList) {
-            UserDto dto = UserDto.userToUserDto(u, user, userService, textEncryptor, mediaMode);
+            UserDto dto = UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                    .currentUser(user).user(u).textEncryptor(textEncryptor).mode(mediaMode).userService(userService).build());
             userDtos.add(dto);
         }
 

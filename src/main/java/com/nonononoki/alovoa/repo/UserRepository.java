@@ -1,21 +1,19 @@
 package com.nonononoki.alovoa.repo;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.cache.annotation.Cacheable;
+import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.model.UserSearchRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.model.UserSearchRequest;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-	
+
 	User findByEmail(String email);
 
 	long countByConfirmed(boolean confirmed);
@@ -32,7 +30,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			+ "u.locationLatitude IS NOT NULL AND u.locationLongitude IS NOT NULL AND u.profilePicture IS NOT NULL "
 			+ "AND TIMESTAMPDIFF(YEAR, u.dates.dateOfBirth, CURDATE()) + u.preferedMaxAge >= :age AND TIMESTAMPDIFF(YEAR, u.dates.dateOfBirth, CURDATE()) + u.preferedMinAge <= :age AND u.dates.dateOfBirth >= :minDate AND u.dates.dateOfBirth <= :maxDate "
 			+ "AND u.locationLatitude BETWEEN :latitudeFrom AND :latitudeTo AND u.locationLongitude BETWEEN :longitudeFrom AND :longitudeTo "
-			+ "AND u.intention.id = :intentionId AND u.id NOT IN (:likeIds) AND u.id NOT IN (:likeIds) AND u.id NOT IN (:hideIds) "
+			+ "AND u.intention.id = CASE WHEN :intentionId < 0 THEN 1=1 ELSE :intentionId END "
+			+ "AND u.id NOT IN (:likeIds) AND u.id NOT IN (:likeIds) AND u.id NOT IN (:hideIds) "
 			+ "AND u.id NOT IN (:blockIds) AND u.gender.id IN (:genderIds)")
 	List<User> usersSearchQuery(@Param("age") int age, @Param("minDate") Date minDate, @Param("maxDate") Date maxDate,
 			@Param("latitudeFrom") Double latitudeFrom, @Param("latitudeTo") Double latitudeTo,
@@ -47,11 +46,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 				request.getIntentionId(), request.getLikeIds(), request.getHideIds(), request.getBlockIds(),
 				request.getGenderIds(), page);
 	}
-	
+
 	@Query(value = "SELECT u FROM User u WHERE u.disabled = FALSE AND u.admin = FALSE AND u.confirmed = TRUE AND u.intention IS NOT NULL AND "
 			+ "u.locationLatitude IS NOT NULL AND u.locationLongitude IS NOT NULL AND u.profilePicture IS NOT NULL "
 			+ "AND TIMESTAMPDIFF(YEAR, u.dates.dateOfBirth, CURDATE()) + u.preferedMaxAge >= :age AND TIMESTAMPDIFF(YEAR, u.dates.dateOfBirth, CURDATE()) + u.preferedMinAge <= :age AND u.dates.dateOfBirth >= :minDate AND u.dates.dateOfBirth <= :maxDate "
-			+ "AND u.intention.id = :intentionId AND u.id NOT IN (:likeIds) AND u.id NOT IN (:likeIds) AND u.id NOT IN (:hideIds) "
+			+ "AND u.intention.id = CASE WHEN :intentionId < 0 THEN 1=1 ELSE :intentionId END "
+			+ "AND u.id NOT IN (:likeIds) AND u.id NOT IN (:likeIds) AND u.id NOT IN (:hideIds) "
 			+ "AND u.id NOT IN (:blockIds) AND u.gender.id IN (:genderIds)")
 	List<User> usersSearchIgnoreLocation(@Param("age") int age, @Param("minDate") Date minDate, @Param("maxDate") Date maxDate,
 			@Param("intentionId") long intentionId, @Param("likeIds") Collection<Long> likeIds,

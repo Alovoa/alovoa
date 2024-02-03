@@ -25,58 +25,65 @@ public class DonationDto {
     private UserDto user;
     private double amount;
 
-    public static DonationDto donationToDto(UserDonation d, User currentUser, UserService userService, TextEncryptorConverter textEncryptor)
+    public static DonationDto donationToDto(UserDonation d, User currentUser, UserService userService
+            , TextEncryptorConverter textEncryptor, boolean ignoreIntention)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         DonationDto dto = new DonationDto();
         dto.setId(d.getId());
         dto.setDate(d.getDate());
         dto.setAmount(d.getAmount());
-        dto.setUser(UserDto.userToUserDto(d.getUser(), currentUser, userService, textEncryptor));
+        dto.setUser(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                .currentUser(currentUser).user(d.getUser()).textEncryptor(textEncryptor).userService(userService).build()));
         return dto;
     }
 
     public static DonationDto donationToDto(UserDonation d, User currentUser, UserService userService, TextEncryptorConverter textEncryptor,
-                                            int mode)
+                                            int mode, boolean ignoreIntention)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         DonationDto dto = new DonationDto();
         dto.setId(d.getId());
         dto.setDate(d.getDate());
         dto.setAmount(d.getAmount());
-        dto.setUser(UserDto.userToUserDto(d.getUser(), currentUser, userService, textEncryptor, mode));
+
+        dto.setUser(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention).mode(mode)
+                .currentUser(currentUser).user(d.getUser()).textEncryptor(textEncryptor).userService(userService).build()));
         return dto;
     }
 
-    public static DonationDto userToDto(User user, User currentUser, UserService userService, TextEncryptorConverter textEncryptor)
+    public static DonationDto userToDto(User user, User currentUser, UserService userService,
+                                        TextEncryptorConverter textEncryptor, boolean ignoreIntention)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         DonationDto dto = new DonationDto();
         dto.setId(user.getId());
         dto.setAmount(user.getTotalDonations());
-        dto.setUser(UserDto.userToUserDto(user, currentUser, userService, textEncryptor));
+        dto.setUser(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                .currentUser(currentUser).user(user).textEncryptor(textEncryptor).userService(userService).build()));
         return dto;
     }
 
-    public static DonationDto userToDto(User user, User currentUser, UserService userService, TextEncryptorConverter textEncryptor, int mode)
+    public static DonationDto userToDto(User user, User currentUser, UserService userService,
+                                        TextEncryptorConverter textEncryptor, int mode, boolean ignoreIntention)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         DonationDto dto = new DonationDto();
         dto.setId(user.getId());
         dto.setAmount(user.getTotalDonations());
-        dto.setUser(UserDto.userToUserDto(user, currentUser, userService, textEncryptor, mode));
+        dto.setUser(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention).mode(mode)
+                .currentUser(currentUser).user(user).textEncryptor(textEncryptor).userService(userService).build()));
         return dto;
     }
 
     public static List<DonationDto> donationsToDtos(List<UserDonation> donations, User currentUser, UserService userService,
-                                                    TextEncryptorConverter textEncryptor, int maxEntries)
+                                                    TextEncryptorConverter textEncryptor, int maxEntries, boolean ignoreIntention)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         List<DonationDto> dtos = new ArrayList<>();
         for (UserDonation donation : donations) {
             if (!donation.getUser().getId().equals(currentUser.getId())) {
-                dtos.add(DonationDto.donationToDto(donation, currentUser, userService, textEncryptor));
-
+                dtos.add(DonationDto.donationToDto(donation, currentUser, userService, textEncryptor, ignoreIntention));
                 if (dtos.size() >= maxEntries) {
                     break;
                 }
@@ -86,13 +93,13 @@ public class DonationDto {
     }
 
     public static List<DonationDto> usersToDtos(List<User> users, User currentUser, UserService userService,
-                                                TextEncryptorConverter textEncryptor, int maxEntries)
+                                                TextEncryptorConverter textEncryptor, int maxEntries, boolean ignoreIntention)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         List<DonationDto> dtos = new ArrayList<>();
         for (User user : users) {
             if (!user.getId().equals(currentUser.getId())) {
-                dtos.add(DonationDto.userToDto(user, currentUser, userService, textEncryptor));
+                dtos.add(DonationDto.userToDto(user, currentUser, userService, textEncryptor, ignoreIntention));
 
                 if (dtos.size() >= maxEntries) {
                     break;

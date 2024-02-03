@@ -6,6 +6,8 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.*;
 import com.nonononoki.alovoa.service.UserService;
 import lombok.Data;
+import lombok.Builder;
+import lombok.Builder.Default;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +32,7 @@ public class UserDto {
     public static final int LA_STATE_ACTIVE_2 = 1;
     public static final int LA_STATE_ACTIVE_3 = 7;
     public static final int LA_STATE_ACTIVE_4 = 30;
-    public static final int VERIFICATION_MINUMUM = 5;
+    public static final int VERIFICATION_MINIMUM = 5;
     public static final int VERIFICATION_FACTOR = 5;
     private static final double MILES_TO_KM = 0.6214;
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDto.class);
@@ -77,15 +79,16 @@ public class UserDto {
     private UserDtoVerificationPicture verificationPicture;
     private int lastActiveState = 5;
 
-    public static UserDto userToUserDto(User user, User currentUser, UserService userService, TextEncryptorConverter textEncryptor)
+    public static UserDto userToUserDto(DtoBuilder builder)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-        return userToUserDto(user, currentUser, userService, textEncryptor, NO_AUDIO);
-    }
+        User user = builder.user;
+        User currentUser = builder.currentUser;
+        UserService userService = builder.userService;
+        TextEncryptorConverter textEncryptor = builder.textEncryptor;
+        int mode = builder.mode;
+        boolean ignoreIntention = builder.ignoreIntention;
 
-    public static UserDto userToUserDto(User user, User currentUser, UserService userService, TextEncryptorConverter textEncryptor, int mode)
-            throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-            NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         if (user == null) {
             return null;
         }
@@ -194,7 +197,7 @@ public class UserDto {
             }
             dto.setDistanceToUser(dist);
         }
-        dto.setCompatible(Tools.usersCompatible(currentUser, user));
+        dto.setCompatible(Tools.usersCompatible(currentUser, user, ignoreIntention));
         return dto;
     }
 
@@ -256,7 +259,7 @@ public class UserDto {
     }
 
     public static boolean isVerifiedByUsers(UserVerificationPicture pic) {
-        if (pic.getUserYes().size() < VERIFICATION_MINUMUM) {
+        if (pic.getUserYes().size() < VERIFICATION_MINIMUM) {
             return false;
         }
         return pic.getUserNo().size() * VERIFICATION_FACTOR <= pic.getUserYes().size();
@@ -300,5 +303,16 @@ public class UserDto {
 
             return verificationPicture;
         }
+    }
+
+    @Builder
+    public static class DtoBuilder {
+        private User user;
+        private User currentUser;
+        private UserService userService;
+        private TextEncryptorConverter textEncryptor;
+        @Builder.Default
+        private int mode = NO_AUDIO;
+        private boolean ignoreIntention;
     }
 }

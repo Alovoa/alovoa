@@ -11,6 +11,7 @@ import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -58,7 +59,8 @@ public class AdminResource {
         mav.addObject("reports", reports);
         mav.addObject("contacts", contacts);
         User user = authService.getCurrentUser(true);
-        mav.addObject("user", UserDto.userToUserDto(user, user, userService, textEncryptor, UserDto.NO_MEDIA));
+        mav.addObject("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(true)
+                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
 
         return mav;
     }

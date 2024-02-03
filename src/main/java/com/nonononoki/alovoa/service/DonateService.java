@@ -58,7 +58,9 @@ public class DonateService {
     private String kofiKey;
     @Value("${app.donate.bmac.key}")
     private String bmacKey;
-    // private static final double BMAC_AMOUNT_FACTOR = 1.0; // 0.95;
+
+    @Value("${app.search.ignore-intention}")
+    private boolean ignoreIntention;
 
     public List<DonationDto> filter(int filter) throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
             BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
@@ -88,10 +90,10 @@ public class DonateService {
             donationsToDtos = DonationDto.donationsToDtos(userDonationRepo
                             .findTop20ByUserDatesDateOfBirthGreaterThanEqualAndUserDatesDateOfBirthLessThanEqualOrderByDateDesc(
                                     minDate, maxDate),
-                    user, userService, textEncryptor, maxEntries);
+                    user, userService, textEncryptor, maxEntries, ignoreIntention);
         } else if (filter == FILTER_AMOUNT) {
             donationsToDtos = DonationDto.usersToDtos(userRepo.usersDonate(minDate, maxDate), user, userService, textEncryptor,
-                    maxEntries);
+                    maxEntries, ignoreIntention);
         } else {
             throw new AlovoaException("filter_not_found");
         }
