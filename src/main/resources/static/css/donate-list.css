@@ -7,27 +7,13 @@
 }
 
 .notification.is-success {
-    opacity: 0.7;
+	background-color: #757575;
 }
 
 .question-button {
-	display: none;
-}
-
-.notification.is-success {
-	background-color: #757575;
+    display: block;
 }
 
 #main-section {
 	height: 100vh;
-}
-
-@media screen and (max-width: 600px) {
-	.notification.is-success {
-		display: none;
-	}
-	
-	.question-button {
-		display: block;
-	}
 }

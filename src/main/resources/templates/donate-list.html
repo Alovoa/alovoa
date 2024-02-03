@@ -1,63 +1,68 @@
 <!DOCTYPE html>
-<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto">
+<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-title" content="Alovoa">
-	<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
-	<link rel="manifest" href="/manifest/manifest.json">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Alovoa">
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+    <link rel="manifest" href="/manifest/manifest.json">
 
-	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-	<link rel="stylesheet" href="/css/lib/animate.min.css" />
-	<link rel="stylesheet" href="/css/alovoa.css" />
-	<link rel="stylesheet" href="/css/donate-list.css" />
-	<title th:text="#{donate.title}"></title>
+    <link rel="stylesheet" href="/css/lib/bulma.min.css"/>
+    <link rel="stylesheet" href="/css/lib/animate.min.css"/>
+    <link rel="stylesheet" href="/css/alovoa.css"/>
+    <link rel="stylesheet" href="/css/donate-list.css"/>
+    <title th:text="#{donate.title}"></title>
 </head>
 
 <body>
-	<div id="main">
-		<header th:insert="~{fragments.html::header}"></header>
-		<div class="section" id="main-section">
-			<div class="container">
-				<div id="donation-links">
-					<div class="box">
-						<i class="fa-lg fas fa-question-circle question-button" style="cursor:pointer; float: right;" onclick="donateInfo()"></i>
-						<a href="https://ko-fi.com/alovoa" target="_blank" class="button colored is-info"
-							style="width: 100%; border-color: #dbdbdb; margin-bottom: 4px; height: 52px; font-size: 1.4em;"><i
-								class="fa fa-coins"></i><span th:text="#{kofi}" style="padding-left: 4px;"></span></a>
-						<a href="https://www.buymeacoffee.com/alovoa" target="_blank" class="button colored is-info"
-							style="width: 100%; border-color: #dbdbdb; margin-bottom: 4px; height: 52px; font-size: 1.4em;"><i
-								class="fa fa-coins"></i><span th:text="#{bmac}" style="padding-left: 4px;"></span></a>
-						<div class="notification is-success" th:text="#{donate.notice-1}" id="donate-notice-1"
-							style="margin-bottom: 4px; font-size: 0.8em;"></div>
-						<div class="notification is-success" style="font-size: 0.8em;" th:text="#{donate.notice-2}" id="donate-notice-2">
-						</div>
-					</div>
-					
-					<div class="box">
-						<div class="notification is-info" style="opacity: 0.8; margin-bottom: 8px;">
+<div id="main">
+    <header th:insert="~{fragments.html::header}"></header>
+    <div class="section center-parent" id="main-section">
+
+        <div class="notification is-success" th:text="#{donate.notice-1}" id="donate-notice-1"
+             style="display: none;"></div>
+
+        <div class="container" style="max-width: 600px;">
+            <div id="donation-links">
+                <div class="box">
+                    <i class="fa-lg fas fa-question-circle question-button"
+                       style="cursor:pointer; float: right; margin-bottom: 8px;" onclick="donateInfo()"></i>
+                    <a href="https://ko-fi.com/alovoa" target="_blank" class="button colored is-info"
+                       style="width: 100%; border-color: #dbdbdb; margin-bottom: 4px; height: 52px; font-size: 1.4em; background-color: #00b9fe;">
+                        <img src="/img/ko-fi-icon.svg" style="height: 24px;"
+                             alt="ko-fi"/>
+                        <span th:text="#{kofi}" style="padding-left: 6px;"></span></a>
+                    <a href="https://www.buymeacoffee.com/alovoa" target="_blank" class="button colored is-info"
+                       style="width: 100%; border-color: #dbdbdb; margin-bottom: 4px; height: 52px; font-size: 1.4em; background-color: #FFDD00;">
+                        <img src="/img/bmc-icon.svg" style="height: 24px;"
+                             alt="buymeacoffee"/>
+                        <span th:text="#{bmac}" style="color: black; padding-left: 6px;"></span></a>
+                </div>
+
+                <div class="box">
+                    <div class="notification is-info" style="opacity: 0.8; margin-bottom: 8px;">
 							<span style="word-break: break-all">BTC:
 								bc1q5yejhe5rv0m7j0euxml7klkd2ummw0gc3vx58p</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<footer th:replace="~{fragments.html::footer}"></footer>
-	</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="~{fragments.html::footer}"></footer>
+</div>
 
-	<script src="/sw.js"></script>
-	<script src="/js/tools/get-text.js"></script>
-	<script src="/js/lib/fontawesome.all.js"></script>
-	<script src="/js/lib/jquery.min.js"></script>
-	<script src="/js/lib/modal-fx.min.js"></script>
-	<script src="/js/lib/bulma-toast.min.js"></script>
-	<script src="/js/tools/modal.js"></script>
-	<script src="/js/alovoa.js"></script>
-	<script src="/js/donate-list.js"></script>
+<script src="/sw.js"></script>
+<script src="/js/tools/get-text.js"></script>
+<script src="/js/lib/fontawesome.all.js"></script>
+<script src="/js/lib/jquery.min.js"></script>
+<script src="/js/lib/modal-fx.min.js"></script>
+<script src="/js/lib/bulma-toast.min.js"></script>
+<script src="/js/tools/modal.js"></script>
+<script src="/js/alovoa.js"></script>
+<script src="/js/donate-list.js"></script>
 
 </body>
 
