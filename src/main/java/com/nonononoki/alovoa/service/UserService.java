@@ -699,6 +699,9 @@ public class UserService {
             not.setMessage(message);
             currUser.getNotifications().add(not);
             notificationService.newLike(user);
+            if(user.getUserSettings().emailLike){
+                mailService.sendLikeNotificationMail(user);
+            }
 
             user.getDates().setNotificationDate(new Date());
 
@@ -718,7 +721,14 @@ public class UserService {
                 conversationRepo.saveAndFlush(convo);
 
                 notificationService.newMatch(user);
+                if(user.getUserSettings().emailMatch){
+                    mailService.sendMatchNotificationMail(user);
+                }
+
                 notificationService.newMatch(currUser);
+                if(currUser.getUserSettings().emailMatch){
+                    mailService.sendMatchNotificationMail(currUser);
+                }
 
                 user.getConversations().add(convo);
                 currUser.getConversations().add(convo);

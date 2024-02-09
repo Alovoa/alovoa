@@ -3,13 +3,9 @@ package com.nonononoki.alovoa.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Date;
 import java.util.List;
 
-import com.nonononoki.alovoa.model.AlovoaException;
-import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -94,10 +90,6 @@ class NotificationServiceTest {
 
 		User user1 = testUsers.get(1);
 
-		notificationService.newLike(user1);
-		notificationService.newMatch(user1);
-		notificationService.newMessage(user1);
-
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 
@@ -118,10 +110,6 @@ class NotificationServiceTest {
 		user1 = userRepo.findByEmail(user1.getEmail());
 		UserWebPush newWebPush = user1.getWebPush().get(vapidMax - 1);
 		assertEquals(newDate, newWebPush.getDate());
-
-
-
-
 
 	}
 

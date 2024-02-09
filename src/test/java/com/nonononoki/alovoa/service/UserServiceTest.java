@@ -6,6 +6,7 @@ import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserDeleteToken;
+import com.nonononoki.alovoa.entity.user.UserSettings;
 import com.nonononoki.alovoa.model.*;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -84,6 +85,8 @@ class UserServiceTest {
     private List<User> testUsers;
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private MessageService messageService;
 
     @BeforeEach
     void before() throws Exception {
@@ -383,6 +386,24 @@ class UserServiceTest {
         assertEquals(code, user1.getVerificationCode());
     }
 
+    @Test
+    void testUpdateUserSettings() throws AlovoaException {
+        User user1 = testUsers.get(0);
+        Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+        Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
+
+        assertFalse(user1.getUserSettings().emailLike);
+        assertFalse(user1.getUserSettings().emailMatch);
+        assertFalse(user1.getUserSettings().emailChat);
+
+        user1.getUserSettings().emailLike=true;
+        user1.getUserSettings().emailChat=true;
+        user1.getUserSettings().emailMatch=true;
+
+        assertTrue(user1.getUserSettings().emailLike);
+        assertTrue(user1.getUserSettings().emailMatch);
+        assertTrue(user1.getUserSettings().emailChat);
+    }
 
     private void removeAllInterests(List<User> ul) {
         ul.forEach(u -> {

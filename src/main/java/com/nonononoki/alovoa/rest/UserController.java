@@ -260,9 +260,24 @@ public class UserController {
         return userService.hasNewMessage();
     }
 
-    @PutMapping(value="/settings/email-preferences")
+    @PutMapping(value="/settings/email-settings")
     public void updateEmailPreferences(@RequestBody UserSettings userSettings) throws AlovoaException {
         userService.updateEmailPreferences(userSettings);
     }
+
+//    @PutMapping(value="/settings/emailMatch")
+//    public void updateEmailPreferences(@RequestBody boolean emailMatch) throws AlovoaException {
+//        userService.updateEmailPreferences("emailMatch", emailMatch);
+//    }
+//
+//    @PutMapping(value="/settings/emailLike")
+//    public void updateEmailPreferences(@RequestBody boolean emailLike) throws AlovoaException {
+//        userService.updateEmailPreferences("emailLike", emailLike);
+//    }
+//
+//    @PutMapping(value="/settings/emailChat")
+//    public void updateEmailPreferences(@RequestBody boolean emailChat) throws AlovoaException {
+//        userService.updateEmailPreferences("emailChat",emailChat);
+//    }
 
 }

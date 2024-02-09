@@ -92,7 +92,9 @@ public class MessageService {
 		conversationRepo.saveAndFlush(c);
 
 		notificationService.newMessage(user);
-		mailService.sendMatchNotificationMail(user);
+		if(user.getUserSettings().emailChat){
+			mailService.sendChatNotificationMail(user, currUser, message);
+		}
 	}
 	
 	public Date updateCheckedDate(Conversation c) throws AlovoaException {

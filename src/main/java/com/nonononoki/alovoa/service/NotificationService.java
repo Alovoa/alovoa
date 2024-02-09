@@ -57,9 +57,6 @@ public class NotificationService {
 
 	private PushAsyncService pushService;
 
-	@Autowired
-	private MailService mailService;
-
 	public PushAsyncService pushService()
 			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
 		if (pushService == null) {
@@ -98,9 +95,6 @@ public class NotificationService {
 		message.setTitle(title);
 		message.setMessage(msg);
 		send(user, message);
-
-		System.out.println("***********************************************************************************************************");
-		mailService.sendLikeNotificationMail(user);
 	}
 
 	public void newMatch(User user) throws GeneralSecurityException, IOException, JoseException {
@@ -115,8 +109,6 @@ public class NotificationService {
 		message.setTitle(title);
 		message.setMessage(msg);
 		send(user, message);
-
-		mailService.sendMatchNotificationMail(user);
 	}
 
 	public void newMessage(User user) throws GeneralSecurityException, IOException, JoseException {
@@ -131,8 +123,6 @@ public class NotificationService {
 		message.setTitle(title);
 		message.setMessage(msg);
 		send(user, message);
-
-		mailService.sendChatNotificationMail(user);
 	}
 
 	private void send(User user, WebPushMessage message) throws GeneralSecurityException, IOException, JoseException {

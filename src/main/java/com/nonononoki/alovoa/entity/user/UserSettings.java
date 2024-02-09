@@ -26,9 +26,17 @@ public class UserSettings {
 
 
     public UserSettings(){
-        emailLike=true;
-        emailMatch=true;
-        emailChat=true;
+        emailLike=false;
+        emailMatch=false;
+        emailChat=false;
     }
+
+    public UserSettings(boolean emailLike, boolean emailMatch, boolean emailChat){
+        this.emailLike=emailLike;
+        this.emailMatch=emailMatch;
+        this.emailChat=emailChat;
+    }
+
+
 
 }
