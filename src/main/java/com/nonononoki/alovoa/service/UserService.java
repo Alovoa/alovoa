@@ -1061,4 +1061,10 @@ public class UserService {
         }
     }
 
+    public void updateEmailPreferences(UserSettings userSettings) throws AlovoaException {
+        User user = authService.getCurrentUser(true);
+        user.setUserSettings(userSettings);
+        userRepo.saveAndFlush(user);
+    }
+
 }

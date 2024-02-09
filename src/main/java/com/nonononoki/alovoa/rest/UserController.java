@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserMiscInfo;
+import com.nonononoki.alovoa.entity.user.UserSettings;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.ProfileOnboardingDto;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
@@ -257,6 +258,11 @@ public class UserController {
     @GetMapping(value = "/status/new-message")
     public boolean newMessage() throws AlovoaException {
         return userService.hasNewMessage();
+    }
+
+    @PutMapping(value="/settings/email-preferences")
+    public void updateEmailPreferences(@RequestBody UserSettings userSettings) throws AlovoaException {
+        userService.updateEmailPreferences(userSettings);
     }
 
 }

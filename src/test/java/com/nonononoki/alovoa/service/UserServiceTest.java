@@ -9,6 +9,7 @@ import com.nonononoki.alovoa.entity.user.UserDeleteToken;
 import com.nonononoki.alovoa.model.*;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
+import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -80,6 +82,8 @@ class UserServiceTest {
     @MockBean
     private MailService mailService;
     private List<User> testUsers;
+    @Autowired
+    private NotificationService notificationService;
 
     @BeforeEach
     void before() throws Exception {
@@ -378,6 +382,7 @@ class UserServiceTest {
         assertNotNull(code);
         assertEquals(code, user1.getVerificationCode());
     }
+
 
     private void removeAllInterests(List<User> ul) {
         ul.forEach(u -> {

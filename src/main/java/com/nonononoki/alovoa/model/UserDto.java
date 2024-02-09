@@ -78,6 +78,7 @@ public class UserDto {
     private Double locationLongitude;
     private UserDtoVerificationPicture verificationPicture;
     private int lastActiveState = 5;
+    private UserSettings userSettings;
 
     public static UserDto userToUserDto(DtoBuilder builder)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
@@ -99,6 +100,7 @@ public class UserDto {
             dto.setLocationLongitude(user.getLocationLongitude());
             dto.setAccentColor(user.getAccentColor());
             dto.setUiDesign(user.getUiDesign());
+            dto.setUserSettings(user.getUserSettings());
         }
         dto.setIdEncoded(encodeId(user.getId(), textEncryptor));
         if (user.getDates() != null) {

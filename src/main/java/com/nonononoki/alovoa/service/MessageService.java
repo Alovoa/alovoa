@@ -37,6 +37,9 @@ public class MessageService {
 	@Autowired
 	private NotificationService notificationService;
 
+	@Autowired
+	private MailService mailService;
+
 	public void send(Long convoId, String message)
 			throws AlovoaException, GeneralSecurityException, IOException, JoseException {
 
@@ -89,6 +92,7 @@ public class MessageService {
 		conversationRepo.saveAndFlush(c);
 
 		notificationService.newMessage(user);
+		mailService.sendMatchNotificationMail(user);
 	}
 	
 	public Date updateCheckedDate(Conversation c) throws AlovoaException {

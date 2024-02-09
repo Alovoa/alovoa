@@ -121,7 +121,7 @@ public class RegisterServiceTest {
 			String tokenContent2 = registerService.register(user2Dto);
 			User user2 = registerService.registerConfirm(tokenContent2);
 
-			String user1Email = "non0" + "nonoki@gmail.com";
+			String user1Email = "pranavbk.zohotest@gmail.com";
 			// register and confirm test users
 			Captcha c1 = captchaService.generate();
 			RegisterDto user1Dto = createTestUserDto(1, c1, user1Email, USER1_AGE);

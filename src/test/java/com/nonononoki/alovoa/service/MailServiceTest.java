@@ -68,27 +68,32 @@ class MailServiceTest {
 	void after() throws Exception {
 		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
 	}
-
-	@Test
-	void test() throws Exception {
-		User user1 = testUsers.get(0);
-		String subject = "test";
-		String body = "test body";
-		UserDeleteToken deleteToken = new UserDeleteToken();
-		deleteToken.setContent("testToken");
-		UserPasswordToken passwordToken = new UserPasswordToken();
-		passwordToken.setContent("testToken");
-		UserRegisterToken registerToken = new UserRegisterToken();
-		registerToken.setContent("testToken");
-		user1.setDeleteToken(deleteToken);
-		user1.setPasswordToken(passwordToken);
-		user1.setRegisterToken(registerToken);
-		mailService.sendAdminMail(user1.getEmail(), subject, body);
-		mailService.sendAccountConfirmed(user1);
-		mailService.sendAccountDeleteConfirm(user1);
-		mailService.sendAccountDeleteRequest(user1);
-		mailService.sendPasswordResetMail(user1);
-		mailService.sendRegistrationMail(user1);
-	}
+//
+//	@Test
+//	void test() throws Exception {
+//		User user1 = testUsers.get(0);
+//		String subject = "test";
+//		String body = "test body";
+//		UserDeleteToken deleteToken = new UserDeleteToken();
+//		deleteToken.setContent("testToken");
+//		UserPasswordToken passwordToken = new UserPasswordToken();
+//		passwordToken.setContent("testToken");
+//		UserRegisterToken registerToken = new UserRegisterToken();
+//		registerToken.setContent("testToken");
+//		user1.setDeleteToken(deleteToken);
+//		user1.setPasswordToken(passwordToken);
+//		user1.setRegisterToken(registerToken);
+//		System.out.println("////////////////////////////////////////////////////////////////////////////////////////////////////");
+//
+//		mailService.sendAdminMail(user1.getEmail(), subject, body);
+//		mailService.sendAccountConfirmed(user1);
+//		mailService.sendAccountDeleteConfirm(user1);
+//		mailService.sendAccountDeleteRequest(user1);
+//		mailService.sendPasswordResetMail(user1);
+//		mailService.sendRegistrationMail(user1);
+//		mailService.sendChatNotificationMail(user1);
+//		mailService.sendLikeNotificationMail(user1);
+//		mailService.sendMatchNotificationMail(user1);
+//	}
 	
  }

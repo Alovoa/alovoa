@@ -135,4 +135,26 @@ public class MailService {
                 new String[]{user.getFirstName(), appName, appDomain}, "", locale);
         sendMail(user.getEmail(), defaultFrom, subject, body);
     }
+
+    public void sendLikeNotificationMail(User user){
+        System.out.println("??????????????????????????????????????????????????????????????????????????????????????????????????");
+        Locale locale = Tools.getUserLocale(user);
+        String subject = messageSource.getMessage("backend.mail.like-notif-email.subject", new String[]{}, locale);
+        String body = messageSource.getMessage("backend.mail.like-notif-email.body", new String[]{user.getFirstName()}, "", locale);
+        sendMail(user.getEmail(), defaultFrom, subject, body);
+    }
+
+    public void sendMatchNotificationMail(User user){
+        Locale locale = Tools.getUserLocale(user);
+        String subject = messageSource.getMessage("backend.mail.match-notif-email.subject", new String[]{}, locale);
+        String body = messageSource.getMessage("backend.mail.match-notif-email.body", new String[]{user.getFirstName()}, "", locale);
+        sendMail(user.getEmail(), defaultFrom, subject, body);
+    }
+
+    public void sendChatNotificationMail(User user){
+        Locale locale = Tools.getUserLocale(user);
+        String subject = messageSource.getMessage("backend.mail.chat-notif-email.subject", new String[]{}, locale);
+        String body = messageSource.getMessage("backend.mail.chat-notif-email.body", new String[]{user.getFirstName()}, "", locale);
+        sendMail(user.getEmail(), defaultFrom, subject, body);
+    }
 }
