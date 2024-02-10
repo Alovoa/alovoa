@@ -4,6 +4,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
+apache-maven-3.9.4
 
 ### STS ###
 .apt_generated
@@ -31,7 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-
 ### Custom ###
 target/
 attach_pid**
@@ -44,5 +44,7 @@ alovoa.txt
 ### Keys Properties ###
 application-dev.properties
 application-prod.properties
+application.properties
+application-test.properties
 
 
