@@ -141,16 +141,6 @@ public class RegisterServiceTest {
 				});
 
 				user1Dto.setFirstName("test");
-
-//				user1Dto.setEmail("non0" + ".nono.ki@gmail.com");
-//				assertThrows(Exception.class, () -> {
-//					registerService.register(user1Dto);
-//				});
-
-//				user1Dto.setEmail("non0" + "nonoki+test@gmail.com");
-//				assertThrows(Exception.class, () -> {
-//					registerService.register(user1Dto);
-//				});
 			}
 
 			Captcha c3 = captchaService.generate();
