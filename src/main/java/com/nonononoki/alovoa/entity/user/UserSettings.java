@@ -16,13 +16,13 @@ public class UserSettings {
     private Long id;
 
     @OneToOne
-    public User user;
+    private User user;
 
-    public boolean emailLike;
+    private boolean emailLike;
 
-    public boolean emailMatch;
+    private boolean emailMatch;
 
-    public boolean emailChat;
+    private boolean emailChat;
 
 
     public UserSettings(){

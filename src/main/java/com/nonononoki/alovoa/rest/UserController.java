@@ -260,8 +260,4 @@ public class UserController {
         return userService.hasNewMessage();
     }
 
-    @PutMapping(value="/settings/email-settings")
-    public void updateEmailPreferences(@RequestBody UserSettings userSettings) throws AlovoaException {
-        userService.updateEmailPreferences(userSettings);
-    }
 }
