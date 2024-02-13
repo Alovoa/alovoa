@@ -392,17 +392,17 @@ class UserServiceTest {
         Mockito.when(authService.getCurrentUser()).thenReturn(user1);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 
-        assertFalse(user1.getUserSettings().emailLike);
-        assertFalse(user1.getUserSettings().emailMatch);
-        assertFalse(user1.getUserSettings().emailChat);
+        assertFalse(user1.getUserSettings().isEmailLike());
+        assertFalse(user1.getUserSettings().isEmailMatch());
+        assertFalse(user1.getUserSettings().isEmailChat());
 
-        user1.getUserSettings().emailLike=true;
-        user1.getUserSettings().emailChat=true;
-        user1.getUserSettings().emailMatch=true;
+        user1.getUserSettings().setEmailLike(true);
+        user1.getUserSettings().setEmailChat(true);
+        user1.getUserSettings().setEmailMatch(true);
 
-        assertTrue(user1.getUserSettings().emailLike);
-        assertTrue(user1.getUserSettings().emailMatch);
-        assertTrue(user1.getUserSettings().emailChat);
+        assertTrue(user1.getUserSettings().isEmailLike());
+        assertTrue(user1.getUserSettings().isEmailMatch());
+        assertTrue(user1.getUserSettings().isEmailChat());
     }
 
     private void removeAllInterests(List<User> ul) {
