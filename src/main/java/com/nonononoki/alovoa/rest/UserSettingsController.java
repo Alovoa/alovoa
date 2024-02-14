@@ -1,30 +1,30 @@
 package com.nonononoki.alovoa.rest;
 
 import com.nonononoki.alovoa.model.AlovoaException;
-import com.nonononoki.alovoa.service.AuthService;
+import com.nonononoki.alovoa.service.UserSettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user-settings")
+@RequestMapping("/user/settings/update")
 public class UserSettingsController {
 
     @Autowired
-    private AuthService authService;
+    private UserSettingsService userSettingsService;
 
-    @PostMapping(value="/update/emailLike/{value}")
+    @PostMapping(value="/emailLike/{value}")
     public void updateEmailLike(@PathVariable boolean value) throws AlovoaException {
-       authService.getCurrentUser().getUserSettings().setEmailLike(value);
+        userSettingsService.updateEmailLike(value);
     }
 
-    @PostMapping(value="/update/emailMatch/{value}")
+    @PostMapping(value="/emailMatch/{value}")
     public void updateEmailMatch(@PathVariable boolean value) throws AlovoaException {
-        authService.getCurrentUser().getUserSettings().setEmailMatch(value);
+        userSettingsService.updateEmailMatch(value);
     }
 
-    @PostMapping(value="/update/emailChat/{value}")
+    @PostMapping(value="/emailChat/{value}")
     public void updateEmailChat(@PathVariable boolean value) throws AlovoaException {
-        authService.getCurrentUser().getUserSettings().setEmailChat(value);
+        userSettingsService.updateEmailChat(value);
     }
 
 }

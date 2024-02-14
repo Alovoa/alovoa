@@ -1066,18 +1066,4 @@ public class UserService {
         }
     }
 
-    public void updateEmailPreferences(String field, boolean value) throws AlovoaException {
-        User user = authService.getCurrentUser(true);
-        UserSettings userSettings=user.getUserSettings();
-        if(field.equals("emailLike")){
-            userSettings.setEmailLike(value);
-        }else if(field.equals("emailMatch")){
-            userSettings.setEmailMatch(value);
-        }else if(field.equals("emailChat")){
-            userSettings.setEmailChat(value);
-        }
-        user.setUserSettings(userSettings);
-        userRepo.saveAndFlush(user);
-    }
-
 }

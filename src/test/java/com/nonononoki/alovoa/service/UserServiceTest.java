@@ -386,25 +386,6 @@ class UserServiceTest {
         assertEquals(code, user1.getVerificationCode());
     }
 
-    @Test
-    void testUpdateUserSettings() throws AlovoaException {
-        User user1 = testUsers.get(0);
-        Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-        Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-
-        assertFalse(user1.getUserSettings().isEmailLike());
-        assertFalse(user1.getUserSettings().isEmailMatch());
-        assertFalse(user1.getUserSettings().isEmailChat());
-
-        user1.getUserSettings().setEmailLike(true);
-        user1.getUserSettings().setEmailChat(true);
-        user1.getUserSettings().setEmailMatch(true);
-
-        assertTrue(user1.getUserSettings().isEmailLike());
-        assertTrue(user1.getUserSettings().isEmailMatch());
-        assertTrue(user1.getUserSettings().isEmailChat());
-    }
-
     private void removeAllInterests(List<User> ul) {
         ul.forEach(u -> {
             u.getInterests().clear();
