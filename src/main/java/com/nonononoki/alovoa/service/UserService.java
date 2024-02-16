@@ -691,15 +691,6 @@ public class UserService {
             like.setUserTo(user);
             currUser.getLikes().add(like);
 
-            UserNotification not = new UserNotification();
-            not.setContent(UserNotification.USER_LIKE);
-            not.setDate(new Date());
-            not.setUserFrom(currUser);
-            not.setUserTo(user);
-            not.setMessage(message);
-            currUser.getNotifications().add(not);
-            notificationService.newLike(user);
-
             user.getDates().setNotificationDate(new Date());
 
             currUser.getHiddenUsers().removeIf(hide -> hide.getUserTo().getId().equals(user.getId()));
@@ -718,13 +709,27 @@ public class UserService {
                 conversationRepo.saveAndFlush(convo);
 
                 notificationService.newMatch(user);
-                notificationService.newMatch(currUser);
+                if(user.getUserSettings().isEmailMatch()){
+                    mailService.sendMatchNotificationMail(user);
+                }
 
                 user.getConversations().add(convo);
                 currUser.getConversations().add(convo);
 
                 userRepo.saveAndFlush(currUser);
                 userRepo.saveAndFlush(user);
+            }else{
+                UserNotification not = new UserNotification();
+                not.setContent(UserNotification.USER_LIKE);
+                not.setDate(new Date());
+                not.setUserFrom(currUser);
+                not.setUserTo(user);
+                not.setMessage(message);
+                currUser.getNotifications().add(not);
+                notificationService.newLike(user);
+                if(user.getUserSettings().isEmailLike()){
+                    mailService.sendLikeNotificationMail(user);
+                }
             }
 
         }

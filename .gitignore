@@ -31,7 +31,6 @@ build/
 ### VS Code ###
 .vscode/
 
-
 ### Custom ###
 target/
 attach_pid**

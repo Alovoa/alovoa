@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserMiscInfo;
+import com.nonononoki.alovoa.entity.user.UserSettings;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.ProfileOnboardingDto;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
