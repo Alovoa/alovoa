@@ -15,6 +15,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import com.nonononoki.alovoa.component.ExceptionHandler;
+import com.nonononoki.alovoa.entity.user.UserSettings;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
@@ -320,6 +321,9 @@ public class RegisterService {
         dates.setNotificationDate(today);
         dates.setUser(user);
         user.setDates(dates);
+
+        UserSettings userSettings = new UserSettings();
+        user.setUserSettings(userSettings);
 
         // resolves hibernate issue with null Collections with orphanremoval
         // https://hibernate.atlassian.net/browse/HHH-9940

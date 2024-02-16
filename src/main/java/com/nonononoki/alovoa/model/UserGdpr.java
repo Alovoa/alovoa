@@ -54,9 +54,7 @@ public class UserGdpr {
         u.setFirstName(user.getFirstName());
         u.setDescription(user.getDescription());
         u.setLanguage(user.getLanguage());
-        u.setAccentColor(user.getAccentColor());
         u.setCountry(user.getCountry());
-        u.setUiDesign(user.getUiDesign());
         u.setUnits(user.getUnits());
 
         u.setLocationLatitude(user.getLocationLatitude());

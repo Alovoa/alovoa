@@ -138,22 +138,22 @@ public class MailService {
 
     public void sendLikeNotificationMail(User user){
         Locale locale = Tools.getUserLocale(user);
-        String subject = messageSource.getMessage("backend.mail.like-notif-email.subject", new String[]{}, locale);
-        String body = messageSource.getMessage("backend.mail.like-notif-email.body", new String[]{user.getFirstName()}, locale);
+        String subject = messageSource.getMessage("backend.mail.like.subject", new String[]{}, locale);
+        String body = messageSource.getMessage("backend.mail.like.body", new String[]{user.getFirstName()}, locale);
         sendMail(user.getEmail(), defaultFrom, subject, body);
     }
 
     public void sendMatchNotificationMail(User user){
         Locale locale = Tools.getUserLocale(user);
-        String subject = messageSource.getMessage("backend.mail.match-notif-email.subject", new String[]{}, locale);
-        String body = messageSource.getMessage("backend.mail.match-notif-email.body", new String[]{user.getFirstName()}, locale);
+        String subject = messageSource.getMessage("backend.mail.match.subject.subject", new String[]{}, locale);
+        String body = messageSource.getMessage("backend.mail.match.subject.body", new String[]{user.getFirstName()}, locale);
         sendMail(user.getEmail(), defaultFrom, subject, body);
     }
 
     public void sendChatNotificationMail(User user, User currUser, String message){
         Locale locale = Tools.getUserLocale(user);
-        String subject = messageSource.getMessage("backend.mail.chat-notif-email.subject", new String[]{}, locale);
-        String body = messageSource.getMessage("backend.mail.chat-notif-email.body", new String[]{user.getFirstName(), currUser.getFirstName(), message},locale);
+        String subject = messageSource.getMessage("backend.mail.chat.subject", new String[]{}, locale);
+        String body = messageSource.getMessage("backend.mail.chat.body", new String[]{currUser.getFirstName(), user.getFirstName(), message},locale);
         sendMail(user.getEmail(), defaultFrom, subject, body);
     }
 }

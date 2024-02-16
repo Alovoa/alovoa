@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserMiscInfo;
-import com.nonononoki.alovoa.entity.user.UserSettings;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.ProfileOnboardingDto;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
@@ -170,16 +169,6 @@ public class UserController {
     @GetMapping(value = "/interest/autocomplete/{name}")
     public List<UserInterestDto> interestAutocomplete(@PathVariable String name) throws AlovoaException {
         return userService.getInterestAutocomplete(name);
-    }
-
-    @PostMapping("/accent-color/update/{accentColor}")
-    public void updateAccentColor(@PathVariable String accentColor) throws AlovoaException {
-        userService.updateAccentColor(accentColor);
-    }
-
-    @PostMapping("/ui-design/update/{uiDesign}")
-    public void updateUiDesign(@PathVariable String uiDesign) throws AlovoaException {
-        userService.updateUiDesign(uiDesign);
     }
 
     @PostMapping("/show-zodiac/update/{showZodiac}")

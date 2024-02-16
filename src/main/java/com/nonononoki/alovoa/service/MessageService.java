@@ -93,7 +93,7 @@ public class MessageService {
 
 		notificationService.newMessage(user);
 		if(user.getUserSettings().isEmailChat()){
-			mailService.sendChatNotificationMail(user, currUser, message);
+			mailService.sendChatNotificationMail(currUser, user, message);
 		}
 	}
 	

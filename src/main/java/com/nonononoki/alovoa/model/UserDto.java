@@ -98,8 +98,6 @@ public class UserDto {
             dto.setEmail(user.getEmail());
             dto.setLocationLatitude(user.getLocationLatitude());
             dto.setLocationLongitude(user.getLocationLongitude());
-            dto.setAccentColor(user.getAccentColor());
-            dto.setUiDesign(user.getUiDesign());
             dto.setUserSettings(user.getUserSettings());
         }
         dto.setIdEncoded(encodeId(user.getId(), textEncryptor));

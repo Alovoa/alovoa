@@ -79,22 +79,16 @@ public class UserSettingsServiceTest {
         Mockito.when(authService.getCurrentUser()).thenReturn(user1);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 
-        assertEquals(4, userSettingsRepo.count());
+        assertEquals(3, userSettingsRepo.count());
 
         assertFalse(user1.getUserSettings().isEmailLike());
-        assertFalse(user1.getUserSettings().isEmailMatch());
         assertFalse(user1.getUserSettings().isEmailChat());
 
         userSettingsService.updateEmailLike(true);
-        userSettingsService.updateEmailMatch(true);
         userSettingsService.updateEmailChat(true);
 
-        assertEquals(4, userSettingsRepo.count());
-
         assertTrue(user1.getUserSettings().isEmailLike());
-        assertTrue(user1.getUserSettings().isEmailMatch());
         assertTrue(user1.getUserSettings().isEmailChat());
 
-        assertEquals(4, userSettingsRepo.count());
     }
 }

@@ -175,7 +175,7 @@ public class User implements UserDetails {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "userYes")
     @JsonIgnore
     private List<UserVerificationPicture> verificationYes;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private UserSettings userSettings;
 
     @Deprecated
@@ -185,7 +185,6 @@ public class User implements UserDetails {
 
     public User(String email) {
         this.email = email;
-        this.userSettings=new UserSettings();
     }
 
     @Override

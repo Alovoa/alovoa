@@ -18,31 +18,13 @@ public class UserSettingsService {
 
     public void updateEmailLike(boolean value) throws AlovoaException {
         User user = authService.getCurrentUser(true);
-        UserSettings userSettings=user.getUserSettings();
-        userSettings.setEmailLike(value);
-
-        user.setUserSettings(userSettings);
-        userRepository.saveAndFlush(user);
-    }
-
-    public void updateEmailMatch(boolean value) throws AlovoaException {
-        User user = authService.getCurrentUser(true);
-        UserSettings userSettings=user.getUserSettings();
-        userSettings.setEmailMatch(value);
-
-        user.setUserSettings(userSettings);
+        user.getUserSettings().setEmailLike(value);
         userRepository.saveAndFlush(user);
     }
 
     public void updateEmailChat(boolean value) throws AlovoaException {
         User user = authService.getCurrentUser(true);
-        UserSettings userSettings=user.getUserSettings();
-        userSettings.setEmailChat(value);
-
-        user.setUserSettings(userSettings);
+        user.getUserSettings().setEmailChat(value);
         userRepository.saveAndFlush(user);
     }
-
-
-
 }
