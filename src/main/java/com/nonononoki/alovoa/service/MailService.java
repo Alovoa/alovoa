@@ -149,8 +149,8 @@ public class MailService {
 
     public void sendMatchNotificationMail(User user){
         Locale locale = Tools.getUserLocale(user);
-        String subject = messageSource.getMessage("backend.mail.match.subject.subject", new String[]{}, locale);
-        String body = messageSource.getMessage("backend.mail.match.subject.body", new String[]{user.getFirstName()}, locale);
+        String subject = messageSource.getMessage("backend.mail.match.subject", new String[]{}, locale);
+        String body = messageSource.getMessage("backend.mail.match.body", new String[]{user.getFirstName()}, locale);
         sendMail(user.getEmail(), defaultFrom, subject, body);
     }
 

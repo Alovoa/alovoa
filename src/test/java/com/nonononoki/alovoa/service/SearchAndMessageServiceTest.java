@@ -334,7 +334,7 @@ class SearchAndMessageServiceTest {
 		userService.likeUser(UserDto.encodeId(user3.getId(), textEncryptor), null);
 
 		assertEquals(2, userLikeRepo.count());
-		assertEquals(1, userNotificationRepo.count());
+		assertEquals(2, userNotificationRepo.count());
 		assertEquals(1, conversationRepo.count());
 		assertEquals(1, user1.getConversations().size());
 
