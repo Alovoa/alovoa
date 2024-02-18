@@ -57,6 +57,7 @@ public class UserDto {
     private UserIntention intention;
     private List<UserInterest> interests;
     private List<UserInterest> commonInterests;
+    private List<UserPrompt> prompts;
     private String profilePicture;
     private List<UserImage> images;
     private String description;
@@ -148,6 +149,7 @@ public class UserDto {
         dto.setNumberReferred(user.getNumberReferred());
         dto.setNumberProfileViews(user.getNumberProfileViews());
         dto.setNumberSearches(user.getNumberSearches());
+        dto.setPrompts(user.getPrompts());
 
         if (!user.isAdmin()) {
             LocalDateTime now = LocalDateTime.now();

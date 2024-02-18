@@ -35,6 +35,7 @@ public class UserGdpr {
     private List<UserInterest> interests;
     private Set<Gender> preferedGenders;
     private List<UserImage> images;
+    private List<UserPrompt> prompts;
 
     // private List<UserWebPush> webPush;
     private List<UserDonation> donations;
@@ -85,6 +86,7 @@ public class UserGdpr {
         u.setNumberSearches(user.getNumberSearches());
 
         u.setShowZodiac(user.isShowZodiac());
+        u.setPrompts(user.getPrompts());
 
         return u;
     }
