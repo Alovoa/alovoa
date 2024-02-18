@@ -38,6 +38,9 @@ public class MailService {
     @Value("${app.domain}")
     private String appDomain;
 
+    @Value("${app.url.front-end}")
+    private String appFrontend;
+
     @Value("${app.company.name}")
     private String companyName;
 
@@ -83,6 +86,7 @@ public class MailService {
         String text = template.replace("MAIL_BODY", body);
         text = text.replace("COMPANY_NAME", companyName);
         text = text.replace("SRC_IMAGE", imgSrc);
+        text = text.replace("HREF_APP_FRONTEND", appFrontend);
         text = text.replace("HREF_WEBSITE", hrefWebsite);
         text = text.replace("HREF_DONATE", hrefDonate);
 

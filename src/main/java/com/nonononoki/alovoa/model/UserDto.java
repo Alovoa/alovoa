@@ -98,7 +98,9 @@ public class UserDto {
             dto.setEmail(user.getEmail());
             dto.setLocationLatitude(user.getLocationLatitude());
             dto.setLocationLongitude(user.getLocationLongitude());
-            dto.setUserSettings(user.getUserSettings());
+
+            UserSettings settings = user.getUserSettings();
+            dto.setUserSettings(settings);
         }
         dto.setIdEncoded(encodeId(user.getId(), textEncryptor));
         if (user.getDates() != null) {

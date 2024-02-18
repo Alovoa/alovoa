@@ -226,6 +226,10 @@ public class User implements UserDetails {
         return !disabled;
     }
 
+    public UserSettings getUserSettings() {
+        return Objects.requireNonNullElseGet(userSettings, () -> new UserSettings(this));
+    }
+
     public int getPreferedMinAge() {
         try {
             return Tools.convertPrefAgeToExactYear(this.getDates().getDateOfBirth(), preferedMinAge);
