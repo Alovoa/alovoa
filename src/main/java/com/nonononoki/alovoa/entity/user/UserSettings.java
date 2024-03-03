@@ -21,9 +21,9 @@ public class UserSettings {
     @OneToOne
     private User user;
 
-    private boolean emailLike = true;
+    private boolean emailLike = false;
 
-    private boolean emailChat = true;
+    private boolean emailChat = false;
 
     public UserSettings(User user) {
         this.user = user;

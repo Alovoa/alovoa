@@ -81,6 +81,9 @@ public class UserSettingsServiceTest {
 
         assertEquals(3, userSettingsRepo.count());
 
+        userSettingsService.updateEmailLike(true);
+        userSettingsService.updateEmailChat(true);
+
         assertTrue(user1.getUserSettings().isEmailLike());
         assertTrue(user1.getUserSettings().isEmailChat());
 
