@@ -101,13 +101,13 @@ public class User implements UserDetails {
     @JoinColumn
     @JsonIgnore
     private UserDates dates;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn
     private UserAudio audio;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn
     private UserProfilePicture profilePicture;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn
     private UserVerificationPicture verificationPicture;
 
