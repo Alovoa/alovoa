@@ -78,7 +78,7 @@ public class EventListenerConfig {
 	public void handleContextRefresh(ApplicationStartedEvent event) {
 		setDefaultAdmin();
 		setDefaultGenders();
-		setDefaulIntentions();
+		setDefaultIntentions();
 		setDefaultUserMiscInfo();
 	}
 
@@ -180,7 +180,7 @@ public class EventListenerConfig {
 
 	}
 
-	public void setDefaulIntentions() {
+	public void setDefaultIntentions() {
 		if (userIntentionRepo.count() == 0) {
 			UserIntention meet = new UserIntention();
 			meet.setText("meet");
