@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
-import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,13 +34,10 @@ public class MessageService {
 	private ConversationRepository conversationRepo;
 
 	@Autowired
-	private NotificationService notificationService;
-
-	@Autowired
 	private MailService mailService;
 
 	public void send(Long convoId, String message)
-			throws AlovoaException, GeneralSecurityException, IOException, JoseException {
+			throws AlovoaException, GeneralSecurityException, IOException {
 
 		User currUser = authService.getCurrentUser(true);
 
@@ -91,7 +87,6 @@ public class MessageService {
 		c.setLastUpdated(new Date());
 		conversationRepo.saveAndFlush(c);
 
-		notificationService.newMessage(user);
 		if(user.getUserSettings().isEmailChat()){
 			mailService.sendChatNotificationMail(currUser, user, message);
 		}

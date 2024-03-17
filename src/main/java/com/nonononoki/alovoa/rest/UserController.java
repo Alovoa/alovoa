@@ -4,11 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserMiscInfo;
-import com.nonononoki.alovoa.entity.user.UserPrompt;
 import com.nonononoki.alovoa.model.*;
 import com.nonononoki.alovoa.service.UserService;
 import jakarta.mail.MessagingException;
-import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -193,14 +191,13 @@ public class UserController {
     }
 
     @PostMapping(value = "/like/{idEnc}")
-    public void likeUser(@PathVariable String idEnc) throws AlovoaException, GeneralSecurityException, IOException,
-            JoseException {
+    public void likeUser(@PathVariable String idEnc) throws AlovoaException, GeneralSecurityException, IOException {
         userService.likeUser(idEnc, null);
     }
 
     @PostMapping(value = "/like/{idEnc}/{message}")
     public void likeUser(@PathVariable String idEnc, @PathVariable String message) throws AlovoaException,
-            GeneralSecurityException, IOException, JoseException {
+            GeneralSecurityException, IOException {
         userService.likeUser(idEnc, message);
     }
 

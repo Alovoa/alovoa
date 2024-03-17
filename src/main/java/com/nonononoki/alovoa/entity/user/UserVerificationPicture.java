@@ -30,12 +30,10 @@ public class UserVerificationPicture {
     @ManyToOne
     private User user;
 
-    @ManyToMany
-    @JoinColumn
+    @ManyToMany(mappedBy = "verificationYes")
     private List<User> userYes;
 
-    @ManyToMany
-    @JoinColumn
+    @ManyToMany(mappedBy = "verificationNo")
     private List<User> userNo;
 
     @Column(columnDefinition = "mediumtext")

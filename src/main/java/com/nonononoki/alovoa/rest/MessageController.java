@@ -5,7 +5,6 @@ import java.security.GeneralSecurityException;
 import java.util.Date;
 import java.util.List;
 
-import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ConcurrentModel;
@@ -43,7 +42,7 @@ public class MessageController {
 	@ResponseBody
 	@PostMapping(value = "/send/{convoId}", consumes = "text/plain")
 	public void send(@RequestBody String msg, @PathVariable long convoId)
-			throws AlovoaException, GeneralSecurityException, IOException, JoseException {
+			throws AlovoaException, GeneralSecurityException, IOException {
 		messageService.send(convoId, msg);
 	}
 

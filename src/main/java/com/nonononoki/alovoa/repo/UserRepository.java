@@ -30,7 +30,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			+ "u.locationLatitude IS NOT NULL AND u.locationLongitude IS NOT NULL AND u.profilePicture IS NOT NULL "
 			+ "AND TIMESTAMPDIFF(YEAR, u.dates.dateOfBirth, CURDATE()) + u.preferedMaxAge >= :age AND TIMESTAMPDIFF(YEAR, u.dates.dateOfBirth, CURDATE()) + u.preferedMinAge <= :age AND u.dates.dateOfBirth >= :minDate AND u.dates.dateOfBirth <= :maxDate "
 			+ "AND u.locationLatitude BETWEEN :latitudeFrom AND :latitudeTo AND u.locationLongitude BETWEEN :longitudeFrom AND :longitudeTo "
-			+ "AND u.intention.id = CASE WHEN :intentionId < 0 THEN 1=1 ELSE :intentionId END "
+			+ "AND CASE WHEN :intentionId < 0 THEN 1=1 ELSE :intentionId = u.intention.id END "
 			+ "AND u.id NOT IN (:likeIds) AND u.id NOT IN (:likeIds) AND u.id NOT IN (:hideIds) "
 			+ "AND u.id NOT IN (:blockIds) AND u.gender.id IN (:genderIds)")
 	List<User> usersSearchQuery(@Param("age") int age, @Param("minDate") Date minDate, @Param("maxDate") Date maxDate,
@@ -50,7 +50,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query(value = "SELECT u FROM User u WHERE u.disabled = FALSE AND u.admin = FALSE AND u.confirmed = TRUE AND u.intention IS NOT NULL AND "
 			+ "u.locationLatitude IS NOT NULL AND u.locationLongitude IS NOT NULL AND u.profilePicture IS NOT NULL "
 			+ "AND TIMESTAMPDIFF(YEAR, u.dates.dateOfBirth, CURDATE()) + u.preferedMaxAge >= :age AND TIMESTAMPDIFF(YEAR, u.dates.dateOfBirth, CURDATE()) + u.preferedMinAge <= :age AND u.dates.dateOfBirth >= :minDate AND u.dates.dateOfBirth <= :maxDate "
-			+ "AND u.intention.id = CASE WHEN :intentionId < 0 THEN 1=1 ELSE :intentionId END "
+			+ "AND CASE WHEN :intentionId < 0 THEN 1=1 ELSE :intentionId = u.intention.id END "
 			+ "AND u.id NOT IN (:likeIds) AND u.id NOT IN (:likeIds) AND u.id NOT IN (:hideIds) "
 			+ "AND u.id NOT IN (:blockIds) AND u.gender.id IN (:genderIds)")
 	List<User> usersSearchIgnoreLocation(@Param("age") int age, @Param("minDate") Date minDate, @Param("maxDate") Date maxDate,

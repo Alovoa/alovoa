@@ -171,10 +171,12 @@ public class User implements UserDetails {
     @OneToMany(orphanRemoval = true, mappedBy = "userTo")
     @JsonIgnore
     private List<UserReport> reportedByUsers;
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "userNo")
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinTable
     @JsonIgnore
     private List<UserVerificationPicture> verificationNo;
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "userYes")
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinTable
     @JsonIgnore
     private List<UserVerificationPicture> verificationYes;
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
