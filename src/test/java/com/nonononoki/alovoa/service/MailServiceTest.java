@@ -9,7 +9,6 @@ import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
-import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -105,7 +104,7 @@ class MailServiceTest {
 
 
     @Test
-    void testLikeMatchAndChatEmails() throws AlovoaException, GeneralSecurityException, JoseException, IOException {
+    void testLikeMatchAndChatEmails() throws AlovoaException, GeneralSecurityException, IOException {
         User user1 = testUsers.get(0);
         User user2 = testUsers.get(1);
 
