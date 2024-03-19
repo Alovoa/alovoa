@@ -16,7 +16,6 @@ import com.nonononoki.alovoa.repo.*;
 import com.sipgate.mp3wav.Converter;
 import jakarta.mail.MessagingException;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,8 +86,6 @@ public class UserService {
     private CaptchaService captchaService;
     @Autowired
     private MailService mailService;
-    @Autowired
-    private NotificationService notificationService;
     @Autowired
     private TextEncryptorConverter textEncryptor;
     @Autowired
@@ -298,6 +295,9 @@ public class UserService {
         token.setContent(RandomStringUtils.random(tokenLength, 0, 0, true, true, null, new SecureRandom()));
         token.setDate(currentDate);
         token.setUser(user);
+        if(user.getDeleteToken() != null) {
+            token.setId(user.getDeleteToken().getId());
+        }
         user.setDeleteToken(token);
         user = userRepo.saveAndFlush(user);
 
@@ -648,7 +648,7 @@ public class UserService {
         return Tools.B64IMAGEPREFIX + fileType + Tools.B64PREFIX + base64bytes;
     }
 
-    public void likeUser(String idEnc, String message) throws AlovoaException, GeneralSecurityException, IOException, JoseException {
+    public void likeUser(String idEnc, String message) throws AlovoaException, GeneralSecurityException, IOException {
         User user = encodedIdToUser(idEnc);
         User currUser = authService.getCurrentUser(true);
 
@@ -686,7 +686,6 @@ public class UserService {
             not.setUserTo(user);
             not.setMessage(message);
             currUser.getNotifications().add(not);
-            notificationService.newLike(user);
 
             user.getDates().setNotificationDate(new Date());
 
@@ -706,8 +705,6 @@ public class UserService {
                 convo.setLastUpdated(new Date());
                 convo.setMessages(new ArrayList<>());
                 conversationRepo.saveAndFlush(convo);
-
-                notificationService.newMatch(user);
 
                 user.getConversations().add(convo);
                 currUser.getConversations().add(convo);

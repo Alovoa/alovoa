@@ -343,7 +343,6 @@ public class RegisterService {
         user.setBlockedUsers(new ArrayList<>());
         user.setReported(new ArrayList<>());
         user.setReportedByUsers(new ArrayList<>());
-        user.setWebPush(new ArrayList<>());
         user.setPrompts(new ArrayList<>());
 
         user.setNumberProfileViews(0);

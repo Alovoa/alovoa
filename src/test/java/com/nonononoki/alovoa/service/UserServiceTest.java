@@ -10,7 +10,6 @@ import com.nonononoki.alovoa.entity.user.UserSettings;
 import com.nonononoki.alovoa.model.*;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
-import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,8 +82,6 @@ class UserServiceTest {
     @MockBean
     private MailService mailService;
     private List<User> testUsers;
-    @Autowired
-    private NotificationService notificationService;
     @Autowired
     private MessageService messageService;
 
