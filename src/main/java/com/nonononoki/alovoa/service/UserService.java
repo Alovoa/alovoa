@@ -295,6 +295,9 @@ public class UserService {
         token.setContent(RandomStringUtils.random(tokenLength, 0, 0, true, true, null, new SecureRandom()));
         token.setDate(currentDate);
         token.setUser(user);
+        if(user.getDeleteToken() != null) {
+            token.setId(user.getDeleteToken().getId());
+        }
         user.setDeleteToken(token);
         user = userRepo.saveAndFlush(user);
 
