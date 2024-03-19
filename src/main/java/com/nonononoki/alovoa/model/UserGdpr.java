@@ -36,8 +36,6 @@ public class UserGdpr {
     private Set<Gender> preferedGenders;
     private List<UserImage> images;
     private List<UserPrompt> prompts;
-
-    // private List<UserWebPush> webPush;
     private List<UserDonation> donations;
     private List<Message> messageSent;
     private UserDates dates;
@@ -79,7 +77,6 @@ public class UserGdpr {
 
         u.setDonations(user.getDonations());
         u.setMessageSent(user.getMessageSent());
-        // u.setWebPush(user.getWebPush());
         u.setDates(user.getDates());
 
         u.setNumberProfileViews(user.getNumberProfileViews());

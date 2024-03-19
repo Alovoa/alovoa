@@ -189,7 +189,6 @@ public class AdminService {
         user.setProfilePicture(null);
         user.setVerificationCode(null);
         user.setVerificationPicture(null);
-        user.getWebPush().clear();
         user.setShowZodiac(false);
         user.getPrompts().clear();
         userRepo.saveAndFlush(user);

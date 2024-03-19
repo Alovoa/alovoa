@@ -21,7 +21,6 @@ const staticAssets = [
 	'/js/lib/jquery.min.js',
 	'/js/lib/jquery-ui.min.js',
 	'/js/lib/matter.min.js',
-	'/js/lib/notification.js',
 	'/js/lib/modal-fx.min.js',
 
     '/js/tools/check-password.js',
