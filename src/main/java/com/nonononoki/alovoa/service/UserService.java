@@ -289,6 +289,10 @@ public class UserService {
 
     public UserDeleteToken deleteAccountRequest() throws MessagingException, IOException, AlovoaException {
         User user = authService.getCurrentUser(true);
+        return deleteAccountRequestBase(user);
+    }
+
+    public UserDeleteToken deleteAccountRequestBase(User user) throws MessagingException, IOException, AlovoaException {
         UserDeleteToken token = new UserDeleteToken();
         Date currentDate = new Date();
 

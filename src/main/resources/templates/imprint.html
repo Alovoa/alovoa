@@ -1,78 +1,85 @@
 <!DOCTYPE html>
-<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto">
+<html th:with="lang=${#locale.language}" th:lang="${lang}" dir="auto" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-title" content="Alovoa">
-	<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
-	<link rel="manifest" href="/manifest/manifest.json">
-	
-	<link rel="stylesheet" href="/css/lib/bulma.min.css" />
-	<link rel="stylesheet" href="/css/alovoa.css" />
-	<link rel="stylesheet" href="/css/lib/animate.min.css" />
-	<link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css" />
-	<link rel="stylesheet" href="/css/lib/modal-fx.min.css" />
-	<title th:text="#{imprint.title}"></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Alovoa">
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+    <link rel="manifest" href="/manifest/manifest.json">
+
+    <link rel="stylesheet" href="/css/lib/bulma.min.css"/>
+    <link rel="stylesheet" href="/css/alovoa.css"/>
+    <link rel="stylesheet" href="/css/lib/animate.min.css"/>
+    <link rel="stylesheet" href="/css/lib/bulma-collapsible.min.css"/>
+    <link rel="stylesheet" href="/css/lib/modal-fx.min.css"/>
+    <title th:text="#{imprint.title}"></title>
 </head>
 <body>
-	<div id="main">
+<div id="main">
 
-		<header th:insert="~{fragments.html::header}"></header>
-		<div class="section">
-			<div class="box">
-				<h2 th:text="#{email} + ':'"></h2>
-				<a href= "mailto:contact@alovoa.com">contact@alovoa.com</a>
-			</div>
-			<div class="card" style="margin-bottom: 1.5rem;">
-				<header class="card-header collapsible-header always-collapse">
-					<a href="#collapsible-card" data-action="collapse" class="card-header-icon full-width" 
-					aria-label="more options" style="padding: 1.25rem; display: flex; justify-content: space-between;">
-						<span class="label" style="margin-bottom: initial;" th:text="#{contact}"></span>
-						<div class="navbar-link"></div>
-					</a>
-				</header>
-				<div id="collapsible-card" class="is-collapsible always-collapse">
-					<div class="card-content">
-						<form id="imprint-form" th:action="@{/imprint/contact}"
-							method="POST">
-							<div class="field">
-								<input class="input" type="email" th:placeholder="#{email}"
-									name="email" required>
-							</div>
-							<div class="field">
+    <header th:insert="~{fragments.html::header}"></header>
+    <div class="section">
+        <div class="box">
+            <h2 th:text="#{email}"></h2>
+            <a href="mailto:contact@alovoa.com">contact@alovoa.com</a>
+        </div>
+
+        <div class="box">
+            <h2 th:text="#{delete-account.title}"></h2>
+            <a href="/imprint/delete-account-request" th:text="#{delete-account.subtitle}"></a>
+        </div>
+
+        <div class="box">
+            <p th:text="${companyName}"></p>
+            <p>Nho Quy Dinh</p>
+            <p>Neulanderweg 18, 21423 Winsen Luhe</p>
+            <p>Tel: +49 (0) 15678593504</p>
+            <p>Ust-ID: DE351860631</p>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <header class="card-header collapsible-header always-collapse">
+                <a href="#collapsible-card" data-action="collapse" class="card-header-icon full-width"
+                   aria-label="more options" style="padding: 1.25rem; display: flex; justify-content: space-between;">
+                    <span class="label" style="margin-bottom: initial;" th:text="#{contact}"></span>
+                    <div class="navbar-link"></div>
+                </a>
+            </header>
+            <div id="collapsible-card" class="is-collapsible always-collapse">
+                <div class="card-content">
+                    <form id="imprint-form" th:action="@{/imprint/contact}"
+                          method="POST">
+                        <div class="field">
+                            <input class="input" type="email" th:placeholder="#{email}"
+                                   name="email" required>
+                        </div>
+                        <div class="field">
 								<textarea class="textarea" name="message"
-									th:placeholder="#{message}" required></textarea>
-							</div>
-							<div style="padding-top: 12px;"></div>
-							<div th:replace="~{fragments.html::captcha}"></div>
-							<button class="button colored is-primary" th:text="#{submit}"></button>
-						</form>
-					</div>
-				</div>
-			</div>
-			<div class="box">
-				<p th:text="${companyName}"></p>
-				<p>Nho Quy Dinh</p>
-				<p>Neulanderweg 18, 21423 Winsen Luhe</p>
-				<p>Tel: +49 (0) 15678593504</p>
-				<p>Ust-ID: DE351860631</p>
-			</div>
-		</div>
-	</div>
-	<footer th:replace="~{fragments.html::footer}"></footer>
+                                          th:placeholder="#{message}" required></textarea>
+                        </div>
+                        <div style="padding-top: 12px;"></div>
+                        <div th:replace="~{fragments.html::captcha}"></div>
+                        <button class="button colored is-primary" th:text="#{submit}"></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="~{fragments.html::footer}"></footer>
 
-	<script src="/sw.js"></script>
-	<script src="/js/lib/jquery.min.js"></script>
-	<script src="/js/lib/fontawesome.all.js"></script>
-	<script src="/js/lib/modal-fx.min.js"></script>
-	<script src="/js/lib/bulma-toast.min.js"></script>
-	<script src="/js/lib/bulma-collapsible.min.js"></script>
-	<script src="/js/tools/refresh-captcha.js"></script>
-	<script src="/js/tools/get-text.js"></script>
-	<script src="/js/tools/modal.js"></script>
-	<script src="/js/alovoa.js"></script>
-	<script src="/js/imprint.js"></script>
+<script src="/sw.js"></script>
+<script src="/js/lib/jquery.min.js"></script>
+<script src="/js/lib/fontawesome.all.js"></script>
+<script src="/js/lib/modal-fx.min.js"></script>
+<script src="/js/lib/bulma-toast.min.js"></script>
+<script src="/js/lib/bulma-collapsible.min.js"></script>
+<script src="/js/tools/refresh-captcha.js"></script>
+<script src="/js/tools/get-text.js"></script>
+<script src="/js/tools/modal.js"></script>
+<script src="/js/alovoa.js"></script>
+<script src="/js/imprint.js"></script>
 </body>
 </html>

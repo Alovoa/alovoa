@@ -24,7 +24,9 @@ $(function() {
 		param = "index.js.password-change-success";
 	} else if (url.includes("?confirm-account-deleted")) {
 		param = "index.js.confirm-account-deleted";
-	}
+	} else if (url.includes("?account-deletion-requested")) {
+        param = "index.js.account-deletion-requested";
+    }
 
 	if (param) {
 		let text = getText(param);

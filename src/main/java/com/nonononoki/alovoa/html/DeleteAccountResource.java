@@ -40,4 +40,9 @@ public class DeleteAccountResource {
         mav.addObject("tokenString", tokenString);
         return mav;
     }
+
+    @GetMapping("/delete-account-request")
+    public ModelAndView deleteAccountRequest() {
+        return new ModelAndView("delete-account-request");
+    }
 }

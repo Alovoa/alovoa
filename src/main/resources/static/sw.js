@@ -31,6 +31,7 @@ const staticAssets = [
 
 	'/js/alovoa.js',
 	'/js/delete-account.js',
+	'/js/delete-account-request.js',
 	'/js/donate-list.js',
 	'/js/imprint.js',
 	'/js/index.js',
