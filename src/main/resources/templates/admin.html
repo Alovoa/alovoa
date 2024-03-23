@@ -44,6 +44,8 @@
             <div style="padding-top: 4px;"></div>
             <button class="button" th:onclick="viewProfile([[${report.userToIdEnc}]])"><i
                     class="fa fa-user"></i></button>
+            <button class="button" th:onclick="viewProfileMedia([[${report.userToIdEnc}]])"><i
+                    class="fa fa-photo-video"></i></button>
             <button class="button" th:onclick="deleteReport([[${report.id}]])"
                     th:text="#{admin.delete-report}"></button>
             <button class="button" th:onclick="removeDescription([[${report.userToIdEnc}]])"
@@ -116,7 +118,6 @@
     <div style="padding-bottom: 24px;"></div>
 
 </div>
-<footer th:replace="~{fragments.html::footer}"></footer>
 
 <script src="/sw.js"></script>
 <script src="/js/lib/jquery.min.js"></script>

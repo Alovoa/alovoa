@@ -17,6 +17,11 @@ function viewProfile(idEnc) {
 	window.open(url, '_blank').focus();
 }
 
+function viewProfileMedia(idEnc) {
+	let url = '/admin/profile/view/' + idEnc + '/media';
+	window.open(url, '_blank').focus();
+}
+
 function deleteReport(id) {
 	$.ajax({
 		type: "POST",

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html dir="auto" th:lang="${lang}" th:with="lang=${#locale.language}" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="Alovoa" name="apple-mobile-web-app-title">
+    <meta content="#121212" media="(prefers-color-scheme: dark)" name="theme-color">
+    <link href="/manifest/manifest.json" rel="manifest">
+
+    <link href="/css/lib/bulma.min.css" rel="stylesheet"/>
+    <link href="/css/lib/animate.min.css" rel="stylesheet"/>
+    <link href="/css/alovoa.css" rel="stylesheet"/>
+    <link href="/css/privacy.css" rel="stylesheet"/>
+    <title th:text="Admin"></title>
+</head>
+
+<body>
+<div id="main">
+    <div style="display: flex; flex-direction: column; padding: 16px;">
+        <span style="margin-top: 8px;">Profile picture</span>
+        <img height=400 width=400 th:src="${user.profilePicture}"/>
+        <span style="margin-top: 8px;">Images</span>
+        <div th:if="${user.images}" th:each="image : ${user.images}">
+            <img height=400 width=400 th:src="${img.content}"/>
+        </div>
+        <span style="margin-top: 8px;">Verification picture</span>
+        <img height=400 width=400 th:src="${user.verificationPicture.data}"
+             th:if="${user.verificationPicture != null && user.verificationPicture.hasPicture}"/>
+        <span style="margin-top: 8px;">Audio</span>
+        <audio id="audio" th:src="${user.audio}" th:if="${user.audio}" controls></audio>
+    </div>
+</div>
+
+<script src="/sw.js"></script>
+<script src="/js/lib/jquery.min.js"></script>
+<script src="/js/lib/fontawesome.all.js"></script>
+<script src="/js/lib/bulma-toast.min.js"></script>
+<script src="/js/tools/get-text.js"></script>
+<script src="/js/alovoa.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+
+</html>

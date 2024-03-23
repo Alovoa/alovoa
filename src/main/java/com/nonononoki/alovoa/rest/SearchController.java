@@ -55,7 +55,7 @@ public class SearchController {
 	public String getUsersDefault(Model model)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		model = getUsersDefaultModel(model);
+		getUsersDefaultModel(model);
 		return "fragments :: search-users";
 	}
 	

@@ -8,7 +8,7 @@
  */
 
 
-const cacheName = '61';
+const cacheName = '62';
 const staticAssets = [
 
 	'/favicon.ico',
@@ -36,7 +36,6 @@ const staticAssets = [
 	'/js/index.js',
 	'/js/login.js',
 	'/js/password-change.js',
-	'/js/search.js',
 
 	'/css/lib/bulma.min.css',
 	'/css/lib/bulma-collapsible.min.css',
@@ -52,10 +51,7 @@ const staticAssets = [
 	'/css/donate-list.css',
 	'/css/index.css',
 	'/css/privacy.css',
-	'/css/search.css',
 
-	'/img/search-cover.webp',
-	'/img/ios-pwa.webp',
 	'/img/android-chrome-192x192.png',
 	'/img/android-chrome-512x512.png',
 	'/img/apple-touch-icon.png',
