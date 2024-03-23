@@ -164,54 +164,18 @@
 
     <div th:if="${dto.message != null}" id="search-message" th:text="${dto.message}" style="display: none;"></div>
 
-
     <th:block th:each="user : ${dto.users}">
         <div class="user-search-card" th:id="${user.idEncoded}">
-            <div class="swiper swiper-container" th:id="${user.idEncoded}">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide colored"
-                         style="background-color: #48c774; display: flex; align-items: center; justify-content: center">
-                        <i class="fa fa-thumbs-up fa-10x"></i>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="card is-horizontal" style="width: 100%; height: 100%;">
-                            <div class="card-image" th:onclick="viewProfile([[${user.idEncoded}]])">
-                                <figure class="image">
-                                    <img th:src="${user.profilePicture}" class="profile-pic">
-                                </figure>
-                            </div>
-                            <div class="card-content">
-                                <div th:onclick="viewProfile([[${user.idEncoded}]])">
-                                    <div class="content-background">
-                                        <div class="content">
-
-                                            <div style="display: flex;">
-                                                <div class="full-width" dir="ltr">
-                                                    <div class="left first-name" style="font-size: 2em"
-                                                         th:text="${user.firstName}"
-                                                         th:classappend="${user.gender.text == 'male' ? 'male' : user.gender.text == 'female' ? 'female' : 'other'}">
-                                                    </div>
-                                                    <div class="left"
-                                                         style="font-size: 1.5em; padding-top: 6px; display: flex; gap: 4px;">
-                                                        <div><span>,&nbsp;</span><span th:text="${user.age}"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div style="font-size: 1.1em;" class="description"
-                                                 th:text="${user.description}"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide colored"
-                         style="background-color: #f14668; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa fa-thumbs-down fa-10x"></i>
-                    </div>
-                </div>
+            <div class="card-image" th:onclick="viewProfile([[${user.idEncoded}]])">
+                <figure class="image">
+                    <img th:src="${user.profilePicture}" class="profile-pic">
+                </figure>
+            </div>
+            <div style="padding: 16px; display: flex; flex-direction: column;">
+            <div style="font-size: 1.2em; padding-bottom: 16px;" class="description"
+                 th:text="${user.description}"></div>
+            <button class="button" th:onclick="viewProfileMedia([[${user.idEncoded}]])"><i
+                    class="fa fa-photo-video"></i></button>
             </div>
         </div>
     </th:block>

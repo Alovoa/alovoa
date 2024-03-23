@@ -12,6 +12,8 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.AuthService;
 
+import static org.mockito.ArgumentMatchers.any;
+
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
@@ -30,6 +32,7 @@ class AdminResourceTest {
 	void test() throws Exception {
 		User adminUser = userRepo.findById(1L).get();
 		Mockito.when(authService.getCurrentUser()).thenReturn(adminUser);
+		Mockito.when(authService.getCurrentUser(true)).thenReturn(adminUser);
 		adminResource.admin();
 	}
 }

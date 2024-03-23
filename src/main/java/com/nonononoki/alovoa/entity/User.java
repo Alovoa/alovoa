@@ -130,9 +130,6 @@ public class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     @JsonIgnore
     private List<UserDonation> donations;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-    @JsonIgnore
-    private List<UserWebPush> webPush;
     @OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true, mappedBy = "userFrom")
     @JsonIgnore
     private List<Message> messageSent;

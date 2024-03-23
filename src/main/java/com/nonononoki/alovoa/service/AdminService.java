@@ -15,6 +15,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.BadPaddingException;
@@ -62,6 +63,9 @@ public class AdminService {
     @Autowired
     private TextEncryptorConverter textEncryptor;
 
+    @Value("${app.search.ignore-intention}")
+    private boolean ignoreIntention;
+
     public void hideContact(long id) throws AlovoaException {
         checkRights();
 
@@ -101,6 +105,16 @@ public class AdminService {
         } catch (Exception e) {
             userReportRepo.delete(report);
         }
+    }
+
+    public UserDto viewProfile(String idEnc) throws AlovoaException, InvalidAlgorithmParameterException,
+            IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException,
+            InvalidKeyException, UnsupportedEncodingException {
+        checkRights();
+        User user = authService.getCurrentUser(true);
+        User u = userService.encodedIdToUser(idEnc);
+        return UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                .currentUser(user).user(u).textEncryptor(textEncryptor).mode(UserDto.ALL).userService(userService).build());
     }
 
     public void removeImages(String id) throws AlovoaException, NumberFormatException, InvalidKeyException,
@@ -189,7 +203,6 @@ public class AdminService {
         user.setProfilePicture(null);
         user.setVerificationCode(null);
         user.setVerificationPicture(null);
-        user.getWebPush().clear();
         user.setShowZodiac(false);
         user.getPrompts().clear();
         userRepo.saveAndFlush(user);
@@ -199,13 +212,14 @@ public class AdminService {
         checkRights();
 
         User user = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
-        if(user == null) {
+        if (user == null) {
             try {
                 Optional<Long> idOpt = UserDto.decodeId(dto.getEmail(), textEncryptor);
-                if(idOpt.isPresent()) {
+                if (idOpt.isPresent()) {
                     user = userRepo.findById(idOpt.get()).orElse(null);
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
 
         if (user == null) {
@@ -238,13 +252,14 @@ public class AdminService {
     public void addDonation(String email, double amount) throws AlovoaException {
         checkRights();
         User user = userRepo.findByEmail(Tools.cleanEmail(URLDecoder.decode(email, StandardCharsets.UTF_8)));
-        if(user == null) {
+        if (user == null) {
             try {
                 Optional<Long> idOpt = UserDto.decodeId(email, textEncryptor);
-                if(idOpt.isPresent()) {
+                if (idOpt.isPresent()) {
                     user = userRepo.findById(idOpt.get()).orElse(null);
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
 
         if (user != null) {
@@ -284,7 +299,7 @@ public class AdminService {
         userRepo.saveAndFlush(user);
     }
 
-    private void checkRights() throws AlovoaException {
+    public void checkRights() throws AlovoaException {
         if (!authService.getCurrentUser(true).isAdmin()) {
             throw new AlovoaException("not_admin");
         }

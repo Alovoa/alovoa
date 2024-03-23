@@ -24,7 +24,9 @@ $(function() {
 		param = "index.js.password-change-success";
 	} else if (url.includes("?confirm-account-deleted")) {
 		param = "index.js.confirm-account-deleted";
-	}
+	} else if (url.includes("?account-deletion-requested")) {
+        param = "index.js.account-deletion-requested";
+    }
 
 	if (param) {
 		let text = getText(param);
@@ -41,29 +43,12 @@ $(function() {
 		localStorage.setItem("twa_playstore", true);
 	}
 
-	showIosPwaBanner();
 	hero();
 });
 
 function cookieClick() {
 	localStorage.setItem('cookie', true);
 	$('#cookie-banner').css("visibility", "hidden");
-}
-
-function showIosPwaBanner() {
-	let userAgent = window.navigator.userAgent;
-	let isIos = /iPhone|iPad|iPod/.test(userAgent);
-	if (isIos) {
-		let isPwa = window.location.href.includes("?pwa");
-		if (isPwa) {
-			localStorage.setItem("pwa", true);
-		} else {
-			isPwa = localStorage.getItem("pwa");
-		}
-		if (!isPwa) {
-			openModal("ios-pwa-modal");
-		}
-	}
 }
 
 var textures = [];//generate strings when the script is first run

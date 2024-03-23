@@ -289,12 +289,19 @@ public class UserService {
 
     public UserDeleteToken deleteAccountRequest() throws MessagingException, IOException, AlovoaException {
         User user = authService.getCurrentUser(true);
+        return deleteAccountRequestBase(user);
+    }
+
+    public UserDeleteToken deleteAccountRequestBase(User user) throws MessagingException, IOException, AlovoaException {
         UserDeleteToken token = new UserDeleteToken();
         Date currentDate = new Date();
 
         token.setContent(RandomStringUtils.random(tokenLength, 0, 0, true, true, null, new SecureRandom()));
         token.setDate(currentDate);
         token.setUser(user);
+        if(user.getDeleteToken() != null) {
+            token.setId(user.getDeleteToken().getId());
+        }
         user.setDeleteToken(token);
         user = userRepo.saveAndFlush(user);
 

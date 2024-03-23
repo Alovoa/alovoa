@@ -3,9 +3,11 @@ package com.nonononoki.alovoa.rest;
 import com.nonononoki.alovoa.model.AdminAccountDeleteDto;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.MailDto;
+import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.service.AdminService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.BadPaddingException;
@@ -93,6 +95,13 @@ public class AdminController {
             throws AlovoaException, UnsupportedEncodingException, InvalidAlgorithmParameterException,
             IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         adminService.deleteVerificationPicture(idEnc);
+    }
+
+    @GetMapping(path ="/profile/view/{id}", produces= MediaType.APPLICATION_JSON_VALUE)
+    public UserDto viewProfile(@PathVariable String id) throws AlovoaException, InvalidAlgorithmParameterException,
+            IllegalBlockSizeException, NoSuchPaddingException, UnsupportedEncodingException, BadPaddingException,
+            NoSuchAlgorithmException, InvalidKeyException {
+        return adminService.viewProfile(id);
     }
 
 }

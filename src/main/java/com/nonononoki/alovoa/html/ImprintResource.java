@@ -13,9 +13,13 @@ public class ImprintResource {
 
 	@GetMapping("/imprint")
 	public ModelAndView imprint() {
-
 		ModelAndView mav = new ModelAndView("imprint");
 		mav.addObject("companyName", companyName);
 		return mav;
+	}
+
+	@GetMapping("/imprint/delete-account-request")
+	public ModelAndView imprintDeleteAccountRequest() {
+		return new ModelAndView("delete-account-request");
 	}
 }
