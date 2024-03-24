@@ -4,12 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserMiscInfo;
-import com.nonononoki.alovoa.model.*;
+import com.nonononoki.alovoa.model.AlovoaException;
+import com.nonononoki.alovoa.model.ProfileOnboardingDto;
+import com.nonononoki.alovoa.model.UserDeleteAccountDto;
+import com.nonononoki.alovoa.model.UserInterestDto;
 import com.nonononoki.alovoa.service.UserService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -120,6 +120,13 @@ public class UserService {
     private int likeMessageLength;
     @Value("${app.search.ignore-intention}")
     private boolean ignoreIntention;
+    @Value("${app.domain}")
+    public String domain;
+
+    public String getDomain() {
+        return domain;
+    }
+
 
     public static void removeUserDataCascading(User user, UserDeleteParams userDeleteParam) {
 
@@ -1056,5 +1063,4 @@ public class UserService {
             throw e;
         }
     }
-
 }

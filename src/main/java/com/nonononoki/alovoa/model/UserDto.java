@@ -4,10 +4,11 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.*;
+import com.nonononoki.alovoa.rest.MediaController;
+import com.nonononoki.alovoa.rest.UserController;
 import com.nonononoki.alovoa.service.UserService;
 import lombok.Data;
 import lombok.Builder;
-import lombok.Builder.Default;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,10 +25,10 @@ import java.util.*;
 
 @Data
 public class UserDto {
-    public static final int ALL = 0;
-    public static final int PROFILE_PICTURE_ONLY = 1;
-    public static final int NO_AUDIO = 2;
-    public static final int NO_MEDIA = 3; //always send verification picture unless verified by admin
+    @Deprecated public static final int ALL = 0;
+    @Deprecated public static final int PROFILE_PICTURE_ONLY = 1;
+    @Deprecated  public static final int NO_AUDIO = 2;
+    @Deprecated public static final int NO_MEDIA = 3; //always send verification picture unless verified by admin
     public static final int LA_STATE_ACTIVE_1 = 5; // in minutes
     public static final int LA_STATE_ACTIVE_2 = 1;
     public static final int LA_STATE_ACTIVE_3 = 7;
@@ -59,7 +60,7 @@ public class UserDto {
     private List<UserInterest> commonInterests;
     private List<UserPrompt> prompts;
     private String profilePicture;
-    private List<UserImage> images;
+    private List<UserImageDto> images;
     private String description;
     private String country;
     private int distanceToUser;
@@ -88,12 +89,14 @@ public class UserDto {
         User currentUser = builder.currentUser;
         UserService userService = builder.userService;
         TextEncryptorConverter textEncryptor = builder.textEncryptor;
-        int mode = builder.mode;
+        @Deprecated int mode = builder.mode;
         boolean ignoreIntention = builder.ignoreIntention;
 
         if (user == null) {
             return null;
         }
+        String idEnc = encodeId(user.getId(), textEncryptor);
+
         UserDto dto = new UserDto();
         if (user.equals(currentUser)) {
             dto.setEmail(user.getEmail());
@@ -103,7 +106,7 @@ public class UserDto {
             UserSettings settings = user.getUserSettings();
             dto.setUserSettings(settings);
         }
-        dto.setIdEncoded(encodeId(user.getId(), textEncryptor));
+        dto.setIdEncoded(idEnc);
         if (user.getDates() != null) {
             dto.setAge(Tools.calcUserAge(user));
         }
@@ -131,12 +134,13 @@ public class UserDto {
             dto.setPreferedMinAge(Tools.AGE_LEGAL);
         }
         if (mode != PROFILE_PICTURE_ONLY && mode != NO_MEDIA) {
-            dto.setImages(user.getImages());
+            dto.setImages(UserImageDto.buildFromUserImages(user, idEnc, userService));
         }
         dto.setGender(user.getGender());
         dto.setIntention(user.getIntention());
         if (mode != NO_MEDIA && user.getProfilePicture() != null) {
-            dto.setProfilePicture(user.getProfilePicture().getData());
+            dto.setProfilePicture(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
+                    MediaController.URL_PROFILE_PICTURE + idEnc);
         }
         dto.setTotalDonations(user.getTotalDonations());
         dto.setNumBlockedByUsers(user.getBlockedByUsers().size());
@@ -316,7 +320,7 @@ public class UserDto {
         private UserService userService;
         private TextEncryptorConverter textEncryptor;
         @Builder.Default
-        private int mode = NO_AUDIO;
+        @Deprecated private int mode = NO_AUDIO;
         private boolean ignoreIntention;
     }
 }
