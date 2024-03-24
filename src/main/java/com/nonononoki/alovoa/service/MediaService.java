@@ -2,6 +2,8 @@ package com.nonononoki.alovoa.service;
 
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserImage;
+import com.nonononoki.alovoa.repo.UserImageRepository;
+import com.nonononoki.alovoa.repo.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.UUID;
 
 @Service
 public class MediaService {
@@ -27,19 +30,21 @@ public class MediaService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaService.class);
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
-    public ResponseEntity<byte[]> getProfilePicture(String idEnc) throws InvalidAlgorithmParameterException, IllegalBlockSizeException,
+    @Autowired
+    private UserImageRepository userImageRepository;
+
+    public ResponseEntity<byte[]> getProfilePicture(UUID uuid) throws InvalidAlgorithmParameterException, IllegalBlockSizeException,
             NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        User user = userService.encodedIdToUser(idEnc);
+        User user = userRepository.findByUuid(uuid);
         return getImageDataBase(user.getProfilePicture().getData());
     }
 
-    public ResponseEntity<byte[]> getImage(String idEnc, int id) throws InvalidAlgorithmParameterException, IllegalBlockSizeException,
+    public ResponseEntity<byte[]> getImage(UUID uuid) throws InvalidAlgorithmParameterException, IllegalBlockSizeException,
             NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        User user = userService.encodedIdToUser(idEnc);
-        UserImage img = user.getImages().get(id);
-        return getImageDataBase(img.getContent());
+        UserImage image = userImageRepository.findByUuid(uuid);
+        return getImageDataBase(image.getContent());
     }
 
     private ResponseEntity<byte[]> getImageDataBase(String imageB64) {

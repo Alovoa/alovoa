@@ -1005,6 +1005,20 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
+    public void updateUUID(User user, UUID uuid) {
+        if(user.getUuid() != null) {
+            user.setUuid(uuid);
+            userRepo.saveAndFlush(user);
+        }
+    }
+
+    public void updateImageUUID(UserImage image, UUID uuid) {
+        if(image.getUuid() == null) {
+            image.setUuid(uuid);
+            userImageRepo.saveAndFlush(image);
+        }
+    }
+
     private String adjustAudio(String audioB64, String mimeType) throws UnsupportedAudioFileException, IOException {
         if (mimeType.equals(MIME_X_WAV) || mimeType.equals(MIME_WAV)) {
             String trimmedWav = trimAudioWav(audioB64, audioMaxTime);

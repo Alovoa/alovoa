@@ -14,6 +14,7 @@ import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/media")
@@ -25,17 +26,17 @@ public class MediaController {
     public static final String URL_REQUEST_MAPPING = "/media";
     public static final String URL_PROFILE_PICTURE = "/profile-picture/";
     public static final String URL_IMAGE = "/image/";
-    @GetMapping(value = URL_PROFILE_PICTURE + "{idEnc}" )
-    public ResponseEntity<byte[]> getProfilePicture(@PathVariable String idEnc) throws InvalidAlgorithmParameterException,
+    @GetMapping(value = URL_PROFILE_PICTURE + "{uuid}" )
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable UUID uuid) throws InvalidAlgorithmParameterException,
             IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException,
             InvalidKeyException {
-        return mediaService.getProfilePicture(idEnc);
+        return mediaService.getProfilePicture(uuid);
     }
 
-    @GetMapping(value = URL_IMAGE + "{idEnc}/{index}")
-    public ResponseEntity<byte[]> getImage(@PathVariable String idEnc, @PathVariable int index) throws InvalidAlgorithmParameterException,
+    @GetMapping(value = URL_IMAGE + "{uuid}")
+    public ResponseEntity<byte[]> getImage(@PathVariable UUID uuid) throws InvalidAlgorithmParameterException,
             IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException,
             InvalidKeyException {
-        return mediaService.getImage(idEnc, index);
+        return mediaService.getImage(uuid);
     }
 }

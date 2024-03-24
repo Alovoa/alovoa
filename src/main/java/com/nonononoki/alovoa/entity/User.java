@@ -47,6 +47,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private UUID uuid;
     @JsonIgnore
     private String password;
     @Column(updatable = false)

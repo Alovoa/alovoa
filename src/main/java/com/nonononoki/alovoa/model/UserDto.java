@@ -5,10 +5,9 @@ import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.*;
 import com.nonononoki.alovoa.rest.MediaController;
-import com.nonononoki.alovoa.rest.UserController;
 import com.nonononoki.alovoa.service.UserService;
-import lombok.Data;
 import lombok.Builder;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +24,14 @@ import java.util.*;
 
 @Data
 public class UserDto {
-    @Deprecated public static final int ALL = 0;
-    @Deprecated public static final int PROFILE_PICTURE_ONLY = 1;
-    @Deprecated  public static final int NO_AUDIO = 2;
-    @Deprecated public static final int NO_MEDIA = 3; //always send verification picture unless verified by admin
+    @Deprecated
+    public static final int ALL = 0;
+    @Deprecated
+    public static final int PROFILE_PICTURE_ONLY = 1;
+    @Deprecated
+    public static final int NO_AUDIO = 2;
+    @Deprecated
+    public static final int NO_MEDIA = 3; //always send verification picture unless verified by admin
     public static final int LA_STATE_ACTIVE_1 = 5; // in minutes
     public static final int LA_STATE_ACTIVE_2 = 1;
     public static final int LA_STATE_ACTIVE_3 = 7;
@@ -38,7 +41,8 @@ public class UserDto {
     private static final double MILES_TO_KM = 0.6214;
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDto.class);
 
-    private String idEncoded;
+    private UUID uuid;
+    @Deprecated private String idEncoded;
     private String email;
     private String firstName;
     private int age;
@@ -90,12 +94,13 @@ public class UserDto {
         UserService userService = builder.userService;
         TextEncryptorConverter textEncryptor = builder.textEncryptor;
         @Deprecated int mode = builder.mode;
+        @Deprecated String idEnc;
         boolean ignoreIntention = builder.ignoreIntention;
+        final UUID uuid;
 
         if (user == null) {
             return null;
         }
-        String idEnc = encodeId(user.getId(), textEncryptor);
 
         UserDto dto = new UserDto();
         if (user.equals(currentUser)) {
@@ -106,7 +111,17 @@ public class UserDto {
             UserSettings settings = user.getUserSettings();
             dto.setUserSettings(settings);
         }
+        if (user.getUuid() == null) {
+            uuid = UUID.randomUUID();
+            userService.updateUUID(user, uuid);
+        } else {
+            uuid = user.getUuid();
+        }
+        idEnc = encodeId(user.getId(), textEncryptor);
         dto.setIdEncoded(idEnc);
+
+        dto.setUuid(uuid);
+
         if (user.getDates() != null) {
             dto.setAge(Tools.calcUserAge(user));
         }
@@ -134,13 +149,13 @@ public class UserDto {
             dto.setPreferedMinAge(Tools.AGE_LEGAL);
         }
         if (mode != PROFILE_PICTURE_ONLY && mode != NO_MEDIA) {
-            dto.setImages(UserImageDto.buildFromUserImages(user, idEnc, userService));
+            dto.setImages(UserImageDto.buildFromUserImages(user, userService));
         }
         dto.setGender(user.getGender());
         dto.setIntention(user.getIntention());
         if (mode != NO_MEDIA && user.getProfilePicture() != null) {
             dto.setProfilePicture(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
-                    MediaController.URL_PROFILE_PICTURE + idEnc);
+                    MediaController.URL_PROFILE_PICTURE + uuid);
         }
         dto.setTotalDonations(user.getTotalDonations());
         dto.setNumBlockedByUsers(user.getBlockedByUsers().size());
@@ -320,7 +335,8 @@ public class UserDto {
         private UserService userService;
         private TextEncryptorConverter textEncryptor;
         @Builder.Default
-        @Deprecated private int mode = NO_AUDIO;
+        @Deprecated
+        private int mode = NO_AUDIO;
         private boolean ignoreIntention;
     }
 }
