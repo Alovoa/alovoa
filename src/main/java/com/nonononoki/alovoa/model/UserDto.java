@@ -132,7 +132,7 @@ public class UserDto {
         dto.setDescription(user.getDescription());
         dto.setFirstName(user.getFirstName());
         dto.setGender(user.getGender());
-        dto.setVerificationPicture(UserDtoVerificationPicture.map(user, currentUser, userService, mode));
+        dto.setVerificationPicture(UserDtoVerificationPicture.map(user, currentUser, userService, mode, uuid));
 
         dto.setCountry(Tools.getCountryEmoji(user.getCountry()));
 
@@ -162,7 +162,8 @@ public class UserDto {
         dto.setNumReports(user.getReportedByUsers().size());
         dto.setInterests(user.getInterests());
         if ((mode != NO_AUDIO && mode != PROFILE_PICTURE_ONLY && mode != NO_MEDIA) && user.getAudio() != null) {
-            dto.setAudio(user.getAudio().getData());
+            dto.setAudio(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
+                    MediaController.URL_AUDIO + uuid);
         }
         dto.setHasAudio(user.getAudio() != null);
         dto.setNumberReferred(user.getNumberReferred());
@@ -299,7 +300,7 @@ public class UserDto {
         private int userYes;
         private int userNo;
 
-        public static UserDtoVerificationPicture map(User user, User currentUser, UserService userService, int mode) {
+        public static UserDtoVerificationPicture map(User user, User currentUser, UserService userService, int mode, UUID uuid) {
             UserDtoVerificationPicture verificationPicture = new UserDtoVerificationPicture();
             verificationPicture.setText(userService.getVerificationCode(user));
             UserVerificationPicture pic = user.getVerificationPicture();
@@ -310,7 +311,8 @@ public class UserDto {
             }
 
             if (mode == ALL && !pic.isVerifiedByAdmin()) {
-                verificationPicture.setData(pic.getData());
+                verificationPicture.setData(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
+                        MediaController.URL_VERIFICATION_PICTURE + uuid);
             }
 
             //only show verification for users with verification

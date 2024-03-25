@@ -35,24 +35,40 @@ public class MediaService {
     @Autowired
     private UserImageRepository userImageRepository;
 
-    public ResponseEntity<byte[]> getProfilePicture(UUID uuid) throws InvalidAlgorithmParameterException, IllegalBlockSizeException,
-            NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public ResponseEntity<byte[]> getProfilePicture(UUID uuid) {
         User user = userRepository.findByUuid(uuid);
         return getImageDataBase(user.getProfilePicture().getData());
     }
 
-    public ResponseEntity<byte[]> getImage(UUID uuid) throws InvalidAlgorithmParameterException, IllegalBlockSizeException,
-            NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public ResponseEntity<byte[]> getVerificationPicture(UUID uuid) {
+        User user = userRepository.findByUuid(uuid);
+        return getImageDataBase(user.getVerificationPicture().getData());
+    }
+
+    public ResponseEntity<byte[]> getAudio(UUID uuid) {
+        User user = userRepository.findByUuid(uuid);
+        byte[] bytes = getBase64Data(user.getAudio().getData());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("audio", "wav"));
+        headers.setContentLength(bytes.length);
+        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<byte[]> getImage(UUID uuid) {
         UserImage image = userImageRepository.findByUuid(uuid);
         return getImageDataBase(image.getContent());
     }
 
-    private ResponseEntity<byte[]> getImageDataBase(String imageB64) {
-        String data = imageB64;
+    private byte[] getBase64Data(String base64) {
+        String data = base64;
         if (data.contains(",")) {
             data = data.split(",", 2)[1];
         }
-        byte[] bytes = Base64.getDecoder().decode(data);
+        return Base64.getDecoder().decode(data);
+    }
+
+    private ResponseEntity<byte[]> getImageDataBase(String imageB64) {
+        byte[] bytes = getBase64Data(imageB64);
         HttpHeaders headers = new HttpHeaders();
         MediaType mediaType;
         if (imageB64.startsWith(IMAGE_DATA_START + MEDIA_TYPE_IMAGE_WEBP)) {

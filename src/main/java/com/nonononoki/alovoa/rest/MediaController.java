@@ -25,18 +25,27 @@ public class MediaController {
 
     public static final String URL_REQUEST_MAPPING = "/media";
     public static final String URL_PROFILE_PICTURE = "/profile-picture/";
+    public static final String URL_VERIFICATION_PICTURE = "/verification-picture/";
+    public static final String URL_AUDIO = "/audio/";
     public static final String URL_IMAGE = "/image/";
-    @GetMapping(value = URL_PROFILE_PICTURE + "{uuid}" )
-    public ResponseEntity<byte[]> getProfilePicture(@PathVariable UUID uuid) throws InvalidAlgorithmParameterException,
-            IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException,
-            InvalidKeyException {
+
+    @GetMapping(value = URL_PROFILE_PICTURE + "{uuid}")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable UUID uuid) {
         return mediaService.getProfilePicture(uuid);
     }
 
+    @GetMapping(value = URL_VERIFICATION_PICTURE + "{uuid}")
+    public ResponseEntity<byte[]> getVerificationPicture(@PathVariable UUID uuid) {
+        return mediaService.getVerificationPicture(uuid);
+    }
+
+    @GetMapping(value = URL_AUDIO + "{uuid}")
+    public ResponseEntity<byte[]> getAudio(@PathVariable UUID uuid) {
+        return mediaService.getAudio(uuid);
+    }
+
     @GetMapping(value = URL_IMAGE + "{uuid}")
-    public ResponseEntity<byte[]> getImage(@PathVariable UUID uuid) throws InvalidAlgorithmParameterException,
-            IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException,
-            InvalidKeyException {
+    public ResponseEntity<byte[]> getImage(@PathVariable UUID uuid) {
         return mediaService.getImage(uuid);
     }
 }
