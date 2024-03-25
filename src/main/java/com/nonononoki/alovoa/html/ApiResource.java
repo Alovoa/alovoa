@@ -78,7 +78,7 @@ public class ApiResource {
     private boolean ignoreIntention;
 
     @GetMapping("/donate")
-    public Map<String, Object> resourceDonate() throws JsonProcessingException, InvalidKeyException,
+    public Map<String, Object> resourceDonate() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         ModelMap map = new ModelMap();
@@ -142,7 +142,7 @@ public class ApiResource {
     }
 
     @GetMapping("/alerts")
-    public Map<String, Object> resourceNotification() throws JsonProcessingException, InvalidKeyException,
+    public Map<String, Object> resourceNotification() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         ModelMap map = new ModelMap();
@@ -151,9 +151,7 @@ public class ApiResource {
         userRepo.saveAndFlush(user);
         List<UserNotification> nots = user.getNotifications();
         List<NotificationDto> notifications = new ArrayList<>();
-        for (int i = 0; i < nots.size(); i++) {
-            UserNotification n = nots.get(i);
-
+        for (UserNotification n : nots) {
             boolean blockedMe = user.getBlockedByUsers().stream()
                     .anyMatch(b -> b.getUserFrom().getId().equals(n.getUserFrom().getId()));
             boolean blockedYou = user.getBlockedUsers().stream()
@@ -174,14 +172,14 @@ public class ApiResource {
     }
 
     @GetMapping("/profile")
-    public Map<String, Object> resourceProfile() throws JsonProcessingException, InvalidKeyException,
+    public Map<String, Object> resourceProfile() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         return profileResource.profile().getModel();
     }
 
     @GetMapping("/profile/view/{idEncoded}")
-    public Map<String, Object> resourceProfileView(@PathVariable String idEncoded) throws JsonProcessingException,
+    public Map<String, Object> resourceProfileView(@PathVariable String idEncoded) throws
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         Optional<Long> idOptional = UserDto.decodeId(idEncoded, textEncryptor);
@@ -228,7 +226,7 @@ public class ApiResource {
     }
 
     @GetMapping("/search")
-    public Map<String, Object> resourceSearch() throws JsonProcessingException, InvalidKeyException,
+    public Map<String, Object> resourceSearch() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         return searchResource.search().getModel();
@@ -269,7 +267,7 @@ public class ApiResource {
     }
 
     @GetMapping("/liked-users")
-    public Map<String, Object> likedUsers() throws JsonProcessingException, InvalidKeyException,
+    public Map<String, Object> likedUsers() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         User user = authService.getCurrentUser(true);
@@ -289,7 +287,7 @@ public class ApiResource {
     }
 
     @GetMapping("/disliked-users")
-    public Map<String, Object> dislikedUsers() throws JsonProcessingException, InvalidKeyException,
+    public Map<String, Object> dislikedUsers() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         User user = authService.getCurrentUser(true);
