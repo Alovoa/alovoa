@@ -35,7 +35,7 @@ public class User implements UserDetails {
     public static final int UNIT_SI = 0;
     @Transient
     public static final int UNIT_IMPERIAL = 1;
-    @Column(nullable = false, unique = true, updatable = false)
+    @Column(nullable = false, unique = true)
     @Convert(converter = TextEncryptorConverter.class)
     @JsonIgnore
     private final String email;
