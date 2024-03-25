@@ -745,6 +745,10 @@ public class UserService {
             hide.setUserTo(user);
             currUser.getHiddenUsers().add(hide);
             userRepo.saveAndFlush(currUser);
+
+            if(user.getLikes().stream().anyMatch(l -> l.getUserTo().getId().equals(currUser.getId()))) {
+                blockUser(idEnc);
+            }
         }
     }
 
