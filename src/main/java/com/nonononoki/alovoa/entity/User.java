@@ -41,7 +41,7 @@ public class User implements UserDetails {
     private final String email;
     // some more data
     @JsonIgnore
-    long numberProfileViews;
+    @Deprecated long numberProfileViews;
     @JsonIgnore
     long numberSearches;
     @Id
