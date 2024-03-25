@@ -1,16 +1,12 @@
 package com.nonononoki.alovoa.rest;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Map;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nonononoki.alovoa.model.AlovoaException;
+import com.nonononoki.alovoa.model.DonationDto;
+import com.nonononoki.alovoa.model.MessageDto;
+import com.nonononoki.alovoa.model.SearchDto;
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,14 +14,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.nonononoki.alovoa.model.AlovoaException;
-import com.nonononoki.alovoa.model.DonationDto;
-import com.nonononoki.alovoa.model.MessageDto;
-import com.nonononoki.alovoa.model.SearchDto;
-
-import lombok.Builder;
-import lombok.Data;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -42,7 +39,7 @@ public class ApiController {
 
     @SuppressWarnings("unchecked")
     @GetMapping("/donate/recent/{filter}")
-    public DonationDtoListModel donateRecent(Model model, @PathVariable int filter) throws JsonProcessingException,
+    public DonationDtoListModel donateRecent(Model model, @PathVariable int filter) throws
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         Map<String, Object> map = donateController.filterRecentModel(model, filter).asMap();
@@ -53,9 +50,7 @@ public class ApiController {
     @SuppressWarnings("unchecked")
     @GetMapping("/message/update/{convoId}/{first}")
     public MessageDtoListModel messageUpdate(@PathVariable long convoId, @PathVariable int first)
-            throws JsonProcessingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-            NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-            UnsupportedEncodingException, AlovoaException {
+            throws AlovoaException {
         Map<String, Object> map = messageController.getMessagesModel(null, convoId, first).asMap();
         boolean show = (boolean) map.get("show");
         if (show) {
@@ -67,7 +62,7 @@ public class ApiController {
 
     @GetMapping("/search/users/{latitude}/{longitude}/{distance}/{search}")
     public SearchDto searchUsers(@PathVariable Double latitude, @PathVariable Double longitude,
-                                 @PathVariable int distance, @PathVariable int search) throws JsonProcessingException, InvalidKeyException,
+                                 @PathVariable int distance, @PathVariable int search) throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         Map<String, Object> map = searchController.getUsersModel(null, latitude, longitude, distance, search).asMap();
@@ -75,7 +70,7 @@ public class ApiController {
     }
 
     @GetMapping("/search/users/default")
-    public SearchDto searchUsersDefault() throws JsonProcessingException, InvalidKeyException,
+    public SearchDto searchUsersDefault() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         Map<String, Object> map = searchController.getUsersDefaultModel(null).asMap();
