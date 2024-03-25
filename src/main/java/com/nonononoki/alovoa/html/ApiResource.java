@@ -156,8 +156,9 @@ public class ApiResource {
                     .anyMatch(b -> b.getUserFrom().getId().equals(n.getUserFrom().getId()));
             boolean blockedYou = user.getBlockedUsers().stream()
                     .anyMatch(b -> b.getUserTo().getId().equals(n.getUserFrom().getId()));
+            boolean matched = user.getLikes().stream().anyMatch(l -> n.getUserFrom().getId().equals(l.getUserTo().getId()));
 
-            if (!blockedMe && !blockedYou) {
+            if (!blockedMe && !blockedYou && !matched) {
                 NotificationDto dto = NotificationDto.notificationToNotificationDto(n, user, userService, textEncryptor, ignoreIntention);
                 notifications.add(dto);
             }
