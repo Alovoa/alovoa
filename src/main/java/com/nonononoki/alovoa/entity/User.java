@@ -39,9 +39,6 @@ public class User implements UserDetails {
     @Convert(converter = TextEncryptorConverter.class)
     @JsonIgnore
     private final String email;
-    // some more data
-    @JsonIgnore
-    @Deprecated long numberProfileViews;
     @JsonIgnore
     long numberSearches;
     @Id

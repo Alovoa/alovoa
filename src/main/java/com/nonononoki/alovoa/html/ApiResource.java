@@ -207,7 +207,6 @@ public class ApiResource {
 
             ModelMap map = new ModelMap();
 
-            userView.setNumberProfileViews(userView.getNumberProfileViews() + 1);
             userView = userRepo.saveAndFlush(userView);
 
             UserDto userDto = UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
@@ -259,7 +258,7 @@ public class ApiResource {
         List<UserDto> users = new ArrayList<>();
         for (User u : blockedUsers) {
             users.add(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).mode(UserDto.PROFILE_PICTURE_ONLY).build()));
+                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).build()));
         }
         map.addAttribute("users", users);
         map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
@@ -279,7 +278,7 @@ public class ApiResource {
         List<UserDto> users = new ArrayList<>();
         for (User u : likedUsers) {
             users.add(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).mode(UserDto.PROFILE_PICTURE_ONLY).build()));
+                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).build()));
         }
         map.addAttribute("users", users);
         map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
@@ -299,7 +298,7 @@ public class ApiResource {
         List<UserDto> users = new ArrayList<>();
         for (User u : dislikedUsers) {
             users.add(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).mode(UserDto.PROFILE_PICTURE_ONLY).build()));
+                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).build()));
         }
         map.addAttribute("users", users);
         map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)

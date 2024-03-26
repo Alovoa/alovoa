@@ -24,14 +24,6 @@ import java.util.*;
 
 @Data
 public class UserDto {
-    @Deprecated
-    public static final int ALL = 0;
-    @Deprecated
-    public static final int PROFILE_PICTURE_ONLY = 1;
-    @Deprecated
-    public static final int NO_AUDIO = 2;
-    @Deprecated
-    public static final int NO_MEDIA = 3; //always send verification picture unless verified by admin
     public static final int LA_STATE_ACTIVE_1 = 5; // in minutes
     public static final int LA_STATE_ACTIVE_2 = 1;
     public static final int LA_STATE_ACTIVE_3 = 7;
@@ -77,7 +69,6 @@ public class UserDto {
     private boolean hiddenByCurrentUser;
     private long numberReferred;
     private long numberProfileViews;
-    private long numberSearches;
     private boolean compatible;
     private boolean hasLocation;
     private Double locationLatitude;
@@ -93,7 +84,6 @@ public class UserDto {
         User currentUser = builder.currentUser;
         UserService userService = builder.userService;
         TextEncryptorConverter textEncryptor = builder.textEncryptor;
-        @Deprecated int mode = builder.mode;
         @Deprecated String idEnc;
         boolean ignoreIntention = builder.ignoreIntention;
         final UUID uuid;
@@ -132,7 +122,7 @@ public class UserDto {
         dto.setDescription(user.getDescription());
         dto.setFirstName(user.getFirstName());
         dto.setGender(user.getGender());
-        dto.setVerificationPicture(UserDtoVerificationPicture.map(user, currentUser, userService, mode, uuid));
+        dto.setVerificationPicture(UserDtoVerificationPicture.map(user, currentUser, userService, uuid));
 
         dto.setCountry(Tools.getCountryEmoji(user.getCountry()));
 
@@ -148,12 +138,10 @@ public class UserDto {
         if (dto.getPreferedMinAge() < Tools.AGE_LEGAL && dto.getAge() >= Tools.AGE_LEGAL) {
             dto.setPreferedMinAge(Tools.AGE_LEGAL);
         }
-        if (mode != PROFILE_PICTURE_ONLY && mode != NO_MEDIA) {
-            dto.setImages(UserImageDto.buildFromUserImages(user, userService));
-        }
+        dto.setImages(UserImageDto.buildFromUserImages(user, userService));
         dto.setGender(user.getGender());
         dto.setIntention(user.getIntention());
-        if (mode != NO_MEDIA && user.getProfilePicture() != null) {
+        if (user.getProfilePicture() != null) {
             dto.setProfilePicture(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
                     MediaController.URL_PROFILE_PICTURE + uuid);
         }
@@ -161,14 +149,12 @@ public class UserDto {
         dto.setNumBlockedByUsers(user.getBlockedByUsers().size());
         dto.setNumReports(user.getReportedByUsers().size());
         dto.setInterests(user.getInterests());
-        if ((mode != NO_AUDIO && mode != PROFILE_PICTURE_ONLY && mode != NO_MEDIA) && user.getAudio() != null) {
+        if (user.getAudio() != null) {
             dto.setAudio(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
                     MediaController.URL_AUDIO + uuid);
         }
         dto.setHasAudio(user.getAudio() != null);
         dto.setNumberReferred(user.getNumberReferred());
-        dto.setNumberProfileViews(user.getNumberProfileViews());
-        dto.setNumberSearches(user.getNumberSearches());
         dto.setPrompts(user.getPrompts());
 
         if (!user.isAdmin()) {
@@ -300,7 +286,7 @@ public class UserDto {
         private int userYes;
         private int userNo;
 
-        public static UserDtoVerificationPicture map(User user, User currentUser, UserService userService, int mode, UUID uuid) {
+        public static UserDtoVerificationPicture map(User user, User currentUser, UserService userService, UUID uuid) {
             UserDtoVerificationPicture verificationPicture = new UserDtoVerificationPicture();
             verificationPicture.setText(userService.getVerificationCode(user));
             UserVerificationPicture pic = user.getVerificationPicture();
@@ -310,7 +296,7 @@ public class UserDto {
                 return verificationPicture;
             }
 
-            if (mode == ALL && !pic.isVerifiedByAdmin()) {
+            if (!pic.isVerifiedByAdmin()) {
                 verificationPicture.setData(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
                         MediaController.URL_VERIFICATION_PICTURE + uuid);
             }
@@ -336,9 +322,6 @@ public class UserDto {
         private User currentUser;
         private UserService userService;
         private TextEncryptorConverter textEncryptor;
-        @Builder.Default
-        @Deprecated
-        private int mode = NO_AUDIO;
         private boolean ignoreIntention;
     }
 }
