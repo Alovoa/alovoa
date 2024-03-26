@@ -3,6 +3,7 @@ package com.nonononoki.alovoa;
 import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AlovoaException;
+import com.nonononoki.alovoa.service.UserService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StreamUtils;
@@ -253,6 +254,15 @@ public class Tools {
             builder.append("&firstName=").append(firstName);
         }
         return builder.toString();
+    }
+
+    public static UUID getUserUUID(User user, UserService userService) {
+        UUID uuid = user.getUuid();
+        if(uuid == null) {
+            uuid = UUID.randomUUID();
+            userService.updateUUID(user, uuid);
+        }
+        return uuid;
     }
 
     public static String getAuthParams(SecurityConfig securityConfig, String httpSessionId, String username,

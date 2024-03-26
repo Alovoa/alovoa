@@ -100,7 +100,7 @@ public class ApiResource {
         List<Conversation> conversations = conversationRepo.findByUsers_Id(user.getId());
         for (Conversation c : conversations) {
             if (!c.isBlocked(userBlockRepo)) {
-                convos.add(ConversationDto.conversationToDto(c, user, textEncryptor));
+                convos.add(ConversationDto.conversationToDto(c, user, textEncryptor, userService));
             }
         }
 

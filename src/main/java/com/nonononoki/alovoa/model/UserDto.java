@@ -101,12 +101,7 @@ public class UserDto {
             UserSettings settings = user.getUserSettings();
             dto.setUserSettings(settings);
         }
-        if (user.getUuid() == null) {
-            uuid = UUID.randomUUID();
-            userService.updateUUID(user, uuid);
-        } else {
-            uuid = user.getUuid();
-        }
+        uuid = Tools.getUserUUID(user, userService);
         idEnc = encodeId(user.getId(), textEncryptor);
         dto.setIdEncoded(idEnc);
 
@@ -211,6 +206,7 @@ public class UserDto {
         return dto;
     }
 
+    @Deprecated
     public static String encodeId(long id, TextEncryptorConverter textEncryptor)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException {
