@@ -78,7 +78,7 @@ public class ApiResource {
     private boolean ignoreIntention;
 
     @GetMapping("/donate")
-    public Map<String, Object> resourceDonate() throws JsonProcessingException, InvalidKeyException,
+    public Map<String, Object> resourceDonate() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         ModelMap map = new ModelMap();
@@ -142,7 +142,7 @@ public class ApiResource {
     }
 
     @GetMapping("/alerts")
-    public Map<String, Object> resourceNotification() throws JsonProcessingException, InvalidKeyException,
+    public Map<String, Object> resourceNotification() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         ModelMap map = new ModelMap();
@@ -151,15 +151,14 @@ public class ApiResource {
         userRepo.saveAndFlush(user);
         List<UserNotification> nots = user.getNotifications();
         List<NotificationDto> notifications = new ArrayList<>();
-        for (int i = 0; i < nots.size(); i++) {
-            UserNotification n = nots.get(i);
-
+        for (UserNotification n : nots) {
             boolean blockedMe = user.getBlockedByUsers().stream()
                     .anyMatch(b -> b.getUserFrom().getId().equals(n.getUserFrom().getId()));
             boolean blockedYou = user.getBlockedUsers().stream()
                     .anyMatch(b -> b.getUserTo().getId().equals(n.getUserFrom().getId()));
+            boolean matched = user.getLikes().stream().anyMatch(l -> n.getUserFrom().getId().equals(l.getUserTo().getId()));
 
-            if (!blockedMe && !blockedYou) {
+            if (!blockedMe && !blockedYou && !matched) {
                 NotificationDto dto = NotificationDto.notificationToNotificationDto(n, user, userService, textEncryptor, ignoreIntention);
                 notifications.add(dto);
             }
@@ -174,14 +173,14 @@ public class ApiResource {
     }
 
     @GetMapping("/profile")
-    public Map<String, Object> resourceProfile() throws JsonProcessingException, InvalidKeyException,
+    public Map<String, Object> resourceProfile() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         return profileResource.profile().getModel();
     }
 
     @GetMapping("/profile/view/{idEncoded}")
-    public Map<String, Object> resourceProfileView(@PathVariable String idEncoded) throws JsonProcessingException,
+    public Map<String, Object> resourceProfileView(@PathVariable String idEncoded) throws
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         Optional<Long> idOptional = UserDto.decodeId(idEncoded, textEncryptor);
@@ -208,7 +207,6 @@ public class ApiResource {
 
             ModelMap map = new ModelMap();
 
-            userView.setNumberProfileViews(userView.getNumberProfileViews() + 1);
             userView = userRepo.saveAndFlush(userView);
 
             UserDto userDto = UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
@@ -228,7 +226,7 @@ public class ApiResource {
     }
 
     @GetMapping("/search")
-    public Map<String, Object> resourceSearch() throws JsonProcessingException, InvalidKeyException,
+    public Map<String, Object> resourceSearch() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         return searchResource.search().getModel();
@@ -260,7 +258,7 @@ public class ApiResource {
         List<UserDto> users = new ArrayList<>();
         for (User u : blockedUsers) {
             users.add(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).mode(UserDto.PROFILE_PICTURE_ONLY).build()));
+                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).build()));
         }
         map.addAttribute("users", users);
         map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
@@ -269,7 +267,7 @@ public class ApiResource {
     }
 
     @GetMapping("/liked-users")
-    public Map<String, Object> likedUsers() throws JsonProcessingException, InvalidKeyException,
+    public Map<String, Object> likedUsers() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         User user = authService.getCurrentUser(true);
@@ -280,7 +278,7 @@ public class ApiResource {
         List<UserDto> users = new ArrayList<>();
         for (User u : likedUsers) {
             users.add(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).mode(UserDto.PROFILE_PICTURE_ONLY).build()));
+                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).build()));
         }
         map.addAttribute("users", users);
         map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
@@ -289,7 +287,7 @@ public class ApiResource {
     }
 
     @GetMapping("/disliked-users")
-    public Map<String, Object> dislikedUsers() throws JsonProcessingException, InvalidKeyException,
+    public Map<String, Object> dislikedUsers() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         User user = authService.getCurrentUser(true);
@@ -300,7 +298,7 @@ public class ApiResource {
         List<UserDto> users = new ArrayList<>();
         for (User u : dislikedUsers) {
             users.add(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).mode(UserDto.PROFILE_PICTURE_ONLY).build()));
+                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).build()));
         }
         map.addAttribute("users", users);
         map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)

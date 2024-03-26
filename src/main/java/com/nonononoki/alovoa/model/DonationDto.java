@@ -47,7 +47,7 @@ public class DonationDto {
         dto.setDate(d.getDate());
         dto.setAmount(d.getAmount());
 
-        dto.setUser(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention).mode(mode)
+        dto.setUser(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
                 .currentUser(currentUser).user(d.getUser()).textEncryptor(textEncryptor).userService(userService).build()));
         return dto;
     }
@@ -60,18 +60,6 @@ public class DonationDto {
         dto.setId(user.getId());
         dto.setAmount(user.getTotalDonations());
         dto.setUser(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                .currentUser(currentUser).user(user).textEncryptor(textEncryptor).userService(userService).build()));
-        return dto;
-    }
-
-    public static DonationDto userToDto(User user, User currentUser, UserService userService,
-                                        TextEncryptorConverter textEncryptor, int mode, boolean ignoreIntention)
-            throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-            NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-        DonationDto dto = new DonationDto();
-        dto.setId(user.getId());
-        dto.setAmount(user.getTotalDonations());
-        dto.setUser(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention).mode(mode)
                 .currentUser(currentUser).user(user).textEncryptor(textEncryptor).userService(userService).build()));
         return dto;
     }

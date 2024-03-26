@@ -120,6 +120,13 @@ public class UserService {
     private int likeMessageLength;
     @Value("${app.search.ignore-intention}")
     private boolean ignoreIntention;
+    @Value("${app.domain}")
+    public String domain;
+
+    public String getDomain() {
+        return domain;
+    }
+
 
     public static void removeUserDataCascading(User user, UserDeleteParams userDeleteParam) {
 
@@ -738,6 +745,10 @@ public class UserService {
             hide.setUserTo(user);
             currUser.getHiddenUsers().add(hide);
             userRepo.saveAndFlush(currUser);
+
+            if(user.getLikes().stream().anyMatch(l -> l.getUserTo().getId().equals(currUser.getId()))) {
+                blockUser(idEnc);
+            }
         }
     }
 
@@ -998,6 +1009,20 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
+    public void updateUUID(User user, UUID uuid) {
+        if(user.getUuid() == null) {
+            user.setUuid(uuid);
+            userRepo.saveAndFlush(user);
+        }
+    }
+
+    public void updateImageUUID(UserImage image, UUID uuid) {
+        if(image.getUuid() == null) {
+            image.setUuid(uuid);
+            userImageRepo.saveAndFlush(image);
+        }
+    }
+
     private String adjustAudio(String audioB64, String mimeType) throws UnsupportedAudioFileException, IOException {
         if (mimeType.equals(MIME_X_WAV) || mimeType.equals(MIME_WAV)) {
             String trimmedWav = trimAudioWav(audioB64, audioMaxTime);
@@ -1056,5 +1081,4 @@ public class UserService {
             throw e;
         }
     }
-
 }

@@ -39,7 +39,6 @@ public class Tools {
     public static final String DEV = "dev";
 
     public static final String MAIL_TEST_DOMAIN = "@mailinator.com";
-    public static final String MAIL_GMAIL_DOMAIN = "@gmail.com";
 
     public static final String TEMP_EMAIL_FILE_NAME = "temp-mail.txt";
 

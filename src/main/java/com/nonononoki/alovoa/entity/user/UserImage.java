@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.entity.user;
 
 import java.util.Date;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +24,9 @@ public class UserImage {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@Column(unique=true)
+	private UUID uuid;
 
 	@JsonIgnore
 	@ManyToOne

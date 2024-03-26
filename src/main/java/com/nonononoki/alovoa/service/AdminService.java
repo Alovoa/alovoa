@@ -114,7 +114,7 @@ public class AdminService {
         User user = authService.getCurrentUser(true);
         User u = userService.encodedIdToUser(idEnc);
         return UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                .currentUser(user).user(u).textEncryptor(textEncryptor).mode(UserDto.ALL).userService(userService).build());
+                .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).build());
     }
 
     public void removeImages(String id) throws AlovoaException, NumberFormatException, InvalidKeyException,
@@ -198,7 +198,6 @@ public class AdminService {
         user.setPreferedMinAge(0);
         user.setRegisterToken(null);
         user.setTotalDonations(0);
-        user.setNumberProfileViews(0);
         user.setNumberSearches(0);
         user.setProfilePicture(null);
         user.setVerificationCode(null);

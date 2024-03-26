@@ -35,18 +35,17 @@ public class User implements UserDetails {
     public static final int UNIT_SI = 0;
     @Transient
     public static final int UNIT_IMPERIAL = 1;
-    @Column(nullable = false, unique = true, updatable = false)
+    @Column(nullable = false, unique = true)
     @Convert(converter = TextEncryptorConverter.class)
     @JsonIgnore
     private final String email;
-    // some more data
-    @JsonIgnore
-    long numberProfileViews;
     @JsonIgnore
     long numberSearches;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique=true)
+    private UUID uuid;
     @JsonIgnore
     private String password;
     @Column(updatable = false)
