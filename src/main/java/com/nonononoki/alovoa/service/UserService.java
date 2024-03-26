@@ -1010,7 +1010,7 @@ public class UserService {
     }
 
     public void updateUUID(User user, UUID uuid) {
-        if(user.getUuid() != null) {
+        if(user.getUuid() == null) {
             user.setUuid(uuid);
             userRepo.saveAndFlush(user);
         }
