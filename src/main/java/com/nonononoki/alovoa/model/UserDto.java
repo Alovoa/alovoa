@@ -34,7 +34,6 @@ public class UserDto {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDto.class);
 
     private UUID uuid;
-    @Deprecated private String idEncoded;
     private String email;
     private String firstName;
     private int age;
@@ -83,8 +82,6 @@ public class UserDto {
         User user = builder.user;
         User currentUser = builder.currentUser;
         UserService userService = builder.userService;
-        TextEncryptorConverter textEncryptor = builder.textEncryptor;
-        @Deprecated String idEnc;
         boolean ignoreIntention = builder.ignoreIntention;
         final UUID uuid;
 
@@ -102,8 +99,6 @@ public class UserDto {
             dto.setUserSettings(settings);
         }
         uuid = Tools.getUserUUID(user, userService);
-        idEnc = encodeId(user.getId(), textEncryptor);
-        dto.setIdEncoded(idEnc);
 
         dto.setUuid(uuid);
 
@@ -204,14 +199,6 @@ public class UserDto {
         }
         dto.setCompatible(Tools.usersCompatible(currentUser, user, ignoreIntention));
         return dto;
-    }
-
-    @Deprecated
-    public static String encodeId(long id, TextEncryptorConverter textEncryptor)
-            throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-            NoSuchPaddingException, InvalidAlgorithmParameterException {
-        return Base64.getEncoder()
-                .encodeToString(textEncryptor.encode(Long.toString(id)).getBytes(StandardCharsets.UTF_8));
     }
 
     public static long decodeIdThrowing(String id, TextEncryptorConverter textEncryptor)
@@ -317,7 +304,6 @@ public class UserDto {
         private User user;
         private User currentUser;
         private UserService userService;
-        private TextEncryptorConverter textEncryptor;
         private boolean ignoreIntention;
     }
 }

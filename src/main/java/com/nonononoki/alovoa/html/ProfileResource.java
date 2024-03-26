@@ -71,7 +71,7 @@ public class ProfileResource {
             int referralsLeft = maxReferrals - user.getNumberReferred();
             ModelAndView mav = new ModelAndView("profile");
             mav.addObject("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
+                    .currentUser(user).user(user).userService(userService).build()));
             mav.addObject("genders", genderRepo.findAll());
             mav.addObject("intentions", userIntentionRepo.findAll());
             mav.addObject("imageMax", imageMax);

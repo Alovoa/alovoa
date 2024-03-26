@@ -37,6 +37,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -222,8 +223,8 @@ class UserServiceTest {
         // USERDATA
         Mockito.when(authService.getCurrentUser()).thenReturn(user1);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-        String idEnc = UserDto.encodeId(user1.getId(), textEncryptor);
-        ResponseEntity<Resource> userData = userService.getUserdata(idEnc);
+        UUID uuid = user1.getUuid();
+        ResponseEntity<Resource> userData = userService.getUserdata(uuid);
         InputStream inputStream = userData.getBody().getInputStream();
         String userDataString = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines()
                 .collect(Collectors.joining("\n"));
@@ -322,7 +323,7 @@ class UserServiceTest {
         User user2 = testUsers.get(1);
         User user3 = testUsers.get(2);
 
-        String idEnc1 = UserDto.encodeId(user1.getId(), textEncryptor);
+        UUID uuid1 = user1.getUuid();
 
         Mockito.when(authService.getCurrentUser()).thenReturn(user1);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
@@ -336,26 +337,26 @@ class UserServiceTest {
 
         Mockito.when(authService.getCurrentUser()).thenReturn(user2);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
-        userService.upvoteVerificationPicture(idEnc1);
+        userService.upvoteVerificationPicture(uuid1);
 
         Assertions.assertThrows(AlovoaException.class, () -> {
-            userService.downvoteVerificationPicture(idEnc1);
+            userService.downvoteVerificationPicture(uuid1);
         });
 
         Assertions.assertThrows(AlovoaException.class, () -> {
-            userService.upvoteVerificationPicture(idEnc1);
+            userService.upvoteVerificationPicture(uuid1);
         });
 
         Mockito.when(authService.getCurrentUser()).thenReturn(user3);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
-        userService.downvoteVerificationPicture(idEnc1);
+        userService.downvoteVerificationPicture(uuid1);
 
         Assertions.assertThrows(AlovoaException.class, () -> {
-            userService.upvoteVerificationPicture(idEnc1);
+            userService.upvoteVerificationPicture(uuid1);
         });
         
         Assertions.assertThrows(AlovoaException.class, () -> {
-            userService.downvoteVerificationPicture(idEnc1);
+            userService.downvoteVerificationPicture(uuid1);
         });
 
         user1 = userRepo.findById(user1.getId()).get();

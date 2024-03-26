@@ -1,8 +1,6 @@
 package com.nonononoki.alovoa.html;
 
-import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.user.UserDonation;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -21,10 +19,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
 
 @Controller
 public class AdminSearchResource {
@@ -36,8 +30,6 @@ public class AdminSearchResource {
     private UserService userService;
     @Autowired
     private UserRepository userRepo;
-    @Autowired
-    private TextEncryptorConverter textEncryptor;
     @Value("${app.donation.modulus}")
     private int donationModulus;
     @Value("${app.donation.popup.time}")
@@ -58,7 +50,7 @@ public class AdminSearchResource {
 
         ModelAndView mav = new ModelAndView("admin-search");
         mav.addObject("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(true)
-                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
+                .currentUser(user).user(user).userService(userService).build()));
         return mav;
     }
 }

@@ -42,17 +42,17 @@
             <div style="padding-top: 4px;"></div>
             <textarea class="textarea" readonly th:text="${report.comment}"></textarea>
             <div style="padding-top: 4px;"></div>
-            <button class="button" th:onclick="viewProfile([[${report.userToIdEnc}]])"><i
+            <button class="button" th:onclick="viewProfile([[${report.uuid}]])"><i
                     class="fa fa-user"></i></button>
-            <button class="button" th:onclick="viewProfileMedia([[${report.userToIdEnc}]])"><i
+            <button class="button" th:onclick="viewProfileMedia([[${report.uuid}]])"><i
                     class="fa fa-photo-video"></i></button>
             <button class="button" th:onclick="deleteReport([[${report.id}]])"
                     th:text="#{admin.delete-report}"></button>
-            <button class="button" th:onclick="removeDescription([[${report.userToIdEnc}]])"
+            <button class="button" th:onclick="removeDescription([[${report.uuid}]])"
                     th:text="#{admin.remove-description}"></button>
-            <button class="button" th:onclick="removeImages([[${report.userToIdEnc}]])"
+            <button class="button" th:onclick="removeImages([[${report.uuid}]])"
                     th:text="#{admin.remove-images}"></button>
-            <button class="button" th:onclick="banUser([[${report.userToIdEnc}]], [[${report.userTo.id}]])"
+            <button class="button" th:onclick="banUser([[${report.uuid}]], [[${report.userTo.id}]])"
                     th:text="#{admin.ban-user}"></button>
         </div>
     </div>

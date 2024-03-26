@@ -12,13 +12,13 @@ function hideContact(id) {
 	});
 }
 
-function viewProfile(idEnc) {
-	let url = '/admin/profile/view/' + idEnc;
+function viewProfile(uuid) {
+	let url = '/admin/profile/view/' + uuid;
 	window.open(url, '_blank').focus();
 }
 
-function viewProfileMedia(idEnc) {
-	let url = '/admin/profile/view/' + idEnc + '/media';
+function viewProfileMedia(uuid) {
+	let url = '/admin/profile/view/' + uuid + '/media';
 	window.open(url, '_blank').focus();
 }
 

@@ -34,7 +34,7 @@ public class DonationDto {
         dto.setDate(d.getDate());
         dto.setAmount(d.getAmount());
         dto.setUser(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                .currentUser(currentUser).user(d.getUser()).textEncryptor(textEncryptor).userService(userService).build()));
+                .currentUser(currentUser).user(d.getUser()).userService(userService).build()));
         return dto;
     }
 
@@ -48,7 +48,7 @@ public class DonationDto {
         dto.setAmount(d.getAmount());
 
         dto.setUser(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                .currentUser(currentUser).user(d.getUser()).textEncryptor(textEncryptor).userService(userService).build()));
+                .currentUser(currentUser).user(d.getUser()).userService(userService).build()));
         return dto;
     }
 
@@ -60,7 +60,7 @@ public class DonationDto {
         dto.setId(user.getId());
         dto.setAmount(user.getTotalDonations());
         dto.setUser(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                .currentUser(currentUser).user(user).textEncryptor(textEncryptor).userService(userService).build()));
+                .currentUser(currentUser).user(user).userService(userService).build()));
         return dto;
     }
 

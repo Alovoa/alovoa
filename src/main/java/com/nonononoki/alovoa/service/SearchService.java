@@ -291,7 +291,7 @@ public class SearchService {
         List<UserDto> userDtos = new ArrayList<>();
         for (User u : userList) {
             UserDto dto = UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).build());
+                    .currentUser(user).user(u).userService(userService).build());
             userDtos.add(dto);
         }
 

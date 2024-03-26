@@ -84,7 +84,7 @@ public class ApiResource {
         ModelMap map = new ModelMap();
         User user = authService.getCurrentUser(true);
         map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
+                .currentUser(user).user(user).userService(userService).build()));
         return map;
     }
 
@@ -100,7 +100,7 @@ public class ApiResource {
         List<Conversation> conversations = conversationRepo.findByUsers_Id(user.getId());
         for (Conversation c : conversations) {
             if (!c.isBlocked(userBlockRepo)) {
-                convos.add(ConversationDto.conversationToDto(c, user, textEncryptor, userService));
+                convos.add(ConversationDto.conversationToDto(c, user, userService));
             }
         }
 
@@ -108,7 +108,7 @@ public class ApiResource {
 
         map.addAttribute("conversations", convos);
         map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
+                .currentUser(user).user(user).userService(userService).build()));
         return map;
     }
 
@@ -131,10 +131,10 @@ public class ApiResource {
         User u = c.getPartner(user);
 
         map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
+                .currentUser(user).user(user).userService(userService).build()));
         map.addAttribute("convoId", id);
         map.addAttribute("partner", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).build()));
+                .currentUser(user).user(u).userService(userService).build()));
 
         c.setLastOpened(new Date());
         conversationRepo.saveAndFlush(c);
@@ -168,7 +168,7 @@ public class ApiResource {
 
         map.addAttribute("notifications", notifications);
         map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
+                .currentUser(user).user(user).userService(userService).build()));
         return map;
     }
 
@@ -179,50 +179,40 @@ public class ApiResource {
         return profileResource.profile().getModel();
     }
 
-    @GetMapping("/profile/view/{idEncoded}")
-    public Map<String, Object> resourceProfileView(@PathVariable String idEncoded) throws
+    @GetMapping("/profile/view/{uuid}")
+    public Map<String, Object> resourceProfileView(@PathVariable UUID uuid) throws
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-        Optional<Long> idOptional = UserDto.decodeId(idEncoded, textEncryptor);
-        if (idOptional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
 
-        Long id = idOptional.get();
-        User userView = userRepo.findById(id).orElse(null);
+        User userView = userService.findUserByUuid(uuid);
         User user = authService.getCurrentUser(true);
 
-        if (user.getId().equals(id)) {
+        if (user.getId().equals(userView.getId())) {
             throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
         }
 
-        if (userView != null) {
-            if (userView.getBlockedUsers().stream().filter(o -> o.getUserTo() != null).anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
-                throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
-            }
-
-            if (userView.isDisabled()) {
-                throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
-            }
-
-            ModelMap map = new ModelMap();
-
-            userView = userRepo.saveAndFlush(userView);
-
-            UserDto userDto = UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(userView).textEncryptor(textEncryptor).userService(userService).build());
-            UserDto currUserDto = UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build());
-
-            map.addAttribute("user", userDto);
-            map.addAttribute("currUser", currUserDto);
-            map.addAttribute("compatible", Tools.usersCompatible(user, userView, ignoreIntention));
-
-            return map;
-
-        } else {
+        if (userView.getBlockedUsers().stream().filter(o -> o.getUserTo() != null).anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
             throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
         }
+
+        if (userView.isDisabled()) {
+            throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+        }
+
+        ModelMap map = new ModelMap();
+
+        userView = userRepo.saveAndFlush(userView);
+
+        UserDto userDto = UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                .currentUser(user).user(userView).userService(userService).build());
+        UserDto currUserDto = UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
+                .currentUser(user).user(user).userService(userService).build());
+
+        map.addAttribute("user", userDto);
+        map.addAttribute("currUser", currUserDto);
+        map.addAttribute("compatible", Tools.usersCompatible(user, userView, ignoreIntention));
+
+        return map;
     }
 
     @GetMapping("/search")
@@ -258,11 +248,11 @@ public class ApiResource {
         List<UserDto> users = new ArrayList<>();
         for (User u : blockedUsers) {
             users.add(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).build()));
+                    .currentUser(user).user(u).userService(userService).build()));
         }
         map.addAttribute("users", users);
         map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
+                .currentUser(user).user(user).userService(userService).build()));
         return map;
     }
 
@@ -278,11 +268,11 @@ public class ApiResource {
         List<UserDto> users = new ArrayList<>();
         for (User u : likedUsers) {
             users.add(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).build()));
+                    .currentUser(user).user(u).userService(userService).build()));
         }
         map.addAttribute("users", users);
         map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
+                .currentUser(user).user(user).userService(userService).build()));
         return map;
     }
 
@@ -298,11 +288,11 @@ public class ApiResource {
         List<UserDto> users = new ArrayList<>();
         for (User u : dislikedUsers) {
             users.add(UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(u).textEncryptor(textEncryptor).userService(userService).build()));
+                    .currentUser(user).user(u).userService(userService).build()));
         }
         map.addAttribute("users", users);
         map.addAttribute("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
+                .currentUser(user).user(user).userService(userService).build()));
         return map;
     }
 }

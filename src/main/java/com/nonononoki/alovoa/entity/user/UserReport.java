@@ -27,10 +27,6 @@ public class UserReport {
 	
 	private String comment;
 
-	@Deprecated
 	@Transient
-	private String userToIdEnc;
-
-	@Transient
-	private UUID uuid;
+	private UUID toUuid;
 }

@@ -25,15 +25,10 @@ public class ConversationDto {
     private String userName;
     private String userProfilePicture;
     private MessageDto lastMessage;
-    @Deprecated
-    private String userIdEncoded;
     private UUID uuid;
     private boolean read;
 
-    public static ConversationDto conversationToDto(Conversation c, User currentUser,
-        TextEncryptorConverter textEncryptor, UserService userService)
-            throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-            NoSuchPaddingException, InvalidAlgorithmParameterException {
+    public static ConversationDto conversationToDto(Conversation c, User currentUser, UserService userService) {
         ConversationDto dto = new ConversationDto();
         dto.setId(c.getId());
         dto.setLastUpdated(c.getLastUpdated());
@@ -46,7 +41,6 @@ public class ConversationDto {
         if (u.getProfilePicture() != null) {
             dto.setUserProfilePicture(u.getProfilePicture().getData());
         }
-        dto.setUserIdEncoded(UserDto.encodeId(u.getId(), textEncryptor));
         dto.setUuid(Tools.getUserUUID(u, userService));
         return dto;
     }

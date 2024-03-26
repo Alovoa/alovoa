@@ -165,8 +165,8 @@
     <div th:if="${dto.message != null}" id="search-message" th:text="${dto.message}" style="display: none;"></div>
 
     <th:block th:each="user : ${dto.users}">
-        <div class="user-search-card" th:id="${user.idEncoded}">
-            <div class="card-image" th:onclick="viewProfile([[${user.idEncoded}]])">
+        <div class="user-search-card" th:id="${user.uuid}">
+            <div class="card-image" th:onclick="viewProfile([[${user.uuid}]])">
                 <figure class="image">
                     <img th:src="${user.profilePicture}" class="profile-pic">
                 </figure>
@@ -174,7 +174,7 @@
             <div style="padding: 16px; display: flex; flex-direction: column;">
             <div style="font-size: 1.2em; padding-bottom: 16px;" class="description"
                  th:text="${user.description}"></div>
-            <button class="button" th:onclick="viewProfileMedia([[${user.idEncoded}]])"><i
+            <button class="button" th:onclick="viewProfileMedia([[${user.uuid}]])"><i
                     class="fa fa-photo-video"></i></button>
             </div>
         </div>

@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
+import java.util.UUID;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -112,15 +113,15 @@ class MailServiceTest {
         Mockito.when(authService.getCurrentUser()).thenReturn(user1);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 
-        String idEnc2 = UserDto.encodeId(user2.getId(), textEncryptor);
-        userService.likeUser(idEnc2, null);
+        UUID uuid2 = user2.getUuid();
+        userService.likeUser(uuid2, null);
 
         //user2 likes user1
         Mockito.when(authService.getCurrentUser()).thenReturn(user2);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
 
-        String idEnc1 = UserDto.encodeId(user1.getId(), textEncryptor);
-        userService.likeUser(idEnc1, null);
+        UUID uuid1 = user1.getUuid();
+        userService.likeUser(uuid1, null);
 
         //match must occur since both like each other.
 
