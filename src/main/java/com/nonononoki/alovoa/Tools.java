@@ -2,6 +2,7 @@ package com.nonononoki.alovoa;
 
 import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.service.UserService;
 import org.springframework.core.io.ClassPathResource;
@@ -256,7 +257,16 @@ public class Tools {
         return builder.toString();
     }
 
+    public static UUID getImageUUID(UserImage image, UserService userService) {
+        UUID uuid = image.getUuid();
+        if(uuid == null) {
+            uuid = UUID.randomUUID();
+            userService.updateImageUUID(image, uuid);
+        }
+        return uuid;
+    }
     public static UUID getUserUUID(User user, UserService userService) {
+
         UUID uuid = user.getUuid();
         if(uuid == null) {
             uuid = UUID.randomUUID();

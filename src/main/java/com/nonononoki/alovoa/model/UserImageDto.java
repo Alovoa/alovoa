@@ -23,7 +23,8 @@ public class UserImageDto {
         List<UserImageDto> list = new ArrayList<>();
         for (int i = 0; i < user.getImages().size(); i++) {
             list.add(UserImageDto.builder().content(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
-                    MediaController.URL_IMAGE + Tools.getUserUUID(user, userService)).id(user.getImages().get(i).getId()).build());
+                    MediaController.URL_IMAGE + Tools.getImageUUID(user.getImages().get(i), userService))
+                    .id(user.getImages().get(i).getId()).build());
         }
         return list;
     }
