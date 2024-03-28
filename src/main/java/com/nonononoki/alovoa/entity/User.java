@@ -24,14 +24,6 @@ import java.util.*;
 public class User implements UserDetails {
 
     @Transient
-    public static final String ACCENT_COLOR_PINK = "pink";
-    @Transient
-    public static final String ACCENT_COLOR_BLUE = "blue";
-    @Transient
-    public static final String ACCENT_COLOR_ORANGE = "orange";
-    @Transient
-    public static final String ACCENT_COLOR_PURPLE = "purple";
-    @Transient
     public static final int UNIT_SI = 0;
     @Transient
     public static final int UNIT_IMPERIAL = 1;
@@ -39,8 +31,6 @@ public class User implements UserDetails {
     @Convert(converter = TextEncryptorConverter.class)
     @JsonIgnore
     private final String email;
-    @JsonIgnore
-    long numberSearches;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -56,8 +46,6 @@ public class User implements UserDetails {
     @JsonIgnore
     private String language;
     @JsonIgnore
-    private String accentColor;
-    @JsonIgnore
     private int units;
     @JsonIgnore
     private int numberReferred;
@@ -65,8 +53,6 @@ public class User implements UserDetails {
     private String referrerCode;
     @JsonIgnore
     private String verificationCode;
-    @JsonIgnore
-    private String uiDesign;
     @JsonIgnore
     private boolean showZodiac;
     private int preferedMinAge;

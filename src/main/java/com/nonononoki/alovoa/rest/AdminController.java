@@ -18,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/admin")
@@ -31,11 +32,10 @@ public class AdminController {
         adminService.deleteReport(id);
     }
 
-    @PostMapping("/ban-user/{id}")
-    public void banUser(@PathVariable String id)
-            throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-            NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
-        adminService.banUser(id);
+    @PostMapping("/ban-user/{uuid}")
+    public void banUser(@PathVariable UUID uuid)
+            throws NumberFormatException, AlovoaException {
+        adminService.banUser(uuid);
     }
 
     @PostMapping("/remove-images/{id}")
@@ -78,30 +78,29 @@ public class AdminController {
     }
 
     @PostMapping("/donation/add/{email}/{amount}")
-    public void addDonation(@PathVariable String email, @PathVariable double amount)
-            throws AlovoaException, UnsupportedEncodingException {
+    public void addDonation(@PathVariable String email, @PathVariable double amount) throws AlovoaException {
         adminService.addDonation(email, amount);
     }
 
-    @PostMapping("/user-verification/verify/{idEnc}")
-    public void userVerificationVerify(@PathVariable String idEnc)
-            throws AlovoaException, UnsupportedEncodingException, InvalidAlgorithmParameterException,
+    @PostMapping("/user-verification/verify/{uuid}")
+    public void userVerificationVerify(@PathVariable UUID uuid)
+            throws AlovoaException, InvalidAlgorithmParameterException,
             IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        adminService.verifyVerificationPicture(idEnc);
+        adminService.verifyVerificationPicture(uuid);
     }
 
-    @PostMapping("/user-verification/delete/{idEnc}")
-    public void userVerificationDelete(@PathVariable String idEnc)
-            throws AlovoaException, UnsupportedEncodingException, InvalidAlgorithmParameterException,
+    @PostMapping("/user-verification/delete/{uuid}")
+    public void userVerificationDelete(@PathVariable UUID uuid)
+            throws AlovoaException, InvalidAlgorithmParameterException,
             IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        adminService.deleteVerificationPicture(idEnc);
+        adminService.deleteVerificationPicture(uuid);
     }
 
-    @GetMapping(path ="/profile/view/{id}", produces= MediaType.APPLICATION_JSON_VALUE)
-    public UserDto viewProfile(@PathVariable String id) throws AlovoaException, InvalidAlgorithmParameterException,
+    @GetMapping(path ="/profile/view/{uuid}", produces= MediaType.APPLICATION_JSON_VALUE)
+    public UserDto viewProfile(@PathVariable UUID uuid) throws AlovoaException, InvalidAlgorithmParameterException,
             IllegalBlockSizeException, NoSuchPaddingException, UnsupportedEncodingException, BadPaddingException,
             NoSuchAlgorithmException, InvalidKeyException {
-        return adminService.viewProfile(id);
+        return adminService.viewProfile(uuid);
     }
 
 }

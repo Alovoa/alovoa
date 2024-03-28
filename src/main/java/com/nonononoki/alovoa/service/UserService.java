@@ -659,8 +659,8 @@ public class UserService {
         return Tools.B64IMAGEPREFIX + fileType + Tools.B64PREFIX + base64bytes;
     }
 
-    public void likeUser(String idEnc, String message) throws AlovoaException, GeneralSecurityException, IOException {
-        User user = encodedIdToUser(idEnc);
+    public void likeUser(UUID uuid, String message) throws AlovoaException {
+        User user = findUserByUuid(uuid);
         User currUser = authService.getCurrentUser(true);
 
         if (user.equals(currUser)) {
@@ -733,10 +733,9 @@ public class UserService {
         }
     }
 
-    public void hideUser(String idEnc)
-            throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-            NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
-        User user = encodedIdToUser(idEnc);
+    public void hideUser(UUID uuid)
+            throws NumberFormatException, AlovoaException {
+        User user = findUserByUuid(uuid);
         User currUser = authService.getCurrentUser(true);
         if (userHideRepo.findByUserFromAndUserTo(currUser, user) == null) {
             UserHide hide = new UserHide();
@@ -747,15 +746,14 @@ public class UserService {
             userRepo.saveAndFlush(currUser);
 
             if(user.getLikes().stream().anyMatch(l -> l.getUserTo().getId().equals(currUser.getId()))) {
-                blockUser(idEnc);
+                blockUser(uuid);
             }
         }
     }
 
-    public void blockUser(String idEnc)
-            throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
-            BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-        User user = encodedIdToUser(idEnc);
+    public void blockUser(UUID uuid)
+            throws AlovoaException, NumberFormatException {
+        User user = findUserByUuid(uuid);
         User currUser = authService.getCurrentUser(true);
         if (userBlockRepo.findByUserFromAndUserTo(currUser, user) == null) {
             UserBlock block = new UserBlock();
@@ -767,10 +765,9 @@ public class UserService {
         }
     }
 
-    public void unblockUser(String idEnc)
-            throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
-            BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-        User user = encodedIdToUser(idEnc);
+    public void unblockUser(UUID uuid)
+            throws AlovoaException, NumberFormatException {
+        User user = findUserByUuid(uuid);
         User currUser = authService.getCurrentUser(true);
 
         UserBlock block = userBlockRepo.findByUserFromAndUserTo(currUser, user);
@@ -780,11 +777,9 @@ public class UserService {
         }
     }
 
-    public UserReport reportUser(String idEnc, String comment)
-            throws AlovoaException, UnsupportedEncodingException, NoSuchAlgorithmException, NumberFormatException,
-            InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException,
-            InvalidAlgorithmParameterException {
-        User user = encodedIdToUser(idEnc);
+    public UserReport reportUser(UUID uuid, String comment)
+            throws AlovoaException, NumberFormatException {
+        User user = findUserByUuid(uuid);
         User currUser = authService.getCurrentUser(true);
         if (userReportRepo.findByUserFromAndUserTo(currUser, user) == null) {
             UserReport report = new UserReport();
@@ -799,13 +794,6 @@ public class UserService {
         }
 
         return null;
-    }
-
-    public User encodedIdToUser(String idEnc)
-            throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-            NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-        long id = UserDto.decodeIdThrowing(idEnc, textEncryptor);
-        return userRepo.findById(id).orElse(null);
     }
 
     public boolean hasNewAlert() throws AlovoaException {
@@ -854,14 +842,12 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Resource> getUserdata(String idEnc) throws AlovoaException, JsonProcessingException,
-            UnsupportedEncodingException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
-            BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-
+    public ResponseEntity<Resource> getUserdata(UUID uuid) throws AlovoaException, JsonProcessingException,
+            NumberFormatException {
         User user = authService.getCurrentUser(true);
-        User userFromIdEnc = encodedIdToUser(idEnc);
-        if (!user.getId().equals(userFromIdEnc.getId())) {
-            throw new AlovoaException("wrong_id_enc");
+        User userFromUuid = findUserByUuid(uuid);
+        if (!user.getId().equals(userFromUuid.getId())) {
+            throw new AlovoaException("users_not_equal");
         }
 
         UserGdpr ug = UserGdpr.userToUserGdpr(user);
@@ -886,10 +872,9 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-    public String getAudio(String userIdEnc)
-            throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-            NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-        User user = encodedIdToUser(userIdEnc);
+    public String getAudio(UUID uuid)
+            throws NumberFormatException, AlovoaException {
+        User user = findUserByUuid(uuid);
         if (user.getAudio() == null) {
             return null;
         }
@@ -969,9 +954,9 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-    public void upvoteVerificationPicture(String userIdEnc) throws AlovoaException, IOException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public void upvoteVerificationPicture(UUID uuid) throws AlovoaException, IOException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         User currentUser = authService.getCurrentUser(true);
-        User user = encodedIdToUser(userIdEnc);
+        User user = findUserByUuid(uuid);
 
         if (currentUser.equals(user)) {
             throw new AlovoaException("invalid_user");
@@ -989,9 +974,9 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-    public void downvoteVerificationPicture(String userIdEnc) throws AlovoaException, IOException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public void downvoteVerificationPicture(UUID uuid) throws AlovoaException {
         User currentUser = authService.getCurrentUser(true);
-        User user = encodedIdToUser(userIdEnc);
+        User user = findUserByUuid(uuid);
 
         if (currentUser.equals(user)) {
             throw new AlovoaException("invalid_user");
@@ -1021,6 +1006,14 @@ public class UserService {
             image.setUuid(uuid);
             userImageRepo.saveAndFlush(image);
         }
+    }
+
+    public User findUserByUuid(UUID uuid) throws AlovoaException {
+        User user = userRepo.findByUuid(uuid);
+        if(user == null) {
+            throw new AlovoaException("user_not_found: " + uuid);
+        }
+        return user;
     }
 
     private String adjustAudio(String audioB64, String mimeType) throws UnsupportedAudioFileException, IOException {

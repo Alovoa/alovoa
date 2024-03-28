@@ -10,7 +10,6 @@ import java.util.Set;
 @Data
 public class UserGdpr {
 
-    long numberProfileViews;
     private boolean confirmed;
     private boolean disabled;
     private int preferedMinAge;
@@ -25,8 +24,6 @@ public class UserGdpr {
     private String verificationPicture;
     private String audio;
     private String language;
-    private String accentColor;
-    private String uiDesign;
     private String country;
     private int units;
     private Gender gender;

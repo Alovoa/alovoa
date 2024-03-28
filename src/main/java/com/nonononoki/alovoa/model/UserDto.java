@@ -34,7 +34,6 @@ public class UserDto {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDto.class);
 
     private UUID uuid;
-    @Deprecated private String idEncoded;
     private String email;
     private String firstName;
     private int age;
@@ -42,8 +41,6 @@ public class UserDto {
     private Gender gender;
     private boolean hasAudio;
     private String audio;
-    private String accentColor;
-    private String uiDesign;
     private String zodiac;
     private boolean showZodiac;
     private int units;
@@ -83,8 +80,6 @@ public class UserDto {
         User user = builder.user;
         User currentUser = builder.currentUser;
         UserService userService = builder.userService;
-        TextEncryptorConverter textEncryptor = builder.textEncryptor;
-        @Deprecated String idEnc;
         boolean ignoreIntention = builder.ignoreIntention;
         final UUID uuid;
 
@@ -101,14 +96,7 @@ public class UserDto {
             UserSettings settings = user.getUserSettings();
             dto.setUserSettings(settings);
         }
-        if (user.getUuid() == null) {
-            uuid = UUID.randomUUID();
-            userService.updateUUID(user, uuid);
-        } else {
-            uuid = user.getUuid();
-        }
-        idEnc = encodeId(user.getId(), textEncryptor);
-        dto.setIdEncoded(idEnc);
+        uuid = Tools.getUserUUID(user, userService);
 
         dto.setUuid(uuid);
 
@@ -209,13 +197,6 @@ public class UserDto {
         }
         dto.setCompatible(Tools.usersCompatible(currentUser, user, ignoreIntention));
         return dto;
-    }
-
-    public static String encodeId(long id, TextEncryptorConverter textEncryptor)
-            throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-            NoSuchPaddingException, InvalidAlgorithmParameterException {
-        return Base64.getEncoder()
-                .encodeToString(textEncryptor.encode(Long.toString(id)).getBytes(StandardCharsets.UTF_8));
     }
 
     public static long decodeIdThrowing(String id, TextEncryptorConverter textEncryptor)
@@ -321,7 +302,6 @@ public class UserDto {
         private User user;
         private User currentUser;
         private UserService userService;
-        private TextEncryptorConverter textEncryptor;
         private boolean ignoreIntention;
     }
 }

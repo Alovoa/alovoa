@@ -126,7 +126,7 @@ class AdminServiceTest {
 		adminService.hideContact(contactTest().getId());
 		adminService.deleteReport(reportTest(testUsers, adminUser).getId());
 
-		adminService.banUser(UserDto.encodeId(user1.getId(), textEncryptor));
+		adminService.banUser(user1.getUuid());
 		User bannedUser = userRepo.findById(user1.getId()).get();
 		assertEquals(true, bannedUser.isDisabled());
 		
@@ -161,7 +161,7 @@ class AdminServiceTest {
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 
 		assertEquals(0, userReportRepo.count());
-		UserReport report = userService.reportUser(UserDto.encodeId(user2.getId(), textEncryptor), "report");
+		UserReport report = userService.reportUser(user2.getUuid(), "report");
 		assertEquals(1, userReportRepo.count());
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(adminUser);

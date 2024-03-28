@@ -28,7 +28,7 @@
     <div style="padding-top: 4px;"></div>
     <div class="box">
         <h3>Verify users</h3>
-        <div class="verification" style="padding-bottom: 16px;" th:each="verification : ${verifications}" th:id="${verification.idEnc}">
+        <div class="verification" style="padding-bottom: 16px;" th:each="verification : ${verifications}" th:id="${verification.toUuid}">
             <div class="verification-images">
                 <img class="profile-pic" th:src="${verification.verificationPicture}">
                 <img class="profile-pic" th:src="${verification.profilePicture}">
@@ -37,8 +37,8 @@
                 <div id="verification-text" th:text="${verification.verificationString}"></div>
             </div>
             <div class="verification-buttons">
-                <button class="button" th:onclick="verifyVerification([[${verification.idEnc}]])">Verify</button>
-                <button class="button" th:onclick="deleteVerification([[${verification.idEnc}]])">Delete</button>
+                <button class="button" th:onclick="verifyVerification([[${verification.toUuid}]])">Verify</button>
+                <button class="button" th:onclick="deleteVerification([[${verification.toUuid}]])">Delete</button>
             </div>
         </div>
     </div>

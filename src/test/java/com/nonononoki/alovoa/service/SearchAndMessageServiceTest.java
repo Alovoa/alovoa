@@ -289,9 +289,9 @@ class SearchAndMessageServiceTest {
 		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
 		String longMessage = StringUtils.repeat("*", likeMessageLength);
 		assertThrows(AlovoaException.class, () -> {
-			userService.likeUser(UserDto.encodeId(user1.getId(), textEncryptor), longMessage + "a");
+			userService.likeUser(user1.getUuid(), longMessage + "a");
 		});
-		userService.likeUser(UserDto.encodeId(user1.getId(), textEncryptor), StringUtils.repeat("*", likeMessageLength));
+		userService.likeUser(user1.getUuid(), StringUtils.repeat("*", likeMessageLength));
 		assertEquals(1, userLikeRepo.count());
 		assertEquals(1, user3.getLikes().size());
 		assertEquals(1, userNotificationRepo.count());
@@ -299,7 +299,7 @@ class SearchAndMessageServiceTest {
 		assertEquals(1, searchDtos7.size());
 
 		// hideUser
-		userService.hideUser(UserDto.encodeId(user2.getId(), textEncryptor));
+		userService.hideUser(user2.getUuid());
 		assertEquals(1, userHideRepo.count());
 		assertEquals(1, user3.getHiddenUsers().size());
 		List<UserDto> searchDtos8 = searchService.search(0.0, 0.0, 50, 1).getUsers();
@@ -310,28 +310,26 @@ class SearchAndMessageServiceTest {
 		assertEquals(0, userHideRepo.count());
 
 		// blockUser
-		userService.blockUser(UserDto.encodeId(user2.getId(), textEncryptor));
+		userService.blockUser(user2.getUuid());
 		assertEquals(1, userBlockRepo.count());
 		assertEquals(1, user3.getBlockedUsers().size());
 
-		String user2IdEnc = UserDto.encodeId(user2.getId(), textEncryptor);
 		assertThrows(Exception.class, () -> {
 			// cannot like user when blocked
-			userService.likeUser(user2IdEnc, null);
+			userService.likeUser(user2.getUuid(), null);
 		});
 
-		userService.unblockUser(UserDto.encodeId(user2.getId(), textEncryptor));
+		userService.unblockUser(user2.getUuid());
 		assertEquals(0, userBlockRepo.count());
 
 		// like back
-		String user3IdEnc = UserDto.encodeId(user3.getId(), textEncryptor);
 		assertThrows(Exception.class, () -> {
-			userService.likeUser(user3IdEnc, null);
+			userService.likeUser(user3.getUuid(), null);
 		});
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-		userService.likeUser(UserDto.encodeId(user3.getId(), textEncryptor), null);
+		userService.likeUser(user3.getUuid(), null);
 
 		assertEquals(2, userLikeRepo.count());
 		assertEquals(2, userNotificationRepo.count());
@@ -353,7 +351,7 @@ class SearchAndMessageServiceTest {
 		assertEquals(2, messageRepo.count());
 
 		// test sending message to blocked users
-		userService.blockUser(UserDto.encodeId(user3.getId(), textEncryptor));
+		userService.blockUser(user3.getUuid());
 		assertEquals(1, userBlockRepo.count());
 		assertThrows(Exception.class, () -> {
 			messageService.send(user3.getConversations().get(0).getId(), "Hello");
@@ -371,7 +369,7 @@ class SearchAndMessageServiceTest {
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-		userService.unblockUser(UserDto.encodeId(user3.getId(), textEncryptor));
+		userService.unblockUser(user3.getUuid());
 		assertEquals(0, userBlockRepo.count());
 
 		messageService.send(user1.getConversations().get(0).getId(), verylongString);
@@ -383,7 +381,7 @@ class SearchAndMessageServiceTest {
 		assertEquals(maxConvoMessages, messageRepo.count());
 
 		assertEquals(0, userReportRepo.count());
-		userService.reportUser(UserDto.encodeId(user3.getId(), textEncryptor), "report");
+		userService.reportUser(user3.getUuid(), "report");
 		assertEquals(1, userReportRepo.count());
 	}
 

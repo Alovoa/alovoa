@@ -172,17 +172,14 @@ public class RegisterService {
 
         try {
             if (dto.getReferrerCode() != null && !dto.getReferrerCode().isEmpty()) {
-                Optional<Long> idOptional = UserDto.decodeId(dto.getReferrerCode(), textEncryptor);
-                if (idOptional.isPresent()) {
-                    long id = idOptional.get();
-                    User referrer = userRepo.findById(id).orElse(null);
+                User referrer;
+                referrer = userService.findUserByUuid(UUID.fromString(dto.getReferrerCode()));
 
-                    if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
-                        user.setTotalDonations(Tools.REFERRED_AMOUNT);
-                        user.setNumberReferred(1);
-                        referrer.setTotalDonations(referrer.getTotalDonations() + Tools.REFERRED_AMOUNT);
-                        referrer.setNumberReferred(referrer.getNumberReferred() + 1);
-                    }
+                if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
+                    user.setTotalDonations(Tools.REFERRED_AMOUNT);
+                    user.setNumberReferred(1);
+                    referrer.setTotalDonations(referrer.getTotalDonations() + Tools.REFERRED_AMOUNT);
+                    referrer.setNumberReferred(referrer.getNumberReferred() + 1);
                 }
             }
         } catch (Exception e) {
@@ -340,7 +337,6 @@ public class RegisterService {
         user.setReportedByUsers(new ArrayList<>());
         user.setPrompts(new ArrayList<>());
 
-        user.setNumberSearches(0);
         user.setNumberReferred(0);
 
         user = userRepo.saveAndFlush(user);
