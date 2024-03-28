@@ -26,8 +26,6 @@ public class UserGdpr {
     private String verificationPicture;
     private String audio;
     private String language;
-    private String accentColor;
-    private String uiDesign;
     private String country;
     private int units;
     private Gender gender;
@@ -78,9 +76,6 @@ public class UserGdpr {
         u.setDonations(user.getDonations());
         u.setMessageSent(user.getMessageSent());
         u.setDates(user.getDates());
-
-        u.setNumberProfileViews(user.getNumberProfileViews());
-        u.setNumberSearches(user.getNumberSearches());
 
         u.setShowZodiac(user.isShowZodiac());
         u.setPrompts(user.getPrompts());

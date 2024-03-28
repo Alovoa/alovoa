@@ -208,7 +208,6 @@ public class ApiResource {
 
             ModelMap map = new ModelMap();
 
-            userView.setNumberProfileViews(userView.getNumberProfileViews() + 1);
             userView = userRepo.saveAndFlush(userView);
 
             UserDto userDto = UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)

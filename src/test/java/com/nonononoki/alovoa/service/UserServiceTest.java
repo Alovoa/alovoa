@@ -250,8 +250,6 @@ class UserServiceTest {
 //				objectMapper.writeValueAsString(gdpr.getWebPush()));
         assertEquals(authService.getCurrentUser().getLocationLatitude(), gdpr.getLocationLatitude());
         assertEquals(authService.getCurrentUser().getLocationLongitude(), gdpr.getLocationLongitude());
-        assertEquals(authService.getCurrentUser().getNumberProfileViews(), gdpr.getNumberProfileViews());
-        assertEquals(authService.getCurrentUser().getNumberSearches(), gdpr.getNumberSearches());
         assertEquals(authService.getCurrentUser().getPreferedMaxAge(), gdpr.getPreferedMaxAge());
         assertEquals(authService.getCurrentUser().getTotalDonations(), gdpr.getTotalDonations(), 0.001);
     }
