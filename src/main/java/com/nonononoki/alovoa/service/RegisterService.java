@@ -337,7 +337,6 @@ public class RegisterService {
         user.setReportedByUsers(new ArrayList<>());
         user.setPrompts(new ArrayList<>());
 
-        user.setNumberSearches(0);
         user.setNumberReferred(0);
 
         user = userRepo.saveAndFlush(user);

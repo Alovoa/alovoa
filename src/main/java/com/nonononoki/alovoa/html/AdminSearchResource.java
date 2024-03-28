@@ -45,7 +45,6 @@ public class AdminSearchResource {
             throw new AlovoaException("not authorized");
         }
 
-        user.setNumberSearches(user.getNumberSearches() + 1);
         userRepo.saveAndFlush(user);
 
         ModelAndView mav = new ModelAndView("admin-search");

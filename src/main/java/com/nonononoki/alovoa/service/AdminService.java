@@ -179,9 +179,7 @@ public class AdminService {
         user.setDeleteToken(null);
         user.setDescription(null);
         user.setLanguage(null);
-        user.setAccentColor(null);
         user.setCountry(null);
-        user.setUiDesign(null);
         user.setDisabled(true);
         user.getDonations().clear();
         user.setFirstName(null);
@@ -198,7 +196,6 @@ public class AdminService {
         user.setPreferedMinAge(0);
         user.setRegisterToken(null);
         user.setTotalDonations(0);
-        user.setNumberSearches(0);
         user.setProfilePicture(null);
         user.setVerificationCode(null);
         user.setVerificationPicture(null);

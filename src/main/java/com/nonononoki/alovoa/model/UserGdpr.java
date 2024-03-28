@@ -24,8 +24,6 @@ public class UserGdpr {
     private String verificationPicture;
     private String audio;
     private String language;
-    private String accentColor;
-    private String uiDesign;
     private String country;
     private int units;
     private Gender gender;

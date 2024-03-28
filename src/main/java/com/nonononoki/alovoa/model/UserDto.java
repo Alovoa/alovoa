@@ -41,8 +41,6 @@ public class UserDto {
     private Gender gender;
     private boolean hasAudio;
     private String audio;
-    private String accentColor;
-    private String uiDesign;
     private String zodiac;
     private boolean showZodiac;
     private int units;
