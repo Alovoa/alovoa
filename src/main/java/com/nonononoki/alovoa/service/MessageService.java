@@ -57,11 +57,13 @@ public class MessageService {
 
 		User user = c.getPartner(currUser);
 
-		if (user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
+		if (user.getBlockedUsers().stream().filter(o -> o.getUserTo().getId() != null)
+                .anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
 			throw new AlovoaException("user_blocked");
 		}
 
-		if (currUser.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
+		if (currUser.getBlockedUsers().stream().filter(o -> o.getUserTo().getId() != null)
+                .anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
 			throw new AlovoaException("user_blocked");
 		}
 		

@@ -306,7 +306,7 @@ public class UserService {
         token.setContent(RandomStringUtils.random(tokenLength, 0, 0, true, true, null, new SecureRandom()));
         token.setDate(currentDate);
         token.setUser(user);
-        if(user.getDeleteToken() != null) {
+        if (user.getDeleteToken() != null) {
             token.setId(user.getDeleteToken().getId());
         }
         user.setDeleteToken(token);
@@ -667,11 +667,13 @@ public class UserService {
             throw new AlovoaException("user_is_same_user");
         }
 
-        if (user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
+        if (user.getBlockedUsers().stream().filter(o -> o.getUserTo().getId() != null)
+                .anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()))) {
             throw new AlovoaException("is_blocked");
         }
 
-        if (currUser.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
+        if (currUser.getBlockedUsers().stream().filter(o -> o.getUserTo().getId() != null)
+                .anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
             throw new AlovoaException("is_blocked");
         }
 
@@ -705,7 +707,8 @@ public class UserService {
             userRepo.saveAndFlush(user);
             userRepo.saveAndFlush(currUser);
 
-            final boolean isMatch = user.getLikes().stream().anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()));
+            final boolean isMatch = user.getLikes().stream().filter(o -> o.getUserTo().getId() != null)
+                    .anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()));
 
             if (isMatch) {
                 Conversation convo = new Conversation();
