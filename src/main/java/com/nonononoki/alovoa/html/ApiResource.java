@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -211,6 +212,10 @@ public class ApiResource {
         map.addAttribute("user", userDto);
         map.addAttribute("currUser", currUserDto);
         map.addAttribute("compatible", Tools.usersCompatible(user, userView, ignoreIntention));
+
+        int age = Tools.calcUserAge(user);
+        boolean isLegal = age >= Tools.AGE_LEGAL;
+        map.addAttribute("isLegal", isLegal);
 
         return map;
     }
