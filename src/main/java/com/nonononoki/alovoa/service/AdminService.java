@@ -118,32 +118,24 @@ public class AdminService {
                 .currentUser(user).user(u).userService(userService).build());
     }
 
-    public void removeImages(String id) throws AlovoaException, NumberFormatException, InvalidKeyException,
-            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+    public void removeImages(UUID uuid) throws AlovoaException, NumberFormatException {
         checkRights();
-
-        User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
-
+        User user = userService.findUserByUuid(uuid);
         if (user == null) {
             throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
         }
-
         user.setProfilePicture(null);
         user.setVerificationPicture(null);
         user.getImages().clear();
         userRepo.saveAndFlush(user);
     }
 
-    public void removeDescription(String id) throws AlovoaException, NumberFormatException, InvalidKeyException,
-            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+    public void removeDescription(UUID uuid) throws AlovoaException, NumberFormatException {
         checkRights();
-
-        User user = userRepo.findById(UserDto.decodeIdThrowing(id, textEncryptor)).orElse(null);
-
+        User user = userService.findUserByUuid(uuid);
         if (user == null) {
             throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
         }
-
         user.setDescription(null);
         userRepo.saveAndFlush(user);
     }

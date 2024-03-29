@@ -38,18 +38,18 @@ public class AdminController {
         adminService.banUser(uuid);
     }
 
-    @PostMapping("/remove-images/{id}")
-    public void removeImages(@PathVariable String id)
+    @PostMapping("/remove-images/{uuid}")
+    public void removeImages(@PathVariable UUID uuid)
             throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
             NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
-        adminService.removeImages(id);
+        adminService.removeImages(uuid);
     }
 
-    @PostMapping("/remove-description/{id}")
-    public void removeDescription(@PathVariable String id)
+    @PostMapping("/remove-description/{uuid}")
+    public void removeDescription(@PathVariable UUID uuid)
             throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
             NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
-        adminService.removeDescription(id);
+        adminService.removeDescription(uuid);
     }
 
     @PostMapping("/contact/hide/{id}")
