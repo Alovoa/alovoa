@@ -184,8 +184,10 @@ public class Tools {
         int user1Age = calcUserAge(user1);
         int user2Age = calcUserAge(user2);
 
-        return (user2.getLikes() != null && user2.getLikes().stream().map(u -> u.getUserTo().getId()).anyMatch(u ->
-                Objects.equals(u, user1.getId()))) || user2Age < AGE_LEGAL == user1Age < AGE_LEGAL && user2.getPreferedGenders().contains(user1.getGender())
+        return (user2.getLikes() != null && user2.getLikes().stream().filter(u -> u.getUserTo() != null)
+                .map(u -> u.getUserTo().getId()).anyMatch(u ->
+                        Objects.equals(u, user1.getId()))) || user2Age < AGE_LEGAL == user1Age < AGE_LEGAL
+                && user2.getPreferedGenders().contains(user1.getGender())
                 && user1.getPreferedGenders().contains(user2.getGender()) && user1.getPreferedMaxAge() >= user2Age
                 && user1.getPreferedMinAge() <= user2Age && user2.getPreferedMaxAge() >= user1Age
                 && user2.getPreferedMinAge() <= user1Age

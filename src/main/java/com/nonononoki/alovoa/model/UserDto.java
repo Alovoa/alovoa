@@ -162,18 +162,22 @@ public class UserDto {
         if (!user.equals(currentUser)) {
             if (currentUser.getBlockedUsers() != null) {
                 dto.blockedByCurrentUser = currentUser.getBlockedUsers().stream()
+                        .filter(o -> o.getUserTo().getId() != null)
                         .anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
             }
             if (currentUser.getReported() != null) {
                 dto.reportedByCurrentUser = currentUser.getReported().stream()
+                        .filter(o -> o.getUserTo().getId() != null)
                         .anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
             }
             if (currentUser.getLikes() != null) {
                 dto.likedByCurrentUser = currentUser.getLikes().stream()
+                        .filter(o -> o.getUserTo().getId() != null)
                         .anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
             }
             if (currentUser.getHiddenUsers() != null) {
                 dto.hiddenByCurrentUser = currentUser.getHiddenUsers().stream()
+                        .filter(o -> o.getUserTo().getId() != null)
                         .anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
             }
 

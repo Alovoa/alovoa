@@ -72,11 +72,13 @@ public class MessageController {
 
 		User partner = c.getPartner(user);
 
-		if (user.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(partner.getId()))) {
+		if (user.getBlockedUsers().stream().filter(o -> o.getUserTo().getId() != null)
+                .anyMatch(o -> o.getUserTo().getId().equals(partner.getId()))) {
 			throw new AlovoaException("user_blocked");
 		}
 
-		if (partner.getBlockedUsers().stream().anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
+		if (partner.getBlockedUsers().stream().filter(o -> o.getUserTo().getId() != null)
+                .anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
 			throw new AlovoaException("user_blocked");
 		}
 
