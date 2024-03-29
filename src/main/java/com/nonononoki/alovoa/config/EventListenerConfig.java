@@ -84,28 +84,6 @@ public class EventListenerConfig {
 
 	private void setDefaultUserMiscInfo() {
 		if(userMiscInfoRepo.count() == 0) {
-//			public static final long DRUGS_TOBACCO = 1;
-//			@Transient
-//			public static final long DRUGS_ALCOHOL = 2;
-//			@Transient
-//			public static final long DRUGS_CANNABIS = 3;
-//			@Transient
-//			public static final long DRUGS_OTHER = 4;
-//			
-//			@Transient
-//			public static final long RELATIONSHIP_SINGLE = 11;
-//			@Transient
-//			public static final long RELATIONSHIP_TAKEN = 12;
-//			@Transient
-//			public static final long RELATIONSHIP_OPEN = 13;
-//			@Transient
-//			public static final long RELATIONSHIP_OTHER = 14;
-//			
-//			@Transient
-//			public static final long KIDS_NO = 21;
-//			@Transient
-//			public static final long KIDS_YES = 22;
-			
 			UserMiscInfo drugsTobaccoInfo = new UserMiscInfo();
 			drugsTobaccoInfo.setValue(UserMiscInfo.DRUGS_TOBACCO);
 			
@@ -163,7 +141,6 @@ public class EventListenerConfig {
 	}
 
 	public void setDefaultGenders() {
-		
 		if (genderRepo.count() == 0) {
 			Gender male = new Gender();
 			male.setText("male");
@@ -204,9 +181,7 @@ public class EventListenerConfig {
 				.userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo).build();
 
 		for (User user : users) {
-
 			if (!user.getEmail().contains("@")) {
-
 				try {
 					UserService.removeUserDataCascading(user, userDeleteParam);
 					userRepo.delete(userRepo.findByEmail(user.getEmail()));
