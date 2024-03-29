@@ -155,9 +155,9 @@ public class SearchService {
 
         UserSearchRequest request = UserSearchRequest.builder().age(age).minLat(minLat).minLong(minLong).maxLat(maxLat)
                 .maxLong(maxLong).maxDateDob(maxDate).minDateDob(minDate).intentionId(ignoreIntention ? INTENTION_ALL : user.getIntention().getId())
-                .likeIds(user.getLikes().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
-                .blockIds(user.getBlockedUsers().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
-                .hideIds(user.getHiddenUsers().stream().map(o -> o.getUserTo().getId()).collect(Collectors.toSet()))
+                .likeIds(user.getLikes().stream().map(o -> o.getUserTo() != null ? o.getUserTo().getId() : 0).collect(Collectors.toSet()))
+                .blockIds(user.getBlockedUsers().stream().map(o -> o.getUserTo() != null ? o.getUserTo().getId() : 0).collect(Collectors.toSet()))
+                .hideIds(user.getHiddenUsers().stream().map(o -> o.getUserTo() != null ? o.getUserTo().getId() : 0).collect(Collectors.toSet()))
                 .genderIds(user.getPreferedGenders().stream().map(Gender::getId).collect(Collectors.toSet())).build();
 
         // because IS IN does not work with empty list
@@ -167,7 +167,7 @@ public class SearchService {
 
         List<User> users = userRepo.usersSearch(request, PageRequest.of(0, SEARCH_MAX, sort));
 
-        Set<Long> ignoreIds = user.getBlockedByUsers().stream().map(o -> o.getUserFrom().getId()).collect(Collectors.toSet());
+        Set<Long> ignoreIds = user.getBlockedByUsers().stream().map(o -> o.getUserFrom() != null ? o.getUserFrom().getId() : 0).collect(Collectors.toSet());
 
         List<User> filteredUsers = filterUsers(users, ignoreIds, user, false);
 
