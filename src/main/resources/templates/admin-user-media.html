@@ -24,7 +24,7 @@
         <img height=400 width=400 th:src="${user.profilePicture}"/>
         <span style="margin-top: 8px;">Images</span>
         <div th:if="${user.images}" th:each="image : ${user.images}">
-            <img height=400 width=400 th:src="${img.content}"/>
+            <img height=400 width=400 th:src="${image.content}"/>
         </div>
         <span style="margin-top: 8px;">Verification picture</span>
         <img height=400 width=400 th:src="${user.verificationPicture.data}"
