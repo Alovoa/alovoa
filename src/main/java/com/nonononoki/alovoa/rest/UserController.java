@@ -13,17 +13,15 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -74,20 +72,24 @@ public class UserController {
         userService.deleteProfilePicture();
     }
 
-    @PostMapping(value = "/update/profile-picture", consumes = "text/plain")
-    public void updateProfilePicture(@RequestBody String imageB64) throws AlovoaException, IOException {
-        if (Tools.getBase64Size(imageB64) > mediaMaxSize) {
+    @PostMapping(value = "/update/profile-picture")
+    public void updateProfilePicture(@RequestParam("file") MultipartFile file, @RequestParam("mime") String mimeType)
+            throws AlovoaException, IOException {
+        byte[] bytes = file.getBytes();
+        if (bytes.length > mediaMaxSize) {
             throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
         }
-        userService.updateProfilePicture(imageB64);
+        userService.updateProfilePicture(bytes, mimeType);
     }
 
-    @PostMapping(value = "/update/verification-picture", consumes = "text/plain")
-    public void updateVerificationPicture(@RequestBody String imageB64) throws AlovoaException, IOException {
-        if (Tools.getBase64Size(imageB64) > mediaMaxSize) {
+    @PostMapping(value = "/update/verification-picture")
+    public void updateVerificationPicture(@RequestParam("file") MultipartFile file, @RequestParam("mime") String mimeType)
+            throws AlovoaException, IOException {
+        byte[] bytes = file.getBytes();
+        if (bytes.length > mediaMaxSize) {
             throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
         }
-        userService.updateVerificationPicture(imageB64);
+        userService.updateVerificationPicture(bytes, mimeType);
     }
 
     @PostMapping(value = "/update/verification-picture/upvote/{uuid}")
@@ -113,12 +115,13 @@ public class UserController {
     }
 
     @PostMapping(value = "/update/audio/{mimeType}", consumes = "text/plain")
-    public void updateAudio(@RequestBody String audioB64, @PathVariable String mimeType) throws AlovoaException,
-            UnsupportedAudioFileException, IOException {
-        if (Tools.getBase64Size(audioB64) > mediaMaxSize) {
+    public void updateAudio(@RequestParam("file") MultipartFile file, @RequestParam("mime") String mimeType)
+            throws AlovoaException, UnsupportedAudioFileException, IOException {
+        byte[] bytes = file.getBytes();
+        if (bytes.length > mediaMaxSize) {
             throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
         }
-        userService.updateAudio(audioB64, mimeType);
+        userService.updateAudio(bytes, mimeType);
     }
 
     @PostMapping(value = "/update/description", consumes = "text/plain")
@@ -176,12 +179,14 @@ public class UserController {
         userService.updateUnits(units);
     }
 
-    @PostMapping(value = "/image/add", consumes = "text/plain")
-    public List<UserImage> addImage(@RequestBody String imageB64) throws AlovoaException, IOException {
-        if (Tools.getBase64Size(imageB64) > mediaMaxSize) {
+    @PostMapping(value = "/image/add")
+    public List<UserImage> addImage(@RequestParam("file") MultipartFile file, @RequestParam("mime") String mimeType)
+            throws AlovoaException, IOException {
+        byte[] bytes = file.getBytes();
+        if (bytes.length > mediaMaxSize) {
             throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
         }
-        return userService.addImage(imageB64);
+        return userService.addImage(bytes, mimeType);
     }
 
     @PostMapping("/image/delete/{imageId}")
@@ -190,7 +195,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/like/{uuid}")
-    public void likeUser(@PathVariable UUID uuid) throws AlovoaException, GeneralSecurityException, IOException {
+    public void likeUser(@PathVariable UUID uuid) throws AlovoaException {
         userService.likeUser(uuid, null);
     }
 

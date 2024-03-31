@@ -158,8 +158,8 @@ class SearchAndMessageServiceTest {
 		// setup settings
 		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
 		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-		String img1 = Tools.imageToB64("img/profile1.png", imgMimePng);
-		userService.updateProfilePicture(img1);
+		byte[] img1 = Tools.resourceToBytes("img/profile1.png");
+		userService.updateProfilePicture(img1, imgMimePng);
 		userService.addInterest(INTEREST);
 		userService.updateDescription("description1");
 		userService.updateIntention(INTENTION_TEST);
@@ -169,8 +169,8 @@ class SearchAndMessageServiceTest {
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
 		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
-		String img2 = Tools.imageToB64("img/profile2.png", imgMimePng);
-		userService.updateProfilePicture(img2);
+		byte[] img2 = Tools.resourceToBytes("img/profile2.png");
+		userService.updateProfilePicture(img2, imgMimePng);
 		userService.addInterest(INTEREST);
 		userService.updateDescription("description2");
 		userService.updateIntention(INTENTION_TEST);
@@ -180,8 +180,8 @@ class SearchAndMessageServiceTest {
 
 		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
 		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
-		String img3 = Tools.imageToB64("img/profile3.png", imgMimePng);
-		userService.updateProfilePicture(img3);
+		byte[] img3 = Tools.resourceToBytes("img/profile3.png");
+		userService.updateProfilePicture(img3, imgMimePng);
 		assertNotNull(user3.getProfilePicture());
 		userService.addInterest(INTEREST);
 		assertEquals(1, user3.getInterests().size());
