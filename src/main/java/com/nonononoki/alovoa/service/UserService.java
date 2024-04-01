@@ -375,6 +375,7 @@ public class UserService {
         } else {
             user.getProfilePicture().setBin(adjustedImage.getKey());
             user.getProfilePicture().setBinMime(adjustedImage.getValue());
+            user.getProfilePicture().setData(null);
         }
 
         userRepo.saveAndFlush(user);
@@ -584,10 +585,9 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-    public List<UserImage> addImage(byte[] bytes, String mimeType) throws AlovoaException, IOException {
+    public List<UserImageDto> addImage(byte[] bytes, String mimeType) throws AlovoaException, IOException {
         User user = authService.getCurrentUser(true);
         if (user.getImages() != null && user.getImages().size() < imageMax) {
-
             UserImage img = new UserImage();
             AbstractMap.SimpleEntry<byte[], String> adjustedImage = adjustPicture(bytes, mimeType);
             img.setBin(adjustedImage.getKey());
@@ -596,7 +596,7 @@ public class UserService {
             img.setUser(user);
             user.getImages().add(img);
             user = userRepo.saveAndFlush(user);
-            return user.getImages();
+            return UserImageDto.buildFromUserImages(user, this);
         } else {
             throw new AlovoaException("max_image_amount_exceeded");
         }
