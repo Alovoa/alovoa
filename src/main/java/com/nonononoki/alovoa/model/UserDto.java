@@ -2,6 +2,7 @@ package com.nonononoki.alovoa.model;
 
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
+import com.nonononoki.alovoa.countryUtils;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.*;
 import com.nonononoki.alovoa.rest.MediaController;
@@ -112,7 +113,7 @@ public class UserDto {
         dto.setGender(user.getGender());
         dto.setVerificationPicture(UserDtoVerificationPicture.map(user, currentUser, userService, uuid));
 
-        dto.setCountry(Tools.getCountryEmoji(user.getCountry()));
+        dto.setCountry(countryUtils.getCountryEmoji(user.getCountry()));
 
         if (currentUser.isShowZodiac()) {
             dto.setZodiac(getUserZodiac(user));
@@ -190,7 +191,8 @@ public class UserDto {
             }
             dto.setCommonInterests(commonInterests);
 
-            int dist = 99999;
+            final int MAXIMUM_DISTANCE = 99999;
+            int dist = MAXIMUM_DISTANCE;
             if (!currentUser.isAdmin()) {
                 dist = Tools.getDistanceToUser(user, currentUser);
                 if (currentUser.getUnits() == User.UNIT_IMPERIAL) {
