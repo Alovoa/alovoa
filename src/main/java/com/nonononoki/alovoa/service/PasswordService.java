@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Date;
@@ -11,7 +12,6 @@ import jakarta.mail.MessagingException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,42 +54,56 @@ public class PasswordService {
 
 	public UserPasswordToken resetPassword(PasswordResetDto dto)
 			throws AlovoaException, NoSuchAlgorithmException, MessagingException, IOException {
+		validateCaptcha(dto.getCaptchaId(), dto.getCaptchaText());
+		User user = getUserByEmail(dto.getEmail());
+		validateUserForPasswordReset(user);
 
-		if (!captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText())) {
-			throw new AlovoaException("captcha_invalid");
-		}
-		User u = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
-
-		if (u == null) {
-			throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
-		}
-
-		if (u.isAdmin()) {
-			throw new AlovoaException("user_is_admin");
-		}
-
-		//user has social login, do not assign new password!
-		if (u.getPassword() == null) {
-			throw new AlovoaException("user_has_social_login");
-		}
-
-		if (u.isDisabled()) {
-			throw new AlovoaException("user_disabled");
-		}
-
-		UserPasswordToken token = new UserPasswordToken();
-		token.setContent(RandomStringUtils.random(tokenLength, 0, 0, true, true, null, new SecureRandom()));
-		token.setDate(new Date());
-		token.setUser(u);
-		u.setPasswordToken(token);
-		u = userRepo.saveAndFlush(u);
-
-		mailService.sendPasswordResetMail(u);
+		UserPasswordToken token = generateAndAssignToken(user);
+		mailService.sendPasswordResetMail(user);
 
 		SecurityContextHolder.clearContext();
 
-		return u.getPasswordToken();
+		return token;
 	}
+
+	private void validateCaptcha(long captchaId, String captchaText) throws AlovoaException, UnsupportedEncodingException, NoSuchAlgorithmException {
+		if (!captchaService.isValid(captchaId, captchaText)) {
+			throw new AlovoaException("captcha_invalid");
+		}
+	}
+
+    private User getUserByEmail(String email) throws AlovoaException {
+        User user = userRepo.findByEmail(Tools.cleanEmail(email));
+        if (user == null) {
+            throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+        }
+        return user;
+    }
+
+	private void validateUserForPasswordReset(User user) throws AlovoaException {
+		if (user.isAdmin()) {
+			throw new AlovoaException("user_is_admin");
+		}
+		//user has social login, do not assign new password!
+		if (user.getPassword() == null) {
+			throw new AlovoaException("user_has_social_login");
+		}
+
+		if (user.isDisabled()) {
+			throw new AlovoaException("user_disabled");
+		}
+	}
+
+	private UserPasswordToken generateAndAssignToken(User user) throws NoSuchAlgorithmException {
+		UserPasswordToken token = new UserPasswordToken();
+		token.setContent(RandomStringUtils.random(tokenLength, 0, 0, true, true, null, new SecureRandom()));
+		token.setDate(new Date());
+		token.setUser(user);
+		user.setPasswordToken(token);
+		return userRepo.saveAndFlush(user).getPasswordToken();
+	}
+
+
 
 	public void changePassword(PasswordChangeDto dto) throws AlovoaException {
 		UserPasswordToken token = userPasswordTokenRepo.findByContent(dto.getToken());
