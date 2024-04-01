@@ -33,8 +33,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @Value("${app.media.max-size}")
+    @Value("${app.audio.max-size}")
+    private int audioMaxSize;
+    @Value("${app.image.max-size}")
     private int mediaMaxSize;
 
     // simple post to test session
@@ -116,7 +117,7 @@ public class UserController {
     public void updateAudio(@RequestParam("file") MultipartFile file, @RequestParam("mime") String mimeType)
             throws AlovoaException, UnsupportedAudioFileException, IOException {
         byte[] bytes = file.getBytes();
-        if (bytes.length > mediaMaxSize) {
+        if (bytes.length > audioMaxSize) {
             throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
         }
         userService.updateAudio(bytes, mimeType);
