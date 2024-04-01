@@ -40,7 +40,7 @@ public class ProfileResource {
     private TextEncryptorConverter textEncryptor;
     @Value("${app.profile.image.max}")
     private int imageMax;
-    @Value("${app.media.max-size}")
+    @Value("${app.image.max-size}")
     private int mediaMaxSize;
     @Value("${app.interest.max}")
     private int interestMaxSize;
