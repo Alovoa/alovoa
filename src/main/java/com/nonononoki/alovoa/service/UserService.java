@@ -817,12 +817,23 @@ public class UserService {
 
     public boolean hasNewMessage() throws AlovoaException {
         User user = authService.getCurrentUser(true);
-        if (user != null && user.getDates().getMessageDate() != null
-                && user.getDates().getMessageCheckedDate() != null) {
-            return user.getDates().getMessageDate().after(user.getDates().getMessageCheckedDate());
+        if (isUserValid(user) && isMessageDateValid(user)) {
+            return isMessageDateAfterCheckedDate(user);
         } else {
             return false;
         }
+    }
+
+    private boolean isUserValid(User user) {
+        return user != null && user.getDates() !=null;
+    }
+
+    private boolean isMessageDateValid(User user) {
+        return user.getDates().getMessageDate() != null && user.getDates().getMessageCheckedDate() != null;
+    }
+
+    private boolean isMessageDateAfterCheckedDate(User user) {
+        return user.getDates().getMessageDate().after(user.getDates().getMessageCheckedDate());
     }
 
     public void updateUserInfo(User user) {
