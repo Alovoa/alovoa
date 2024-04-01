@@ -69,12 +69,10 @@ public class ApiResource {
 
     private static final long MAX_RESULTS = 50;
 
-    @Value("${app.media.max-size}")
+    @Value("${app.image.max-size}")
     private int mediaMaxSize;
-
     @Value("${app.interest.max}")
     private int interestMaxSize;
-
     @Value("${app.search.ignore-intention}")
     private boolean ignoreIntention;
 

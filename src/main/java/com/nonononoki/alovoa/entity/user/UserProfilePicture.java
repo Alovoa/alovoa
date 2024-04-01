@@ -1,11 +1,6 @@
 package com.nonononoki.alovoa.entity.user;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.entity.User;
@@ -29,7 +24,15 @@ public class UserProfilePicture {
 	@OneToOne
 	private User user;
 
+	@Deprecated
 	@Column(columnDefinition = "mediumtext")
-	private String data;
+	private String data = null;
+
+	@Lob
+	@Column(length=5000000)
+	private byte[] bin;
+
+	private String binMime;
+
 
 }

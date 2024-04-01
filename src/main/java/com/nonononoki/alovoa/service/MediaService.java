@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.service;
 
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.repo.UserImageRepository;
@@ -13,12 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -26,7 +21,7 @@ import java.util.UUID;
 public class MediaService {
 
     private static final String IMAGE_DATA_START = "data:";
-    private static final String MEDIA_TYPE_IMAGE_WEBP = "image/webp";
+    public static final String MEDIA_TYPE_IMAGE_WEBP = "image/webp";
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaService.class);
 
     @Autowired
@@ -37,17 +32,31 @@ public class MediaService {
 
     public ResponseEntity<byte[]> getProfilePicture(UUID uuid) {
         User user = userRepository.findByUuid(uuid);
-        return getImageDataBase(user.getProfilePicture().getData());
+        if (user.getProfilePicture().getData() != null) {
+            return getImageDataBase(user.getProfilePicture().getData());
+        } else {
+            return getImageDataBase(user.getProfilePicture().getBin(), user.getProfilePicture().getBinMime());
+        }
     }
 
     public ResponseEntity<byte[]> getVerificationPicture(UUID uuid) {
         User user = userRepository.findByUuid(uuid);
-        return getImageDataBase(user.getVerificationPicture().getData());
+        if (user.getVerificationPicture().getData() != null) {
+            return getImageDataBase(user.getVerificationPicture().getData());
+        } else {
+            return getImageDataBase(user.getVerificationPicture().getBin(),
+                    user.getVerificationPicture().getBinMime());
+        }
     }
 
     public ResponseEntity<byte[]> getAudio(UUID uuid) {
         User user = userRepository.findByUuid(uuid);
-        byte[] bytes = getBase64Data(user.getAudio().getData());
+        byte[] bytes;
+        if(user.getAudio().getData() != null) {
+            bytes = getBase64Data(user.getAudio().getData());
+        } else {
+            bytes = user.getAudio().getBin();
+        }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("audio", "wav"));
         headers.setContentLength(bytes.length);
@@ -56,7 +65,11 @@ public class MediaService {
 
     public ResponseEntity<byte[]> getImage(UUID uuid) {
         UserImage image = userImageRepository.findByUuid(uuid);
-        return getImageDataBase(image.getContent());
+        if (image.getContent() != null) {
+            return getImageDataBase(image.getContent());
+        } else {
+            return getImageDataBase(image.getBin(), image.getBinMime());
+        }
     }
 
     private byte[] getBase64Data(String base64) {
@@ -69,7 +82,18 @@ public class MediaService {
 
     private ResponseEntity<byte[]> getImageDataBase(String imageB64) {
         byte[] bytes = getBase64Data(imageB64);
+        MediaType mimeType = getImageMimeType(imageB64);
+        return getImageDataBase(bytes, Tools.buildMimeTypeString(mimeType));
+    }
+
+    private ResponseEntity<byte[]> getImageDataBase(byte[] bytes, String mimeType) {
         HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(getImageMimeType(IMAGE_DATA_START + mimeType));
+        headers.setContentLength(bytes.length);
+        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+    }
+
+    public MediaType getImageMimeType(String imageB64) {
         MediaType mediaType;
         if (imageB64.startsWith(IMAGE_DATA_START + MEDIA_TYPE_IMAGE_WEBP)) {
             mediaType = new MediaType("image", "webp");
@@ -78,8 +102,6 @@ public class MediaService {
         } else {
             mediaType = MediaType.IMAGE_JPEG;
         }
-        headers.setContentType(mediaType);
-        headers.setContentLength(bytes.length);
-        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+        return mediaType;
     }
 }

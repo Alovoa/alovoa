@@ -7,6 +7,7 @@ import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.service.UserService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.util.MimeType;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 
@@ -105,10 +106,13 @@ public class Tools {
         return inputStreamToString(resource.getInputStream());
     }
 
-    public static String resourceToB64(String path) throws IOException {
+    public static byte[] resourceToBytes(String path) throws IOException {
         Resource resource = new ClassPathResource(path);
-        byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
-        return Base64.getEncoder().encodeToString(bytes);
+        return StreamUtils.copyToByteArray(resource.getInputStream());
+    }
+
+    public static String resourceToB64(String path) throws IOException {
+        return Base64.getEncoder().encodeToString(resourceToBytes(path));
     }
 
     public static String imageToB64(String path, String mime) throws IOException {
@@ -280,5 +284,9 @@ public class Tools {
     public static String getAuthParams(SecurityConfig securityConfig, String httpSessionId, String username,
                                        String firstName, int page) {
         return getAuthParams(securityConfig, httpSessionId, username, firstName, page, null);
+    }
+
+    public static String buildMimeTypeString(MimeType mimeType) {
+        return mimeType.getType() + "/" + mimeType.getSubtype();
     }
 }
