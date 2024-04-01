@@ -200,8 +200,6 @@ class UserServiceTest {
         assertEquals(1, authService.getCurrentUser().getImages().size());
         userService.deleteImage(authService.getCurrentUser().getImages().get(0).getId());
         assertEquals(0, authService.getCurrentUser().getImages().size());
-        userService.deleteProfilePicture();
-        assertNull(authService.getCurrentUser().getProfilePicture());
         userService.updateProfilePicture(img3, imgMimePng);
         assertNotNull(authService.getCurrentUser().getProfilePicture());
         userService.updateAudio(Tools.resourceToBytes ("audio/file_example_MP3_700KB.mp3"), "mpeg");

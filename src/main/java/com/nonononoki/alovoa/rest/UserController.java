@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserMiscInfo;
@@ -32,6 +33,8 @@ import java.util.UUID;
 public class UserController {
 
     @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
     private UserService userService;
     @Value("${app.audio.max-size}")
     private int audioMaxSize;
@@ -61,14 +64,14 @@ public class UserController {
         return userService.getUserdata(uuid);
     }
 
-    @PostMapping(value = "/onboarding", consumes = "application/json")
-    public void onboarding(@RequestBody ProfileOnboardingDto dto) throws AlovoaException, IOException {
-        userService.onboarding(dto);
-    }
-
-    @PostMapping(value = "/delete/profile-picture")
-    public void deleteProfilePicture() throws AlovoaException {
-        userService.deleteProfilePicture();
+    @PostMapping(value = "/onboarding", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public void onboarding(@RequestParam("file") MultipartFile file, @RequestParam("data") String dto)
+            throws AlovoaException, IOException {
+        byte[] bytes = file.getBytes();
+        if (bytes.length > mediaMaxSize) {
+            throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
+        }
+        userService.onboarding(bytes, objectMapper.readValue(dto, ProfileOnboardingDto.class));
     }
 
     @PostMapping(value = "/update/profile-picture", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })

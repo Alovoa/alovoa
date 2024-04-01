@@ -27,6 +27,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -381,7 +382,7 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-    public void onboarding(ProfileOnboardingDto model) throws AlovoaException, IOException {
+    public void onboarding(byte[] bytes, ProfileOnboardingDto model) throws AlovoaException, IOException {
         User user = authService.getCurrentUser(true);
         if (user.getProfilePicture() != null || user.getDescription() != null) {
             return;
@@ -390,7 +391,7 @@ public class UserService {
         Date now = new Date();
 
         UserProfilePicture profilePic = new UserProfilePicture();
-        AbstractMap.SimpleEntry<byte[], String> adjustedImage = adjustPicture(model.getProfilePicture());
+        AbstractMap.SimpleEntry<byte[], String> adjustedImage = adjustPicture(bytes, model.getProfilePictureMime());
         profilePic.setBin(adjustedImage.getKey());
         profilePic.setBinMime(adjustedImage.getValue());
         user.setProfilePicture(profilePic);
@@ -609,12 +610,6 @@ public class UserService {
             user.getImages().remove(img);
             userRepo.saveAndFlush(user);
         }
-    }
-
-    private AbstractMap.SimpleEntry<byte[], String> adjustPicture(String imgB64) throws IOException {
-        byte[] decodedBytes = Base64.getDecoder().decode(stripB64Type(imgB64));
-        MediaType mimeType = mediaService.getImageMimeType(imgB64);
-        return adjustPicture(decodedBytes, Tools.buildMimeTypeString(mimeType));
     }
 
     private AbstractMap.SimpleEntry<byte[], String> adjustPicture(byte[] bytes, String mimeType) throws IOException {
@@ -870,13 +865,6 @@ public class UserService {
         headers.setContentDisposition(contentDisposition);
 
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-    }
-
-    public void deleteProfilePicture() throws AlovoaException {
-        User user = authService.getCurrentUser(true);
-        user.setProfilePicture(null);
-        user.setVerificationPicture(null);
-        userRepo.saveAndFlush(user);
     }
 
     public String getAudio(UUID uuid)

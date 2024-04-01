@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class ProfileOnboardingDto {
@@ -11,8 +12,8 @@ public class ProfileOnboardingDto {
 	private Long intention;
 	
 	private List<Long> preferredGenders;
-	
-	private String profilePicture;
+
+	private String profilePictureMime;
 
 	private String description;
 	
