@@ -2,6 +2,7 @@ package com.nonononoki.alovoa.entity.user;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.entity.User;
@@ -18,6 +19,9 @@ public class UserVerificationPicture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique=true)
+    private UUID uuid;
 
     @JsonIgnore
     @ManyToOne

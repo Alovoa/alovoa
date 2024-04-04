@@ -110,7 +110,10 @@ public class UserDto {
         dto.setDescription(user.getDescription());
         dto.setFirstName(user.getFirstName());
         dto.setGender(user.getGender());
-        dto.setVerificationPicture(UserDtoVerificationPicture.map(user, currentUser, userService, uuid));
+
+        if(user.getVerificationPicture() != null) {
+            dto.setVerificationPicture(UserDtoVerificationPicture.map(user, currentUser, userService, user.getVerificationPicture().getUuid()));
+        }
 
         dto.setCountry(Tools.getCountryEmoji(user.getCountry()));
 
@@ -130,16 +133,18 @@ public class UserDto {
         dto.setGender(user.getGender());
         dto.setIntention(user.getIntention());
         if (user.getProfilePicture() != null) {
+            UUID picUuid = user.getProfilePicture().getUuid() != null ? user.getProfilePicture().getUuid() : uuid;
             dto.setProfilePicture(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
-                    MediaController.URL_PROFILE_PICTURE + uuid);
+                    MediaController.URL_PROFILE_PICTURE + picUuid);
         }
         dto.setTotalDonations(user.getTotalDonations());
         dto.setNumBlockedByUsers(user.getBlockedByUsers().size());
         dto.setNumReports(user.getReportedByUsers().size());
         dto.setInterests(user.getInterests());
         if (user.getAudio() != null) {
+            UUID picUuid = user.getAudio().getUuid() != null ? user.getAudio().getUuid() : uuid;
             dto.setAudio(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
-                    MediaController.URL_AUDIO + uuid);
+                    MediaController.URL_AUDIO + picUuid);
         }
         dto.setHasAudio(user.getAudio() != null);
         dto.setNumberReferred(user.getNumberReferred());
@@ -268,6 +273,7 @@ public class UserDto {
         private boolean hasPicture;
         private String data;
         private String text;
+        private UUID uuid;
         private int userYes;
         private int userNo;
 
@@ -280,6 +286,8 @@ public class UserDto {
             if (pic == null) {
                 return verificationPicture;
             }
+
+            UUID picUuid = pic.getUuid() != null ? pic.getUuid() : uuid;
 
             if (!pic.isVerifiedByAdmin()) {
                 verificationPicture.setData(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
@@ -296,6 +304,7 @@ public class UserDto {
             verificationPicture.setVerifiedByUsers(UserDto.isVerifiedByUsers(pic));
             verificationPicture.setVerifiedByAdmin(pic.isVerifiedByAdmin());
             verificationPicture.setVotedByCurrentUser(pic.getUserYes().contains(currentUser) || pic.getUserNo().contains(currentUser));
+            verificationPicture.setUuid(picUuid);
 
             return verificationPicture;
         }

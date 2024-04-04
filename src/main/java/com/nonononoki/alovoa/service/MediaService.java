@@ -2,9 +2,11 @@ package com.nonononoki.alovoa.service;
 
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.UserAudio;
 import com.nonononoki.alovoa.entity.user.UserImage;
-import com.nonononoki.alovoa.repo.UserImageRepository;
-import com.nonononoki.alovoa.repo.UserRepository;
+import com.nonononoki.alovoa.entity.user.UserProfilePicture;
+import com.nonononoki.alovoa.entity.user.UserVerificationPicture;
+import com.nonononoki.alovoa.repo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,20 @@ public class MediaService {
     @Autowired
     private UserImageRepository userImageRepository;
 
+    @Autowired
+    private UserProfilePictureRepository userProfilePictureRepository;
+
+    @Autowired
+    private UserAudioRepository userAudioRepository;
+
+    @Autowired
+    private UserVerificationPictureRepository userVerificationPictureRepository;
+
     public ResponseEntity<byte[]> getProfilePicture(UUID uuid) {
+        UserProfilePicture profilePic = userProfilePictureRepository.findByUuid(uuid);
+        if (profilePic != null) {
+            return getImageDataBase(profilePic.getBin(), profilePic.getBinMime());
+        }
         User user = userRepository.findByUuid(uuid);
         if (user.getProfilePicture().getData() != null) {
             return getImageDataBase(user.getProfilePicture().getData());
@@ -40,6 +55,10 @@ public class MediaService {
     }
 
     public ResponseEntity<byte[]> getVerificationPicture(UUID uuid) {
+        UserVerificationPicture verificationPicture = userVerificationPictureRepository.findByUuid(uuid);
+        if (verificationPicture != null) {
+            return getImageDataBase(verificationPicture.getBin(), verificationPicture.getBinMime());
+        }
         User user = userRepository.findByUuid(uuid);
         if (user.getVerificationPicture().getData() != null) {
             return getImageDataBase(user.getVerificationPicture().getData());
@@ -50,12 +69,18 @@ public class MediaService {
     }
 
     public ResponseEntity<byte[]> getAudio(UUID uuid) {
-        User user = userRepository.findByUuid(uuid);
-        byte[] bytes;
-        if(user.getAudio().getData() != null) {
-            bytes = getBase64Data(user.getAudio().getData());
-        } else {
-            bytes = user.getAudio().getBin();
+        UserAudio userAudio = userAudioRepository.findByUuid(uuid);
+        byte[] bytes = null;
+        if (userAudio != null) {
+            bytes = userAudio.getBin();
+        }
+        if (bytes == null) {
+            User user = userRepository.findByUuid(uuid);
+            if (user.getAudio().getData() != null) {
+                bytes = getBase64Data(user.getAudio().getData());
+            } else {
+                bytes = user.getAudio().getBin();
+            }
         }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("audio", "wav"));
