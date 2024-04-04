@@ -372,11 +372,13 @@ public class UserService {
             profilePic.setBin(adjustedImage.getKey());
             profilePic.setBinMime(adjustedImage.getValue());
             profilePic.setUser(user);
+            profilePic.setUuid(UUID.randomUUID());
             user.setProfilePicture(profilePic);
         } else {
             user.getProfilePicture().setBin(adjustedImage.getKey());
             user.getProfilePicture().setBinMime(adjustedImage.getValue());
             user.getProfilePicture().setData(null);
+            user.getProfilePicture().setUuid(UUID.randomUUID());
         }
 
         userRepo.saveAndFlush(user);
@@ -617,7 +619,7 @@ public class UserService {
         BufferedImage image = ImageIO.read(bis);
 
         if (image.getWidth() == imageLength && image.getHeight() == imageLength) {
-            new AbstractMap.SimpleEntry<>(bytes, mimeType);
+            return new AbstractMap.SimpleEntry<>(bytes, mimeType);
         }
 
         if (image.getWidth() != image.getHeight()) {
@@ -890,9 +892,12 @@ public class UserService {
             UserAudio audio = new UserAudio();
             audio.setBin(newAudioB64);
             audio.setUser(user);
+            audio.setUuid(UUID.randomUUID());
             user.setAudio(audio);
         } else {
             user.getAudio().setBin(newAudioB64);
+            user.getAudio().setData(null);
+            user.getAudio().setUuid(UUID.randomUUID());
         }
         userRepo.saveAndFlush(user);
     }
@@ -943,6 +948,7 @@ public class UserService {
         verificationPicture.setUser(user);
         verificationPicture.setUserNo(new ArrayList<>());
         verificationPicture.setUserYes(new ArrayList<>());
+        verificationPicture.setUuid(UUID.randomUUID());
         user.setVerificationPicture(verificationPicture);
         userRepo.saveAndFlush(user);
     }
