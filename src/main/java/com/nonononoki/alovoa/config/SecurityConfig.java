@@ -110,6 +110,7 @@ public class SecurityConfig {
                         .requestMatchers("/info").permitAll()
                         .requestMatchers("/user/delete-account-confirm").permitAll()
                         .requestMatchers("/delete-account/*").permitAll()
+                        .requestMatchers("/media/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
