@@ -114,11 +114,13 @@
 			<artifactId>cache-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<classifier>jakarta</classifier>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>jcache</artifactId>
+		</dependency>
 
 		<!-- External 3rd party dependencies -->
 		<dependency>
