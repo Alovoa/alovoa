@@ -12,12 +12,12 @@ export JASYPT_ENCRYPTOR_PASSWORD=$pw
 if [[ "$(fuser $port2/tcp)" ]] ; then
     echo "port2 is used"
     fuser -k $port1/tcp
-    nohup java -XX:+HeapDumpOnOutOfMemoryError -Xmx512m -jar -Dfile.encoding=UTF-8 -Dspring.profiles.active=prod alovoa-1.1.0.jar &
+    nohup java -XX:+HeapDumpOnOutOfMemoryError -Xmx1024m -jar -Dfile.encoding=UTF-8 -Dspring.profiles.active=prod alovoa-1.1.0.jar &
 else
     echo "port2 is NOT used"
     port2_used=false
     fuser -k $port2/tcp
-    nohup java -XX:+HeapDumpOnOutOfMemoryError -Xmx512m -jar -Dfile.encoding=UTF-8 -Dspring.profiles.active=prod2 alovoa-1.1.0.jar &
+    nohup java -XX:+HeapDumpOnOutOfMemoryError -Xmx1024m -jar -Dfile.encoding=UTF-8 -Dspring.profiles.active=prod2 alovoa-1.1.0.jar &
 fi
 sleep 5
 unset JASYPT_ENCRYPTOR_PASSWORD
