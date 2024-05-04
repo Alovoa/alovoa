@@ -289,10 +289,9 @@ public class SearchService {
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
         List<UserDto> userDtos = new ArrayList<>();
-        int mediaMode = user.isAdmin() ? UserDto.ALL : UserDto.PROFILE_PICTURE_ONLY;
         for (User u : userList) {
             UserDto dto = UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(u).textEncryptor(textEncryptor).mode(mediaMode).userService(userService).build());
+                    .currentUser(user).user(u).userService(userService).build());
             userDtos.add(dto);
         }
 

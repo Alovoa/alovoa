@@ -1,39 +1,13 @@
 package com.nonononoki.alovoa.service;
 
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
-import com.nonononoki.alovoa.component.ExceptionHandler;
-import com.nonononoki.alovoa.entity.user.UserSettings;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.AddressException;
-import jakarta.mail.internet.InternetAddress;
-
-import org.apache.commons.lang3.RandomStringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.component.ExceptionHandler;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserDates;
 import com.nonononoki.alovoa.entity.user.UserIntention;
 import com.nonononoki.alovoa.entity.user.UserRegisterToken;
+import com.nonononoki.alovoa.entity.user.UserSettings;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.BaseRegisterDto;
 import com.nonononoki.alovoa.model.RegisterDto;
@@ -42,6 +16,26 @@ import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.repo.UserRegisterTokenRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.*;
 
 @Service
 public class RegisterService {
@@ -178,17 +172,14 @@ public class RegisterService {
 
         try {
             if (dto.getReferrerCode() != null && !dto.getReferrerCode().isEmpty()) {
-                Optional<Long> idOptional = UserDto.decodeId(dto.getReferrerCode(), textEncryptor);
-                if (idOptional.isPresent()) {
-                    long id = idOptional.get();
-                    User referrer = userRepo.findById(id).orElse(null);
+                User referrer;
+                referrer = userService.findUserByUuid(UUID.fromString(dto.getReferrerCode()));
 
-                    if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
-                        user.setTotalDonations(Tools.REFERRED_AMOUNT);
-                        user.setNumberReferred(1);
-                        referrer.setTotalDonations(referrer.getTotalDonations() + Tools.REFERRED_AMOUNT);
-                        referrer.setNumberReferred(referrer.getNumberReferred() + 1);
-                    }
+                if (referrer != null && referrer.isConfirmed() && referrer.getNumberReferred() < referralMax) {
+                    user.setTotalDonations(Tools.REFERRED_AMOUNT);
+                    user.setNumberReferred(1);
+                    referrer.setTotalDonations(referrer.getTotalDonations() + Tools.REFERRED_AMOUNT);
+                    referrer.setNumberReferred(referrer.getNumberReferred() + 1);
                 }
             }
         } catch (Exception e) {
@@ -303,6 +294,7 @@ public class RegisterService {
             userMaxAge = maxAge;
         }
 
+        user.setUuid(UUID.randomUUID());
         user.setPreferedMinAge(dto.getDateOfBirth(), userMinAge);
         user.setPreferedMaxAge(dto.getDateOfBirth(), userMaxAge);
         user.setGender(genderRepo.findById(dto.getGender()).orElse(null));

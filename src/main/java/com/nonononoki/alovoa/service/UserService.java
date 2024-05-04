@@ -27,6 +27,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -56,6 +57,8 @@ public class UserService {
     private static final String MIME_MP3 = "mp3";
     @Autowired
     private AuthService authService;
+    @Autowired
+    private MediaService mediaService;
     @Autowired
     private UserRepository userRepo;
     @Autowired
@@ -120,6 +123,13 @@ public class UserService {
     private int likeMessageLength;
     @Value("${app.search.ignore-intention}")
     private boolean ignoreIntention;
+    @Value("${app.domain}")
+    public String domain;
+
+    public String getDomain() {
+        return domain;
+    }
+
 
     public static void removeUserDataCascading(User user, UserDeleteParams userDeleteParam) {
 
@@ -277,14 +287,12 @@ public class UserService {
         return s;
     }
 
-    private static String convertAudioMp3Wav(String audioB64, String mimeType) throws UnsupportedEncodingException {
-        byte[] bytes = Base64.getDecoder().decode(stripB64Type(audioB64).getBytes(StandardCharsets.UTF_8));
+    private static byte[] convertAudioMp3Wav(byte[] bytes) {
         InputStream inputStream = new ByteArrayInputStream(bytes);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         final AudioFormat audioFormat = new AudioFormat(16000, 8, 1, false, false);
         Converter.convertFrom(inputStream).withTargetFormat(audioFormat).to(output);
-        final byte[] wavContent = output.toByteArray();
-        return Tools.B64AUDIOPREFIX + mimeType + Tools.B64PREFIX + Base64.getEncoder().encodeToString(wavContent);
+        return output.toByteArray();
     }
 
     public UserDeleteToken deleteAccountRequest() throws MessagingException, IOException, AlovoaException {
@@ -355,23 +363,28 @@ public class UserService {
         mailService.sendAccountDeleteConfirm(user);
     }
 
-    public void updateProfilePicture(String imgB64) throws AlovoaException, IOException {
+    public void updateProfilePicture(byte[] bytes, String mimeType) throws AlovoaException, IOException {
         User user = authService.getCurrentUser(true);
         user.setVerificationPicture(null);
-        String newImgB64 = adjustPicture(imgB64);
+        AbstractMap.SimpleEntry<byte[], String> adjustedImage = adjustPicture(bytes, mimeType);
         if (user.getProfilePicture() == null) {
             UserProfilePicture profilePic = new UserProfilePicture();
-            profilePic.setData(newImgB64);
+            profilePic.setBin(adjustedImage.getKey());
+            profilePic.setBinMime(adjustedImage.getValue());
             profilePic.setUser(user);
+            profilePic.setUuid(UUID.randomUUID());
             user.setProfilePicture(profilePic);
         } else {
-            user.getProfilePicture().setData(newImgB64);
+            user.getProfilePicture().setBin(adjustedImage.getKey());
+            user.getProfilePicture().setBinMime(adjustedImage.getValue());
+            user.getProfilePicture().setData(null);
+            user.getProfilePicture().setUuid(UUID.randomUUID());
         }
 
         userRepo.saveAndFlush(user);
     }
 
-    public void onboarding(ProfileOnboardingDto model) throws AlovoaException, IOException {
+    public void onboarding(byte[] bytes, ProfileOnboardingDto model) throws AlovoaException, IOException {
         User user = authService.getCurrentUser(true);
         if (user.getProfilePicture() != null || user.getDescription() != null) {
             return;
@@ -380,7 +393,9 @@ public class UserService {
         Date now = new Date();
 
         UserProfilePicture profilePic = new UserProfilePicture();
-        profilePic.setData(adjustPicture(model.getProfilePicture()));
+        AbstractMap.SimpleEntry<byte[], String> adjustedImage = adjustPicture(bytes, model.getProfilePictureMime());
+        profilePic.setBin(adjustedImage.getKey());
+        profilePic.setBinMime(adjustedImage.getValue());
         user.setProfilePicture(profilePic);
         user.setVerificationPicture(null);
 
@@ -573,17 +588,18 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-    public List<UserImage> addImage(String imgB64) throws AlovoaException, IOException {
+    public List<UserImageDto> addImage(byte[] bytes, String mimeType) throws AlovoaException, IOException {
         User user = authService.getCurrentUser(true);
         if (user.getImages() != null && user.getImages().size() < imageMax) {
-
             UserImage img = new UserImage();
-            img.setContent(adjustPicture(imgB64));
+            AbstractMap.SimpleEntry<byte[], String> adjustedImage = adjustPicture(bytes, mimeType);
+            img.setBin(adjustedImage.getKey());
+            img.setBinMime(adjustedImage.getValue());
             img.setDate(new Date());
             img.setUser(user);
             user.getImages().add(img);
             user = userRepo.saveAndFlush(user);
-            return user.getImages();
+            return UserImageDto.buildFromUserImages(user, this);
         } else {
             throw new AlovoaException("max_image_amount_exceeded");
         }
@@ -598,18 +614,12 @@ public class UserService {
         }
     }
 
-    private String adjustPicture(String imgB64) throws IOException {
-        ByteArrayOutputStream bos = null;
-        ByteArrayInputStream bis = null;
-
-        // convert b64 to bufferedimage
-        BufferedImage image = null;
-        byte[] decodedBytes = Base64.getDecoder().decode(stripB64Type(imgB64));
-        bis = new ByteArrayInputStream(decodedBytes);
-        image = ImageIO.read(bis);
+    private AbstractMap.SimpleEntry<byte[], String> adjustPicture(byte[] bytes, String mimeType) throws IOException {
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+        BufferedImage image = ImageIO.read(bis);
 
         if (image.getWidth() == imageLength && image.getHeight() == imageLength) {
-            return imgB64;
+            return new AbstractMap.SimpleEntry<>(bytes, mimeType);
         }
 
         if (image.getWidth() != image.getHeight()) {
@@ -644,16 +654,14 @@ public class UserService {
         image = scaledImage;
 
         // image to b64
-        bos = new ByteArrayOutputStream();
-        String fileType = "webp";
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        final String fileType = "webp";
         ImageIO.write(image, fileType, bos);
-        byte[] bytes = bos.toByteArray();
-        String base64bytes = Base64.getEncoder().encodeToString(bytes);
-        return Tools.B64IMAGEPREFIX + fileType + Tools.B64PREFIX + base64bytes;
+        return new AbstractMap.SimpleEntry<>(bos.toByteArray(), MediaService.MEDIA_TYPE_IMAGE_WEBP);
     }
 
-    public void likeUser(String idEnc, String message) throws AlovoaException, GeneralSecurityException, IOException {
-        User user = encodedIdToUser(idEnc);
+    public void likeUser(UUID uuid, String message) throws AlovoaException {
+        User user = findUserByUuid(uuid);
         User currUser = authService.getCurrentUser(true);
 
         if (user.equals(currUser)) {
@@ -729,10 +737,9 @@ public class UserService {
         }
     }
 
-    public void hideUser(String idEnc)
-            throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-            NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
-        User user = encodedIdToUser(idEnc);
+    public void hideUser(UUID uuid)
+            throws NumberFormatException, AlovoaException {
+        User user = findUserByUuid(uuid);
         User currUser = authService.getCurrentUser(true);
         if (userHideRepo.findByUserFromAndUserTo(currUser, user) == null) {
             UserHide hide = new UserHide();
@@ -741,13 +748,16 @@ public class UserService {
             hide.setUserTo(user);
             currUser.getHiddenUsers().add(hide);
             userRepo.saveAndFlush(currUser);
+
+            if(user.getLikes().stream().anyMatch(l -> l.getUserTo().getId().equals(currUser.getId()))) {
+                blockUser(uuid);
+            }
         }
     }
 
-    public void blockUser(String idEnc)
-            throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
-            BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-        User user = encodedIdToUser(idEnc);
+    public void blockUser(UUID uuid)
+            throws AlovoaException, NumberFormatException {
+        User user = findUserByUuid(uuid);
         User currUser = authService.getCurrentUser(true);
         if (userBlockRepo.findByUserFromAndUserTo(currUser, user) == null) {
             UserBlock block = new UserBlock();
@@ -759,10 +769,9 @@ public class UserService {
         }
     }
 
-    public void unblockUser(String idEnc)
-            throws AlovoaException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
-            BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-        User user = encodedIdToUser(idEnc);
+    public void unblockUser(UUID uuid)
+            throws AlovoaException, NumberFormatException {
+        User user = findUserByUuid(uuid);
         User currUser = authService.getCurrentUser(true);
 
         UserBlock block = userBlockRepo.findByUserFromAndUserTo(currUser, user);
@@ -772,11 +781,9 @@ public class UserService {
         }
     }
 
-    public UserReport reportUser(String idEnc, String comment)
-            throws AlovoaException, UnsupportedEncodingException, NoSuchAlgorithmException, NumberFormatException,
-            InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException,
-            InvalidAlgorithmParameterException {
-        User user = encodedIdToUser(idEnc);
+    public UserReport reportUser(UUID uuid, String comment)
+            throws AlovoaException, NumberFormatException {
+        User user = findUserByUuid(uuid);
         User currUser = authService.getCurrentUser(true);
         if (userReportRepo.findByUserFromAndUserTo(currUser, user) == null) {
             UserReport report = new UserReport();
@@ -791,13 +798,6 @@ public class UserService {
         }
 
         return null;
-    }
-
-    public User encodedIdToUser(String idEnc)
-            throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-            NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-        long id = UserDto.decodeIdThrowing(idEnc, textEncryptor);
-        return userRepo.findById(id).orElse(null);
     }
 
     public boolean hasNewAlert() throws AlovoaException {
@@ -846,14 +846,12 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Resource> getUserdata(String idEnc) throws AlovoaException, JsonProcessingException,
-            UnsupportedEncodingException, NumberFormatException, InvalidKeyException, IllegalBlockSizeException,
-            BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-
+    public ResponseEntity<Resource> getUserdata(UUID uuid) throws AlovoaException, JsonProcessingException,
+            NumberFormatException {
         User user = authService.getCurrentUser(true);
-        User userFromIdEnc = encodedIdToUser(idEnc);
-        if (!user.getId().equals(userFromIdEnc.getId())) {
-            throw new AlovoaException("wrong_id_enc");
+        User userFromUuid = findUserByUuid(uuid);
+        if (!user.getId().equals(userFromUuid.getId())) {
+            throw new AlovoaException("users_not_equal");
         }
 
         UserGdpr ug = UserGdpr.userToUserGdpr(user);
@@ -871,17 +869,9 @@ public class UserService {
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
-    public void deleteProfilePicture() throws AlovoaException {
-        User user = authService.getCurrentUser(true);
-        user.setProfilePicture(null);
-        user.setVerificationPicture(null);
-        userRepo.saveAndFlush(user);
-    }
-
-    public String getAudio(String userIdEnc)
-            throws NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-            NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-        User user = encodedIdToUser(userIdEnc);
+    public String getAudio(UUID uuid)
+            throws NumberFormatException, AlovoaException {
+        User user = findUserByUuid(uuid);
         if (user.getAudio() == null) {
             return null;
         }
@@ -894,20 +884,21 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-    public void updateAudio(String audioB64, String mimeType)
+    public void updateAudio(byte[] bytes, String mimeType)
             throws AlovoaException, UnsupportedAudioFileException, IOException {
         User user = authService.getCurrentUser(true);
-        String newAudioB64 = adjustAudio(audioB64, mimeType);
-
+        byte[] newAudioB64 = adjustAudio(bytes, mimeType);
         if (user.getAudio() == null) {
             UserAudio audio = new UserAudio();
-            audio.setData(newAudioB64);
+            audio.setBin(newAudioB64);
             audio.setUser(user);
+            audio.setUuid(UUID.randomUUID());
             user.setAudio(audio);
         } else {
-            user.getAudio().setData(newAudioB64);
+            user.getAudio().setBin(newAudioB64);
+            user.getAudio().setData(null);
+            user.getAudio().setUuid(UUID.randomUUID());
         }
-
         userRepo.saveAndFlush(user);
     }
 
@@ -940,7 +931,7 @@ public class UserService {
         }
     }
 
-    public void updateVerificationPicture(String imgB64) throws AlovoaException, IOException {
+    public void updateVerificationPicture(byte[] bytes, String mimeType) throws AlovoaException, IOException {
         User user = authService.getCurrentUser(true);
 
         //verification picture only usable with profile picture
@@ -949,21 +940,22 @@ public class UserService {
         }
         user.setVerificationPicture(null);
         userRepo.saveAndFlush(user);
-
-        String newImgB64 = adjustPicture(imgB64);
+        AbstractMap.SimpleEntry<byte[], String> adjustedImage = adjustPicture(bytes, mimeType);
         UserVerificationPicture verificationPicture = new UserVerificationPicture();
-        verificationPicture.setData(newImgB64);
+        verificationPicture.setBin(adjustedImage.getKey());
+        verificationPicture.setBinMime(adjustedImage.getValue());
         verificationPicture.setDate(new Date());
         verificationPicture.setUser(user);
         verificationPicture.setUserNo(new ArrayList<>());
         verificationPicture.setUserYes(new ArrayList<>());
+        verificationPicture.setUuid(UUID.randomUUID());
         user.setVerificationPicture(verificationPicture);
         userRepo.saveAndFlush(user);
     }
 
-    public void upvoteVerificationPicture(String userIdEnc) throws AlovoaException, IOException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public void upvoteVerificationPicture(UUID uuid) throws AlovoaException, IOException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         User currentUser = authService.getCurrentUser(true);
-        User user = encodedIdToUser(userIdEnc);
+        User user = findUserByUuid(uuid);
 
         if (currentUser.equals(user)) {
             throw new AlovoaException("invalid_user");
@@ -981,9 +973,9 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-    public void downvoteVerificationPicture(String userIdEnc) throws AlovoaException, IOException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public void downvoteVerificationPicture(UUID uuid) throws AlovoaException {
         User currentUser = authService.getCurrentUser(true);
-        User user = encodedIdToUser(userIdEnc);
+        User user = findUserByUuid(uuid);
 
         if (currentUser.equals(user)) {
             throw new AlovoaException("invalid_user");
@@ -1001,28 +993,46 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-    private String adjustAudio(String audioB64, String mimeType) throws UnsupportedAudioFileException, IOException {
+    public void updateUUID(User user, UUID uuid) {
+        if(user.getUuid() == null) {
+            user.setUuid(uuid);
+            userRepo.saveAndFlush(user);
+        }
+    }
+
+    public void updateImageUUID(UserImage image, UUID uuid) {
+        if(image.getUuid() == null) {
+            image.setUuid(uuid);
+            userImageRepo.saveAndFlush(image);
+        }
+    }
+
+    public User findUserByUuid(UUID uuid) throws AlovoaException {
+        User user = userRepo.findByUuid(uuid);
+        if(user == null) {
+            throw new AlovoaException("user_not_found: " + uuid);
+        }
+        return user;
+    }
+
+    private byte[] adjustAudio(byte[] bytes, String mimeType) throws UnsupportedAudioFileException, IOException {
         if (mimeType.equals(MIME_X_WAV) || mimeType.equals(MIME_WAV)) {
-            String trimmedWav = trimAudioWav(audioB64, audioMaxTime);
-            return convertAudioMp3Wav(trimmedWav, MIME_MP3);
+            return trimAudioWav(bytes, audioMaxTime);
         } else if (mimeType.equals(MIME_MPEG) || mimeType.equals(MIME_MP3)) {
-            String b64Wav = convertAudioMp3Wav(audioB64, MIME_WAV);
-            String trimmedWav = trimAudioWav(b64Wav, audioMaxTime);
-            return convertAudioMp3Wav(trimmedWav, MIME_MP3);
+            return trimAudioWav(convertAudioMp3Wav(bytes), audioMaxTime);
         }
         return null;
     }
 
-    private String trimAudioWav(String audioB64, int maxSeconds) throws UnsupportedAudioFileException, IOException {
+    private byte[] trimAudioWav(byte[] bytes, int maxSeconds) throws UnsupportedAudioFileException, IOException {
 
-        ByteArrayInputStream bis = null;
+        ByteArrayInputStream bis;
+        ByteArrayOutputStream baos;
         AudioInputStream ais = null;
         AudioInputStream aisShort = null;
-        ByteArrayOutputStream baos = null;
 
         try {
-            byte[] decodedBytes = Base64.getDecoder().decode(stripB64Type(audioB64));
-            bis = new ByteArrayInputStream(decodedBytes);
+            bis = new ByteArrayInputStream(bytes);
             ais = AudioSystem.getAudioInputStream(bis);
             AudioFormat format = ais.getFormat();
             long frameLength = ais.getFrameLength();
@@ -1034,20 +1044,16 @@ public class UserService {
             }
             if (durationInSeconds <= maxSeconds) {
                 ais.close();
-                audioB64 = Tools.B64AUDIOPREFIX + MIME_WAV + Tools.B64PREFIX + stripB64Type(audioB64);
-                return audioB64;
+                return bytes;
             } else {
                 long frames = (long) (format.getFrameRate() * maxSeconds);
                 aisShort = new AudioInputStream(ais, format, frames);
                 AudioFileFormat.Type targetType = AudioFileFormat.Type.WAVE;
                 baos = new ByteArrayOutputStream();
                 AudioSystem.write(aisShort, targetType, baos);
-
-                String base64bytes = Base64.getEncoder().encodeToString(baos.toByteArray());
-                base64bytes = Tools.B64AUDIOPREFIX + MIME_WAV + Tools.B64PREFIX + base64bytes;
                 aisShort.close();
                 ais.close();
-                return base64bytes;
+                return baos.toByteArray();
             }
         } catch (Exception e) {
             if (ais != null) {
@@ -1059,5 +1065,4 @@ public class UserService {
             throw e;
         }
     }
-
 }

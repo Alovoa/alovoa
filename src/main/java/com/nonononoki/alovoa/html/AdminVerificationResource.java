@@ -49,14 +49,14 @@ public class AdminVerificationResource {
         List<UserVerificationDto> verificationDtos = new ArrayList<>();
         for (UserVerificationPicture v : verificationPictures) {
             if (v.getUser() != null) {
-                verificationDtos.add(UserVerificationDto.map(v.getUser(), userService, textEncryptor));
+                verificationDtos.add(UserVerificationDto.map(v.getUser(), userService));
             }
         }
 
         mav.addObject("verifications", verificationDtos);
         User user = authService.getCurrentUser(true);
         mav.addObject("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(true)
-                .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).build()));
+                .currentUser(user).user(user).userService(userService).build()));
 
         return mav;
     }

@@ -4,7 +4,6 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AlovoaException;
-import com.nonononoki.alovoa.model.ProfileWarningDto;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
@@ -13,7 +12,6 @@ import com.nonononoki.alovoa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -42,9 +40,7 @@ public class ProfileResource {
     private TextEncryptorConverter textEncryptor;
     @Value("${app.profile.image.max}")
     private int imageMax;
-    @Value("${app.vapid.public}")
-    private String vapidPublicKey;
-    @Value("${app.media.max-size}")
+    @Value("${app.image.max-size}")
     private int mediaMaxSize;
     @Value("${app.interest.max}")
     private int interestMaxSize;
@@ -71,11 +67,10 @@ public class ProfileResource {
             int referralsLeft = maxReferrals - user.getNumberReferred();
             ModelAndView mav = new ModelAndView("profile");
             mav.addObject("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                    .currentUser(user).user(user).textEncryptor(textEncryptor).userService(userService).mode(UserDto.ALL).build()));
+                    .currentUser(user).user(user).userService(userService).build()));
             mav.addObject("genders", genderRepo.findAll());
             mav.addObject("intentions", userIntentionRepo.findAll());
             mav.addObject("imageMax", imageMax);
-            mav.addObject("vapidPublicKey", vapidPublicKey);
             mav.addObject("isLegal", isLegal);
             mav.addObject("mediaMaxSize", mediaMaxSize);
             mav.addObject("interestMaxSize", interestMaxSize);
@@ -89,67 +84,7 @@ public class ProfileResource {
                 showIntention = true;
             }
             mav.addObject("showIntention", showIntention);
-
-            ProfileWarningDto warning = getWarnings(user);
-
-            mav.addObject("hasWarning", warning.isHasWarning());
-            mav.addObject("noProfilePicture", warning.isNoProfilePicture());
-            mav.addObject("noDescription", warning.isNoDescription());
-            mav.addObject("noIntention", warning.isNoIntention());
-            mav.addObject("noGender", warning.isNoGender());
-            mav.addObject("noLocation", warning.isNoLocation());
-
             return mav;
         }
-    }
-
-    @GetMapping("/profile/warning")
-    public String warning(Model model) throws AlovoaException {
-
-        User user = authService.getCurrentUser(true);
-        ProfileWarningDto warning = getWarnings(user);
-
-        model.addAttribute("hasWarning", warning.isHasWarning());
-        model.addAttribute("noProfilePicture", warning.isNoProfilePicture());
-        model.addAttribute("noDescription", warning.isNoDescription());
-        model.addAttribute("noIntention", warning.isNoIntention());
-        model.addAttribute("noGender", warning.isNoGender());
-        model.addAttribute("noLocation", warning.isNoLocation());
-
-        return "fragments::profile-warning";
-    }
-
-    private ProfileWarningDto getWarnings(User user) {
-
-        boolean hasWarning = false;
-        boolean noProfilePicture = false;
-        boolean noDescription = false;
-        boolean noIntention = false;
-        boolean noGender = false;
-        boolean noLocation = false;
-
-        if (user.getProfilePicture() == null) {
-            noProfilePicture = true;
-            hasWarning = true;
-        }
-        if (user.getDescription() == null || user.getDescription().isEmpty()) {
-            noDescription = true;
-            hasWarning = true;
-        }
-        if (user.getIntention() == null) {
-            noIntention = true;
-            hasWarning = true;
-        }
-        if (user.getPreferedGenders() == null || user.getPreferedGenders().isEmpty()) {
-            noGender = true;
-            hasWarning = true;
-        }
-        if (user.getLocationLatitude() == null) {
-            noLocation = true;
-            hasWarning = true;
-        }
-
-        return ProfileWarningDto.builder().hasWarning(hasWarning).noDescription(noDescription).noGender(noGender)
-                .noIntention(noIntention).noLocation(noLocation).noProfilePicture(noProfilePicture).build();
     }
 }

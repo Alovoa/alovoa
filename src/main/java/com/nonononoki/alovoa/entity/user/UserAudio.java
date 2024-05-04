@@ -1,11 +1,6 @@
 package com.nonononoki.alovoa.entity.user;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.entity.User;
@@ -13,6 +8,8 @@ import com.nonononoki.alovoa.entity.User;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -24,12 +21,20 @@ public class UserAudio {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@Column(unique=true)
+	private UUID uuid;
 	
 	@JsonIgnore
 	@OneToOne
 	private User user;
 
+	@Deprecated
 	@Column(columnDefinition = "mediumtext")
 	private String data;
+
+	@Lob
+	@Column(length=10000000)
+	private byte[] bin;
 
 }

@@ -37,6 +37,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,8 +48,6 @@ import static org.mockito.ArgumentMatchers.any;
 @Transactional
 class UserServiceTest {
 
-    private final Long INTENTION_TEST = 1L;
-    private final String INTEREST = "interest";
     @Autowired
     private RegisterService registerService;
     @Autowired
@@ -125,10 +124,12 @@ class UserServiceTest {
         // setup settings
         Mockito.when(authService.getCurrentUser()).thenReturn(user1);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-        String img1 = Tools.imageToB64("img/profile1.png", imgMimePng);
-        userService.updateProfilePicture(img1);
+        byte[] img1 = Tools.resourceToBytes("img/profile1.png");
+        userService.updateProfilePicture(img1, imgMimePng);
+        String INTEREST = "interest";
         userService.addInterest(INTEREST);
         userService.updateDescription("description1");
+        Long INTENTION_TEST = 1L;
         userService.updateIntention(INTENTION_TEST);
         userService.updateMaxAge(100);
         userService.updateMinAge(16);
@@ -159,8 +160,8 @@ class UserServiceTest {
 
         Mockito.when(authService.getCurrentUser()).thenReturn(user2);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
-        String img2 = Tools.imageToB64("img/profile2.png", imgMimePng);
-        userService.updateProfilePicture(img2);
+        byte[] img2 = Tools.resourceToBytes("img/profile2.png");
+        userService.updateProfilePicture(img2, imgMimePng);
         userService.addInterest(INTEREST);
         userService.updateDescription("description2");
         userService.updateIntention(INTENTION_TEST);
@@ -170,8 +171,8 @@ class UserServiceTest {
 
         Mockito.when(authService.getCurrentUser()).thenReturn(user3);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
-        String img3 = Tools.imageToB64("img/profile3.png", imgMimePng);
-        userService.updateProfilePicture(img3);
+        byte[] img3 = Tools.resourceToBytes("img/profile3.png");
+        userService.updateProfilePicture(img3, imgMimePng);
         assertNotNull(user3.getProfilePicture());
         userService.addInterest(INTEREST);
         assertEquals(1, user3.getInterests().size());
@@ -195,15 +196,13 @@ class UserServiceTest {
         userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getText());
         assertEquals(0, authService.getCurrentUser().getInterests().size());
         userService.addInterest(INTEREST);
-        userService.addImage(img3);
+        userService.addImage(img3, imgMimePng);
         assertEquals(1, authService.getCurrentUser().getImages().size());
         userService.deleteImage(authService.getCurrentUser().getImages().get(0).getId());
         assertEquals(0, authService.getCurrentUser().getImages().size());
-        userService.deleteProfilePicture();
-        assertNull(authService.getCurrentUser().getProfilePicture());
-        userService.updateProfilePicture(img3);
+        userService.updateProfilePicture(img3, imgMimePng);
         assertNotNull(authService.getCurrentUser().getProfilePicture());
-        userService.updateAudio(Tools.resourceToB64("audio/file_example_MP3_700KB.mp3"), "mpeg");
+        userService.updateAudio(Tools.resourceToBytes ("audio/file_example_MP3_700KB.mp3"), "mpeg");
         assertNotNull(user3.getAudio());
         userService.deleteAudio();
         assertNull(user3.getAudio());
@@ -214,16 +213,16 @@ class UserServiceTest {
 
 
         //PROFILE PICTURE
-        String imgLong = Tools.imageToB64("img/long.jpeg", imgMimePng);
-        userService.updateProfilePicture(imgLong);
-        String imgWide = Tools.imageToB64("img/wide.webp", imgMimePng);
-        userService.updateProfilePicture(imgWide);
+        byte[] imgLong = Tools.resourceToBytes ("img/long.jpeg");
+        userService.updateProfilePicture(imgLong, "jpeg");
+        byte[] imgWide = Tools.resourceToBytes("img/wide.webp");
+        userService.updateProfilePicture(imgWide, "webp");
 
         // USERDATA
         Mockito.when(authService.getCurrentUser()).thenReturn(user1);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-        String idEnc = UserDto.encodeId(user1.getId(), textEncryptor);
-        ResponseEntity<Resource> userData = userService.getUserdata(idEnc);
+        UUID uuid = user1.getUuid();
+        ResponseEntity<Resource> userData = userService.getUserdata(uuid);
         InputStream inputStream = userData.getBody().getInputStream();
         String userDataString = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines()
                 .collect(Collectors.joining("\n"));
@@ -322,40 +321,40 @@ class UserServiceTest {
         User user2 = testUsers.get(1);
         User user3 = testUsers.get(2);
 
-        String idEnc1 = UserDto.encodeId(user1.getId(), textEncryptor);
+        UUID uuid1 = user1.getUuid();
 
         Mockito.when(authService.getCurrentUser()).thenReturn(user1);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
 
         String imgMimePng = "png";
-        String img1 = Tools.imageToB64("img/profile1.png", imgMimePng);
-        userService.updateProfilePicture(img1);
+        byte[] img1 = Tools.resourceToBytes("img/profile1.png");
+        userService.updateProfilePicture(img1, imgMimePng);
         user1 = userRepo.findById(user1.getId()).get();
-        userService.updateVerificationPicture(img1);
+        userService.updateVerificationPicture(img1, imgMimePng);
         user1 = userRepo.findById(user1.getId()).get();
 
         Mockito.when(authService.getCurrentUser()).thenReturn(user2);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
-        userService.upvoteVerificationPicture(idEnc1);
+        userService.upvoteVerificationPicture(uuid1);
 
         Assertions.assertThrows(AlovoaException.class, () -> {
-            userService.downvoteVerificationPicture(idEnc1);
+            userService.downvoteVerificationPicture(uuid1);
         });
 
         Assertions.assertThrows(AlovoaException.class, () -> {
-            userService.upvoteVerificationPicture(idEnc1);
+            userService.upvoteVerificationPicture(uuid1);
         });
 
         Mockito.when(authService.getCurrentUser()).thenReturn(user3);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
-        userService.downvoteVerificationPicture(idEnc1);
+        userService.downvoteVerificationPicture(uuid1);
 
         Assertions.assertThrows(AlovoaException.class, () -> {
-            userService.upvoteVerificationPicture(idEnc1);
+            userService.upvoteVerificationPicture(uuid1);
         });
-        
+
         Assertions.assertThrows(AlovoaException.class, () -> {
-            userService.downvoteVerificationPicture(idEnc1);
+            userService.downvoteVerificationPicture(uuid1);
         });
 
         user1 = userRepo.findById(user1.getId()).get();
@@ -364,7 +363,7 @@ class UserServiceTest {
 
         Mockito.when(authService.getCurrentUser()).thenReturn(user1);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-        userService.updateProfilePicture(img1);
+        userService.updateProfilePicture(img1, imgMimePng);
         user1 = userRepo.findById(user1.getId()).get();
         assertNull(user1.getVerificationPicture());
     }

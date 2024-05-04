@@ -2,9 +2,12 @@ package com.nonononoki.alovoa;
 
 import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.model.AlovoaException;
+import com.nonononoki.alovoa.service.UserService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.util.MimeType;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 
@@ -39,7 +42,6 @@ public class Tools {
     public static final String DEV = "dev";
 
     public static final String MAIL_TEST_DOMAIN = "@mailinator.com";
-    public static final String MAIL_GMAIL_DOMAIN = "@gmail.com";
 
     public static final String TEMP_EMAIL_FILE_NAME = "temp-mail.txt";
 
@@ -104,10 +106,13 @@ public class Tools {
         return inputStreamToString(resource.getInputStream());
     }
 
-    public static String resourceToB64(String path) throws IOException {
+    public static byte[] resourceToBytes(String path) throws IOException {
         Resource resource = new ClassPathResource(path);
-        byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
-        return Base64.getEncoder().encodeToString(bytes);
+        return StreamUtils.copyToByteArray(resource.getInputStream());
+    }
+
+    public static String resourceToB64(String path) throws IOException {
+        return Base64.getEncoder().encodeToString(resourceToBytes(path));
     }
 
     public static String imageToB64(String path, String mime) throws IOException {
@@ -258,8 +263,30 @@ public class Tools {
         return builder.toString();
     }
 
+    public static UUID getImageUUID(UserImage image, UserService userService) {
+        UUID uuid = image.getUuid();
+        if(uuid == null) {
+            uuid = UUID.randomUUID();
+            userService.updateImageUUID(image, uuid);
+        }
+        return uuid;
+    }
+    public static UUID getUserUUID(User user, UserService userService) {
+
+        UUID uuid = user.getUuid();
+        if(uuid == null) {
+            uuid = UUID.randomUUID();
+            userService.updateUUID(user, uuid);
+        }
+        return uuid;
+    }
+
     public static String getAuthParams(SecurityConfig securityConfig, String httpSessionId, String username,
                                        String firstName, int page) {
         return getAuthParams(securityConfig, httpSessionId, username, firstName, page, null);
+    }
+
+    public static String buildMimeTypeString(MimeType mimeType) {
+        return mimeType.getType() + "/" + mimeType.getSubtype();
     }
 }

@@ -1,0 +1,41 @@
+<config xmlns='http://www.ehcache.org/v3'
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:jsr107="http://www.ehcache.org/v3/jsr107"
+		xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd
+							http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.0.xsd">
+	<cache alias="bucket4j">
+		<expiry>
+			<ttl unit="seconds">3600</ttl>
+		</expiry>
+		<heap unit="entries">1000000</heap>
+	</cache>
+
+	<cache alias="UserProfilePictureRepository.findByUuid">
+		<expiry>
+			<ttl unit="seconds">3600</ttl>
+		</expiry>
+		<heap unit="entries">1000000</heap>
+	</cache>
+
+	<cache alias="UserAudioRepository.findByUuid">
+		<expiry>
+			<ttl unit="seconds">3600</ttl>
+		</expiry>
+		<heap unit="entries">1000000</heap>
+	</cache>
+
+	<cache alias="UserImageRepository.findByUuid">
+		<expiry>
+			<ttl unit="seconds">3600</ttl>
+		</expiry>
+		<heap unit="entries">1000000</heap>
+	</cache>
+
+	<cache alias="UserVerificationPictureRepository.findByUuid">
+		<expiry>
+			<ttl unit="seconds">3600</ttl>
+		</expiry>
+		<heap unit="entries">1000000</heap>
+	</cache>
+
+</config>

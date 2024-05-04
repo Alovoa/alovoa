@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserMiscInfo;
@@ -10,30 +11,34 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
     @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
     private UserService userService;
-
-    @Value("${app.media.max-size}")
+    @Value("${app.audio.max-size}")
+    private int audioMaxSize;
+    @Value("${app.image.max-size}")
     private int mediaMaxSize;
 
     // simple post to test session
@@ -53,59 +58,57 @@ public class UserController {
         userService.deleteAccountConfirm(dto);
     }
 
-    @GetMapping(value = "/userdata/{idEnc}")
-    public ResponseEntity<Resource> getUserdata(@PathVariable String idEnc) throws JsonProcessingException,
-            UnsupportedEncodingException, AlovoaException, NumberFormatException, InvalidKeyException,
-            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidAlgorithmParameterException {
-        return userService.getUserdata(idEnc);
+    @GetMapping(value = "/userdata/{uuid}")
+    public ResponseEntity<Resource> getUserdata(@PathVariable UUID uuid) throws JsonProcessingException,
+            AlovoaException, NumberFormatException {
+        return userService.getUserdata(uuid);
     }
 
-    @PostMapping(value = "/onboarding", consumes = "application/json")
-    public void onboarding(@RequestBody ProfileOnboardingDto dto) throws AlovoaException, IOException {
-        userService.onboarding(dto);
-    }
-
-    @PostMapping(value = "/delete/profile-picture")
-    public void deleteProfilePicture() throws AlovoaException {
-        userService.deleteProfilePicture();
-    }
-
-    @PostMapping(value = "/update/profile-picture", consumes = "text/plain")
-    public void updateProfilePicture(@RequestBody String imageB64) throws AlovoaException, IOException {
-        if (Tools.getBase64Size(imageB64) > mediaMaxSize) {
+    @PostMapping(value = "/onboarding", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public void onboarding(@RequestParam("file") MultipartFile file, @RequestParam("data") String dto)
+            throws AlovoaException, IOException {
+        byte[] bytes = file.getBytes();
+        if (bytes.length > mediaMaxSize) {
             throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
         }
-        userService.updateProfilePicture(imageB64);
+        userService.onboarding(bytes, objectMapper.readValue(dto, ProfileOnboardingDto.class));
     }
 
-    @PostMapping(value = "/update/verification-picture", consumes = "text/plain")
-    public void updateVerificationPicture(@RequestBody String imageB64) throws AlovoaException, IOException {
-        if (Tools.getBase64Size(imageB64) > mediaMaxSize) {
+    @PostMapping(value = "/update/profile-picture", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public void updateProfilePicture(@RequestParam("file") MultipartFile file, @RequestParam("mime") String mimeType)
+            throws AlovoaException, IOException {
+        byte[] bytes = file.getBytes();
+        if (bytes.length > mediaMaxSize) {
             throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
         }
-        userService.updateVerificationPicture(imageB64);
+        userService.updateProfilePicture(bytes, mimeType);
     }
 
-    @PostMapping(value = "/update/verification-picture/upvote/{userIdEnc}")
-    public void upvoteVerificationPicture(@PathVariable String userIdEnc) throws AlovoaException, IOException,
+    @PostMapping(value = "/update/verification-picture")
+    public void updateVerificationPicture(@RequestParam("file") MultipartFile file, @RequestParam("mime") String mimeType)
+            throws AlovoaException, IOException {
+        byte[] bytes = file.getBytes();
+        if (bytes.length > mediaMaxSize) {
+            throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
+        }
+        userService.updateVerificationPicture(bytes, mimeType);
+    }
+
+    @PostMapping(value = "/update/verification-picture/upvote/{uuid}")
+    public void upvoteVerificationPicture(@PathVariable UUID uuid) throws AlovoaException, IOException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException,
             BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        userService.upvoteVerificationPicture(userIdEnc);
+        userService.upvoteVerificationPicture(uuid);
     }
 
-    @PostMapping(value = "/update/verification-picture/downvote/{userIdEnc}")
-    public void downvoteVerificationPicture(@PathVariable String userIdEnc) throws AlovoaException, IOException,
-            InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException,
-            BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        userService.downvoteVerificationPicture(userIdEnc);
+    @PostMapping(value = "/update/verification-picture/downvote/{uuid}")
+    public void downvoteVerificationPicture(@PathVariable UUID uuid) throws AlovoaException {
+        userService.downvoteVerificationPicture(uuid);
     }
 
-    @GetMapping(value = "/get/audio/{userIdEnc}")
-    public String getAudio(@PathVariable String userIdEnc) throws NumberFormatException, InvalidKeyException,
-            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidAlgorithmParameterException {
-        return userService.getAudio(userIdEnc);
+    @GetMapping(value = "/get/audio/{uuid}")
+    public String getAudio(@PathVariable UUID uuid) throws NumberFormatException, AlovoaException {
+        return userService.getAudio(uuid);
     }
 
     @PostMapping(value = "/delete/audio")
@@ -114,12 +117,13 @@ public class UserController {
     }
 
     @PostMapping(value = "/update/audio/{mimeType}", consumes = "text/plain")
-    public void updateAudio(@RequestBody String audioB64, @PathVariable String mimeType) throws AlovoaException,
-            UnsupportedAudioFileException, IOException {
-        if (Tools.getBase64Size(audioB64) > mediaMaxSize) {
+    public void updateAudio(@RequestParam("file") MultipartFile file, @RequestParam("mime") String mimeType)
+            throws AlovoaException, UnsupportedAudioFileException, IOException {
+        byte[] bytes = file.getBytes();
+        if (bytes.length > audioMaxSize) {
             throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
         }
-        userService.updateAudio(audioB64, mimeType);
+        userService.updateAudio(bytes, mimeType);
     }
 
     @PostMapping(value = "/update/description", consumes = "text/plain")
@@ -177,12 +181,14 @@ public class UserController {
         userService.updateUnits(units);
     }
 
-    @PostMapping(value = "/image/add", consumes = "text/plain")
-    public List<UserImage> addImage(@RequestBody String imageB64) throws AlovoaException, IOException {
-        if (Tools.getBase64Size(imageB64) > mediaMaxSize) {
+    @PostMapping(value = "/image/add", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public List<UserImageDto> addImage(@RequestParam("file") MultipartFile file, @RequestParam("mime") String mimeType)
+            throws AlovoaException, IOException {
+        byte[] bytes = file.getBytes();
+        if (bytes.length > mediaMaxSize) {
             throw new AlovoaException(AlovoaException.MAX_MEDIA_SIZE_EXCEEDED);
         }
-        return userService.addImage(imageB64);
+        return userService.addImage(bytes, mimeType);
     }
 
     @PostMapping("/image/delete/{imageId}")
@@ -190,43 +196,35 @@ public class UserController {
         userService.deleteImage(imageId);
     }
 
-    @PostMapping(value = "/like/{idEnc}")
-    public void likeUser(@PathVariable String idEnc) throws AlovoaException, GeneralSecurityException, IOException {
-        userService.likeUser(idEnc, null);
+    @PostMapping(value = "/like/{uuid}")
+    public void likeUser(@PathVariable UUID uuid) throws AlovoaException {
+        userService.likeUser(uuid, null);
     }
 
-    @PostMapping(value = "/like/{idEnc}/{message}")
-    public void likeUser(@PathVariable String idEnc, @PathVariable String message) throws AlovoaException,
-            GeneralSecurityException, IOException {
-        userService.likeUser(idEnc, message);
+    @PostMapping(value = "/like/{uuid}/{message}")
+    public void likeUser(@PathVariable UUID uuid, @PathVariable String message) throws AlovoaException {
+        userService.likeUser(uuid, message);
     }
 
-    @PostMapping(value = "/hide/{idEnc}")
-    public void hideUser(@PathVariable String idEnc) throws NumberFormatException, InvalidKeyException,
-            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidAlgorithmParameterException, AlovoaException {
-        userService.hideUser(idEnc);
+    @PostMapping(value = "/hide/{uuid}")
+    public void hideUser(@PathVariable UUID uuid) throws NumberFormatException, AlovoaException {
+        userService.hideUser(uuid);
     }
 
-    @PostMapping(value = "/block/{idEnc}")
-    public void blockUser(@PathVariable String idEnc) throws NumberFormatException, InvalidKeyException,
-            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidAlgorithmParameterException, AlovoaException {
-        userService.blockUser(idEnc);
+    @PostMapping(value = "/block/{uuid}")
+    public void blockUser(@PathVariable UUID uuid) throws NumberFormatException, AlovoaException {
+        userService.blockUser(uuid);
     }
 
-    @PostMapping(value = "/unblock/{idEnc}")
-    public void unblockUser(@PathVariable String idEnc) throws NumberFormatException, InvalidKeyException,
-            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidAlgorithmParameterException, AlovoaException {
-        userService.unblockUser(idEnc);
+    @PostMapping(value = "/unblock/{uuid}")
+    public void unblockUser(@PathVariable UUID uuid) throws NumberFormatException, AlovoaException {
+        userService.unblockUser(uuid);
     }
 
-    @PostMapping(value = "/report/{idEnc}", consumes = "text/plain")
-    public void reportUser(@PathVariable String idEnc, @RequestBody String comment) throws NumberFormatException,
-            InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException, IllegalBlockSizeException,
-            BadPaddingException, NoSuchPaddingException, InvalidAlgorithmParameterException, AlovoaException {
-        userService.reportUser(idEnc, comment);
+    @PostMapping(value = "/report/{uuid}", consumes = "text/plain")
+    public void reportUser(@PathVariable UUID uuid, @RequestBody String comment) throws NumberFormatException,
+            AlovoaException {
+        userService.reportUser(uuid, comment);
     }
 
     @GetMapping(value = "/status/new-alert")
@@ -234,7 +232,7 @@ public class UserController {
         return userService.hasNewAlert();
     }
 
-    @RequestMapping(value = "/status/new-alert/{lang}")
+    @GetMapping(value = "/status/new-alert/{lang}")
     public boolean newAlert2(@PathVariable String lang) throws AlovoaException {
         return userService.hasNewAlert(lang);
     }

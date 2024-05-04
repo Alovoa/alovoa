@@ -36,7 +36,7 @@ public class NotificationDto {
         dto.setMessage(n.getMessage());
         dto.setUserFromDto(
                 UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(ignoreIntention)
-                        .currentUser(currentUser).user(n.getUserFrom()).textEncryptor(textEncryptor).userService(userService).build()));
+                        .currentUser(currentUser).user(n.getUserFrom()).userService(userService).build()));
         return dto;
     }
 }

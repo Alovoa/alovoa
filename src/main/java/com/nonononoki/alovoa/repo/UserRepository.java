@@ -11,10 +11,13 @@ import org.springframework.data.repository.query.Param;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
 	User findByEmail(String email);
+
+	User findByUuid(UUID uuid);
 
 	long countByConfirmed(boolean confirmed);
 
