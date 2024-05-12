@@ -46,7 +46,7 @@
                     class="fa fa-user"></i></button>
             <button class="button" th:onclick="viewProfileMedia([[${report.toUuid}]])"><i
                     class="fa fa-photo-video"></i></button>
-            <button class="button" th:onclick="deleteReport([[${report.id}]])"
+            <button class="button" th:onclick="deleteReport([[${report.id}]], [[${report.userTo.id}]])"
                     th:text="#{admin.delete-report}"></button>
             <button class="button" th:onclick="removeDescription([[${report.toUuid}]])"
                     th:text="#{admin.remove-description}"></button>
