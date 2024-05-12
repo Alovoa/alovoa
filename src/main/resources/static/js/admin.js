@@ -22,12 +22,13 @@ function viewProfileMedia(uuid) {
 	window.open(url, '_blank').focus();
 }
 
-function deleteReport(id) {
+function deleteReport(id, idReal) {
 	$.ajax({
 		type: "POST",
 		url: "/admin/report/delete/" + id,
 		success: function() {
 			$("#report" + id).hide();
+			$(".user" + idReal).hide();
 		},
 		error: function(e) {
 			console.log(e);

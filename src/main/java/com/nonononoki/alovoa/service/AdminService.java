@@ -30,7 +30,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -95,16 +94,19 @@ public class AdminService {
     public void deleteReport(long id) throws AlovoaException {
         checkRights();
 
-        UserReport report = userReportRepo.findById(id).orElse(null);
-        if (report == null) {
+        UserReport r = userReportRepo.findById(id).orElse(null);
+        if (r == null) {
             throw new AlovoaException("report_not_found");
         }
-        try {
-            User u = report.getUserFrom();
-            u.getReported().remove(report);
-            userRepo.saveAndFlush(u);
-        } catch (Exception e) {
-            userReportRepo.delete(report);
+
+        for (UserReport report : userReportRepo.findByUserTo(r.getUserTo())) {
+            try {
+                User u = report.getUserFrom();
+                u.getReported().remove(report);
+                userRepo.saveAndFlush(u);
+            } catch (Exception e) {
+                userReportRepo.delete(report);
+            }
         }
     }
 
