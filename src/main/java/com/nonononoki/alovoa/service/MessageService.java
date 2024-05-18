@@ -90,7 +90,7 @@ public class MessageService {
 		conversationRepo.saveAndFlush(c);
 
 		if(user.getUserSettings().isEmailChat()){
-			mailService.sendChatNotificationMail(currUser, user, message);
+			mailService.sendChatNotificationMail(user, currUser, message);
 		}
 	}
 	
