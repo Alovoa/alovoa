@@ -158,6 +158,6 @@ public class MailService {
         Locale locale = Tools.getUserLocale(user);
         String subject = messageSource.getMessage("backend.mail.chat.subject", new String[]{}, locale);
         String body = messageSource.getMessage("backend.mail.chat.body", new String[]{currUser.getFirstName(), user.getFirstName(), message},locale);
-        sendMail(user.getEmail(), defaultFrom, subject, body);
+        sendMail(defaultFrom, user.getEmail(), subject, body);
     }
 }
