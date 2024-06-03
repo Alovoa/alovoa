@@ -26,6 +26,8 @@ $(function() {
 		param = "index.js.confirm-account-deleted";
 	} else if (url.includes("?account-deletion-requested")) {
         param = "index.js.account-deletion-requested";
+    } else if (url.includes("?auth-error")) {
+        param = "index.js.auth-error";
     }
 
 	if (param) {
