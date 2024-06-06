@@ -47,6 +47,9 @@ public class ScheduleService {
 	@Value("${app.schedule.delay.contact}")
 	private long contactDelay;
 
+	@Value("${app.schedule.delay.user.cleanup:}")
+	private long nonConfirmedUsersCleanupDelay;
+
 	private static final int HIDE_MAX = 20;
 
 	@Scheduled(fixedDelayString = "${app.schedule.short}")
@@ -63,7 +66,21 @@ public class ScheduleService {
 		if (enableSchedules) {
 			Date date = new Date();
 			cleanContact(date);
+			cleanNonConfirmedUsers(date);
 		}
+	}
+
+	private void cleanNonConfirmedUsers(final Date date) {
+		long ms = date.getTime();
+		ms -= nonConfirmedUsersCleanupDelay;
+		Date d = new Date(ms);
+
+		List<User> users = userRepo.findByConfirmedIsFalse().stream()
+				.filter(user -> (user.getDates() != null && user.getDates().getCreationDate().before(d)))
+				.toList();
+
+		userRepo.deleteAll(users);
+		userRepo.flush();
 	}
 
 	public void cleanCaptcha(Date date) {
