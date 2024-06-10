@@ -70,7 +70,7 @@ public class ScheduleService {
 		}
 	}
 
-	private void cleanNonConfirmedUsers(final Date date) {
+	public void cleanNonConfirmedUsers(final Date date) {
 		long ms = date.getTime();
 		ms -= nonConfirmedUsersCleanupDelay;
 		Date d = new Date(ms);
