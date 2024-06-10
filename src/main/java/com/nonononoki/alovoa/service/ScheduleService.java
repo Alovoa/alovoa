@@ -75,9 +75,7 @@ public class ScheduleService {
 		ms -= nonConfirmedUsersCleanupDelay;
 		Date d = new Date(ms);
 
-		List<User> users = userRepo.findByConfirmedIsFalse().stream()
-				.filter(user -> (user.getDates() != null && user.getDates().getCreationDate().before(d)))
-				.toList();
+		List<User> users = userRepo.findByConfirmedIsFalseAndDatesCreationDateBefore(d);
 
 		userRepo.deleteAll(users);
 		userRepo.flush();
