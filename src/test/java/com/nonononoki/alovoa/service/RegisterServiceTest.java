@@ -4,9 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nonononoki.alovoa.model.AlovoaException;
+import jakarta.mail.MessagingException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -157,26 +160,49 @@ public class RegisterServiceTest {
 		return testUsers;
 	}
 
+	public static List<User> createMockNewUsers(CaptchaService captchaService, RegisterService registerService,
+											int numberOfUsersToCreate) throws Exception {
+		List<User> newUsers = new ArrayList<>();
+
+		for (int i = 0; i < numberOfUsersToCreate; ++i) {
+			String userEmail = "non0" + i + "nonoki@gmail.com";
+			// register and confirm test users
+			Captcha c1 = captchaService.generate();
+			RegisterDto user1Dto = createTestUserDto(1, c1, userEmail, USER1_AGE + i);
+			String tokenContent1 = registerService.register(user1Dto);
+			User user = registerService.registerConfirm(tokenContent1);
+			newUsers.add(user);
+		}
+
+		return newUsers;
+	}
+
 	public static void deleteAllUsers(UserService userService, AuthService authService, CaptchaService captchaService,
 			ConversationRepository conversationRepo, UserRepository userRepo) throws Exception {
 		if (testUsers != null) {
 			for (User user : testUsers) {
-				if (!user.isAdmin()) {
-					user = userRepo.findById(user.getId()).get();
-					Mockito.when(authService.getCurrentUser()).thenReturn(user);
-					Mockito.when(authService.getCurrentUser(true)).thenReturn(user);
-					UserDeleteToken token = userService.deleteAccountRequest();
-					UserDeleteAccountDto dto = new UserDeleteAccountDto();
-					Captcha captcha = captchaService.generate();
-					dto.setCaptchaId(captcha.getId());
-					dto.setCaptchaText(captcha.getText());
-					dto.setConfirm(true);
-					dto.setEmail(user.getEmail());
-					dto.setTokenString(token.getContent());
-					userService.deleteAccountConfirm(dto);
-				}
+				deleteGivenUser(user, userService, userRepo, captchaService, authService);
 			}
+
 			testUsers = null;
+		}
+	}
+
+	public static void deleteGivenUser(User user, final UserService userService, final UserRepository userRepo,
+								   final CaptchaService captchaService, final AuthService authService) throws Exception {
+		if (!user.isAdmin()) {
+			user = userRepo.findById(user.getId()).get();
+			Mockito.when(authService.getCurrentUser()).thenReturn(user);
+			Mockito.when(authService.getCurrentUser(true)).thenReturn(user);
+			UserDeleteToken token = userService.deleteAccountRequest();
+			UserDeleteAccountDto dto = new UserDeleteAccountDto();
+			Captcha captcha = captchaService.generate();
+			dto.setCaptchaId(captcha.getId());
+			dto.setCaptchaText(captcha.getText());
+			dto.setConfirm(true);
+			dto.setEmail(user.getEmail());
+			dto.setTokenString(token.getContent());
+			userService.deleteAccountConfirm(dto);
 		}
 	}
 
