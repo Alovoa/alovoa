@@ -4,6 +4,7 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.*;
 import lombok.Data;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 
@@ -20,9 +21,9 @@ public class UserGdpr {
     private String email;
     private String firstName;
     private String description;
-    private String profilePicture;
-    private String verificationPicture;
-    private String audio;
+    private UserProfilePicture profilePicture;
+    private UserVerificationPicture verificationPicture;
+    private UserAudio audio;
     private String language;
     private String country;
     private int units;
@@ -60,15 +61,10 @@ public class UserGdpr {
         u.setInterests(user.getInterests());
         u.setPreferedGenders(user.getPreferedGenders());
 
-        if (user.getAudio() != null) {
-            u.setAudio(user.getAudio().getData());
-        }
-        if (user.getProfilePicture() != null) {
-            u.setProfilePicture(user.getProfilePicture().getData());
-        }
-        if (user.getVerificationPicture() != null) {
-            u.setVerificationPicture(user.getVerificationPicture().getData());
-        }
+        u.setAudio(user.getAudio());
+        u.setProfilePicture(user.getProfilePicture());
+        u.setVerificationPicture(user.getVerificationPicture());
+
         u.setImages(user.getImages());
 
         u.setDonations(user.getDonations());
