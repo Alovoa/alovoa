@@ -15,7 +15,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -111,7 +110,7 @@ public class UserDto {
         dto.setFirstName(user.getFirstName());
         dto.setGender(user.getGender());
 
-        if(user.getVerificationPicture() != null) {
+        if (user.getVerificationPicture() != null) {
             dto.setVerificationPicture(UserDtoVerificationPicture.map(user, currentUser, userService, user.getVerificationPicture().getUuid()));
         }
 
@@ -133,9 +132,8 @@ public class UserDto {
         dto.setGender(user.getGender());
         dto.setIntention(user.getIntention());
         if (user.getProfilePicture() != null) {
-            UUID picUuid = user.getProfilePicture().getUuid() != null ? user.getProfilePicture().getUuid() : uuid;
-            dto.setProfilePicture(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
-                    MediaController.URL_PROFILE_PICTURE + picUuid);
+            UUID picUuid = Tools.getProfilePictureUUID(user.getProfilePicture(), userService);
+            dto.setProfilePicture(UserProfilePicture.getPublicUrl(userService.getDomain(), picUuid));
         }
         dto.setTotalDonations(user.getTotalDonations());
         dto.setNumBlockedByUsers(user.getBlockedByUsers().size());
@@ -143,7 +141,7 @@ public class UserDto {
         dto.setInterests(user.getInterests());
         if (user.getAudio() != null) {
             UUID picUuid = user.getAudio().getUuid() != null ? user.getAudio().getUuid() : uuid;
-            dto.setAudio(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
+            dto.setAudio( userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
                     MediaController.URL_AUDIO + picUuid);
         }
         dto.setHasAudio(user.getAudio() != null);
@@ -215,6 +213,7 @@ public class UserDto {
         return Long.parseLong(textEncryptor.decode(en));
     }
 
+    @Deprecated
     public static Optional<Long> decodeId(String id, TextEncryptorConverter textEncryptor) {
         try {
             String en = new String(Base64.getDecoder().decode(id));
@@ -225,34 +224,35 @@ public class UserDto {
         return Optional.empty();
     }
 
+
     public static String getUserZodiac(User user) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(user.getDates().getDateOfBirth());
         int month = cal.get(Calendar.MONTH) + 1;
         int day = cal.get(Calendar.DAY_OF_MONTH);
-        if ((month == 12 && day >= 22 && day <= 31) || (month == 1 && day >= 1 && day <= 19))
+        if (month == 12 && day >= 22 || month == 1 && day <= 19)
             return "capricorn";
-        else if ((month == 1 && day >= 20 && day <= 31) || (month == 2 && day >= 1 && day <= 17))
+        else if (month == 1 || month == 2 && day <= 17)
             return "aquarius";
-        else if ((month == 2 && day >= 18 && day <= 29) || (month == 3 && day >= 1 && day <= 19))
+        else if (month == 2 && day <= 29 || month == 3 && day <= 19)
             return "pisces";
-        else if ((month == 3 && day >= 20 && day <= 31) || (month == 4 && day >= 1 && day <= 19))
+        else if (month == 3 || month == 4 && day <= 19)
             return "aries";
-        else if ((month == 4 && day >= 20 && day <= 30) || (month == 5 && day >= 1 && day <= 20))
+        else if (month == 4 && day <= 30 || month == 5 && day <= 20)
             return "taurus";
-        else if ((month == 5 && day >= 21 && day <= 31) || (month == 6 && day >= 1 && day <= 20))
+        else if (month == 5 || month == 6 && day <= 20)
             return "gemini";
-        else if ((month == 6 && day >= 21 && day <= 30) || (month == 7 && day >= 1 && day <= 22))
+        else if (month == 6 && day <= 30 || month == 7 && day <= 22)
             return "cancer";
-        else if ((month == 7 && day >= 23 && day <= 31) || (month == 8 && day >= 1 && day <= 22))
+        else if (month == 7 || month == 8 && day <= 22)
             return "leo";
-        else if ((month == 8 && day >= 23 && day <= 31) || (month == 9 && day >= 1 && day <= 22))
+        else if (month == 8 || month == 9 && day <= 22)
             return "virgo";
-        else if ((month == 9 && day >= 23 && day <= 30) || (month == 10 && day >= 1 && day <= 22))
+        else if (month == 9 && day <= 30 || month == 10 && day <= 22)
             return "libra";
-        else if ((month == 10 && day >= 23 && day <= 31) || (month == 11 && day >= 1 && day <= 21))
+        else if (month == 10 || month == 11 && day <= 21)
             return "scorpio";
-        else if ((month == 11 && day >= 22 && day <= 30) || (month == 12 && day >= 1 && day <= 21))
+        else if (month == 11 && day <= 30 || month == 12)
             return "sagittarius";
         return null;
 
@@ -281,7 +281,7 @@ public class UserDto {
             UserDtoVerificationPicture verificationPicture = new UserDtoVerificationPicture();
             verificationPicture.setText(userService.getVerificationCode(user));
             UserVerificationPicture pic = user.getVerificationPicture();
-            verificationPicture.setHasPicture(pic != null && pic.getData() != null);
+            verificationPicture.setHasPicture(pic != null && pic.getBin() != null);
 
             if (pic == null) {
                 return verificationPicture;
@@ -290,8 +290,7 @@ public class UserDto {
             UUID picUuid = pic.getUuid() != null ? pic.getUuid() : uuid;
 
             if (!pic.isVerifiedByAdmin()) {
-                verificationPicture.setData(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
-                        MediaController.URL_VERIFICATION_PICTURE + uuid);
+                verificationPicture.setData(UserVerificationPicture.getPublicUrl(userService.getDomain(), uuid));
             }
 
             //only show verification for users with verification

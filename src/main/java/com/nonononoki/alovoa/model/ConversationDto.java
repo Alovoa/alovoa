@@ -1,19 +1,12 @@
 package com.nonononoki.alovoa.model;
 
 import com.nonononoki.alovoa.Tools;
-import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
+import com.nonononoki.alovoa.entity.user.UserProfilePicture;
 import com.nonononoki.alovoa.service.UserService;
 import lombok.Data;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.UUID;
 
@@ -39,7 +32,8 @@ public class ConversationDto {
         User u = c.getPartner(currentUser);
         dto.setUserName(u.getFirstName());
         if (u.getProfilePicture() != null) {
-            dto.setUserProfilePicture(u.getProfilePicture().getData());
+            dto.setUserProfilePicture(UserProfilePicture.getPublicUrl(userService.getDomain(),
+                    Tools.getProfilePictureUUID(u.getProfilePicture(), userService)));
         }
         dto.setUuid(Tools.getUserUUID(u, userService));
         return dto;
