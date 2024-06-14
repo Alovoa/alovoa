@@ -41,13 +41,14 @@ public class MediaService {
     @Autowired
     private UserVerificationPictureRepository userVerificationPictureRepository;
 
+    @SuppressWarnings("deprecation")
     public ResponseEntity<byte[]> getProfilePicture(UUID uuid) {
         UserProfilePicture profilePic = userProfilePictureRepository.findByUuid(uuid);
         if (profilePic != null) {
             return getImageDataBase(profilePic.getBin(), profilePic.getBinMime());
         }
         User user = userRepository.findByUuid(uuid);
-        if (user.getProfilePicture().getData() != null) {
+        if (user.getProfilePicture().getBin() == null) {
             return getImageDataBase(user.getProfilePicture().getData());
         } else {
             return getImageDataBase(user.getProfilePicture().getBin(), user.getProfilePicture().getBinMime());
@@ -60,12 +61,8 @@ public class MediaService {
             return getImageDataBase(verificationPicture.getBin(), verificationPicture.getBinMime());
         }
         User user = userRepository.findByUuid(uuid);
-        if (user.getVerificationPicture().getData() != null) {
-            return getImageDataBase(user.getVerificationPicture().getData());
-        } else {
-            return getImageDataBase(user.getVerificationPicture().getBin(),
-                    user.getVerificationPicture().getBinMime());
-        }
+        return getImageDataBase(user.getVerificationPicture().getBin(),
+                user.getVerificationPicture().getBinMime());
     }
 
     public ResponseEntity<byte[]> getAudio(UUID uuid) {
@@ -76,11 +73,7 @@ public class MediaService {
         }
         if (bytes == null) {
             User user = userRepository.findByUuid(uuid);
-            if (user.getAudio().getData() != null) {
-                bytes = getBase64Data(user.getAudio().getData());
-            } else {
-                bytes = user.getAudio().getBin();
-            }
+            bytes = user.getAudio().getBin();
         }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("audio", "wav"));
@@ -88,9 +81,10 @@ public class MediaService {
         return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }
 
+    @SuppressWarnings("deprecation")
     public ResponseEntity<byte[]> getImage(UUID uuid) {
         UserImage image = userImageRepository.findByUuid(uuid);
-        if (image.getContent() != null) {
+        if (image.getBin() == null) {
             return getImageDataBase(image.getContent());
         } else {
             return getImageDataBase(image.getBin(), image.getBinMime());

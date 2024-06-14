@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.entity.User;
 
+import com.nonononoki.alovoa.rest.MediaController;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,10 +34,6 @@ public class UserVerificationPicture {
     @ManyToMany(mappedBy = "verificationNo")
     private List<User> userNo;
 
-    @Deprecated
-    @Column(columnDefinition = "mediumtext")
-    private String data;
-
     @Lob
     @Column(length=5000000)
     private byte[] bin;
@@ -46,4 +43,9 @@ public class UserVerificationPicture {
     private Date date;
 
     private boolean verifiedByAdmin = false;
+
+    public static String getPublicUrl(String domain, UUID uuid) {
+        return domain + MediaController.URL_REQUEST_MAPPING +
+                MediaController.URL_VERIFICATION_PICTURE + uuid;
+    }
 }
