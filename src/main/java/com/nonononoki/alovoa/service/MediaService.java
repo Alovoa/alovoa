@@ -44,14 +44,10 @@ public class MediaService {
     @SuppressWarnings("deprecation")
     public ResponseEntity<byte[]> getProfilePicture(UUID uuid) {
         UserProfilePicture profilePic = userProfilePictureRepository.findByUuid(uuid);
-        if (profilePic != null) {
-            return getImageDataBase(profilePic.getBin(), profilePic.getBinMime());
-        }
-        User user = userRepository.findByUuid(uuid);
-        if (user.getProfilePicture().getBin() == null) {
-            return getImageDataBase(user.getProfilePicture().getData());
+        if (profilePic.getBin() == null) {
+            return getImageDataBase(profilePic.getData());
         } else {
-            return getImageDataBase(user.getProfilePicture().getBin(), user.getProfilePicture().getBinMime());
+            return getImageDataBase(profilePic.getBin(),profilePic.getBinMime());
         }
     }
 
