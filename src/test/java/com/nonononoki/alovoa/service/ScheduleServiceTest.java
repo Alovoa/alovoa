@@ -3,6 +3,7 @@ package com.nonononoki.alovoa.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -164,6 +165,39 @@ class ScheduleServiceTest {
 		assertEquals(1, userHideRepo.count());
 	}
 
+	@Test
+	public void testScheduleLong() throws Exception {
+		// CLEAN-UP NON-CONFIRMED USERS
+		var mockNewUsers = RegisterServiceTest.createMockNewUsers(captchaService, registerService, 3);
+		User mockUser1 = mockNewUsers.get(0);
+		User mockUser2 = mockNewUsers.get(1);
+		User mockUser3 = mockNewUsers.get(2);
+
+		try {
+			// Non-confirmed user with more than 15 days creation date
+			mockUser1.setConfirmed(false);
+			var dates = mockUser1.getDates();
+			dates.setCreationDate(addUnitsToDate(dates.getCreationDate(), Calendar.DATE, -15));
+
+			// Non-confirmed user with 14 days creation date
+			mockUser2.setConfirmed(false);
+			dates = mockUser2.getDates();
+			dates.setCreationDate(addUnitsToDate(dates.getCreationDate(), Calendar.DATE, -14));
+
+			// Confirmed user with more than 15 days creation date
+			mockUser3.setConfirmed(true);
+			dates = mockUser3.getDates();
+			dates.setCreationDate(addUnitsToDate(dates.getCreationDate(), Calendar.DATE, -15));
+			userRepo.saveAllAndFlush(List.of(mockUser1, mockUser2, mockUser3));
+			var initialCount = userRepo.count();
+
+			scheduleService.cleanNonConfirmedUsers(new Date());
+			assertEquals(2, (initialCount - userRepo.count()));
+		} finally {
+			RegisterServiceTest.deleteGivenUser(mockUser3, userService, userRepo, captchaService, authService);
+		}
+	}
+
 	private Captcha generateCaptcha(String hashCode) {
 		Captcha captcha = new Captcha();
 		captcha.setDate(new Date());
@@ -172,5 +206,13 @@ class ScheduleServiceTest {
 		captcha.setHashCode(hashCode);
 		captcha = captchaRepo.saveAndFlush(captcha);
 		return captcha;
+	}
+
+	private static Date addUnitsToDate(final Date inputDate, final int unitField, final int unitAmount) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(inputDate);
+		calendar.add(unitField, unitAmount);
+
+		return calendar.getTime();
 	}
 }
