@@ -132,7 +132,7 @@ public class UserDto {
         dto.setGender(user.getGender());
         dto.setIntention(user.getIntention());
         if (user.getProfilePicture() != null) {
-            UUID picUuid = user.getProfilePicture().getUuid() != null ? user.getProfilePicture().getUuid() : uuid;
+            UUID picUuid = Tools.getProfilePictureUUID(user.getProfilePicture(), userService);
             dto.setProfilePicture(UserProfilePicture.getPublicUrl(userService.getDomain(), picUuid));
         }
         dto.setTotalDonations(user.getTotalDonations());
@@ -141,7 +141,7 @@ public class UserDto {
         dto.setInterests(user.getInterests());
         if (user.getAudio() != null) {
             UUID picUuid = user.getAudio().getUuid() != null ? user.getAudio().getUuid() : uuid;
-            dto.setAudio(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
+            dto.setAudio( userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
                     MediaController.URL_AUDIO + picUuid);
         }
         dto.setHasAudio(user.getAudio() != null);

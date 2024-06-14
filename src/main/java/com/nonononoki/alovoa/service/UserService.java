@@ -82,6 +82,8 @@ public class UserService {
     @Autowired
     private UserNotificationRepository userNotificationRepo;
     @Autowired
+    private UserProfilePictureRepository userProfilePictureRepository;
+    @Autowired
     private UserVerificationPictureRepository userVerificationPictureRepo;
     @Autowired
     private ConversationRepository conversationRepo;
@@ -991,6 +993,13 @@ public class UserService {
 
         user.getVerificationPicture().getUserNo().add(currentUser);
         userRepo.saveAndFlush(user);
+    }
+
+    public void updateProfilePictureUUID(UserProfilePicture image, UUID uuid) {
+        if(image.getUuid() == null) {
+            image.setUuid(uuid);
+            userProfilePictureRepository.saveAndFlush(image);
+        }
     }
 
     public void updateUUID(User user, UUID uuid) {

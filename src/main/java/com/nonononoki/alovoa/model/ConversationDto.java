@@ -32,7 +32,8 @@ public class ConversationDto {
         User u = c.getPartner(currentUser);
         dto.setUserName(u.getFirstName());
         if (u.getProfilePicture() != null) {
-            dto.setUserProfilePicture(UserProfilePicture.getPublicUrl(userService.getDomain(), u.getProfilePicture().getUuid()));
+            dto.setUserProfilePicture(UserProfilePicture.getPublicUrl(userService.getDomain(),
+                    Tools.getProfilePictureUUID(u.getProfilePicture(), userService)));
         }
         dto.setUuid(Tools.getUserUUID(u, userService));
         return dto;
