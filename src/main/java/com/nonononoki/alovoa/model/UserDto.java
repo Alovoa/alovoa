@@ -61,6 +61,7 @@ public class UserDto {
     private long numReports;
     private boolean blockedByCurrentUser;
     private boolean reportedByCurrentUser;
+    private boolean likesCurrentUser;
     private boolean likedByCurrentUser;
     private boolean hiddenByCurrentUser;
     private long numberReferred;
@@ -172,6 +173,11 @@ public class UserDto {
                 dto.reportedByCurrentUser = currentUser.getReported().stream()
                         .filter(o -> o.getUserTo().getId() != null)
                         .anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
+            }
+            if (user.getLikes() != null) {
+                dto.likesCurrentUser = user.getLikes().stream()
+                        .filter(o -> o.getUserTo().getId() != null)
+                        .anyMatch(o -> o.getUserTo().getId().equals(currentUser.getId()));
             }
             if (currentUser.getLikes() != null) {
                 dto.likedByCurrentUser = currentUser.getLikes().stream()
