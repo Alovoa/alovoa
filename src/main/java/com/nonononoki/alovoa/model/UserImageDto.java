@@ -30,6 +30,6 @@ public class UserImageDto {
 
     public static String getPublicUrl(String domain, UUID uuid) {
         return domain + MediaController.URL_REQUEST_MAPPING +
-                MediaController.URL_PROFILE_PICTURE + uuid;
+                MediaController.URL_IMAGE + uuid;
     }
 }
