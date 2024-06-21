@@ -152,8 +152,7 @@ public class RegisterService {
     }
 
     public void registerOauth(RegisterDto dto) throws MessagingException, IOException, AlovoaException,
-            NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-            NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+            NumberFormatException {
 
         String email = Tools.cleanEmail(authService.getOauth2Email());
         if (email == null) {
@@ -210,8 +209,7 @@ public class RegisterService {
     }
 
     public User registerConfirm(String tokenString) throws MessagingException, IOException, AlovoaException,
-            NumberFormatException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-            NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+            NumberFormatException {
         UserRegisterToken token = registerTokenRepo.findByContent(tokenString);
 
         if (token == null) {
@@ -225,7 +223,7 @@ public class RegisterService {
         }
 
         if (user.isConfirmed()) {
-            throw new AlovoaException("user_not_confirmed");
+            throw new AlovoaException("user_already_confirmed");
         }
 
         try {

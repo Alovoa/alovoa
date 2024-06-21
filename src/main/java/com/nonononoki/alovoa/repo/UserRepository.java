@@ -29,7 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 				request.getLikeIds(), request.getHideIds(), request.getBlockIds(), request.getGenderIds(), page);
 	}
 
-	List<User> findByConfirmedIsFalseAndDatesCreationDateBefore(Date date);
+	List<User> findByConfirmedIsFalseAndAdminFalseAndDatesCreationDateBefore(Date date);
 
 	@Query(value = "SELECT u FROM User u WHERE u.disabled = FALSE AND u.admin = FALSE AND u.confirmed = TRUE AND u.intention IS NOT NULL AND "
 			+ "u.locationLatitude IS NOT NULL AND u.locationLongitude IS NOT NULL AND u.profilePicture IS NOT NULL "
