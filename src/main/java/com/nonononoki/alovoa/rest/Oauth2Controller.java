@@ -101,9 +101,7 @@ public class Oauth2Controller {
 
 	@SuppressWarnings("rawtypes")
 	@GetMapping("/login/oauth2/success")
-	public ModelAndView oauth2Success()
-			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+	public ModelAndView oauth2Success() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		try {
