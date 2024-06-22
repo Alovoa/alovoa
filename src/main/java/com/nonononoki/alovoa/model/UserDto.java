@@ -142,7 +142,7 @@ public class UserDto {
         dto.setInterests(user.getInterests());
         if (user.getAudio() != null) {
             UUID picUuid = user.getAudio().getUuid() != null ? user.getAudio().getUuid() : uuid;
-            dto.setAudio( userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
+            dto.setAudio(userService.getDomain() + MediaController.URL_REQUEST_MAPPING +
                     MediaController.URL_AUDIO + picUuid);
         }
         dto.setHasAudio(user.getAudio() != null);
@@ -166,28 +166,28 @@ public class UserDto {
         if (!user.equals(currentUser)) {
             if (currentUser.getBlockedUsers() != null) {
                 dto.blockedByCurrentUser = currentUser.getBlockedUsers().stream()
-                        .filter(o -> o.getUserTo().getId() != null)
-                        .anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
+                        .filter(o -> o.getUserTo() != null)
+                        .anyMatch(o -> Objects.equals(o.getUserTo().getId(), user.getId()));
             }
             if (currentUser.getReported() != null) {
                 dto.reportedByCurrentUser = currentUser.getReported().stream()
-                        .filter(o -> o.getUserTo().getId() != null)
-                        .anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
+                        .filter(o -> o.getUserTo() != null)
+                        .anyMatch(o -> Objects.equals(o.getUserTo().getId(), user.getId()));
             }
             if (user.getLikes() != null) {
                 dto.likesCurrentUser = user.getLikes().stream()
-                        .filter(o -> o.getUserTo().getId() != null)
-                        .anyMatch(o -> o.getUserTo().getId().equals(currentUser.getId()));
+                        .filter(o -> o.getUserTo() != null)
+                        .anyMatch(o -> Objects.equals(o.getUserTo().getId(), currentUser.getId()));
             }
             if (currentUser.getLikes() != null) {
                 dto.likedByCurrentUser = currentUser.getLikes().stream()
-                        .filter(o -> o.getUserTo().getId() != null)
-                        .anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
+                        .filter(o -> o.getUserTo() != null)
+                        .anyMatch(o -> Objects.equals(o.getUserTo().getId(), user.getId()));
             }
             if (currentUser.getHiddenUsers() != null) {
                 dto.hiddenByCurrentUser = currentUser.getHiddenUsers().stream()
-                        .filter(o -> o.getUserTo().getId() != null)
-                        .anyMatch(o -> o.getUserTo().getId().equals(user.getId()));
+                        .filter(o -> o.getUserTo() != null)
+                        .anyMatch(o -> Objects.equals(o.getUserTo().getId(), user.getId()));
             }
 
             List<UserInterest> commonInterests = new ArrayList<>();
