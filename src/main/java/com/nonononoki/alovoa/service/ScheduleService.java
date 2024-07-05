@@ -66,7 +66,7 @@ public class ScheduleService {
 		if (enableSchedules) {
 			Date date = new Date();
 			cleanContact(date);
-			cleanNonConfirmedUsers(date);
+			//cleanNonConfirmedUsers(date);
 		}
 	}
 
