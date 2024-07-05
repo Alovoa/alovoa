@@ -61,7 +61,7 @@ public class PasswordService {
 		User u = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
 
 		if (u == null) {
-			throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+			throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND + ": " + Tools.cleanEmail(dto.getEmail()));
 		}
 
 		if (u.isAdmin()) {
