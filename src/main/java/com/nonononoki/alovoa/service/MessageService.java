@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+import com.nonononoki.alovoa.validationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
 import com.nonononoki.alovoa.entity.user.ConversationCheckedDate;
@@ -73,9 +73,9 @@ public class MessageService {
 		m.setDate(new Date());
 		m.setUserFrom(user);
 		m.setUserTo(c.getPartner(user));
-		
-		if(Tools.isURLValid(message)) {
-			m.setAllowedFormatting(true);
+
+		if(validationUtils.isURLValid(message)) {
+				m.setAllowedFormatting(true);
 		}
 		c.getMessages().add(m);
 		conversationRepo.saveAndFlush(c);
