@@ -79,7 +79,7 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException {
 		try {
-			return new String(getDeCipher().doFinal(Base64.getUrlDecoder().decode(dbData)));
+			return new String(getDeCipher().doFinal(Base64.getUrlDecoder().decode(dbData)), StandardCharsets.UTF_8);
 		} catch (BadPaddingException e) {
 			throw new BadPaddingException();
 		}
