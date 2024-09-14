@@ -123,7 +123,7 @@ public class SecurityConfig {
                                 .deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER)
                                 .logoutUrl("/logout")
                                 .logoutSuccessUrl("/?logout")
-                ).oauth2Login(login -> login.loginPage("/login").defaultSuccessUrl("/login/oauth2/success"))
+                ).oauth2Login(login -> login.loginPage("/?auth-error").defaultSuccessUrl("/login/oauth2/success"))
                 .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .rememberMe(remember -> remember.rememberMeServices(oAuthRememberMeServices()).key(rememberKey))
                 .sessionManagement(session -> session.maximumSessions(10).expiredSessionStrategy(getSessionInformationExpiredStrategy())
