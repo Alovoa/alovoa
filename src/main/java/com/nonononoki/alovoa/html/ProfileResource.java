@@ -77,6 +77,8 @@ public class ProfileResource {
             mav.addObject("domain", domain);
             mav.addObject("referralsLeft", referralsLeft);
 
+            mav.addObject("settings.ignoreIntention", ignoreIntention);
+
             boolean showIntention = false;
             Date now = new Date();
             if (user.getDates().getIntentionChangeDate() == null
