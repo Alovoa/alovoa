@@ -204,6 +204,7 @@ public class SecurityConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
+        config.setAllowedOrigins(List.of("*"));
         config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("*"));
