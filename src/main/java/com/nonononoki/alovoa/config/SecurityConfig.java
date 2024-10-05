@@ -134,6 +134,7 @@ public class SecurityConfig {
                         .sessionRegistry(sessionRegistry()))
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowCredentials(true);
                     configuration.setAllowedOrigins(List.of(domain, urlFrontEnd));
                     configuration.setAllowedMethods(List.of("*"));
                     configuration.setAllowedHeaders(List.of("*"));
