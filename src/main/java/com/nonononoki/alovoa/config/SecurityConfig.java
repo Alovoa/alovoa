@@ -28,8 +28,6 @@ import org.springframework.security.web.authentication.session.SessionFixationPr
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.security.web.session.SimpleRedirectSessionInformationExpiredStrategy;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +42,12 @@ public class SecurityConfig {
 
     @Value("${app.login.remember.key}")
     private String rememberKey;
+
+    @Value("${app.url.front-end}")
+    private String urlFrontEnd;
+
+    @Value("${app.domain}")
+    private String domain;
 
     @Autowired
     private Environment env;
@@ -128,6 +132,14 @@ public class SecurityConfig {
                 .rememberMe(remember -> remember.rememberMeServices(oAuthRememberMeServices()).key(rememberKey))
                 .sessionManagement(session -> session.maximumSessions(10).expiredSessionStrategy(getSessionInformationExpiredStrategy())
                         .sessionRegistry(sessionRegistry()))
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowCredentials(true);
+                    configuration.setAllowedOrigins(List.of(domain, urlFrontEnd));
+                    configuration.setAllowedMethods(List.of("*"));
+                    configuration.setAllowedHeaders(List.of("*"));
+                    return configuration;
+                }))
                 .securityContext((securityContext) -> securityContext.requireExplicitSave(false));
 
         if (env.acceptsProfiles(Profiles.of("prod"))) {
@@ -197,18 +209,6 @@ public class SecurityConfig {
     @Bean
     AuthProvider authProvider() {
         return new AuthProvider();
-    }
-
-    @Bean
-    CorsFilter corsFilter() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        final CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(List.of("*"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowedMethods(List.of("*"));
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
     }
 
     public CustomTokenBasedRememberMeServices getOAuthRememberMeServices() {
