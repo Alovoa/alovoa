@@ -128,6 +128,13 @@ public class SecurityConfig {
                 .rememberMe(remember -> remember.rememberMeServices(oAuthRememberMeServices()).key(rememberKey))
                 .sessionManagement(session -> session.maximumSessions(10).expiredSessionStrategy(getSessionInformationExpiredStrategy())
                         .sessionRegistry(sessionRegistry()))
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOrigins(List.of("*"));
+                    configuration.setAllowedMethods(List.of("*"));
+                    configuration.setAllowedHeaders(List.of("*"));
+                    return configuration;
+                }))
                 .securityContext((securityContext) -> securityContext.requireExplicitSave(false));
 
         if (env.acceptsProfiles(Profiles.of("prod"))) {
@@ -197,19 +204,6 @@ public class SecurityConfig {
     @Bean
     AuthProvider authProvider() {
         return new AuthProvider();
-    }
-
-    @Bean
-    CorsFilter corsFilter() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        final CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("*"));
-        config.setAllowedOriginPatterns(List.of("*"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowedMethods(List.of("*"));
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
     }
 
     public CustomTokenBasedRememberMeServices getOAuthRememberMeServices() {
