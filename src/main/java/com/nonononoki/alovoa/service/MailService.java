@@ -1,13 +1,10 @@
 package com.nonononoki.alovoa.service;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Locale;
-
+import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.Conversation;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +14,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.nonononoki.alovoa.Tools;
-import com.nonononoki.alovoa.entity.User;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 @Service
 public class MailService {
@@ -140,24 +140,30 @@ public class MailService {
         sendMail(user.getEmail(), defaultFrom, subject, body);
     }
 
-    public void sendLikeNotificationMail(User user){
+    public void sendLikeNotificationMail(User user) {
         Locale locale = Tools.getUserLocale(user);
         String subject = messageSource.getMessage("backend.mail.like.subject", new String[]{}, locale);
         String body = messageSource.getMessage("backend.mail.like.body", new String[]{user.getFirstName()}, locale);
         sendMail(user.getEmail(), defaultFrom, subject, body);
     }
 
-    public void sendMatchNotificationMail(User user){
+    public void sendMatchNotificationMail(User user) {
         Locale locale = Tools.getUserLocale(user);
         String subject = messageSource.getMessage("backend.mail.match.subject", new String[]{}, locale);
         String body = messageSource.getMessage("backend.mail.match.body", new String[]{user.getFirstName()}, locale);
         sendMail(user.getEmail(), defaultFrom, subject, body);
     }
 
-    public void sendChatNotificationMail(User user, User currUser, String message){
-        Locale locale = Tools.getUserLocale(user);
-        String subject = messageSource.getMessage("backend.mail.chat.subject", new String[]{}, locale);
-        String body = messageSource.getMessage("backend.mail.chat.body", new String[]{currUser.getFirstName(), user.getFirstName(), message},locale);
-        sendMail(defaultFrom, user.getEmail(), subject, body);
+    public boolean sendChatNotificationMail(User user, User currUser, String message, Conversation conversation) {
+        //only send mail notification if the previous message was NOT from current user in order to avoid spam
+        if (conversation.getMessages().size() <= 1 ||
+                !Objects.equals(conversation.getMessages().get(conversation.getMessages().size() - 2).getUserFrom().getId(), currUser.getId())) {
+            Locale locale = Tools.getUserLocale(user);
+            String subject = messageSource.getMessage("backend.mail.chat.subject", new String[]{}, locale);
+            String body = messageSource.getMessage("backend.mail.chat.body", new String[]{currUser.getFirstName(), user.getFirstName(), message}, locale);
+            sendMail(defaultFrom, user.getEmail(), subject, body);
+            return true;
+        }
+        return false;
     }
 }

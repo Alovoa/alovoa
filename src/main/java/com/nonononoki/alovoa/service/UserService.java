@@ -386,10 +386,10 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-    public void onboarding(byte[] bytes, ProfileOnboardingDto model) throws AlovoaException, IOException {
+    public User onboarding(byte[] bytes, ProfileOnboardingDto model) throws AlovoaException, IOException {
         User user = authService.getCurrentUser(true);
         if (user.getProfilePicture() != null || user.getDescription() != null) {
-            return;
+            return null;
         }
 
         Date now = new Date();
@@ -416,7 +416,10 @@ public class UserService {
             return interest;
         }).toList()));
 
-        userRepo.saveAndFlush(user);
+        user.getUserSettings().setEmailLike(model.isNotificationLike());
+        user.getUserSettings().setEmailChat(model.isNotificationChat());
+
+        return userRepo.saveAndFlush(user);
     }
 
     public void updateDescription(String description) throws AlovoaException {

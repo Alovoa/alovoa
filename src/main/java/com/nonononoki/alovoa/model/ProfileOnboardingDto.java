@@ -18,5 +18,9 @@ public class ProfileOnboardingDto {
 	private String description;
 	
 	private Set<String> interests;
+
+	private boolean notificationLike;
+
+	private boolean notificationChat;
 	
 }
