@@ -5,7 +5,9 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.entity.user.Gender;
 import com.nonononoki.alovoa.entity.user.UserDeleteToken;
+import com.nonononoki.alovoa.entity.user.UserInterest;
 import com.nonononoki.alovoa.entity.user.UserSettings;
 import com.nonononoki.alovoa.model.*;
 import com.nonononoki.alovoa.repo.ConversationRepository;
@@ -37,10 +39,12 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
@@ -202,7 +206,7 @@ class UserServiceTest {
         assertEquals(0, authService.getCurrentUser().getImages().size());
         userService.updateProfilePicture(img3, imgMimePng);
         assertNotNull(authService.getCurrentUser().getProfilePicture());
-        userService.updateAudio(Tools.resourceToBytes ("audio/file_example_MP3_700KB.mp3"), "mpeg");
+        userService.updateAudio(Tools.resourceToBytes("audio/file_example_MP3_700KB.mp3"), "mpeg");
         assertNotNull(user3.getAudio());
         userService.deleteAudio();
         assertNull(user3.getAudio());
@@ -213,7 +217,7 @@ class UserServiceTest {
 
 
         //PROFILE PICTURE
-        byte[] imgLong = Tools.resourceToBytes ("img/long.jpeg");
+        byte[] imgLong = Tools.resourceToBytes("img/long.jpeg");
         userService.updateProfilePicture(imgLong, "jpeg");
         byte[] imgWide = Tools.resourceToBytes("img/wide.webp");
         userService.updateProfilePicture(imgWide, "webp");
@@ -378,6 +382,40 @@ class UserServiceTest {
 
         assertNotNull(code);
         assertEquals(code, user1.getVerificationCode());
+    }
+
+    @Test
+    void testOnboarding() throws Exception {
+        User user1 = testUsers.get(0);
+        Mockito.when(authService.getCurrentUser()).thenReturn(user1);
+        Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
+
+        String imgMimePng = "png";
+        byte[] img1 = Tools.resourceToBytes("img/profile1.png");
+
+        String description = "description";
+        Long intentionId = 1L;
+        Set<String> interests = Set.of("int1", "int2");
+        List<Long> preferredGenders = List.of(1L, 2L);
+
+        ProfileOnboardingDto model = new ProfileOnboardingDto();
+        model.setProfilePictureMime(imgMimePng);
+        model.setDescription(description);
+        model.setIntention(intentionId);
+        model.setInterests(interests);
+        model.setPreferredGenders(preferredGenders);
+        model.setNotificationLike(false);
+        model.setNotificationChat(true);
+
+        user1 = userService.onboarding(img1, model);
+
+        assertEquals(description, user1.getDescription());
+        assertEquals(intentionId, user1.getIntention().getId());
+        assertTrue(interests.containsAll(user1.getInterests().stream().map(UserInterest::getText).collect(Collectors.toSet())));
+        assertTrue(preferredGenders.containsAll(user1.getPreferedGenders().stream().map(Gender::getId).toList()));
+        assertNotNull(user1.getProfilePicture());
+        assertFalse(user1.getUserSettings().isEmailLike());
+        assertTrue(user1.getUserSettings().isEmailChat());
     }
 
     private void removeAllInterests(List<User> ul) {
