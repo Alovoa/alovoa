@@ -22,14 +22,14 @@ import lombok.Setter;
 public class UserMiscInfo {
 	
 	@Transient
-	public static final long DRUGS_TOBACCO = 1;
+	public static final long DRUGS_TOBACCO_YES = 1;
 	@Transient
-	public static final long DRUGS_ALCOHOL = 2;
+	public static final long DRUGS_ALCOHOL_YES = 2;
 	@Transient
-	public static final long DRUGS_CANNABIS = 3;
+	public static final long DRUGS_CANNABIS_YES = 3;
 	@Transient
-	public static final long DRUGS_OTHER = 4;
-	
+	public static final long DRUGS_OTHER_YES = 4;
+
 	@Transient
 	public static final long RELATIONSHIP_SINGLE = 11;
 	@Transient
@@ -43,6 +43,24 @@ public class UserMiscInfo {
 	public static final long KIDS_NO = 21;
 	@Transient
 	public static final long KIDS_YES = 22;
+
+	@Transient
+	public static final long DRUGS_TOBACCO_NO = 31;
+	@Transient
+	public static final long DRUGS_ALCOHOL_NO = 32;
+	@Transient
+	public static final long DRUGS_CANNABIS_NO = 33;
+	@Transient
+	public static final long DRUGS_OTHER_NO = 34;
+
+	@Transient
+	public static final long DRUGS_TOBACCO_SOMETIMES = 41;
+	@Transient
+	public static final long DRUGS_ALCOHOL_SOMETIMES = 42;
+	@Transient
+	public static final long DRUGS_CANNABIS_SOMETIMES = 43;
+	@Transient
+	public static final long DRUGS_OTHER_SOMETIMES = 44;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

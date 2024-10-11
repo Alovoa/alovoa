@@ -84,17 +84,41 @@ public class EventListenerConfig {
 
 	private void setDefaultUserMiscInfo() {
 		if(userMiscInfoRepo.count() == 0) {
-			UserMiscInfo drugsTobaccoInfo = new UserMiscInfo();
-			drugsTobaccoInfo.setValue(UserMiscInfo.DRUGS_TOBACCO);
-			
-			UserMiscInfo drugsAlcoholInfo = new UserMiscInfo();
-			drugsAlcoholInfo.setValue(UserMiscInfo.DRUGS_ALCOHOL);
-			
-			UserMiscInfo drugsCannabisInfo = new UserMiscInfo();
-			drugsCannabisInfo.setValue(UserMiscInfo.DRUGS_CANNABIS);
-			
-			UserMiscInfo drugsOtherInfo = new UserMiscInfo();
-			drugsOtherInfo.setValue(UserMiscInfo.DRUGS_OTHER);
+			UserMiscInfo drugsTobaccoInfoYes = new UserMiscInfo();
+			drugsTobaccoInfoYes.setValue(UserMiscInfo.DRUGS_TOBACCO_YES);
+
+			UserMiscInfo drugsTobaccoInfoNo = new UserMiscInfo();
+			drugsTobaccoInfoNo.setValue(UserMiscInfo.DRUGS_TOBACCO_NO);
+
+			UserMiscInfo drugsTobaccoInfoSometimes = new UserMiscInfo();
+			drugsTobaccoInfoSometimes.setValue(UserMiscInfo.DRUGS_TOBACCO_SOMETIMES);
+
+			UserMiscInfo drugsAlcoholInfoYes = new UserMiscInfo();
+			drugsAlcoholInfoYes.setValue(UserMiscInfo.DRUGS_ALCOHOL_YES);
+
+			UserMiscInfo drugsAlcoholInfoNo = new UserMiscInfo();
+			drugsAlcoholInfoNo.setValue(UserMiscInfo.DRUGS_ALCOHOL_NO);
+
+			UserMiscInfo drugsAlcoholInfoSometimes = new UserMiscInfo();
+			drugsAlcoholInfoSometimes.setValue(UserMiscInfo.DRUGS_ALCOHOL_SOMETIMES);
+
+			UserMiscInfo drugsCannabisInfoYes = new UserMiscInfo();
+			drugsCannabisInfoYes.setValue(UserMiscInfo.DRUGS_CANNABIS_YES);
+
+			UserMiscInfo drugsCannabisInfoNo = new UserMiscInfo();
+			drugsCannabisInfoNo.setValue(UserMiscInfo.DRUGS_CANNABIS_NO);
+
+			UserMiscInfo drugsCannabisInfoSometimes = new UserMiscInfo();
+			drugsCannabisInfoSometimes.setValue(UserMiscInfo.DRUGS_CANNABIS_SOMETIMES);
+
+			UserMiscInfo drugsOtherInfoYes = new UserMiscInfo();
+			drugsOtherInfoYes.setValue(UserMiscInfo.DRUGS_OTHER_YES);
+
+			UserMiscInfo drugsOtherInfoNo = new UserMiscInfo();
+			drugsOtherInfoNo.setValue(UserMiscInfo.DRUGS_OTHER_NO);
+
+			UserMiscInfo drugsOtherInfoSometimes = new UserMiscInfo();
+			drugsOtherInfoSometimes.setValue(UserMiscInfo.DRUGS_OTHER_SOMETIMES);
 			
 			
 			UserMiscInfo relationshipSingleInfo = new UserMiscInfo();
@@ -117,10 +141,18 @@ public class EventListenerConfig {
 			kidsYesInfo.setValue(UserMiscInfo.KIDS_YES);
 			
 			userMiscInfoRepo.saveAllAndFlush(Arrays.asList(
-					drugsTobaccoInfo,
-					drugsAlcoholInfo,
-					drugsCannabisInfo,
-					drugsOtherInfo,
+					drugsTobaccoInfoYes,
+					drugsTobaccoInfoNo,
+					drugsTobaccoInfoSometimes,
+					drugsAlcoholInfoYes,
+					drugsAlcoholInfoNo,
+					drugsAlcoholInfoSometimes,
+					drugsCannabisInfoYes,
+					drugsCannabisInfoNo,
+					drugsCannabisInfoSometimes,
+					drugsOtherInfoYes,
+					drugsOtherInfoNo,
+					drugsOtherInfoSometimes,
 					relationshipSingleInfo,
 					relationshipTakenInfo,
 					relationshipOpenInfo,
