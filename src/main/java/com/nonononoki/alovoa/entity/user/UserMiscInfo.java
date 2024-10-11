@@ -14,11 +14,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.entity.User;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class UserMiscInfo {
 	
 	@Transient
@@ -73,4 +75,7 @@ public class UserMiscInfo {
 	@Column(unique=true)
 	private long value;
 
+	public UserMiscInfo(long value) {
+		this.value = value;
+	}
 }

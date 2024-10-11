@@ -6,5 +6,7 @@ import com.nonononoki.alovoa.entity.user.UserMiscInfo;
 
 public interface UserMiscInfoRepository extends JpaRepository<UserMiscInfo, Long> {
 	UserMiscInfo findByValue(long value);
+
+	boolean existsByValue(long value);
 }
 

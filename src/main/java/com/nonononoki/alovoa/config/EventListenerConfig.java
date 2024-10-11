@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -83,83 +84,30 @@ public class EventListenerConfig {
 	}
 
 	private void setDefaultUserMiscInfo() {
-		if(userMiscInfoRepo.count() == 0) {
-			UserMiscInfo drugsTobaccoInfoYes = new UserMiscInfo();
-			drugsTobaccoInfoYes.setValue(UserMiscInfo.DRUGS_TOBACCO_YES);
+		List<UserMiscInfo> userMiscInfoList = new ArrayList<>(Arrays.asList(
+				new UserMiscInfo(UserMiscInfo.DRUGS_TOBACCO_YES),
+				new UserMiscInfo(UserMiscInfo.DRUGS_TOBACCO_NO),
+				new UserMiscInfo(UserMiscInfo.DRUGS_TOBACCO_SOMETIMES),
+				new UserMiscInfo(UserMiscInfo.DRUGS_ALCOHOL_YES),
+				new UserMiscInfo(UserMiscInfo.DRUGS_ALCOHOL_NO),
+				new UserMiscInfo(UserMiscInfo.DRUGS_ALCOHOL_SOMETIMES),
+				new UserMiscInfo(UserMiscInfo.DRUGS_CANNABIS_YES),
+				new UserMiscInfo(UserMiscInfo.DRUGS_CANNABIS_NO),
+				new UserMiscInfo(UserMiscInfo.DRUGS_CANNABIS_SOMETIMES),
+				new UserMiscInfo(UserMiscInfo.DRUGS_OTHER_YES),
+				new UserMiscInfo(UserMiscInfo.DRUGS_OTHER_NO),
+				new UserMiscInfo(UserMiscInfo.DRUGS_OTHER_SOMETIMES),
+				new UserMiscInfo(UserMiscInfo.RELATIONSHIP_SINGLE),
+				new UserMiscInfo(UserMiscInfo.RELATIONSHIP_TAKEN),
+				new UserMiscInfo(UserMiscInfo.RELATIONSHIP_OPEN),
+				new UserMiscInfo(UserMiscInfo.RELATIONSHIP_OTHER),
+				new UserMiscInfo(UserMiscInfo.KIDS_NO),
+				new UserMiscInfo(UserMiscInfo.KIDS_YES)
+		));
 
-			UserMiscInfo drugsTobaccoInfoNo = new UserMiscInfo();
-			drugsTobaccoInfoNo.setValue(UserMiscInfo.DRUGS_TOBACCO_NO);
+		userMiscInfoList.removeIf(u -> userMiscInfoRepo.existsByValue(u.getValue()));
 
-			UserMiscInfo drugsTobaccoInfoSometimes = new UserMiscInfo();
-			drugsTobaccoInfoSometimes.setValue(UserMiscInfo.DRUGS_TOBACCO_SOMETIMES);
-
-			UserMiscInfo drugsAlcoholInfoYes = new UserMiscInfo();
-			drugsAlcoholInfoYes.setValue(UserMiscInfo.DRUGS_ALCOHOL_YES);
-
-			UserMiscInfo drugsAlcoholInfoNo = new UserMiscInfo();
-			drugsAlcoholInfoNo.setValue(UserMiscInfo.DRUGS_ALCOHOL_NO);
-
-			UserMiscInfo drugsAlcoholInfoSometimes = new UserMiscInfo();
-			drugsAlcoholInfoSometimes.setValue(UserMiscInfo.DRUGS_ALCOHOL_SOMETIMES);
-
-			UserMiscInfo drugsCannabisInfoYes = new UserMiscInfo();
-			drugsCannabisInfoYes.setValue(UserMiscInfo.DRUGS_CANNABIS_YES);
-
-			UserMiscInfo drugsCannabisInfoNo = new UserMiscInfo();
-			drugsCannabisInfoNo.setValue(UserMiscInfo.DRUGS_CANNABIS_NO);
-
-			UserMiscInfo drugsCannabisInfoSometimes = new UserMiscInfo();
-			drugsCannabisInfoSometimes.setValue(UserMiscInfo.DRUGS_CANNABIS_SOMETIMES);
-
-			UserMiscInfo drugsOtherInfoYes = new UserMiscInfo();
-			drugsOtherInfoYes.setValue(UserMiscInfo.DRUGS_OTHER_YES);
-
-			UserMiscInfo drugsOtherInfoNo = new UserMiscInfo();
-			drugsOtherInfoNo.setValue(UserMiscInfo.DRUGS_OTHER_NO);
-
-			UserMiscInfo drugsOtherInfoSometimes = new UserMiscInfo();
-			drugsOtherInfoSometimes.setValue(UserMiscInfo.DRUGS_OTHER_SOMETIMES);
-			
-			
-			UserMiscInfo relationshipSingleInfo = new UserMiscInfo();
-			relationshipSingleInfo.setValue(UserMiscInfo.RELATIONSHIP_SINGLE);
-			
-			UserMiscInfo relationshipTakenInfo = new UserMiscInfo();
-			relationshipTakenInfo.setValue(UserMiscInfo.RELATIONSHIP_TAKEN);
-						
-			UserMiscInfo relationshipOpenInfo = new UserMiscInfo();
-			relationshipOpenInfo.setValue(UserMiscInfo.RELATIONSHIP_OPEN);
-			
-			UserMiscInfo relationshipOtherInfo = new UserMiscInfo();
-			relationshipOtherInfo.setValue(UserMiscInfo.RELATIONSHIP_OTHER);
-			
-			
-			UserMiscInfo kidsNoInfo = new UserMiscInfo();
-			kidsNoInfo.setValue(UserMiscInfo.KIDS_NO);
-			
-			UserMiscInfo kidsYesInfo = new UserMiscInfo();
-			kidsYesInfo.setValue(UserMiscInfo.KIDS_YES);
-			
-			userMiscInfoRepo.saveAllAndFlush(Arrays.asList(
-					drugsTobaccoInfoYes,
-					drugsTobaccoInfoNo,
-					drugsTobaccoInfoSometimes,
-					drugsAlcoholInfoYes,
-					drugsAlcoholInfoNo,
-					drugsAlcoholInfoSometimes,
-					drugsCannabisInfoYes,
-					drugsCannabisInfoNo,
-					drugsCannabisInfoSometimes,
-					drugsOtherInfoYes,
-					drugsOtherInfoNo,
-					drugsOtherInfoSometimes,
-					relationshipSingleInfo,
-					relationshipTakenInfo,
-					relationshipOpenInfo,
-					relationshipOtherInfo,
-					kidsNoInfo,
-					kidsYesInfo));
-		}
+		userMiscInfoRepo.saveAllAndFlush(userMiscInfoList);
 	}
 
 	public void setDefaultAdmin() {
