@@ -42,6 +42,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.List;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -55,6 +56,12 @@ public class UserService {
     private static final String MIME_WAV = "wav";
     private static final String MIME_MPEG = "mpeg";
     private static final String MIME_MP3 = "mp3";
+
+    private final Set<Long> drugsAlcohol = new HashSet<>(Set.of(UserMiscInfo.DRUGS_ALCOHOL_YES, UserMiscInfo.DRUGS_ALCOHOL_SOMETIMES, UserMiscInfo.DRUGS_ALCOHOL_NO));
+    private final Set<Long> drugsTobacco = new HashSet<>(Set.of(UserMiscInfo.DRUGS_TOBACCO_YES, UserMiscInfo.DRUGS_TOBACCO_SOMETIMES, UserMiscInfo.DRUGS_TOBACCO_NO));
+    private final Set<Long> drugsCannabis = new HashSet<>(Set.of(UserMiscInfo.DRUGS_CANNABIS_YES, UserMiscInfo.DRUGS_CANNABIS_SOMETIMES, UserMiscInfo.DRUGS_CANNABIS_NO));
+    private final Set<Long> drugsOther = new HashSet<>(Set.of(UserMiscInfo.DRUGS_OTHER_YES, UserMiscInfo.DRUGS_OTHER_SOMETIMES, UserMiscInfo.DRUGS_OTHER_NO));
+
     @Autowired
     private AuthService authService;
     @Autowired
@@ -513,6 +520,14 @@ public class UserService {
             } else if (infoValue >= UserMiscInfo.RELATIONSHIP_SINGLE && infoValue <= UserMiscInfo.RELATIONSHIP_OTHER) {
                 list.removeIf(o -> o.getValue() != infoValue && o.getValue() >= UserMiscInfo.RELATIONSHIP_SINGLE
                         && o.getValue() <= UserMiscInfo.RELATIONSHIP_OTHER);
+            } else if (drugsAlcohol.contains(infoValue)) {
+                list.removeIf(conditionToRemoveIfExistent(drugsAlcohol, infoValue));
+            } else if (drugsTobacco.contains(infoValue)) {
+                list.removeIf(conditionToRemoveIfExistent(drugsAlcohol, infoValue));
+            } else if (drugsCannabis.contains(infoValue)) {
+                list.removeIf(conditionToRemoveIfExistent(drugsCannabis, infoValue));
+            } else if (drugsOther.contains(infoValue)) {
+                list.removeIf(conditionToRemoveIfExistent(drugsOther, infoValue));
             }
 
         } else {
@@ -521,6 +536,10 @@ public class UserService {
         user.setMiscInfos(list);
         userRepo.saveAndFlush(user);
         return list;
+    }
+
+    private Predicate<UserMiscInfo> conditionToRemoveIfExistent(final Set<Long> options, final long infoValue) {
+        return c -> options.contains(c.getValue()) && c.getValue() != infoValue;
     }
 
     public void addInterest(String value) throws AlovoaException {
