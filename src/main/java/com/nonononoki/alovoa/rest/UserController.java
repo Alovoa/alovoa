@@ -227,6 +227,11 @@ public class UserController {
         userService.reportUser(uuid, comment);
     }
 
+    @PostMapping("/update/location/{latitude}/{longitude}")
+    public void updateLocation(@PathVariable Double latitude, @PathVariable Double longitude) throws AlovoaException {
+        userService.updateUserLocation(latitude, longitude);
+    }
+
     @GetMapping(value = "/status/new-alert")
     public boolean newAlert() throws AlovoaException {
         return userService.hasNewAlert();
