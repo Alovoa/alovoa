@@ -124,12 +124,8 @@ public class SearchService {
         }
 
         user.getDates().setActiveDate(new Date());
-        // rounding to improve privacy
-        DecimalFormat df = new DecimalFormat("#.##");
-        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-        user.setLocationLatitude(Double.valueOf(df.format(latitude)));
-        user.setLocationLongitude(Double.valueOf(df.format(longitude)));
-        userRepo.saveAndFlush(user);
+
+        userService.updateUserLocation(latitude, longitude);
 
         int age = Tools.calcUserAge(user);
         boolean isLegalAge = age >= ageLegal;

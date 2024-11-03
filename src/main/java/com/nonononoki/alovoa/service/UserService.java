@@ -40,6 +40,8 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.*;
 import java.util.function.Predicate;
@@ -1014,6 +1016,16 @@ public class UserService {
         }
 
         user.getVerificationPicture().getUserNo().add(currentUser);
+        userRepo.saveAndFlush(user);
+    }
+
+    public void updateUserLocation(Double latitude, Double longitude) throws AlovoaException {
+        User user = authService.getCurrentUser(true);
+        // rounding to improve privacy
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        user.setLocationLatitude(Double.valueOf(df.format(latitude)));
+        user.setLocationLongitude(Double.valueOf(df.format(longitude)));
         userRepo.saveAndFlush(user);
     }
 
