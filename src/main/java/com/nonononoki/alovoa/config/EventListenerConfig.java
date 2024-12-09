@@ -102,12 +102,26 @@ public class EventListenerConfig {
 				new UserMiscInfo(UserMiscInfo.RELATIONSHIP_OPEN),
 				new UserMiscInfo(UserMiscInfo.RELATIONSHIP_OTHER),
 				new UserMiscInfo(UserMiscInfo.KIDS_NO),
-				new UserMiscInfo(UserMiscInfo.KIDS_YES)
+				new UserMiscInfo(UserMiscInfo.KIDS_YES),
+				new UserMiscInfo(UserMiscInfo.RELATIONSHIP_TYPE_MONOGAMOUS),
+				new UserMiscInfo(UserMiscInfo.RELATIONSHIP_TYPE_POLYAMOROUS),
+				new UserMiscInfo(UserMiscInfo.GENDER_IDENTITY_CIS),
+				new UserMiscInfo(UserMiscInfo.GENDER_IDENTITY_TRANS),
+				new UserMiscInfo(UserMiscInfo.POLITICS_MODERATE),
+				new UserMiscInfo(UserMiscInfo.POLITICS_LEFT),
+				new UserMiscInfo(UserMiscInfo.POLITICS_RIGHT),
+				new UserMiscInfo(UserMiscInfo.RELIGION_NO),
+				new UserMiscInfo(UserMiscInfo.RELIGION_YES),
+				new UserMiscInfo(UserMiscInfo.FAMILY_WANT),
+				new UserMiscInfo(UserMiscInfo.FAMILY_NOT_WANT),
+				new UserMiscInfo(UserMiscInfo.FAMILY_NOT_UNSURE)
 		));
 
 		userMiscInfoList.removeIf(u -> userMiscInfoRepo.existsByValue(u.getValue()));
 
-		userMiscInfoRepo.saveAllAndFlush(userMiscInfoList);
+		if(!userMiscInfoList.isEmpty()) {
+			userMiscInfoRepo.saveAllAndFlush(userMiscInfoList);
+		}
 	}
 
 	public void setDefaultAdmin() {

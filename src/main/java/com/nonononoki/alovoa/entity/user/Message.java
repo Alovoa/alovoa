@@ -15,11 +15,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @Entity
 public class Message {
 

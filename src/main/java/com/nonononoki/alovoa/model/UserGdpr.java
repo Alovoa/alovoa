@@ -34,6 +34,7 @@ public class UserGdpr {
     private List<UserImage> images;
     private List<UserPrompt> prompts;
     private List<UserDonation> donations;
+    private Set<UserMiscInfo> miscInfo;
     private List<Message> messageSent;
     private UserDates dates;
     private boolean showZodiac;
@@ -60,6 +61,7 @@ public class UserGdpr {
         u.setIntention(user.getIntention());
         u.setInterests(user.getInterests());
         u.setPreferedGenders(user.getPreferedGenders());
+        u.setMiscInfo(user.getMiscInfos());
 
         u.setAudio(user.getAudio());
         u.setProfilePicture(user.getProfilePicture());
