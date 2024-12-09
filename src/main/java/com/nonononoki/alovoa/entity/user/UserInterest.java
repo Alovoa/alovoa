@@ -9,42 +9,28 @@ import jakarta.persistence.ManyToOne;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nonononoki.alovoa.entity.User;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
+@EqualsAndHashCode
 @Entity
 public class UserInterest {
 
 	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@EqualsAndHashCode.Exclude
 	private Long id;
 
 	private String text;
 
 	@JsonIgnore
 	@ManyToOne
+	@EqualsAndHashCode.Exclude
 	private User user;
-
-	@Override
-	public boolean equals(Object o) {
-
-		if (o == this) {
-			return true;
-		}
-
-		if (!(o instanceof UserInterest)) {
-			return false;
-		}
-
-		UserInterest i = (UserInterest) o;
-		return i.getText().equals(text);
-	}
-
-	@Override
-	public int hashCode() {
-		return this.text.hashCode();
-	}
 }

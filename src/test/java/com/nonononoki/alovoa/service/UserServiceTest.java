@@ -5,10 +5,7 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.entity.user.Gender;
-import com.nonononoki.alovoa.entity.user.UserDeleteToken;
-import com.nonononoki.alovoa.entity.user.UserInterest;
-import com.nonononoki.alovoa.entity.user.UserSettings;
+import com.nonononoki.alovoa.entity.user.*;
 import com.nonononoki.alovoa.model.*;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -39,6 +36,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -162,6 +160,21 @@ class UserServiceTest {
             });
         }
 
+        //MISC INFO
+        userService.updateUserMiscInfo(UserMiscInfo.DRUGS_ALCOHOL_NO, true);
+        userService.updateUserMiscInfo(UserMiscInfo.FAMILY_WANT, true);
+        userService.updateUserMiscInfo(UserMiscInfo.DRUGS_CANNABIS_YES, true);
+        userService.updateUserMiscInfo(UserMiscInfo.DRUGS_TOBACCO_SOMETIMES, true);
+        userService.updateUserMiscInfo(UserMiscInfo.GENDER_IDENTITY_CIS, true);
+        userService.updateUserMiscInfo(UserMiscInfo.RELIGION_NO, true);
+        userService.updateUserMiscInfo(UserMiscInfo.RELATIONSHIP_OTHER, true);
+        userService.updateUserMiscInfo(UserMiscInfo.RELATIONSHIP_TYPE_POLYAMOROUS, true);
+        user1 = userRepo.findById(user1.getId()).get();
+        assertEquals(7, user1.getMiscInfos().size());
+        userService.updateUserMiscInfo(UserMiscInfo.RELATIONSHIP_TYPE_MONOGAMOUS, false);
+        user1 = userRepo.findById(user1.getId()).get();
+        assertEquals(6, user1.getMiscInfos().size());
+
         Mockito.when(authService.getCurrentUser()).thenReturn(user2);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
         byte[] img2 = Tools.resourceToBytes("img/profile2.png");
@@ -211,10 +224,10 @@ class UserServiceTest {
         userService.deleteAudio();
         assertNull(user3.getAudio());
 
+        User finalUser = user1;
         assertThrows(Exception.class, () -> {
-            deleteTest(user1);
+            deleteTest(finalUser);
         });
-
 
         //PROFILE PICTURE
         byte[] imgLong = Tools.resourceToBytes("img/long.jpeg");
@@ -227,7 +240,7 @@ class UserServiceTest {
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
         UUID uuid = user1.getUuid();
         ResponseEntity<Resource> userData = userService.getUserdata(uuid);
-        InputStream inputStream = userData.getBody().getInputStream();
+        InputStream inputStream = Objects.requireNonNull(userData.getBody()).getInputStream();
         String userDataString = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines()
                 .collect(Collectors.joining("\n"));
         UserGdpr gdpr = objectMapper.readValue(userDataString, UserGdpr.class);
@@ -242,15 +255,12 @@ class UserServiceTest {
                 objectMapper.writeValueAsString(gdpr.getGender()));
         assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getIntention()),
                 objectMapper.writeValueAsString(gdpr.getIntention()));
-        // TODO Comparing Sets
-//		assertEquals(authService.getCurrentUser().getPreferedGenders(), gdpr.getPreferedGenders());
-//		assertEquals(authService.getCurrentUser().getInterests(),
-//				gdpr.getInterests());
-//		assertEquals(authService.getCurrentUser().getMessageSent(),
-//				gdpr.getMessageSent());
-
-//		assertEquals(objectMapper.writeValueAsString(authService.getCurrentUser().getWebPush()),
-//				objectMapper.writeValueAsString(gdpr.getWebPush()));
+		assertEquals(authService.getCurrentUser().getPreferedGenders(), gdpr.getPreferedGenders());
+        assertIterableEquals(authService.getCurrentUser().getInterests(),
+				gdpr.getInterests());
+        assertIterableEquals(authService.getCurrentUser().getMessageSent(),
+				gdpr.getMessageSent());
+        assertEquals(authService.getCurrentUser().getMiscInfos(), gdpr.getMiscInfo());
         assertEquals(authService.getCurrentUser().getLocationLatitude(), gdpr.getLocationLatitude());
         assertEquals(authService.getCurrentUser().getLocationLongitude(), gdpr.getLocationLongitude());
         assertEquals(authService.getCurrentUser().getPreferedMaxAge(), gdpr.getPreferedMaxAge());

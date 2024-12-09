@@ -27,7 +27,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -36,10 +35,16 @@ import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
@@ -59,10 +64,18 @@ public class UserService {
     private static final String MIME_MPEG = "mpeg";
     private static final String MIME_MP3 = "mp3";
 
-    private final Set<Long> drugsAlcohol = new HashSet<>(Set.of(UserMiscInfo.DRUGS_ALCOHOL_YES, UserMiscInfo.DRUGS_ALCOHOL_SOMETIMES, UserMiscInfo.DRUGS_ALCOHOL_NO));
-    private final Set<Long> drugsTobacco = new HashSet<>(Set.of(UserMiscInfo.DRUGS_TOBACCO_YES, UserMiscInfo.DRUGS_TOBACCO_SOMETIMES, UserMiscInfo.DRUGS_TOBACCO_NO));
-    private final Set<Long> drugsCannabis = new HashSet<>(Set.of(UserMiscInfo.DRUGS_CANNABIS_YES, UserMiscInfo.DRUGS_CANNABIS_SOMETIMES, UserMiscInfo.DRUGS_CANNABIS_NO));
-    private final Set<Long> drugsOther = new HashSet<>(Set.of(UserMiscInfo.DRUGS_OTHER_YES, UserMiscInfo.DRUGS_OTHER_SOMETIMES, UserMiscInfo.DRUGS_OTHER_NO));
+    private final Set<Long> drugsAlcoholMiscInfoSet = new HashSet<>(Set.of(UserMiscInfo.DRUGS_ALCOHOL_YES, UserMiscInfo.DRUGS_ALCOHOL_SOMETIMES, UserMiscInfo.DRUGS_ALCOHOL_NO));
+    private final Set<Long> drugsTobaccoMiscInfoSet = new HashSet<>(Set.of(UserMiscInfo.DRUGS_TOBACCO_YES, UserMiscInfo.DRUGS_TOBACCO_SOMETIMES, UserMiscInfo.DRUGS_TOBACCO_NO));
+    private final Set<Long> drugsCannabisMiscInfoSet = new HashSet<>(Set.of(UserMiscInfo.DRUGS_CANNABIS_YES, UserMiscInfo.DRUGS_CANNABIS_SOMETIMES, UserMiscInfo.DRUGS_CANNABIS_NO));
+    private final Set<Long> drugsOtherMiscInfoSet = new HashSet<>(Set.of(UserMiscInfo.DRUGS_OTHER_YES, UserMiscInfo.DRUGS_OTHER_SOMETIMES, UserMiscInfo.DRUGS_OTHER_NO));
+
+    private final Set<Long> kidsMiscInfoSet = new HashSet<>(Set.of(UserMiscInfo.KIDS_NO, UserMiscInfo.KIDS_YES));
+    private final Set<Long> relationshipMiscInfoSet = new HashSet<>(Set.of(UserMiscInfo.RELATIONSHIP_SINGLE, UserMiscInfo.RELATIONSHIP_TAKEN, UserMiscInfo.RELATIONSHIP_OPEN));
+    private final Set<Long> politicsMiscInfoSet = new HashSet<>(Set.of(UserMiscInfo.POLITICS_MODERATE, UserMiscInfo.POLITICS_LEFT, UserMiscInfo.POLITICS_RIGHT));
+    private final Set<Long> genderIdentityMiscInfoSet = new HashSet<>(Set.of(UserMiscInfo.GENDER_IDENTITY_CIS, UserMiscInfo.GENDER_IDENTITY_TRANS));
+    private final Set<Long> religionMiscInfoSet = new HashSet<>(Set.of(UserMiscInfo.RELIGION_NO, UserMiscInfo.RELIGION_YES));
+    private final Set<Long> familyMiscInfoSet = new HashSet<>(Set.of(UserMiscInfo.FAMILY_WANT, UserMiscInfo.FAMILY_NOT_WANT, UserMiscInfo.FAMILY_NOT_UNSURE));
+    private final Set<Long> relationshipTypeMiscInfoSet = new HashSet<>(Set.of(UserMiscInfo.RELATIONSHIP_TYPE_POLYAMOROUS, UserMiscInfo.RELATIONSHIP_TYPE_MONOGAMOUS));
 
     @Autowired
     private AuthService authService;
@@ -374,6 +387,7 @@ public class UserService {
         mailService.sendAccountDeleteConfirm(user);
     }
 
+    @SuppressWarnings("deprecation")
     public void updateProfilePicture(byte[] bytes, String mimeType) throws AlovoaException, IOException {
         User user = authService.getCurrentUser(true);
         user.setVerificationPicture(null);
@@ -507,33 +521,39 @@ public class UserService {
 
     public Set<UserMiscInfo> updateUserMiscInfo(long infoValue, boolean activated) throws AlovoaException {
         User user = authService.getCurrentUser(true);
+
         Set<UserMiscInfo> list = user.getMiscInfos();
         if (list == null) {
             list = new HashSet<>();
         }
 
-        UserMiscInfo info = userMiscInfoRepo.findByValue(infoValue);
+        if (kidsMiscInfoSet.contains(infoValue)) {
+            list.removeIf(conditionToRemoveIfExistent(kidsMiscInfoSet, infoValue));
+        } else if (relationshipMiscInfoSet.contains(infoValue)) {
+            list.removeIf(conditionToRemoveIfExistent(relationshipMiscInfoSet, infoValue));
+        } else if (drugsAlcoholMiscInfoSet.contains(infoValue)) {
+            list.removeIf(conditionToRemoveIfExistent(drugsAlcoholMiscInfoSet, infoValue));
+        } else if (drugsTobaccoMiscInfoSet.contains(infoValue)) {
+            list.removeIf(conditionToRemoveIfExistent(drugsAlcoholMiscInfoSet, infoValue));
+        } else if (drugsCannabisMiscInfoSet.contains(infoValue)) {
+            list.removeIf(conditionToRemoveIfExistent(drugsCannabisMiscInfoSet, infoValue));
+        } else if (drugsOtherMiscInfoSet.contains(infoValue)) {
+            list.removeIf(conditionToRemoveIfExistent(drugsOtherMiscInfoSet, infoValue));
+        } else if (politicsMiscInfoSet.contains(infoValue)) {
+            list.removeIf(conditionToRemoveIfExistent(politicsMiscInfoSet, infoValue));
+        } else if (genderIdentityMiscInfoSet.contains(infoValue)) {
+            list.removeIf(conditionToRemoveIfExistent(genderIdentityMiscInfoSet, infoValue));
+        } else if (religionMiscInfoSet.contains(infoValue)) {
+            list.removeIf(conditionToRemoveIfExistent(religionMiscInfoSet, infoValue));
+        } else if (familyMiscInfoSet.contains(infoValue)) {
+            list.removeIf(conditionToRemoveIfExistent(familyMiscInfoSet, infoValue));
+        } else if (relationshipTypeMiscInfoSet.contains(infoValue)) {
+            list.removeIf(conditionToRemoveIfExistent(relationshipTypeMiscInfoSet, infoValue));
+        }
+
         if (activated) {
+            UserMiscInfo info = userMiscInfoRepo.findByValue(infoValue);
             list.add(info);
-
-            if (infoValue >= UserMiscInfo.KIDS_NO && infoValue <= UserMiscInfo.KIDS_YES) {
-                list.removeIf(o -> o.getValue() != infoValue && o.getValue() >= UserMiscInfo.KIDS_NO
-                        && o.getValue() <= UserMiscInfo.KIDS_YES);
-            } else if (infoValue >= UserMiscInfo.RELATIONSHIP_SINGLE && infoValue <= UserMiscInfo.RELATIONSHIP_OTHER) {
-                list.removeIf(o -> o.getValue() != infoValue && o.getValue() >= UserMiscInfo.RELATIONSHIP_SINGLE
-                        && o.getValue() <= UserMiscInfo.RELATIONSHIP_OTHER);
-            } else if (drugsAlcohol.contains(infoValue)) {
-                list.removeIf(conditionToRemoveIfExistent(drugsAlcohol, infoValue));
-            } else if (drugsTobacco.contains(infoValue)) {
-                list.removeIf(conditionToRemoveIfExistent(drugsAlcohol, infoValue));
-            } else if (drugsCannabis.contains(infoValue)) {
-                list.removeIf(conditionToRemoveIfExistent(drugsCannabis, infoValue));
-            } else if (drugsOther.contains(infoValue)) {
-                list.removeIf(conditionToRemoveIfExistent(drugsOther, infoValue));
-            }
-
-        } else {
-            list.remove(info);
         }
         user.setMiscInfos(list);
         userRepo.saveAndFlush(user);
@@ -895,6 +915,7 @@ public class UserService {
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
+    @SuppressWarnings("deprecation")
     public String getAudio(UUID uuid)
             throws NumberFormatException, AlovoaException {
         User user = findUserByUuid(uuid);
@@ -910,6 +931,7 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
+    @SuppressWarnings("deprecation")
     public void updateAudio(byte[] bytes, String mimeType)
             throws AlovoaException, UnsupportedAudioFileException, IOException {
         User user = authService.getCurrentUser(true);
