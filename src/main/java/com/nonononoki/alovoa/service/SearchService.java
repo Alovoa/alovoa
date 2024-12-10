@@ -4,12 +4,16 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Gender;
+import com.nonononoki.alovoa.entity.user.UserIntention;
+import com.nonononoki.alovoa.entity.user.UserMiscInfo;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.SearchDto;
 import com.nonononoki.alovoa.model.SearchDto.SearchStage;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserSearchRequest;
 import com.nonononoki.alovoa.repo.UserRepository;
+import lombok.Builder;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -25,8 +29,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,7 +38,7 @@ public class SearchService {
     public static final int SORT_DISTANCE = 1;
     public static final int SORT_ACTIVE_DATE = 2;
     public static final int SORT_INTEREST = 3;
-    public static final int SORT_DONATION_LATEST = 4;
+    public static final int SORT_DEFAULT = 4;
     public static final int SORT_DONATION_TOTAL = 5;
     public static final int SORT_NEWEST_USER = 6;
     private static final double LATITUDE = 111.1;
@@ -47,6 +49,7 @@ public class SearchService {
     private static final int SEARCH_MAX = 200;
     private static final long INTENTION_ALL = -1;
     private static ReverseGeocoder geocoder = null;
+
     @Autowired
     private TextEncryptorConverter textEncryptor;
     @Autowired
@@ -77,6 +80,7 @@ public class SearchService {
         return geocoder;
     }
 
+    @Deprecated
     public SearchDto searchDefault() throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
             BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
             UnsupportedEncodingException {
@@ -85,18 +89,35 @@ public class SearchService {
             return SearchDto.builder().users(searchResultstoUserDto(userRepo.adminSearch(), 0, user)).build();
         }
         if (user.getLocationLatitude() != null) {
-            return search(user.getLocationLatitude(), user.getLocationLongitude(), DEFAULT_DISTANCE,
-                    SORT_DONATION_LATEST);
+            return searchComplete(SearchParams.builder().latitude(Optional.ofNullable(user.getLocationLatitude()))
+                    .longitude(Optional.ofNullable(user.getLocationLongitude())).build());
         } else {
             return null;
         }
     }
 
+    @Deprecated
     public SearchDto search(Double latitude, Double longitude, int distance, int sortId) throws AlovoaException,
+            InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+        return searchComplete(SearchParams.builder().latitude(Optional.ofNullable(latitude))
+                .longitude(Optional.ofNullable(longitude)).distance(Optional.of(distance)).sort(Optional.of(sortId)).build());
+    }
+
+    public SearchDto searchComplete(SearchParams params) throws AlovoaException,
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 
         User user = authService.getCurrentUser(true);
+
+        Double latitude = params.getLatitude().orElse(user.getLocationLatitude());
+        Double longitude = params.getLongitude().orElse(user.getLocationLongitude());
+
+        int distance = params.getDistance().orElse(DEFAULT_DISTANCE);
+        int sortId = params.getSort().orElse(SORT_DEFAULT);
+        //TODO
+        Set<Integer> intentions = params.getIntentions();
+        boolean showOutsideParameters = params.getShowOutsideParameters().orElse(true);
 
         if (user.isAdmin()) {
             return SearchDto.builder().users(searchResultstoUserDto(userRepo.adminSearch(), 0, user)).build();
@@ -110,8 +131,8 @@ public class SearchService {
         }
 
         Sort sort = switch (sortId) {
+            case SORT_DEFAULT -> Sort.by(Sort.Direction.DESC, "dates.latestDonationDate", "dates.creationDate");
             case SORT_ACTIVE_DATE -> Sort.by(Sort.Direction.DESC, "dates.activeDate");
-            case SORT_DONATION_LATEST -> Sort.by(Sort.Direction.DESC, "dates.latestDonationDate", "dates.creationDate");
             case SORT_DONATION_TOTAL -> Sort.by(Sort.Direction.DESC, "totalDonations");
             case SORT_NEWEST_USER -> Sort.by(Sort.Direction.DESC, "dates.creationDate");
             default -> Sort.unsorted();
@@ -142,8 +163,9 @@ public class SearchService {
         Date minDate = Tools.ageToDate(maxAge);
         Date maxDate = Tools.ageToDate(minAge);
 
+        double deltaLongFactor = LONGITUDE * Math.cos(latitude / 180.0 * Math.PI);
         double deltaLat = distance / LATITUDE;
-        double deltaLong = distance / (LONGITUDE * Math.cos(latitude / 180.0 * Math.PI));
+        double deltaLong = distance / deltaLongFactor;
         double minLat = latitude - deltaLat;
         double maxLat = latitude + deltaLat;
         double minLong = longitude - deltaLong;
@@ -180,86 +202,88 @@ public class SearchService {
         }
 
         // NO COMPATIBLE USERS FOUND, SEARCH AROUND THE WORLD!
+        if(showOutsideParameters) {
+            distance = SEARCH_STEP_1;
+            deltaLat = distance / LATITUDE;
+            deltaLong = distance / deltaLongFactor;
+            minLat = latitude - deltaLat;
+            maxLat = latitude + deltaLat;
+            minLong = longitude - deltaLong;
+            maxLong = longitude + deltaLong;
+            request.setMinLat(minLat);
+            request.setMaxLat(maxLat);
+            request.setMinLong(minLong);
+            request.setMaxLong(maxLong);
+            users = userRepo.usersSearch(request, PageRequest.of(0, SEARCH_MAX, sort));
+            filteredUsers = filterUsers(users, ignoreIds, user, false);
+            if (!filteredUsers.isEmpty()) {
+                return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
+                        .global(true)
+                        .stage(SearchStage.INCREASED_RADIUS_1).build();
+            }
 
-        distance = SEARCH_STEP_1;
-        deltaLat = distance / LATITUDE;
-        deltaLong = distance / (LONGITUDE * Math.cos(latitude / 180.0 * Math.PI));
-        minLat = latitude - deltaLat;
-        maxLat = latitude + deltaLat;
-        minLong = longitude - deltaLong;
-        maxLong = longitude + deltaLong;
-        request.setMinLat(minLat);
-        request.setMaxLat(maxLat);
-        request.setMinLong(minLong);
-        request.setMaxLong(maxLong);
-        users = userRepo.usersSearch(request, PageRequest.of(0, SEARCH_MAX, sort));
-        filteredUsers = filterUsers(users, ignoreIds, user, false);
-        if (!filteredUsers.isEmpty()) {
+            distance = SEARCH_STEP_2;
+            deltaLat = distance / LATITUDE;
+            deltaLong = distance / deltaLongFactor;
+            minLat = latitude - deltaLat;
+            maxLat = latitude + deltaLat;
+            minLong = longitude - deltaLong;
+            maxLong = longitude + deltaLong;
+            request.setMinLat(minLat);
+            request.setMaxLat(maxLat);
+            request.setMinLong(minLong);
+            request.setMaxLong(maxLong);
+            users = userRepo.usersSearch(request, PageRequest.of(0, SEARCH_MAX, sort));
+            filteredUsers = filterUsers(users, ignoreIds, user, false);
+            if (!filteredUsers.isEmpty()) {
+                return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
+                        .global(true)
+                        .stage(SearchStage.INCREASED_RADIUS_2).build();
+            }
+
+            users = userRepo.usersSearchAllIgnoreLocation(request, PageRequest.of(0, SEARCH_MAX, sort));
+            filteredUsers = filterUsers(users, ignoreIds, user, false);
+
+            if (!filteredUsers.isEmpty()) {
+                return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
+                        .global(true).stage(SearchStage.WORLD).build();
+            }
+
+            users = userRepo.usersSearchAllIgnoreLocationAndIntention(request, sort);
+            filteredUsers = filterUsers(users, ignoreIds, user, false);
+            if (!filteredUsers.isEmpty()) {
+                return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
+                        .incompatible(true).global(true).stage(SearchStage.IGNORE_1)
+                        .build();
+            }
+
+            if (isLegalAge) {
+                maxDate = Tools.ageToDate(ageLegal);
+                minDate = Tools.ageToDate(ageMax);
+            } else {
+                maxDate = Tools.ageToDate(ageMin);
+                minDate = Tools.ageToDate(ageLegal - 1);
+            }
+            request.setMinDateDob(minDate);
+            request.setMaxDateDob(maxDate);
+
+            filteredUsers.clear();
+            users = userRepo.usersSearchAllIgnoreLocationAndIntention(request, sort);
+            filteredUsers = filterUsers(users, ignoreIds, user, false);
+            if (!filteredUsers.isEmpty()) {
+                return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
+                        .incompatible(true).global(true).stage(SearchStage.IGNORE_2)
+                        .build();
+            }
+
+            users = userRepo.usersSearchAllIgnoreAll(request, sort);
+            filteredUsers = filterUsers(users, ignoreIds, user, true);
             return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-                    .global(true)
-                    .stage(SearchStage.INCREASED_RADIUS_1).build();
-        }
-
-        distance = SEARCH_STEP_2;
-        deltaLat = distance / LATITUDE;
-        deltaLong = distance / (LONGITUDE * Math.cos(latitude / 180.0 * Math.PI));
-        minLat = latitude - deltaLat;
-        maxLat = latitude + deltaLat;
-        minLong = longitude - deltaLong;
-        maxLong = longitude + deltaLong;
-        request.setMinLat(minLat);
-        request.setMaxLat(maxLat);
-        request.setMinLong(minLong);
-        request.setMaxLong(maxLong);
-        users = userRepo.usersSearch(request, PageRequest.of(0, SEARCH_MAX, sort));
-        filteredUsers = filterUsers(users, ignoreIds, user, false);
-        if (!filteredUsers.isEmpty()) {
-            return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-                    .global(true)
-                    .stage(SearchStage.INCREASED_RADIUS_2).build();
-        }
-
-        users = userRepo.usersSearchAllIgnoreLocation(request, PageRequest.of(0, SEARCH_MAX, sort));
-        filteredUsers = filterUsers(users, ignoreIds, user, false);
-
-        if (!filteredUsers.isEmpty()) {
-            return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-                    .global(true).stage(SearchStage.WORLD).build();
-        }
-
-        users = userRepo.usersSearchAllIgnoreLocationAndIntention(request, sort);
-        filteredUsers = filterUsers(users, ignoreIds, user, false);
-        if (!filteredUsers.isEmpty()) {
-            return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-                    .incompatible(true).global(true).stage(SearchStage.IGNORE_1)
-                    .build();
-        }
-
-        if (isLegalAge) {
-            maxDate = Tools.ageToDate(ageLegal);
-            minDate = Tools.ageToDate(ageMax);
+                    .incompatible(true).global(true)
+                    .stage(SearchStage.IGNORE_ALL).build();
         } else {
-            maxDate = Tools.ageToDate(ageMin);
-            minDate = Tools.ageToDate(ageLegal - 1);
+            return SearchDto.builder().build();
         }
-        request.setMinDateDob(minDate);
-        request.setMaxDateDob(maxDate);
-
-        filteredUsers.clear();
-        users = userRepo.usersSearchAllIgnoreLocationAndIntention(request, sort);
-        filteredUsers = filterUsers(users, ignoreIds, user, false);
-        if (!filteredUsers.isEmpty()) {
-            return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-                    .incompatible(true).global(true).stage(SearchStage.IGNORE_2)
-                    .build();
-        }
-
-        users = userRepo.usersSearchAllIgnoreAll(request, sort);
-        filteredUsers = filterUsers(users, ignoreIds, user, true);
-        return SearchDto.builder().users(searchResultstoUserDto(filteredUsers, sortId, user))
-                .incompatible(true).global(true)
-                .stage(SearchStage.IGNORE_ALL).build();
-
     }
 
     private List<User> filterUsers(List<User> users, Set<Long> ignoreIds, User user, boolean ignoreGenders) {
@@ -308,6 +332,30 @@ public class SearchService {
     public Optional<String> getCountryIsoByLocation(double lat, double lon) {
         Optional<Country> country = getGeocoder().getCountry(lat, lon);
         return country.map(Country::iso);
+    }
+
+    @Getter
+    @Builder
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public static class SearchParams {
+        @Builder.Default
+        private Optional<Integer> distance = Optional.of(DEFAULT_DISTANCE);
+        @Builder.Default
+        private Optional<Boolean> showOutsideParameters = Optional.of(true);
+        @Builder.Default
+        private Optional<Integer> sort = Optional.of(SORT_DEFAULT);
+        @Builder.Default
+        private Optional<Double> latitude = Optional.empty();
+        @Builder.Default
+        private Optional<Double> longitude = Optional.empty();
+        @Builder.Default
+        private Optional<Integer> minAge = Optional.empty();
+        @Builder.Default
+        private Optional<Integer> maxAge = Optional.empty();
+        @Builder.Default
+        private Set<UserMiscInfo> miscInfos = new HashSet<>();
+        @Builder.Default
+        private Set<Integer> intentions = new HashSet<>();
     }
 
 }
