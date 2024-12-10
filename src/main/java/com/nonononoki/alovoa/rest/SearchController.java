@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -31,6 +32,39 @@ public class SearchController {
 	@Autowired
 	private AuthService authService;
 
+	/**
+	 * Only used in admin search. For regular search, see {@link ApiController}
+	 * @param model
+	 * @return The search fragment
+	 * @throws InvalidKeyException
+	 * @throws IllegalBlockSizeException
+	 * @throws BadPaddingException
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws UnsupportedEncodingException
+	 * @throws AlovoaException
+	 */
+	@GetMapping("/users/default")
+	public String getUsersDefault(Model model)
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		getUsersDefaultModel(model);
+		return "fragments :: search-users";
+	}
+
+	public Model getUsersDefaultModel(Model model)
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+		if(model == null) {
+			model = new ConcurrentModel();
+		}
+		model.addAttribute("dto", searchService.searchComplete(SearchService.SearchParams.builder().build()));
+		model.addAttribute("currUser", authService.getCurrentUser(true));
+		return model;
+	}
+
+	@Deprecated
 	@GetMapping("/users/{latitude}/{longitude}/{distance}/{search}")
 	public String getUsers(Model model, @PathVariable Double latitude, @PathVariable Double longitude,
 			@PathVariable int distance, @PathVariable int search)
@@ -40,32 +74,16 @@ public class SearchController {
 		return "fragments :: search-users";
 	}
 
-	public Model getUsersModel(Model model, Double latitude, Double longitude, int distance, int search)
+	@Deprecated
+	public Model getUsersModel(Model model, Double latitude, Double longitude, int distance, int sortId)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
 		if(model == null) {
 			model = new ConcurrentModel();
 		}
-		model.addAttribute("dto", searchService.search(latitude, longitude, distance, search));
-		model.addAttribute("currUser", authService.getCurrentUser(true));
-		return model;
-	}
-
-	@GetMapping("/users/default")
-	public String getUsersDefault(Model model)
-			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		getUsersDefaultModel(model);
-		return "fragments :: search-users";
-	}
-	
-	public Model getUsersDefaultModel(Model model)
-			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-		if(model == null) {
-			model = new ConcurrentModel();
-		}
-		model.addAttribute("dto", searchService.searchDefault());
+		model.addAttribute("dto", searchService.searchComplete(SearchService.SearchParams.builder()
+				.latitude(Optional.ofNullable(latitude)).longitude(Optional.ofNullable(longitude))
+				.distance(Optional.of(distance)).sort(Optional.of(sortId)).build()));
 		model.addAttribute("currUser", authService.getCurrentUser(true));
 		return model;
 	}

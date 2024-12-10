@@ -1,18 +1,16 @@
 package com.nonononoki.alovoa.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.DonationDto;
 import com.nonononoki.alovoa.model.MessageDto;
 import com.nonononoki.alovoa.model.SearchDto;
+import com.nonononoki.alovoa.service.AuthService;
+import com.nonononoki.alovoa.service.SearchService;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -27,6 +25,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1")
 public class ApiController {
+
+    @Autowired
+    private SearchService searchService;
+
+    @Autowired
+    private AuthService authService;
 
     @Autowired
     private DonateController donateController;
@@ -60,6 +64,14 @@ public class ApiController {
         }
     }
 
+    @GetMapping("/search/users")
+    public SearchDto searchUsers(Model model, @RequestBody SearchService.SearchParams params) throws InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
+        return searchService.searchComplete(params);
+    }
+
+    @Deprecated
     @GetMapping("/search/users/{latitude}/{longitude}/{distance}/{search}")
     public SearchDto searchUsers(@PathVariable Double latitude, @PathVariable Double longitude,
                                  @PathVariable int distance, @PathVariable int search) throws InvalidKeyException,
@@ -69,6 +81,7 @@ public class ApiController {
         return (SearchDto) map.get("dto");
     }
 
+    @Deprecated
     @GetMapping("/search/users/default")
     public SearchDto searchUsersDefault() throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
@@ -79,13 +92,13 @@ public class ApiController {
 
     @Data
     @Builder
-    private static class DonationDtoListModel {
+    public static class DonationDtoListModel {
         List<DonationDto> list;
     }
 
     @Data
     @Builder
-    private static class MessageDtoListModel {
+    public static class MessageDtoListModel {
         List<MessageDto> list;
     }
 
