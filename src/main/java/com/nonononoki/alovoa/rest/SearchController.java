@@ -82,8 +82,8 @@ public class SearchController {
 			model = new ConcurrentModel();
 		}
 		model.addAttribute("dto", searchService.searchComplete(SearchService.SearchParams.builder()
-				.latitude(Optional.ofNullable(latitude)).longitude(Optional.ofNullable(longitude))
-				.distance(Optional.of(distance)).sort(Optional.of(sortId)).build()));
+				.latitude(latitude).longitude(longitude)
+				.distance(distance).sort(sortId).build()));
 		model.addAttribute("currUser", authService.getCurrentUser(true));
 		return model;
 	}
