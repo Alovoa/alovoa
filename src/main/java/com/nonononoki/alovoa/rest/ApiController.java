@@ -64,7 +64,7 @@ public class ApiController {
         }
     }
 
-    @GetMapping("/search/users")
+    @PostMapping("/search/users")
     public SearchDto searchUsers(Model model, @RequestBody SearchService.SearchParams params) throws InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
