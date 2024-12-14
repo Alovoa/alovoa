@@ -115,8 +115,6 @@ public class SearchService {
         int sortId = params.getSort();
         boolean showOutsideParameters = params.isShowOutsideParameters();
         Set<Long> intentions = params.getIntentions().isEmpty() ? ALL_INTENTIONS : params.getIntentions();
-
-        //TODO
         Set<String> interests = params.getInterests();
         Set<Integer> miscInfoIds = params.getMiscInfos();
 
@@ -183,13 +181,18 @@ public class SearchService {
                 .interests(interests)
                 .build();
 
-        // because IS IN does not work with empty list
         request.getBlockIds().add(user.getId());
-        request.getLikeIds().add(0L);
-        request.getHideIds().add(0L);
-        request.getBlockedByIds().add(0L);
 
-        List<User> users = userRepo.usersSearch(request, PageRequest.of(0, SEARCH_MAX, sort));
+        List<User> users;
+        if(request.getMiscInfos().isEmpty() && request.getInterests().isEmpty()) {
+            users = userRepo.usersSearchNoExtras(request, PageRequest.of(0, SEARCH_MAX, sort));
+        } else if(!request.getMiscInfos().isEmpty() && request.getInterests().isEmpty()) {
+            users = userRepo.usersSearchMisc(request, PageRequest.of(0, SEARCH_MAX, sort));
+        } else if(!request.getInterests().isEmpty() && request.getMiscInfos().isEmpty()) {
+            users = userRepo.usersSearchInterest(request, PageRequest.of(0, SEARCH_MAX, sort));
+        } else {
+            users = userRepo.usersSearchInterestMisc(request, PageRequest.of(0, SEARCH_MAX, sort));
+        }
 
         if (!users.isEmpty()) {
             return SearchDto.builder().users(searchResultsToUserDto(users, sortId, user))
@@ -214,7 +217,7 @@ public class SearchService {
                 return SearchDto.builder().users(searchResultsToUserDto(users, sortId, user))
                         .global(true).incompatible(true).stage(SearchStage.WORLD).build();
         } else {
-            return SearchDto.builder().build();
+            return SearchDto.builder().users(List.of()).build();
         }
     }
 
@@ -258,8 +261,6 @@ public class SearchService {
         private int sort = SORT_DEFAULT;
         private double latitude;
         private double longitude;
-        private int minAge;
-        private int maxAge;
         @Builder.Default
         private Set<Integer> miscInfos = new HashSet<>();
         @Builder.Default
