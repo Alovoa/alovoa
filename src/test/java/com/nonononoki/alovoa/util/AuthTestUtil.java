@@ -2,6 +2,8 @@ package com.nonononoki.alovoa.util;
 
 import java.util.Collection;
 
+import com.nonononoki.alovoa.model.AlovoaException;
+import org.mockito.Mockito;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,5 +36,10 @@ public class AuthTestUtil {
 		Authentication auth = new UsernamePasswordAuthenticationToken(user, password,
 				authorities);
 		SecurityContextHolder.getContext().setAuthentication(auth);
+	}
+
+	public static void mockGetCurrentUser(AuthService authServiceMock, User user) throws AlovoaException {
+		Mockito.when(authServiceMock.getCurrentUser()).thenReturn(user);
+		Mockito.when(authServiceMock.getCurrentUser(true)).thenReturn(user);
 	}
 }

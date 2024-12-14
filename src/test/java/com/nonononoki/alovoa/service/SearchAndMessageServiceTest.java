@@ -1,14 +1,13 @@
 package com.nonononoki.alovoa.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
+import com.nonononoki.alovoa.Tools;
+import com.nonononoki.alovoa.component.TextEncryptorConverter;
+import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AlovoaException;
+import com.nonononoki.alovoa.model.SearchDto;
+import com.nonononoki.alovoa.model.UserDto;
+import com.nonononoki.alovoa.repo.*;
+import com.nonononoki.alovoa.util.AuthTestUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,18 +20,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nonononoki.alovoa.Tools;
-import com.nonononoki.alovoa.component.TextEncryptorConverter;
-import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.model.UserDto;
-import com.nonononoki.alovoa.repo.ConversationRepository;
-import com.nonononoki.alovoa.repo.MessageRepository;
-import com.nonononoki.alovoa.repo.UserBlockRepository;
-import com.nonononoki.alovoa.repo.UserHideRepository;
-import com.nonononoki.alovoa.repo.UserLikeRepository;
-import com.nonononoki.alovoa.repo.UserNotificationRepository;
-import com.nonononoki.alovoa.repo.UserReportRepository;
-import com.nonononoki.alovoa.repo.UserRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -110,9 +103,7 @@ class SearchAndMessageServiceTest {
 
 	private static final Long INTENTION_TEST = 1L;
 
-	private final String INTEREST = "interest";
-
-	private static final int USER1_AGE = 18;
+    private static final int USER1_AGE = 18;
 	private static final int USER2_AGE = 20;
 	private static final int USER3_AGE = 30;
 
@@ -155,31 +146,30 @@ class SearchAndMessageServiceTest {
 		assertEquals(4, userRepo.count());
 
 		String imgMimePng = "png";
+		String INTEREST = "interest";
+
 		// setup settings
-		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
+		AuthTestUtil.mockGetCurrentUser(authService, user1);
 		byte[] img1 = Tools.resourceToBytes("img/profile1.png");
 		userService.updateProfilePicture(img1, imgMimePng);
-		userService.addInterest(INTEREST);
+        userService.addInterest(INTEREST);
 		userService.updateDescription("description1");
 		userService.updateIntention(INTENTION_TEST);
-		userService.updateMaxAge(100);
-		userService.updateMinAge(16);
+		userService.updateMaxAge(maxAge);
+		userService.updateMinAge(minAge);
 		userService.updatePreferedGender(2, true);
 
-		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
+		AuthTestUtil.mockGetCurrentUser(authService, user2);
 		byte[] img2 = Tools.resourceToBytes("img/profile2.png");
 		userService.updateProfilePicture(img2, imgMimePng);
 		userService.addInterest(INTEREST);
 		userService.updateDescription("description2");
 		userService.updateIntention(INTENTION_TEST);
-		userService.updateMaxAge(100);
-		userService.updateMinAge(16);
+		userService.updateMaxAge(maxAge);
+		userService.updateMinAge(minAge);
 		userService.updatePreferedGender(1, true);
 
-		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
+		AuthTestUtil.mockGetCurrentUser(authService, user3);
 		byte[] img3 = Tools.resourceToBytes("img/profile3.png");
 		userService.updateProfilePicture(img3, imgMimePng);
 		assertNotNull(user3.getProfilePicture());
@@ -192,9 +182,9 @@ class SearchAndMessageServiceTest {
 		assertEquals(INTENTION_TEST, user3.getIntention().getId());
 		userService.updateMaxAge(maxAge);
 		assertEquals(maxAge, user3.getPreferedMaxAge());
-
 		userService.updateMinAge(minAge);
 		assertEquals(minAge, user3.getPreferedMinAge());
+
 		userService.updatePreferedGender(1, true);
 		assertEquals(3, user3.getPreferedGenders().size());
 		userService.updatePreferedGender(2, true);
@@ -202,91 +192,57 @@ class SearchAndMessageServiceTest {
 		userService.updatePreferedGender(2, false);
 		assertEquals(2, user3.getPreferedGenders().size());
 
-		userService.deleteInterest(authService.getCurrentUser().getInterests().get(0).getText());
-		assertEquals(0, authService.getCurrentUser().getInterests().size());
-		userService.addInterest(INTEREST);
-
-		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-		List<UserDto> searchDtos1 = searchService.search(0.0, 0.0, 50, 1).getUsers();
+		AuthTestUtil.mockGetCurrentUser(authService, user1);
+		List<UserDto> searchDtos1 = searchService.searchComplete(SearchService.SearchParams.builder().build()).getUsers();
 		assertEquals(2, searchDtos1.size());
 
-		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
-		List<UserDto> searchDtos2 = searchService.search(0.0, 0.0, 50, 1).getUsers();
-		assertEquals(1, searchDtos2.size());
+		AuthTestUtil.mockGetCurrentUser(authService, user2);
+		List<UserDto> searchDtos2 = searchService.searchComplete(SearchService.SearchParams.builder().build()).getUsers();
+		assertEquals(2, searchDtos2.size());
 
-		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
-		List<UserDto> searchDtos3 = searchService.search(0.0, 0.0, 50, 1).getUsers();
+		AuthTestUtil.mockGetCurrentUser(authService, user3);
+		List<UserDto> searchDtos3 = searchService.searchComplete(SearchService.SearchParams.builder().build()).getUsers();
 		assertEquals(1, searchDtos3.size());
 
-		// Tip: 1 degree equals roughly 111km
-		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-		userService.updatePreferedGender(1, true);
+		AuthTestUtil.mockGetCurrentUser(authService, user3);
 		userService.updatePreferedGender(2, true);
-		userService.updatePreferedGender(3, true);
-
-		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
-		userService.updatePreferedGender(1, true);
-		userService.updatePreferedGender(2, true);
-		userService.updatePreferedGender(3, true);
-
-		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
-		userService.updatePreferedGender(1, true);
-		userService.updatePreferedGender(2, true);
-		userService.updatePreferedGender(3, true);
-
-		List<UserDto> searchDtos4 = searchService.search(0.0, 0.0, 50, 1).getUsers();
+		assertEquals(3, user3.getPreferedGenders().size());
+		List<UserDto> searchDtos4 = searchService.searchComplete(SearchService.SearchParams.builder().build()).getUsers();
 		assertEquals(2, searchDtos4.size());
 
-		List<UserDto> searchDtos5 = searchService.search(0.45, 0.0, 50, 1).getUsers();
-		assertEquals(2, searchDtos5.size());
-
-		List<UserDto> searchDtos6 = searchService.search(0.46, 0.0, 50, 1).getUsers();
-		assertEquals(2, searchDtos6.size());
-
 		// search filtered by interest
-		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-		userService.deleteInterest(user1.getInterests().get(0).getText());
-		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
-		List<UserDto> interestSearchDto1 = searchService.search(0.0, 0.0, 50, SearchService.SORT_INTEREST).getUsers();
-		assertEquals(1, interestSearchDto1.size());
-		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
-		userService.addInterest(INTEREST);
+		AuthTestUtil.mockGetCurrentUser(authService, user1);
+		List<UserDto> interestSearchDto2 = searchService.searchComplete(SearchService.SearchParams.builder().interests(Set.of(INTEREST)).showOutsideParameters(false).build()).getUsers();
+		assertEquals(2, interestSearchDto2.size());
+		List<UserDto> interestSearchDto = searchService.searchComplete(SearchService.SearchParams.builder().interests(Set.of(INTEREST + "DOESNOTEXIST")).showOutsideParameters(false).build()).getUsers();
+		assertEquals(0, interestSearchDto.size());
 
-		// test preferedAge
-		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
+
+		// test preferredAge
+		AuthTestUtil.mockGetCurrentUser(authService, user2);
 		userService.updateMinAge(USER1_AGE + 1);
-		List<UserDto> ageSearchDto1 = searchService.search(0.0, 0.0, 50, 1).getUsers();
+		List<UserDto> ageSearchDto1 = searchService.searchComplete(SearchService.SearchParams.builder().build()).getUsers();
 		assertEquals(1, ageSearchDto1.size());
 		userService.updateMaxAge(USER3_AGE - 1);
-		List<UserDto> ageSearchDto2 = searchService.search(0.0, 0.0, 50, 1).getUsers();
-		assertEquals(2, ageSearchDto2.size()); // TODO check for incompatible
+		SearchDto searchResult2 = searchService.searchComplete(SearchService.SearchParams.builder().build());
+		List<UserDto> ageSearchDto2 = searchResult2.getUsers();
+		assertEquals(0, ageSearchDto2.size());
 
 		user2.getDates().setDateOfBirth(Tools.localDateToDate(LocalDateTime.now().minusYears(minAge).toLocalDate()));
-		Mockito.when(authService.getCurrentUser()).thenReturn(user2);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
+		AuthTestUtil.mockGetCurrentUser(authService, user2);
 		userService.updateMinAge(minAge);
 		userService.updateMaxAge(maxAge);
-		List<UserDto> ageSearchDto3 = searchService.search(0.0, 0.0, 50, 1).getUsers();
+		List<UserDto> ageSearchDto3 = searchService.searchComplete(SearchService.SearchParams.builder().build()).getUsers();
 		assertEquals(0, ageSearchDto3.size());
-		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
-		List<UserDto> ageSearchDto4 = searchService.search(0.0, 0.0, 50, 1).getUsers();
+		AuthTestUtil.mockGetCurrentUser(authService, user3);
+		List<UserDto> ageSearchDto4 = searchService.searchComplete(SearchService.SearchParams.builder().build()).getUsers();
 		assertEquals(1, ageSearchDto4.size());
 		user2.getDates().setDateOfBirth(Tools.ageToDate(USER2_AGE));
 
 		// likeUser
-		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
+		List<UserDto> searchDtos6 = searchService.searchComplete(SearchService.SearchParams.builder().build()).getUsers();
+		AuthTestUtil.mockGetCurrentUser(authService, user3);
+		assertEquals(2, searchDtos6.size());
 		String longMessage = StringUtils.repeat("*", likeMessageLength);
 		assertThrows(AlovoaException.class, () -> {
 			userService.likeUser(user1.getUuid(), longMessage + "a");
@@ -295,14 +251,14 @@ class SearchAndMessageServiceTest {
 		assertEquals(1, userLikeRepo.count());
 		assertEquals(1, user3.getLikes().size());
 		assertEquals(1, userNotificationRepo.count());
-		List<UserDto> searchDtos7 = searchService.search(0.0, 0.0, 50, 1).getUsers();
+		List<UserDto> searchDtos7 = searchService.searchComplete(SearchService.SearchParams.builder().build()).getUsers();
 		assertEquals(1, searchDtos7.size());
 
 		// hideUser
 		userService.hideUser(user2.getUuid());
 		assertEquals(1, userHideRepo.count());
 		assertEquals(1, user3.getHiddenUsers().size());
-		List<UserDto> searchDtos8 = searchService.search(0.0, 0.0, 50, 1).getUsers();
+		List<UserDto> searchDtos8 = searchService.searchComplete(SearchService.SearchParams.builder().build()).getUsers();
 		assertEquals(0, searchDtos8.size());
 
 		user3.getHiddenUsers().clear();
@@ -327,8 +283,7 @@ class SearchAndMessageServiceTest {
 			userService.likeUser(user3.getUuid(), null);
 		});
 
-		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
+		AuthTestUtil.mockGetCurrentUser(authService, user1);
 		userService.likeUser(user3.getUuid(), null);
 
 		assertEquals(2, userLikeRepo.count());
@@ -359,16 +314,14 @@ class SearchAndMessageServiceTest {
 
 		assertEquals(2, messageRepo.count());
 
-		Mockito.when(authService.getCurrentUser()).thenReturn(user3);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
+		AuthTestUtil.mockGetCurrentUser(authService, user3);
 		assertThrows(Exception.class, () -> {
 			messageService.send(user1.getConversations().get(0).getId(), "Hello");
 		});
 
 		assertEquals(2, messageRepo.count());
 
-		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
+		AuthTestUtil.mockGetCurrentUser(authService, user1);
 		userService.unblockUser(user3.getUuid());
 		assertEquals(0, userBlockRepo.count());
 
