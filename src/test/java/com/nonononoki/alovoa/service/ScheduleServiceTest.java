@@ -20,11 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.Captcha;
-import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserHide;
 import com.nonononoki.alovoa.repo.CaptchaRepository;
-import com.nonononoki.alovoa.repo.ContactRepository;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
@@ -36,9 +34,6 @@ class ScheduleServiceTest {
 
 	@Autowired
 	private CaptchaRepository captchaRepo;
-
-	@Autowired
-	private ContactRepository contactRepo;
 
 	@Autowired
 	private UserHideRepository userHideRepo;
@@ -67,9 +62,6 @@ class ScheduleServiceTest {
 
 	@Value("${app.schedule.delay.hide}")
 	private long hideDelay;
-
-	@Value("${app.schedule.delay.contact}")
-	private long contactDelay;
 
 	@Value("${app.first-name.length-max}")
 	private int firstNameLengthMax;
@@ -122,25 +114,6 @@ class ScheduleServiceTest {
 		assertEquals(2, catchaRepo.count());
 		scheduleService.cleanCaptcha(currentDate);
 		assertEquals(1, catchaRepo.count());
-
-		// CONTACT
-		Contact contactOld = new Contact();
-		contactOld.setEmail("test" + Tools.MAIL_TEST_DOMAIN);
-		contactOld.setHidden(false);
-		contactOld.setMessage("test message");
-		contactOld.setDate(new Date(currentDateTime - contactDelay - 1));
-		contactRepo.saveAndFlush(contactOld);
-
-		Contact contactNew = new Contact();
-		contactNew.setEmail("test" + Tools.MAIL_TEST_DOMAIN);
-		contactNew.setHidden(false);
-		contactNew.setMessage("test message");
-		contactNew.setDate(new Date(currentDateTime - contactDelay));
-		contactRepo.saveAndFlush(contactNew);
-
-		assertEquals(2, contactRepo.count());
-		scheduleService.cleanContact(currentDate);
-		assertEquals(1, contactRepo.count());
 
 		// USERHIDE
 		User user1 = testUsers.get(1);
