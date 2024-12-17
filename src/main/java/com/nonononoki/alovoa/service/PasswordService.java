@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Date;
+import java.util.Objects;
+import java.util.UUID;
 
 import com.nonononoki.alovoa.component.ExceptionHandler;
 import jakarta.mail.MessagingException;
@@ -61,7 +63,15 @@ public class PasswordService {
 		User u = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
 
 		if (u == null) {
-			throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+			try{
+				UUID uuid = UUID.fromString(dto.getEmail());
+				u = userRepo.findByUuid(uuid);
+			} catch (IllegalArgumentException exception){
+				throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+			}
+			if (u == null) {
+				throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+			}
 		}
 
 		if (u.isAdmin()) {
@@ -101,7 +111,8 @@ public class PasswordService {
 		}
 		User user = token.getUser();
 		
-		if (!user.getEmail().equals(Tools.cleanEmail(dto.getEmail()))) {
+		if (!Objects.equals(user.getEmail(),Tools.cleanEmail(dto.getEmail())) &&
+				!Objects.equals(user.getUuid().toString(), Tools.cleanEmail(dto.getEmail()))) {
 			throw new AlovoaException("wrong_email");
 		}
 		if (user.isAdmin()) {
