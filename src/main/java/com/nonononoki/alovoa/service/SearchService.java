@@ -10,6 +10,7 @@ import com.nonononoki.alovoa.model.SearchDto;
 import com.nonononoki.alovoa.model.SearchDto.SearchStage;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserSearchRequest;
+import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import uk.recurse.geocoding.reverse.Country;
 import uk.recurse.geocoding.reverse.ReverseGeocoder;
@@ -47,6 +49,7 @@ public class SearchService {
     private static ReverseGeocoder geocoder = null;
 
     private static final Set<Long> ALL_INTENTIONS = Set.of(UserIntention.MEET, UserIntention.DATE, UserIntention.SEX);
+    private static final Set<Long> ALL_GENDER_IDS = Set.of(Gender.MALE, Gender.FEMALE, Gender.OTHER);
 
     @Autowired
     private TextEncryptorConverter textEncryptor;
@@ -58,6 +61,8 @@ public class SearchService {
     private PublicService publicService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private GenderRepository genderRepo;
     @Value("${app.search.max}")
     private int maxResults;
     @Value("${app.search.max.distance}")
@@ -107,6 +112,9 @@ public class SearchService {
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 
         User user = authService.getCurrentUser(true);
+        if (user.isAdmin()) {
+            return SearchDto.builder().users(searchResultsToUserDto(userRepo.adminSearch(), 0, user)).build();
+        }
 
         Double latitude = params.getLatitude();
         Double longitude = params.getLongitude();
@@ -118,8 +126,14 @@ public class SearchService {
         Set<String> interests = params.getInterests();
         Set<Integer> miscInfoIds = params.getMiscInfos();
 
-        if (user.isAdmin()) {
-            return SearchDto.builder().users(searchResultsToUserDto(userRepo.adminSearch(), 0, user)).build();
+        Set<Long> preferredGenderIds;
+        Set<Long> userPreferredGenderIds =  user.getPreferedGenders().stream().map(Gender::getId).collect(Collectors.toSet());
+        boolean updatedPreferredGenderIds = !params.getPreferredGenderIds().isEmpty() && !Objects.equals(userPreferredGenderIds, params.getPreferredGenderIds());
+        if(updatedPreferredGenderIds)  {
+            user.setPreferedGenders(new HashSet<>(genderRepo.findAllById(params.getPreferredGenderIds())));
+            preferredGenderIds = params.getPreferredGenderIds();
+        } else {
+            preferredGenderIds = userPreferredGenderIds;
         }
 
         if (!latitude.equals(user.getLocationLatitude()) || !longitude.equals(user.getLocationLongitude()) || user.getCountry() == null) {
@@ -149,8 +163,11 @@ public class SearchService {
 
         int age = Tools.calcUserAge(user);
         boolean isLegalAge = age >= ageLegal;
-        int minAge = user.getPreferedMinAge();
-        int maxAge = user.getPreferedMaxAge();
+        int minAge = params.getPreferredMinAge() == null ? user.getPreferedMinAge() : params.getPreferredMinAge();
+        int maxAge = params.getPreferredMaxAge() == null ? user.getPreferedMaxAge() : params.getPreferredMaxAge();
+
+        user.setPreferedMinAge(minAge);
+        user.setPreferedMaxAge(maxAge);
 
         if (isLegalAge && minAge < ageLegal) {
             minAge = ageLegal;
@@ -170,12 +187,14 @@ public class SearchService {
         double minLong = longitude - deltaLong;
         double maxLong = longitude + deltaLong;
 
+        userRepo.saveAndFlush(user);
+
         UserSearchRequest request = UserSearchRequest.builder().age(age).minLat(minLat).minLong(minLong).maxLat(maxLat)
                 .maxLong(maxLong).maxDateDob(maxDate).minDateDob(minDate).intentionIds(intentions)
                 .likeIds(user.getLikes().stream().map(o -> o.getUserTo() != null ? o.getUserTo().getId() : 0).collect(Collectors.toSet()))
                 .blockIds(user.getBlockedUsers().stream().map(o -> o.getUserTo() != null ? o.getUserTo().getId() : 0).collect(Collectors.toSet()))
                 .hideIds(user.getHiddenUsers().stream().map(o -> o.getUserTo() != null ? o.getUserTo().getId() : 0).collect(Collectors.toSet()))
-                .genderIds(user.getPreferedGenders().stream().map(Gender::getId).collect(Collectors.toSet()))
+                .genderIds(preferredGenderIds)
                 .blockedByIds(user.getBlockedByUsers().stream().map(o -> o.getUserFrom() != null ? o.getUserFrom().getId() : 0).collect(Collectors.toSet()))
                 .miscInfos(miscInfoIds)
                 .interests(interests)
@@ -253,6 +272,12 @@ public class SearchService {
     @Getter
     @Builder
     public static class SearchParams {
+        @Builder.Default
+        private Set<Long> preferredGenderIds = new HashSet<>();
+        @Builder.Default
+        private Integer preferredMinAge = null;
+        @Builder.Default
+        private Integer preferredMaxAge = null;
         @Builder.Default
         private int distance = DEFAULT_DISTANCE;
         @Builder.Default
