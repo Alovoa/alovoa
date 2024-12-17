@@ -52,11 +52,6 @@ public class AdminController {
         adminService.removeDescription(uuid);
     }
 
-    @PostMapping("/contact/hide/{id}")
-    public void hideContact(@PathVariable long id) throws AlovoaException {
-        adminService.hideContact(id);
-    }
-
     @PostMapping(value = "/mail/single", consumes = "application/json")
     public void sendMailSingle(@RequestBody MailDto dto) throws AlovoaException, MessagingException, IOException {
         adminService.sendMailSingle(dto);

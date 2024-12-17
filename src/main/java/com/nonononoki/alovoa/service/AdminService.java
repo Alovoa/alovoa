@@ -3,7 +3,6 @@ package com.nonononoki.alovoa.service;
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.ExceptionHandler;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
-import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserDonation;
 import com.nonononoki.alovoa.entity.user.UserReport;
@@ -45,8 +44,6 @@ public class AdminService {
     @Autowired
     private UserRepository userRepo;
     @Autowired
-    private ContactRepository contactRepo;
-    @Autowired
     private UserLikeRepository userLikeRepo;
     @Autowired
     private UserHideRepository userHideRepo;
@@ -65,18 +62,6 @@ public class AdminService {
 
     @Value("${app.search.ignore-intention}")
     private boolean ignoreIntention;
-
-    public void hideContact(long id) throws AlovoaException {
-        checkRights();
-
-        Contact contact = contactRepo.findById(id).orElse(null);
-
-        if (contact == null) {
-            throw new AlovoaException("contact_not_found");
-        }
-        contact.setHidden(true);
-        contactRepo.saveAndFlush(contact);
-    }
 
     public void sendMailSingle(MailDto dto) throws AlovoaException {
         checkRights();

@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserHide;
 import com.nonononoki.alovoa.repo.CaptchaRepository;
-import com.nonononoki.alovoa.repo.ContactRepository;
 import com.nonononoki.alovoa.repo.UserHideRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 
@@ -27,9 +26,6 @@ public class ScheduleService {
 
 	@Autowired
 	private CaptchaRepository captchaRepo;
-
-	@Autowired
-	private ContactRepository contactRepo;
 
 	@Autowired
 	private UserHideRepository userHideRepo;
@@ -46,9 +42,6 @@ public class ScheduleService {
 	@Value("${app.schedule.delay.hide}")
 	private long hideDelay;
 
-	@Value("${app.schedule.delay.contact}")
-	private long contactDelay;
-
 	@Value("${app.schedule.delay.user.cleanup:}")
 	private long nonConfirmedUsersCleanupDelay;
 
@@ -63,14 +56,15 @@ public class ScheduleService {
 		}
 	}
 
+	/*
 	@Scheduled(fixedDelayString = "${app.schedule.long}")
 	public void scheduleLong() {
 		if (enableSchedules) {
 			Date date = new Date();
-			cleanContact(date);
-			//cleanNonConfirmedUsers(date);
+			cleanNonConfirmedUsers(date);
 		}
 	}
+	 */
 
 	public void cleanNonConfirmedUsers(final Date date) {
 		long ms = date.getTime();
@@ -89,14 +83,6 @@ public class ScheduleService {
 		Date d = new Date(ms);
 		captchaRepo.deleteByDateBefore(d);
 		captchaRepo.flush();
-	}
-
-	public void cleanContact(Date date) {
-		long ms = date.getTime();
-		ms -= contactDelay;
-		Date d = new Date(ms);
-		contactRepo.deleteByDateBefore(d);
-		contactRepo.flush();
 	}
 
 	public void cleanUserHide(Date date) {

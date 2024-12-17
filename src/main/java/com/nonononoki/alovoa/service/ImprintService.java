@@ -1,14 +1,13 @@
 package com.nonononoki.alovoa.service;
 
-import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AccountDeletionRequestDto;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.ContactDto;
-import com.nonononoki.alovoa.repo.ContactRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -32,19 +31,19 @@ public class ImprintService {
 	private UserRepository userRepository;
 
 	@Autowired
-	private ContactRepository contactRepo;
+	private MailService mailService;
 
-	public Contact contact(ContactDto dto)
+	@Value("${spring.mail.username}")
+	private String defaultFrom;
+
+	public void contact(com.nonononoki.alovoa.model.ContactDto dto)
 			throws UnsupportedEncodingException, NoSuchAlgorithmException, AlovoaException {
 		boolean isValid = captchaService.isValid(dto.getCaptchaId(), dto.getCaptchaText());
 		if (!isValid) {
 			throw new AlovoaException(publicService.text("backend.error.captcha.invalid"));
 		}
-		Contact c = new Contact();
-		c.setDate(new Date());
-		c.setEmail(dto.getEmail());
-		c.setMessage(dto.getMessage());
-		return contactRepo.saveAndFlush(c);
+
+		mailService.sendAdminMail(defaultFrom, dto.getEmail(), dto.getMessage());
 	}
 
 	public void deleteAccountRequest(AccountDeletionRequestDto dto) throws AlovoaException, MessagingException,

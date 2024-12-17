@@ -1,17 +1,3 @@
-function hideContact(id) {
-	$.ajax({
-		type: "POST",
-		url: "/admin/contact/hide/" + id,
-		success: function() {
-			$("#contact" + id).hide();
-		},
-		error: function(e) {
-			console.log(e);
-			alert(getGenericErrorText());
-		}
-	});
-}
-
 function viewProfile(uuid) {
 	let url = '/admin/profile/view/' + uuid;
 	window.open(url, '_blank').focus();

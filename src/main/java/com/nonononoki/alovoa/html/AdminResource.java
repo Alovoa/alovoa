@@ -2,12 +2,10 @@ package com.nonononoki.alovoa.html;
 
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
-import com.nonononoki.alovoa.entity.Contact;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserReport;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.UserDto;
-import com.nonononoki.alovoa.repo.ContactRepository;
 import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.service.AdminService;
 import com.nonononoki.alovoa.service.AuthService;
@@ -35,8 +33,6 @@ public class AdminResource {
     @Autowired
     private UserReportRepository userReportRepo;
     @Autowired
-    private ContactRepository contactRepository;
-    @Autowired
     private TextEncryptorConverter textEncryptor;
     @Autowired
     private AuthService authService;
@@ -60,10 +56,7 @@ public class AdminResource {
             r.setToUuid(Tools.getUserUUID(r.getUserTo(), userService));
         }
 
-        List<Contact> contacts = contactRepository.findTop20ByHiddenFalse();
-
         mav.addObject("reports", reports);
-        mav.addObject("contacts", contacts);
         User user = authService.getCurrentUser(true);
         mav.addObject("user", UserDto.userToUserDto(UserDto.DtoBuilder.builder().ignoreIntention(true)
                 .currentUser(user).user(user).userService(userService).build()));

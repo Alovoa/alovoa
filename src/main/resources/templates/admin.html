@@ -21,18 +21,6 @@
 <div id="main">
     <header th:insert="~{fragments.html::header}"></header>
     <div style="padding-top: 4px;"></div>
-    <div class="box" id="contact" style="max-height: 330px; overflow: auto;">
-        <h3 th:text="#{contact}"></h3>
-        <div style="padding-bottom: 16px;" th:each="contact : ${contacts}" th:id="'contact' + ${contact.id}">
-            <input class="input" readonly th:value="${contact.email}"></input>
-            <div style="padding-top: 4px;"></div>
-            <textarea class="textarea" readonly th:text="${contact.message}"></textarea>
-            <div style="padding-top: 4px;"></div>
-            <button class="button" th:onclick="hideContact([[${contact.id}]])"
-                    th:text="#{admin-delete-contact}"></button>
-        </div>
-    </div>
-
     <div class="box" id="report" style="max-height: 693px; overflow: auto;">
         <h3 th:text="#{reports}"></h3>
         <div style="padding-bottom: 16px;" th:class="'user' + ${report.userTo.id}" th:each="report : ${reports}"
