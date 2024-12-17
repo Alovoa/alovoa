@@ -13,6 +13,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import com.nonononoki.alovoa.model.DatabaseRuntimeException;
 import jakarta.persistence.AttributeConverter;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -36,21 +38,21 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 
 	SecureRandom random = new SecureRandom();
 
-	private IvParameterSpec getIvSpec() {
+	private synchronized IvParameterSpec getIvSpec() {
 		if (ivSpec == null) {
 			ivSpec = new IvParameterSpec(salt.getBytes(StandardCharsets.UTF_8));
 		}
 		return ivSpec;
 	}
 
-	private SecretKeySpec getKeySpec() {
+	private synchronized SecretKeySpec getKeySpec() {
 		if (keySpec == null) {
 			keySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
 		}
 		return keySpec;
 	}
 
-	private Cipher getEnCipher() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+	private synchronized Cipher getEnCipher() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
 			InvalidAlgorithmParameterException {
 		if (enCipher == null) {
 			enCipher = Cipher.getInstance(TRANSFORMATION);
@@ -59,7 +61,7 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		return enCipher;
 	}
 
-	private Cipher getDeCipher() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+	private synchronized Cipher getDeCipher() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
 			InvalidAlgorithmParameterException {
 		if (deCipher == null) {
 			deCipher = Cipher.getInstance(TRANSFORMATION);
@@ -86,20 +88,20 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 	}
 
 	@Override
-	public String convertToDatabaseColumn(String attribute) {
+	public String convertToDatabaseColumn(String attribute) throws DatabaseRuntimeException {
 		try {
 			return encode(attribute);
 		} catch (Exception e) {
-			return attribute;
+			throw new DatabaseRuntimeException(e);
 		}
 	}
 
 	@Override
-	public String convertToEntityAttribute(String dbData) {
+	public String convertToEntityAttribute(String dbData) throws DatabaseRuntimeException  {
 		try {
 			return decode(dbData);
 		} catch (Exception e) {
-			return dbData;
+			throw new DatabaseRuntimeException(e);
 		}
 	}
 }
