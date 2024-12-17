@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.service;
 
+import com.nonononoki.alovoa.component.ExceptionHandler;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AccountDeletionRequestDto;
 import com.nonononoki.alovoa.model.AlovoaException;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class ImprintService {
@@ -53,6 +55,13 @@ public class ImprintService {
 			throw new AlovoaException(publicService.text("backend.error.captcha.invalid"));
 		}
 		User user = userRepository.findByEmail(dto.getEmail());
+
+		if (user == null) {
+			try{
+				UUID uuid = UUID.fromString(dto.getEmail());
+				user = userRepository.findByUuid(uuid);
+			} catch (IllegalArgumentException ignored){}
+		}
 		if (user != null) {
 			userService.deleteAccountRequestBase(user);
 		}
