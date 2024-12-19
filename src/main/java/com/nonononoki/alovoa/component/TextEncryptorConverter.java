@@ -36,8 +36,6 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 	private static Cipher enCipher;
 	private static Cipher deCipher;
 
-	SecureRandom random = new SecureRandom();
-
 	private synchronized IvParameterSpec getIvSpec() {
 		if (ivSpec == null) {
 			ivSpec = new IvParameterSpec(salt.getBytes(StandardCharsets.UTF_8));
@@ -70,7 +68,7 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		return deCipher;
 	}
 
-	public String encode(String attribute)
+	public synchronized String encode(String attribute)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException {
 		if(attribute == null) {
@@ -80,17 +78,13 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		return Base64.getUrlEncoder().encodeToString(ba);
 	}
 
-	public String decode(String dbData)
+	public synchronized String decode(String dbData)
 			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException {
 		if(dbData == null) {
 			return null;
 		}
-		try {
-			return new String(getDeCipher().doFinal(Base64.getUrlDecoder().decode(dbData)), StandardCharsets.UTF_8);
-		} catch (BadPaddingException e) {
-			throw new BadPaddingException();
-		}
+		return new String(getDeCipher().doFinal(Base64.getUrlDecoder().decode(dbData)), StandardCharsets.UTF_8);
 	}
 
 	@Override
