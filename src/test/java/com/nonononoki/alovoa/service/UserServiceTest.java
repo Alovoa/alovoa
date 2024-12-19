@@ -302,7 +302,7 @@ class UserServiceTest {
         Mockito.when(authService.getCurrentUser()).thenReturn(user3);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user3);
         List<UserInterestDto> iterests = userService.getInterestAutocomplete(query);
-        List<String> iterestNames = iterests.stream().map(i -> i.getName()).collect(Collectors.toList());
+        List<String> interestNames = iterests.stream().map(UserInterestDto::getName).toList();
 
         assertEquals(interestAutocompleteMax, iterests.size());
         assertEquals(2, iterests.get(0).getCount());
@@ -310,11 +310,11 @@ class UserServiceTest {
         assertEquals(2, iterests.get(2).getCount());
         assertEquals(2, iterests.get(3).getCount());
         assertEquals(1, iterests.get(4).getCount());
-        assertTrue(iterestNames.contains(INTEREST1));
-        assertTrue(iterestNames.contains(INTEREST2));
-        assertTrue(iterestNames.contains(INTEREST3));
-        assertTrue(iterestNames.contains(INTEREST4));
-        assertTrue(iterestNames.contains(INTEREST5));
+        assertTrue(interestNames.contains(INTEREST1));
+        assertTrue(interestNames.contains(INTEREST2));
+        assertTrue(interestNames.contains(INTEREST3));
+        assertTrue(interestNames.contains(INTEREST4));
+        assertTrue(interestNames.contains(INTEREST5));
 
         Mockito.when(authService.getCurrentUser()).thenReturn(user2);
         Mockito.when(authService.getCurrentUser(true)).thenReturn(user2);
