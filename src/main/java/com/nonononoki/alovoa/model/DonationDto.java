@@ -65,35 +65,28 @@ public class DonationDto {
     }
 
     public static List<DonationDto> donationsToDtos(List<UserDonation> donations, User currentUser, UserService userService,
-                                                    TextEncryptorConverter textEncryptor, int maxEntries, boolean ignoreIntention)
-            throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-            NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-        List<DonationDto> dtos = new ArrayList<>();
-        for (UserDonation donation : donations) {
-            if (!donation.getUser().getId().equals(currentUser.getId())) {
-                dtos.add(DonationDto.donationToDto(donation, currentUser, userService, textEncryptor, ignoreIntention));
-                if (dtos.size() >= maxEntries) {
-                    break;
-                }
+                                                    TextEncryptorConverter textEncryptor, int maxEntries, boolean ignoreIntention) {
+        return donations.subList(0, maxEntries).stream().map(donation -> {
+            try {
+                return DonationDto.donationToDto(donation, currentUser, userService, textEncryptor, ignoreIntention);
+            } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException |
+                     NoSuchPaddingException | InvalidAlgorithmParameterException | UnsupportedEncodingException |
+                     AlovoaException e) {
+                throw new RuntimeException(e);
             }
-        }
-        return dtos;
+        }).toList();
     }
 
     public static List<DonationDto> usersToDtos(List<User> users, User currentUser, UserService userService,
-                                                TextEncryptorConverter textEncryptor, int maxEntries, boolean ignoreIntention)
-            throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-            NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, AlovoaException {
-        List<DonationDto> dtos = new ArrayList<>();
-        for (User user : users) {
-            if (!user.getId().equals(currentUser.getId())) {
-                dtos.add(DonationDto.userToDto(user, currentUser, userService, textEncryptor, ignoreIntention));
-
-                if (dtos.size() >= maxEntries) {
-                    break;
-                }
+                                                TextEncryptorConverter textEncryptor, int maxEntries, boolean ignoreIntention) {
+        return users.subList(0, maxEntries).stream().map(user -> {
+            try {
+                return DonationDto.userToDto(user, currentUser, userService, textEncryptor, ignoreIntention);
+            } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException |
+                     NoSuchPaddingException | InvalidAlgorithmParameterException | UnsupportedEncodingException |
+                     AlovoaException e) {
+                throw new RuntimeException(e);
             }
-        }
-        return dtos;
+        }).toList();
     }
 }
