@@ -194,10 +194,6 @@ public class ApiResource {
             throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
         }
 
-        if (userView.isDisabled()) {
-            throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
-        }
-
         ModelMap map = new ModelMap();
 
         userView = userRepo.saveAndFlush(userView);

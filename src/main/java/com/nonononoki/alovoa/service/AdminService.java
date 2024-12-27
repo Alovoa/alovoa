@@ -140,46 +140,7 @@ public class AdminService {
             throw new AlovoaException("user_is_admin");
         }
 
-        UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
-                .userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
-                .userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo)
-                .userVerificationPictureRepo(userVerificationPictureRepo).build();
-
-        try {
-            UserService.removeUserDataCascading(user, userDeleteParam);
-        } catch (Exception e) {
-            logger.warn(ExceptionUtils.getStackTrace(e));
-        }
-
-        user = userRepo.findByEmail(user.getEmail());
-
-        user.setAudio(null);
-        user.setDates(null);
-        user.setDeleteToken(null);
-        user.setDescription(null);
-        user.setLanguage(null);
-        user.setCountry(null);
         user.setDisabled(true);
-        user.getDonations().clear();
-        user.setFirstName(null);
-        user.setGender(null);
-        user.getImages().clear();
-        user.setIntention(null);
-        user.getInterests().clear();
-        user.setLocationLatitude(null);
-        user.setLocationLongitude(null);
-        user.setPassword(null);
-        user.setPasswordToken(null);
-        user.setPreferedGenders(null);
-        user.setPreferedMaxAge(0);
-        user.setPreferedMinAge(0);
-        user.setRegisterToken(null);
-        user.setTotalDonations(0);
-        user.setProfilePicture(null);
-        user.setVerificationCode(null);
-        user.setVerificationPicture(null);
-        user.setShowZodiac(false);
-        user.getPrompts().clear();
         userRepo.saveAndFlush(user);
     }
 
@@ -197,10 +158,6 @@ public class AdminService {
 
         if (user == null) {
             throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
-        }
-
-        if (user.isDisabled()) {
-            throw new AlovoaException("user_is_banned");
         }
 
         if (user.isAdmin()) {
