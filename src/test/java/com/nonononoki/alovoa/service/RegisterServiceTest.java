@@ -1,38 +1,28 @@
 package com.nonononoki.alovoa.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.nonononoki.alovoa.model.AlovoaException;
-import jakarta.mail.MessagingException;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserDeleteToken;
 import com.nonononoki.alovoa.model.RegisterDto;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
-import com.nonononoki.alovoa.repo.ConversationRepository;
-import com.nonononoki.alovoa.repo.MessageRepository;
-import com.nonononoki.alovoa.repo.UserBlockRepository;
-import com.nonononoki.alovoa.repo.UserHideRepository;
-import com.nonononoki.alovoa.repo.UserLikeRepository;
-import com.nonononoki.alovoa.repo.UserReportRepository;
-import com.nonononoki.alovoa.repo.UserRepository;
+import com.nonononoki.alovoa.repo.*;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -87,7 +77,7 @@ public class RegisterServiceTest {
 	@Value("${app.first-name.length-min}")
 	private int firstNameLengthMin;
 
-	@MockBean
+	@MockitoBean
 	private AuthService authService;
 
 	private static List<User> testUsers = null;

@@ -16,8 +16,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URLDecoder;
@@ -66,10 +66,10 @@ class AdminServiceTest {
 	@Value("${app.first-name.length-min}")
 	private int firstNameLengthMin;
 
-	@MockBean
+	@MockitoBean
 	private AuthService authService;
 
-	@MockBean
+	@MockitoBean
 	private MailService mailService;
 
 	@Autowired
