@@ -185,18 +185,22 @@ public class Tools {
                 || user2.getDates() == null) {
             return false;
         }
-
         int user1Age = calcUserAge(user1);
         int user2Age = calcUserAge(user2);
-
-        return (user2.getLikes() != null && user2.getLikes().stream().filter(u -> u.getUserTo() != null)
-                .map(u -> u.getUserTo().getId()).anyMatch(u ->
-                        Objects.equals(u, user1.getId()))) || user2Age < AGE_LEGAL == user1Age < AGE_LEGAL
-                && user2.getPreferedGenders().contains(user1.getGender())
-                && user1.getPreferedGenders().contains(user2.getGender()) && user1.getPreferedMaxAge() >= user2Age
-                && user1.getPreferedMinAge() <= user2Age && user2.getPreferedMaxAge() >= user1Age
-                && user2.getPreferedMinAge() <= user1Age
-                && (ignoreIntention || user2.getIntention().getId().equals(user1.getIntention().getId()));
+        boolean compatible;
+        try {
+            compatible = (user2.getLikes() != null && user2.getLikes().stream().filter(u -> u.getUserTo() != null)
+                    .map(u -> u.getUserTo().getId()).anyMatch(u ->
+                            Objects.equals(u, user1.getId()))) || user2Age < AGE_LEGAL == user1Age < AGE_LEGAL
+                    && user2.getPreferedGenders().contains(user1.getGender())
+                    && user1.getPreferedGenders().contains(user2.getGender()) && user1.getPreferedMaxAge() >= user2Age
+                    && user1.getPreferedMinAge() <= user2Age && user2.getPreferedMaxAge() >= user1Age
+                    && user2.getPreferedMinAge() <= user1Age
+                    && (ignoreIntention || user2.getIntention().getId().equals(user1.getIntention().getId()));
+        } catch (Exception e) {
+            compatible = false;
+        }
+        return compatible;
     }
 
     // This method subtracts user date of birth with passed preferred min/max age
@@ -266,24 +270,26 @@ public class Tools {
 
     public static UUID getProfilePictureUUID(UserProfilePicture image, UserService userService) {
         UUID uuid = image.getUuid();
-        if(uuid == null) {
+        if (uuid == null) {
             uuid = UUID.randomUUID();
             userService.updateProfilePictureUUID(image, uuid);
         }
         return uuid;
     }
+
     public static UUID getImageUUID(UserImage image, UserService userService) {
         UUID uuid = image.getUuid();
-        if(uuid == null) {
+        if (uuid == null) {
             uuid = UUID.randomUUID();
             userService.updateImageUUID(image, uuid);
         }
         return uuid;
     }
+
     public static UUID getUserUUID(User user, UserService userService) {
 
         UUID uuid = user.getUuid();
-        if(uuid == null) {
+        if (uuid == null) {
             uuid = UUID.randomUUID();
             userService.updateUUID(user, uuid);
         }
