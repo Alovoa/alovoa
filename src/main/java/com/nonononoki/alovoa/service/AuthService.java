@@ -41,16 +41,9 @@ public class AuthService {
 		}
 
 		User user = userRepo.findByEmail(Tools.cleanEmail(email));
-		if (user != null && user.isDisabled()) {
+		if (user == null) {
 			throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
-		} else if (user == null && throwExceptionWhenNull) {
-			//try again
-            user = userRepo.findByEmail(Tools.cleanEmail(email));
-			if (user == null) {
-				throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
-			}
 		}
-
 		return user;
 	}
 	

@@ -739,17 +739,17 @@ public class UserService {
             like.setUserTo(user);
             currUser.getLikes().add(like);
 
-            UserNotification not = new UserNotification();
-            not.setContent(UserNotification.USER_LIKE);
-            not.setDate(new Date());
-            not.setUserFrom(currUser);
-            not.setUserTo(user);
-            not.setMessage(message);
-            currUser.getNotifications().add(not);
-
-            user.getDates().setNotificationDate(new Date());
-
-            currUser.getHiddenUsers().removeIf(hide -> hide.getUserTo().getId().equals(user.getId()));
+            if (!currUser.isDisabled()) {
+                UserNotification not = new UserNotification();
+                not.setContent(UserNotification.USER_LIKE);
+                not.setDate(new Date());
+                not.setUserFrom(currUser);
+                not.setUserTo(user);
+                not.setMessage(message);
+                currUser.getNotifications().add(not);
+                user.getDates().setNotificationDate(new Date());
+                currUser.getHiddenUsers().removeIf(hide -> hide.getUserTo().getId().equals(user.getId()));
+            }
 
             userRepo.saveAndFlush(user);
             userRepo.saveAndFlush(currUser);
@@ -757,7 +757,7 @@ public class UserService {
             final boolean isMatch = user.getLikes().stream().filter(o -> o.getUserTo().getId() != null)
                     .anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()));
 
-            if (isMatch) {
+            if (!currUser.isDisabled() && isMatch) {
                 Conversation convo = new Conversation();
                 convo.setUsers(new ArrayList<>());
                 convo.setDate(new Date());
@@ -777,7 +777,7 @@ public class UserService {
                     mailService.sendMatchNotificationMail(user);
                 }
 
-            } else if (user.getUserSettings().isEmailLike()) {
+            } else if (!currUser.isDisabled() && user.getUserSettings().isEmailLike()) {
                 mailService.sendLikeNotificationMail(user);
             }
         }

@@ -66,9 +66,6 @@ public class AuthProvider implements AuthenticationProvider {
 		if (user == null) {
 			throw new BadCredentialsException("");
 		}
-		if (user.isDisabled()) {
-			throw new DisabledException("");
-		}
 
 		if (password.isEmpty()) {
 			throw new BadCredentialsException("");

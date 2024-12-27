@@ -11,8 +11,6 @@ import java.util.Set;
 @Data
 public class UserGdpr {
 
-    private boolean confirmed;
-    private boolean disabled;
     private int preferedMinAge;
     private int preferedMaxAge;
     private Double locationLatitude;
@@ -41,8 +39,6 @@ public class UserGdpr {
 
     public static UserGdpr userToUserGdpr(User user) {
         UserGdpr u = new UserGdpr();
-        u.setConfirmed(user.isConfirmed());
-        u.setDisabled(user.isDisabled());
         u.setPreferedMinAge(user.getPreferedMinAge());
         u.setPreferedMaxAge(user.getPreferedMaxAge());
         u.setTotalDonations(user.getTotalDonations());

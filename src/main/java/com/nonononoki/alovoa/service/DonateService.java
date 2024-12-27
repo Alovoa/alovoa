@@ -88,7 +88,7 @@ public class DonateService {
 
         if (filter == FILTER_RECENT) {
             donationsToDtos = DonationDto.donationsToDtos(userDonationRepo
-                            .findTop20ByUserDatesDateOfBirthGreaterThanEqualAndUserDatesDateOfBirthLessThanEqualOrderByDateDesc(
+                            .findTop20ByUserDisabledFalseAndUserDatesDateOfBirthGreaterThanEqualAndUserDatesDateOfBirthLessThanEqualOrderByDateDesc(
                                     minDate, maxDate),
                     user, userService, textEncryptor, maxEntries, ignoreIntention);
         } else if (filter == FILTER_AMOUNT) {

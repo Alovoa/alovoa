@@ -83,10 +83,6 @@ public class PasswordService {
 			throw new AlovoaException("user_has_social_login");
 		}
 
-		if (u.isDisabled()) {
-			throw new AlovoaException("user_disabled");
-		}
-
 		UserPasswordToken token = new UserPasswordToken();
 		token.setContent(RandomStringUtils.random(tokenLength, 0, 0, true, true, null, new SecureRandom()));
 		token.setDate(new Date());
