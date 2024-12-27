@@ -66,7 +66,7 @@ public class DonationDto {
 
     public static List<DonationDto> donationsToDtos(List<UserDonation> donations, User currentUser, UserService userService,
                                                     TextEncryptorConverter textEncryptor, int maxEntries, boolean ignoreIntention) {
-        return donations.subList(0, maxEntries).stream().map(donation -> {
+        return donations.subList(0, Math.min(donations.size(), maxEntries)).stream().map(donation -> {
             try {
                 return DonationDto.donationToDto(donation, currentUser, userService, textEncryptor, ignoreIntention);
             } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException |
@@ -79,7 +79,7 @@ public class DonationDto {
 
     public static List<DonationDto> usersToDtos(List<User> users, User currentUser, UserService userService,
                                                 TextEncryptorConverter textEncryptor, int maxEntries, boolean ignoreIntention) {
-        return users.subList(0, maxEntries).stream().map(user -> {
+        return users.subList(0, Math.min(users.size(), maxEntries)).stream().map(user -> {
             try {
                 return DonationDto.userToDto(user, currentUser, userService, textEncryptor, ignoreIntention);
             } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException |
