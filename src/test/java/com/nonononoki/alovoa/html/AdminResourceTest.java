@@ -1,18 +1,15 @@
 package com.nonononoki.alovoa.html;
 
+import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.repo.UserRepository;
+import com.nonononoki.alovoa.service.AuthService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.repo.UserRepository;
-import com.nonononoki.alovoa.service.AuthService;
-
-import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -25,7 +22,7 @@ class AdminResourceTest {
 	@Autowired
 	private UserRepository userRepo;
 
-	@MockBean
+	@MockitoBean
 	private AuthService authService;
 
 	@Test

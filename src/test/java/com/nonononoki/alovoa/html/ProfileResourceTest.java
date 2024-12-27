@@ -1,9 +1,9 @@
 package com.nonononoki.alovoa.html;
 
-import static org.mockito.ArgumentMatchers.any;
-
-import java.util.List;
-
+import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.repo.ConversationRepository;
+import com.nonononoki.alovoa.repo.UserRepository;
+import com.nonononoki.alovoa.service.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,19 +11,13 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nonononoki.alovoa.entity.User;
-import com.nonononoki.alovoa.repo.ConversationRepository;
-import com.nonononoki.alovoa.repo.UserRepository;
-import com.nonononoki.alovoa.service.AuthService;
-import com.nonononoki.alovoa.service.CaptchaService;
-import com.nonononoki.alovoa.service.MailService;
-import com.nonononoki.alovoa.service.RegisterService;
-import com.nonononoki.alovoa.service.RegisterServiceTest;
-import com.nonononoki.alovoa.service.UserService;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -54,10 +48,10 @@ class ProfileResourceTest {
 	@Autowired
 	private ProfileResource profileResource;
 
-	@MockBean
+	@MockitoBean
 	private AuthService authService;
 
-	@MockBean
+	@MockitoBean
 	private MailService mailService;
 
 	private List<User> testUsers;
