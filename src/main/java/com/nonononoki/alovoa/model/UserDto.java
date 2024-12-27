@@ -175,9 +175,13 @@ public class UserDto {
                         .anyMatch(o -> Objects.equals(o.getUserTo().getId(), user.getId()));
             }
             if (user.getLikes() != null) {
-                dto.likesCurrentUser = user.getLikes().stream()
-                        .filter(o -> o.getUserTo() != null)
-                        .anyMatch(o -> Objects.equals(o.getUserTo().getId(), currentUser.getId()));
+                try {
+                    dto.likesCurrentUser = user.getLikes().stream()
+                            .filter(o -> o.getUserTo() != null)
+                            .anyMatch(o -> Objects.equals(o.getUserTo().getId(), currentUser.getId()));
+                } catch (Exception ignored) {
+                    dto.likesCurrentUser = false;
+                }
             }
             if (currentUser.getLikes() != null) {
                 dto.likedByCurrentUser = currentUser.getLikes().stream()
