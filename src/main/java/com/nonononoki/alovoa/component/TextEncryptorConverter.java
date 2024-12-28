@@ -97,11 +97,11 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 	}
 
 	@Override
-	public String convertToEntityAttribute(String dbData) throws DatabaseRuntimeException  {
+	public String convertToEntityAttribute(String dbData) {
 		try {
 			return decode(dbData);
 		} catch (Exception e) {
-			throw new DatabaseRuntimeException(e);
+			return dbData;
 		}
 	}
 }
