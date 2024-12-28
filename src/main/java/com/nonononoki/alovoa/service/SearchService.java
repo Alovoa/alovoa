@@ -44,7 +44,7 @@ public class SearchService {
     public static final int SORT_NEWEST_USER = 6;
     private static final double LATITUDE = 111.1;
     private static final double LONGITUDE = 111.320;
-    private static final int DEFAULT_DISTANCE = 50;
+    private static final int DEFAULT_DISTANCE = 150;
     private static final int SEARCH_MAX = 200;
     private static ReverseGeocoder geocoder = null;
 
@@ -234,7 +234,7 @@ public class SearchService {
             // NO COMPATIBLE USERS FOUND, SEARCH AROUND THE WORLD!
             users = userRepo.usersSearchAllIgnoreLocation(request, PageRequest.of(0, SEARCH_MAX, sort));
                 return SearchDto.builder().users(searchResultsToUserDto(users, sortId, user))
-                        .global(true).incompatible(true).stage(SearchStage.WORLD).build();
+                        .global(true).stage(SearchStage.WORLD).build();
         } else {
             return SearchDto.builder().users(List.of()).build();
         }
