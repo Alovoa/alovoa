@@ -211,6 +211,13 @@ class SearchAndMessageServiceTest {
         List<UserDto> searchDtos4 = searchService.searchComplete(SearchService.SearchParams.builder().build()).getUsers();
         assertEquals(2, searchDtos4.size());
 
+        // search filtered by location
+        AuthTestUtil.mockGetCurrentUser(authService, user1);
+        List<UserDto> locationSearchDtos = searchService.searchComplete(SearchService.SearchParams.builder().latitude(90).longitude(180).showOutsideParameters(true).build()).getUsers();
+        assertEquals(2, locationSearchDtos.size());
+        List<UserDto> locationSearchDtos2 = searchService.searchComplete(SearchService.SearchParams.builder().latitude(0).longitude(0).showOutsideParameters(true).build()).getUsers();
+        assertEquals(2, locationSearchDtos2.size());
+
         // search filtered by interest
         AuthTestUtil.mockGetCurrentUser(authService, user1);
         List<UserDto> interestSearchDto2 = searchService.searchComplete(SearchService.SearchParams.builder().interests(Set.of(INTEREST)).showOutsideParameters(false).build()).getUsers();

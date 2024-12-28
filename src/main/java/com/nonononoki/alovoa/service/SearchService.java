@@ -93,7 +93,7 @@ public class SearchService {
         }
         if (user.getLocationLatitude() != null) {
             return searchComplete(SearchParams.builder().latitude(user.getLocationLatitude())
-                    .longitude(user.getLocationLongitude()).build());
+                    .longitude(user.getLocationLongitude()).showOutsideParameters(true).build());
         } else {
             return null;
         }
@@ -104,7 +104,7 @@ public class SearchService {
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
         return searchComplete(SearchParams.builder().latitude(latitude)
-                .longitude(longitude).distance(distance).sort(sortId).build());
+                .longitude(longitude).showOutsideParameters(true).distance(distance).sort(sortId).build());
     }
 
     public SearchDto searchComplete(SearchParams params) throws AlovoaException,
@@ -280,8 +280,7 @@ public class SearchService {
         private Integer preferredMaxAge = null;
         @Builder.Default
         private int distance = DEFAULT_DISTANCE;
-        @Builder.Default
-        private boolean showOutsideParameters = true;
+        private boolean showOutsideParameters;
         @Builder.Default
         private int sort = SORT_DEFAULT;
         private double latitude;
