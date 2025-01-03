@@ -227,11 +227,10 @@ public class SearchService {
             users = userRepo.usersBaseSearch(request, PageRequest.of(0, SEARCH_MAX, sort));
             if (!users.isEmpty()) {
                 return SearchDto.builder().users(searchResultsToUserDto(users, sortId, user))
-                        .global(false)
-                        .stage(SearchStage.INCREASED_RADIUS_1).build();
+                        .global(false).build();
             }
 
-            // NO COMPATIBLE USERS FOUND, SEARCH AROUND THE WORLD!
+            // NO COMPATIBLE USERS FOUND NEARBY, SEARCH AROUND THE WORLD!
             users = userRepo.usersSearchAllIgnoreLocation(request, PageRequest.of(0, SEARCH_MAX, sort));
                 return SearchDto.builder().users(searchResultsToUserDto(users, sortId, user))
                         .global(true).stage(SearchStage.WORLD).build();
