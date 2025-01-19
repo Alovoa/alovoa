@@ -24,7 +24,7 @@ public class AuthService {
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
-	public User getCurrentUser(boolean throwExceptionWhenNull) throws AlovoaException {
+	public synchronized User getCurrentUser(boolean throwExceptionWhenNull) throws AlovoaException {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String email;
 		if (auth instanceof OAuth2AuthenticationToken) {
