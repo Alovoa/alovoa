@@ -167,115 +167,28 @@ public class UserService {
         UserVerificationPictureRepository userVerificationPictureRepo = userDeleteParam.getUserVerificationPictureRepo();
 
         // DELETE USER LIKE
-        for (UserLike like : userLikeRepo.findByUserFrom(user)) {
-            User u = like.getUserTo();
-            if (u != null && u.getLikedBy() != null) {
-                u.getLikedBy().remove(like);
-                userRepo.save(u);
-            }
-            like.setUserTo(null);
-            userLikeRepo.save(like);
-
-        }
-        for (UserLike like : userLikeRepo.findByUserTo(user)) {
-            User u = like.getUserFrom();
-            if (u != null && u.getLikes() != null) {
-                u.getLikes().remove(like);
-                userRepo.save(u);
-            }
-            like.setUserFrom(null);
-            userLikeRepo.save(like);
-        }
-        userRepo.flush();
+        userLikeRepo.deleteAll(userLikeRepo.findByUserFrom(user));
+        userLikeRepo.deleteAll(userLikeRepo.findByUserTo(user));
         userLikeRepo.flush();
 
         // DELETE USER NOTIFICATION
-        for (UserNotification notification : userNotificationRepo.findByUserFrom(user)) {
-            User u = notification.getUserTo();
-            if (u != null && u.getNotificationsFrom() != null) {
-                u.getNotificationsFrom().remove(notification);
-                userRepo.save(u);
-            }
-            notification.setUserTo(null);
-            userNotificationRepo.save(notification);
-        }
-        for (UserNotification notificaton : userNotificationRepo.findByUserTo(user)) {
-            User u = notificaton.getUserFrom();
-            if (u != null && u.getNotifications() != null) {
-                u.getNotifications().remove(notificaton);
-                userRepo.save(u);
-            }
-            notificaton.setUserFrom(null);
-            userNotificationRepo.save(notificaton);
-        }
-        userRepo.flush();
+        userNotificationRepo.deleteAll(userNotificationRepo.findByUserFrom(user));
+        userNotificationRepo.deleteAll(userNotificationRepo.findByUserTo(user));
         userNotificationRepo.flush();
 
         // DELETE USER HIDE
-        for (UserHide hide : userHideRepo.findByUserFrom(user)) {
-            User u = hide.getUserTo();
-            if (u != null && u.getHiddenByUsers() != null) {
-                u.getHiddenByUsers().remove(hide);
-                userRepo.save(u);
-            }
-            hide.setUserTo(null);
-            userHideRepo.save(hide);
-        }
-        for (UserHide hide : userHideRepo.findByUserTo(user)) {
-            User u = hide.getUserFrom();
-            if (u != null && u.getHiddenUsers() != null) {
-                u.getHiddenUsers().remove(hide);
-                userRepo.save(u);
-            }
-
-            hide.setUserFrom(null);
-            userHideRepo.save(hide);
-        }
-        userRepo.flush();
+        userHideRepo.deleteAll(userHideRepo.findByUserFrom(user));
+        userHideRepo.deleteAll(userHideRepo.findByUserTo(user));
         userHideRepo.flush();
 
         // DELETE USER BLOCK
-        for (UserBlock block : userBlockRepo.findByUserFrom(user)) {
-            User u = block.getUserTo();
-            if (u != null && u.getBlockedByUsers() != null) {
-                u.getBlockedByUsers().remove(block);
-                userRepo.save(u);
-            }
-            block.setUserTo(null);
-            userBlockRepo.save(block);
-        }
-        for (UserBlock block : userBlockRepo.findByUserTo(user)) {
-            User u = block.getUserFrom();
-            if (u != null && u.getBlockedUsers() != null) {
-                u.getBlockedUsers().remove(block);
-                userRepo.save(u);
-            }
-            block.setUserFrom(null);
-            userBlockRepo.save(block);
-        }
-        userRepo.flush();
+        userBlockRepo.deleteAll(userBlockRepo.findByUserFrom(user));
+        userBlockRepo.deleteAll(userBlockRepo.findByUserTo(user));
         userBlockRepo.flush();
 
         // DELETE USER REPORT
-        for (UserReport report : userReportRepo.findByUserFrom(user)) {
-            User u = report.getUserTo();
-            if (u != null && u.getReportedByUsers() != null) {
-                u.getReportedByUsers().remove(report);
-                userRepo.save(u);
-            }
-            report.setUserTo(null);
-            userReportRepo.save(report);
-        }
-        for (UserReport report : userReportRepo.findByUserTo(user)) {
-            User u = report.getUserFrom();
-            if (u != null && u.getReported() != null) {
-                u.getReported().remove(report);
-                userRepo.save(u);
-            }
-            report.setUserFrom(null);
-            userReportRepo.save(report);
-        }
-        userRepo.flush();
+        userReportRepo.deleteAll(userReportRepo.findByUserFrom(user));
+        userReportRepo.deleteAll(userReportRepo.findByUserTo(user));
         userReportRepo.flush();
 
         // DELETE USER CONVERSATION
@@ -288,6 +201,7 @@ public class UserService {
             }
             conversationRepo.delete(c);
         }
+        conversationRepo.flush();
 
         // DELETE USER VERIFICATION
         for (UserVerificationPicture v : userVerificationPictureRepo.findByUserNo(user)) {
@@ -300,7 +214,6 @@ public class UserService {
         }
 
         userVerificationPictureRepo.flush();
-        conversationRepo.flush();
         userRepo.flush();
     }
 
@@ -795,7 +708,7 @@ public class UserService {
             currUser.getHiddenUsers().add(hide);
             userRepo.saveAndFlush(currUser);
 
-            if(user.getLikes().stream().anyMatch(l -> l.getUserTo().getId().equals(currUser.getId()))) {
+            if (user.getLikes().stream().anyMatch(l -> l.getUserTo().getId().equals(currUser.getId()))) {
                 blockUser(uuid);
             }
         }
@@ -1052,21 +965,21 @@ public class UserService {
     }
 
     public void updateProfilePictureUUID(UserProfilePicture image, UUID uuid) {
-        if(image.getUuid() == null) {
+        if (image.getUuid() == null) {
             image.setUuid(uuid);
             userProfilePictureRepository.saveAndFlush(image);
         }
     }
 
     public void updateUUID(User user, UUID uuid) {
-        if(user.getUuid() == null) {
+        if (user.getUuid() == null) {
             user.setUuid(uuid);
             userRepo.saveAndFlush(user);
         }
     }
 
     public void updateImageUUID(UserImage image, UUID uuid) {
-        if(image.getUuid() == null) {
+        if (image.getUuid() == null) {
             image.setUuid(uuid);
             userImageRepo.saveAndFlush(image);
         }
@@ -1074,7 +987,7 @@ public class UserService {
 
     public User findUserByUuid(UUID uuid) throws AlovoaException {
         User user = userRepo.findByUuid(uuid);
-        if(user == null) {
+        if (user == null) {
             throw new AlovoaException("user_not_found: " + uuid);
         }
         return user;
