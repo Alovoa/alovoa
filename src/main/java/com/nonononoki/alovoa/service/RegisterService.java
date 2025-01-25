@@ -181,8 +181,7 @@ public class RegisterService {
                     referrer.setNumberReferred(referrer.getNumberReferred() + 1);
                 }
             }
-        } catch (Exception e) {
-            throw new AlovoaException(e.getMessage());
+        } catch (Exception ignored) {
         }
 
         userRepo.saveAndFlush(user);
@@ -238,8 +237,7 @@ public class RegisterService {
                     referrer.setNumberReferred(referrer.getNumberReferred() + 1);
                 }
             }
-        } catch (Exception e) {
-            throw new AlovoaException(e.getMessage());
+        } catch (Exception ignored) {
         }
 
         user.setConfirmed(true);
