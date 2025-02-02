@@ -168,18 +168,45 @@ public class UserService {
 
         // DELETE USER LIKE
         userLikeRepo.deleteAll(userLikeRepo.findByUserFrom(user));
-        userLikeRepo.deleteAll(userLikeRepo.findByUserTo(user));
+        List<UserLike> likeTos = userLikeRepo.findByUserTo(user);
+        userLikeRepo.deleteAll(likeTos);
         userLikeRepo.flush();
+        for (UserLike like : likeTos) {
+            User u = like.getUserFrom();
+            if (u != null && u.getLikes() != null) {
+                u.getLikes().remove(like);
+                userRepo.save(u);
+            }
+        }
+        userRepo.flush();
 
         // DELETE USER NOTIFICATION
         userNotificationRepo.deleteAll(userNotificationRepo.findByUserFrom(user));
-        userNotificationRepo.deleteAll(userNotificationRepo.findByUserTo(user));
+        List<UserNotification> notificationTos = userNotificationRepo.findByUserTo(user);
+        userNotificationRepo.deleteAll(notificationTos);
         userNotificationRepo.flush();
+        for (UserNotification notification : notificationTos) {
+            User u = notification.getUserFrom();
+            if (u != null && u.getNotifications() != null) {
+                u.getNotifications().remove(notification);
+                userRepo.save(u);
+            }
+        }
+        userRepo.flush();
 
         // DELETE USER HIDE
         userHideRepo.deleteAll(userHideRepo.findByUserFrom(user));
-        userHideRepo.deleteAll(userHideRepo.findByUserTo(user));
+        List<UserHide> hideTos = userHideRepo.findByUserTo(user);
+        userHideRepo.deleteAll(hideTos);
         userHideRepo.flush();
+        for (UserHide hide : hideTos) {
+            User u = hide.getUserFrom();
+            if (u != null && u.getHiddenUsers() != null) {
+                u.getHiddenUsers().remove(hide);
+                userRepo.save(u);
+            }
+        }
+        userRepo.flush();
 
         // DELETE USER BLOCK
         userBlockRepo.deleteAll(userBlockRepo.findByUserFrom(user));
@@ -188,8 +215,17 @@ public class UserService {
 
         // DELETE USER REPORT
         userReportRepo.deleteAll(userReportRepo.findByUserFrom(user));
-        userReportRepo.deleteAll(userReportRepo.findByUserTo(user));
+        List<UserReport> reportTos = userReportRepo.findByUserTo(user);
+        userReportRepo.deleteAll(reportTos);
         userReportRepo.flush();
+        for (UserReport report : reportTos) {
+            User u = report.getUserFrom();
+            if (u != null && u.getReported() != null) {
+                u.getReported().remove(report);
+                userRepo.save(u);
+            }
+        }
+        userRepo.flush();
 
         // DELETE USER CONVERSATION
         for (Conversation c : conversationRepo.findByUsers_Id(user.getId())) {
