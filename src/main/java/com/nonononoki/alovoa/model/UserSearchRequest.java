@@ -1,10 +1,11 @@
 package com.nonononoki.alovoa.model;
 
-import java.util.Collection;
-import java.util.Date;
-
+import com.nonononoki.alovoa.entity.user.Gender;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.Collection;
+import java.util.Date;
 
 @Builder
 @Data
@@ -14,6 +15,7 @@ public class UserSearchRequest {
 	private double minLong;
 	private double maxLong;
 	private int age;
+	private Gender preferedGender;
 	private Date minDateDob;
 	private Date maxDateDob;
 	private Collection<Long> intentionIds;
