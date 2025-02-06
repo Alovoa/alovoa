@@ -190,7 +190,7 @@ public class SearchService {
         userRepo.saveAndFlush(user);
 
         UserSearchRequest request = UserSearchRequest.builder().age(age).minLat(minLat).minLong(minLong).maxLat(maxLat)
-                .maxLong(maxLong).maxDateDob(maxDate).minDateDob(minDate).intentionIds(intentions)
+                .maxLong(maxLong).maxDateDob(maxDate).minDateDob(minDate).intentionIds(intentions).preferedGender(user.getGender())
                 .likeIds(user.getLikes().stream().map(o -> o.getUserTo() != null ? o.getUserTo().getId() : 0).collect(Collectors.toSet()))
                 .blockIds(user.getBlockedUsers().stream().map(o -> o.getUserTo() != null ? o.getUserTo().getId() : 0).collect(Collectors.toSet()))
                 .hideIds(user.getHiddenUsers().stream().map(o -> o.getUserTo() != null ? o.getUserTo().getId() : 0).collect(Collectors.toSet()))
