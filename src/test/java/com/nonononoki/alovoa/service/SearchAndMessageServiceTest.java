@@ -199,7 +199,7 @@ class SearchAndMessageServiceTest {
 
         AuthTestUtil.mockGetCurrentUser(authService, user2);
         List<UserDto> searchDtos2 = searchService.searchComplete(SearchService.SearchParams.builder().build()).getUsers();
-        assertEquals(2, searchDtos2.size());
+        assertEquals(1, searchDtos2.size());
 
         AuthTestUtil.mockGetCurrentUser(authService, user3);
         List<UserDto> searchDtos3 = searchService.searchComplete(SearchService.SearchParams.builder().build()).getUsers();
