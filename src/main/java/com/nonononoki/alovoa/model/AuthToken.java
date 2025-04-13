@@ -10,18 +10,10 @@ import lombok.Value;
 @EqualsAndHashCode(callSuper = false)
 public class AuthToken extends UsernamePasswordAuthenticationToken {
 
-	private String username;
-	private String password;
-	private long captchaId;
-	private String captchaText;
-
-	public AuthToken(Object principal, Object credentials) {
-		super(principal, credentials);
-		this.username = null;
-		this.password = null;
-		this.captchaId = -1;
-		this.captchaText = null;
-	}
+	String username;
+	String password;
+	long captchaId;
+	String captchaText;
 
 	public AuthToken(String username, String password, long captchaId, String captchaText) {
 		super(null, null);

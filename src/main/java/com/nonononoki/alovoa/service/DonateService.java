@@ -65,7 +65,7 @@ public class DonateService {
     public List<DonationDto> filter(int filter) throws AlovoaException, InvalidKeyException, IllegalBlockSizeException,
             BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
             UnsupportedEncodingException {
-        List<DonationDto> donationsToDtos = null;
+        List<DonationDto> donationsToDtos;
 
         User user = authService.getCurrentUser(true);
 

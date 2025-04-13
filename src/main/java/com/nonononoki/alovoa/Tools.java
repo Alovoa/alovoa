@@ -124,7 +124,7 @@ public class Tools {
     public static boolean isTextContainingLineFromFile(String path, String text) throws IOException {
 
         String content = getResourceText(path);
-        String[] lines = content.split(System.getProperty("line.separator"));
+        String[] lines = content.split(System.lineSeparator());
 
         for (int i = 0; i < lines.length; i++) {
             if (text.contains(lines[i])) {
@@ -150,9 +150,9 @@ public class Tools {
     // https://stackoverflow.com/a/45732035
     // CC BY-SA 3.0, Pedro Silva
     public static Double getBase64Size(String base64String) {
-        Double result = -1.0;
+        double result = -1.0;
         if (!base64String.isEmpty()) {
-            Integer padding = 0;
+            int padding = 0;
             if (base64String.endsWith("==")) {
                 padding = 2;
             } else {

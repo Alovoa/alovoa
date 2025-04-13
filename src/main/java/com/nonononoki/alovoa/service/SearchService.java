@@ -207,7 +207,7 @@ public class SearchService {
             users = userRepo.usersSearchNoExtras(request, PageRequest.of(0, SEARCH_MAX, sort));
         } else if(!request.getMiscInfos().isEmpty() && request.getInterests().isEmpty()) {
             users = userRepo.usersSearchMisc(request, PageRequest.of(0, SEARCH_MAX, sort));
-        } else if(!request.getInterests().isEmpty() && request.getMiscInfos().isEmpty()) {
+        } else if(request.getMiscInfos().isEmpty()) {
             users = userRepo.usersSearchInterest(request, PageRequest.of(0, SEARCH_MAX, sort));
         } else {
             users = userRepo.usersSearchInterestMisc(request, PageRequest.of(0, SEARCH_MAX, sort));

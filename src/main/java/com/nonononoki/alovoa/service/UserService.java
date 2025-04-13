@@ -15,6 +15,7 @@ import com.nonononoki.alovoa.model.*;
 import com.nonononoki.alovoa.repo.*;
 import com.sipgate.mp3wav.Converter;
 import jakarta.mail.MessagingException;
+import lombok.Getter;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,15 +148,12 @@ public class UserService {
     private int likeMessageLength;
     @Value("${app.search.ignore-intention}")
     private boolean ignoreIntention;
+    @Getter
     @Value("${app.domain}")
     public String domain;
 
-    public String getDomain() {
-        return domain;
-    }
 
-
-    public static void removeUserDataCascading(User user, UserDeleteParams userDeleteParam) {
+    public static synchronized void removeUserDataCascading(User user, UserDeleteParams userDeleteParam) {
 
         UserRepository userRepo = userDeleteParam.getUserRepo();
         UserLikeRepository userLikeRepo = userDeleteParam.getUserLikeRepo();
@@ -291,7 +289,7 @@ public class UserService {
         return user.getDeleteToken();
     }
 
-    public void deleteAccountConfirm(UserDeleteAccountDto dto)
+    public synchronized void deleteAccountConfirm(UserDeleteAccountDto dto)
             throws MessagingException, IOException, AlovoaException, NoSuchAlgorithmException {
         User user = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
 
