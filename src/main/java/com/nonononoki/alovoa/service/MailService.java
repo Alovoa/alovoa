@@ -23,6 +23,8 @@ import java.util.Objects;
 @Service
 public class MailService {
 
+    private static String UUID_FORMAT = "<br><br><br><p style=\"color:#848484\">%s</p>";
+
     @Value("${spring.mail.username}")
     private String defaultFrom;
 
@@ -100,6 +102,7 @@ public class MailService {
         String body = messageSource.getMessage("backend.mail.register.body",
                 new String[]{user.getFirstName(), appName, appDomain, user.getRegisterToken().getContent()}, "",
                 locale);
+        body += String.format(UUID_FORMAT, user.getUuid());
         sendMail(user.getEmail(), defaultFrom, subject, body);
     }
 
