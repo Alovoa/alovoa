@@ -21,13 +21,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Message {
 
 	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@EqualsAndHashCode.Include
 	private Long id;
 
 	@JsonIgnore
@@ -46,10 +47,10 @@ public class Message {
 
 	@Convert(converter = TextEncryptorConverter.class)
 	@Column(columnDefinition = "mediumtext", updatable = false)
+
 	private String content;
 
 	private Date date;
 
 	private boolean allowedFormatting = false;
-
 }

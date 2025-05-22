@@ -8,8 +8,11 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Message;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class MessageDto {
 	private long id;
 	private Date date;

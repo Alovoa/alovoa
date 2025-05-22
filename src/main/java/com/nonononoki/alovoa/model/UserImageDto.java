@@ -6,12 +6,15 @@ import com.nonononoki.alovoa.rest.MediaController;
 import com.nonononoki.alovoa.service.UserService;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class UserImageDto {
 
