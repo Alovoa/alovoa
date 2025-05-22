@@ -6,10 +6,13 @@ import com.nonononoki.alovoa.entity.user.UserProfilePicture;
 import com.nonononoki.alovoa.entity.user.UserVerificationPicture;
 import com.nonononoki.alovoa.service.UserService;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 public class UserVerificationDto {
     private String verificationPicture;
     private String profilePicture;

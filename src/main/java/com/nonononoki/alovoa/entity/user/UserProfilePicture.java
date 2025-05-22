@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@EqualsAndHashCode(exclude = "user")
+@EqualsAndHashCode
 public class UserProfilePicture {
 
     @JsonIgnore
@@ -27,16 +27,20 @@ public class UserProfilePicture {
 
     @JsonIgnore
     @OneToOne
+    @EqualsAndHashCode.Exclude
     private User user;
 
     @Deprecated
     @Column(columnDefinition = "mediumtext")
+    @EqualsAndHashCode.Exclude
     private String data = null;
 
     @Lob
     @Column(length = 5000000)
+    @EqualsAndHashCode.Exclude
     private byte[] bin;
 
+    @EqualsAndHashCode.Exclude
     private String binMime;
 
     public static String getPublicUrl(String domain, UUID uuid) {

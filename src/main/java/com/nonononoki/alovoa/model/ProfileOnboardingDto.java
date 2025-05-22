@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Set;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
-@Data
+@Getter
+@Setter
 public class ProfileOnboardingDto {
 
     private Long intention;

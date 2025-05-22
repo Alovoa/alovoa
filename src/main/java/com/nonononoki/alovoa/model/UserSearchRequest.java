@@ -3,12 +3,15 @@ package com.nonononoki.alovoa.model;
 import com.nonononoki.alovoa.entity.user.Gender;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Collection;
 import java.util.Date;
 
 @Builder
-@Data
+@Getter
+@Setter
 public class UserSearchRequest {
 	private double minLat;
 	private double maxLat ;

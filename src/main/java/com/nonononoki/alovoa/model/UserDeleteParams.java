@@ -3,8 +3,11 @@ package com.nonononoki.alovoa.model;
 import com.nonononoki.alovoa.repo.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class UserDeleteParams {
 

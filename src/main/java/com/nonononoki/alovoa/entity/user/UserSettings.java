@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@EqualsAndHashCode(exclude = "user")
+@EqualsAndHashCode
 @NoArgsConstructor
 public class UserSettings {
 
@@ -21,6 +21,7 @@ public class UserSettings {
 
     @JsonIgnore
     @OneToOne
+    @EqualsAndHashCode.Exclude
     private User user;
 
     private boolean emailLike = false;

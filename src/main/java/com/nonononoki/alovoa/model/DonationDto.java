@@ -5,6 +5,8 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserDonation;
 import com.nonononoki.alovoa.service.UserService;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -17,7 +19,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class DonationDto {
 
     private long id;

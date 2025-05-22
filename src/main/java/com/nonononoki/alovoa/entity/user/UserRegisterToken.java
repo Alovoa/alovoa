@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@EqualsAndHashCode(exclude = "user")
+@EqualsAndHashCode
 public class UserRegisterToken {
 
 	@Id
@@ -27,6 +27,7 @@ public class UserRegisterToken {
 
 	@OneToOne
 	@JsonIgnore
+	@EqualsAndHashCode.Exclude
 	private User user;
 
 	private String content;
