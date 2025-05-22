@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Builder
-@Data
+@Getter
+@Setter
 public class UserPromptDto {
     private Long promptId;
     private String text;

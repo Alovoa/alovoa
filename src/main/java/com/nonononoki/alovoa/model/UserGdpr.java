@@ -3,12 +3,15 @@ package com.nonononoki.alovoa.model;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 public class UserGdpr {
 
     private int preferedMinAge;

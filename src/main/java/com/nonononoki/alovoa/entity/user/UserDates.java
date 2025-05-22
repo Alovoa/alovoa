@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@EqualsAndHashCode(exclude="user")
+@EqualsAndHashCode
 public class UserDates {
 	
 	@JsonIgnore
@@ -29,6 +29,7 @@ public class UserDates {
 	
 	@JsonIgnore
 	@OneToOne
+	@EqualsAndHashCode.Exclude
 	private User user;
 	
 	@Column(nullable = false)

@@ -14,7 +14,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@EqualsAndHashCode(exclude="user")
 public class UserAudio {
 
 	@JsonIgnore
@@ -27,10 +26,12 @@ public class UserAudio {
 	
 	@JsonIgnore
 	@OneToOne
+	@EqualsAndHashCode.Exclude
 	private User user;
 
 	@Deprecated
 	@Column(columnDefinition = "mediumtext")
+	@EqualsAndHashCode.Exclude
 	private String data;
 
 	@Lob

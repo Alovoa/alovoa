@@ -8,6 +8,8 @@ import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.SearchService;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -90,13 +92,15 @@ public class ApiController {
         return (SearchDto) map.get("dto");
     }
 
-    @Data
+    @Getter
+    @Setter
     @Builder
     public static class DonationDtoListModel {
         List<DonationDto> list;
     }
 
-    @Data
+    @Getter
+    @Setter
     @Builder
     public static class MessageDtoListModel {
         List<MessageDto> list;

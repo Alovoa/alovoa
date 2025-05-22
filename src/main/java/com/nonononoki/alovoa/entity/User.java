@@ -6,7 +6,8 @@ import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.config.SecurityConfig;
 import com.nonononoki.alovoa.entity.user.*;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.Immutable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +20,8 @@ import java.io.Serial;
 import java.util.*;
 
 @Component
-@Data
+@Getter
+@Setter
 @Entity
 public class User implements UserDetails {
 
@@ -30,6 +32,7 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     @Convert(converter = TextEncryptorConverter.class)
     @JsonIgnore
+    @Immutable
     private final String email;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

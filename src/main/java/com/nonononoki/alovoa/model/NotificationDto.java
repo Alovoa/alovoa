@@ -5,6 +5,8 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserNotification;
 import com.nonononoki.alovoa.service.UserService;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -15,7 +17,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
 public class NotificationDto {
 
     private long id;

@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@EqualsAndHashCode(exclude="user")
+@EqualsAndHashCode
 public class UserDeleteToken {
 
 	@Id
@@ -27,6 +27,7 @@ public class UserDeleteToken {
 
 	@OneToOne
 	@JsonIgnore
+	@EqualsAndHashCode.Exclude
 	private User user;
 
 	private String content;

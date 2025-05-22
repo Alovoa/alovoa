@@ -6,8 +6,7 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.*;
 import com.nonononoki.alovoa.rest.MediaController;
 import com.nonononoki.alovoa.service.UserService;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +20,9 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class UserDto {
     public static final int LA_STATE_ACTIVE_1 = 5; // in minutes
     public static final int LA_STATE_ACTIVE_2 = 1;
@@ -275,7 +276,8 @@ public class UserDto {
         return pic.getUserNo().size() * VERIFICATION_FACTOR <= pic.getUserYes().size();
     }
 
-    @Data
+    @Getter
+    @Setter
     public static class UserDtoVerificationPicture {
         private boolean verifiedByAdmin;
         private boolean verifiedByUsers;
