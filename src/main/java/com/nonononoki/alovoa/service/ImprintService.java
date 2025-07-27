@@ -1,10 +1,8 @@
 package com.nonononoki.alovoa.service;
 
-import com.nonononoki.alovoa.component.ExceptionHandler;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.AccountDeletionRequestDto;
 import com.nonononoki.alovoa.model.AlovoaException;
-import com.nonononoki.alovoa.model.ContactDto;
 import com.nonononoki.alovoa.repo.UserRepository;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 import java.util.UUID;
 
 @Service
