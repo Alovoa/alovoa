@@ -148,11 +148,13 @@ public class AdminService {
     public void deleteAccount(AdminAccountDeleteDto dto) throws AlovoaException {
         checkRights();
 
-        User user = userRepo.findByEmail(Tools.cleanEmail(dto.getEmail()));
+        User user = dto.getEmail() != null ? userRepo.findByEmail(Tools.cleanEmail(dto.getEmail())) : null;
         if (user == null) {
             try {
-                UUID uuid = UUID.fromString(dto.getEmail());
-                user = userService.findUserByUuid(uuid);
+                UUID uuid = dto.getUuid() != null ? dto.getUuid() : dto.getEmail() != null ? UUID.fromString(dto.getEmail()) : null;
+                if (uuid != null) {
+                    user = userService.findUserByUuid(uuid);
+                }
             } catch (Exception ignored) {
             }
         }
@@ -170,7 +172,7 @@ public class AdminService {
                 .userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo)
                 .userVerificationPictureRepo(userVerificationPictureRepo).build();
         UserService.removeUserDataCascading(user, userDeleteParam);
-        userRepo.delete(userRepo.findByEmail(user.getEmail()));
+        userRepo.delete(userRepo.findByUuid(user.getUuid()));
         userRepo.flush();
     }
 
@@ -248,7 +250,7 @@ public class AdminService {
             logger.info(user.getUuid().toString());
         }
         for (User user : invalidUsers) {
-            deleteAccount(AdminAccountDeleteDto.builder().email(user.getEmail()).build());
+            deleteAccount(AdminAccountDeleteDto.builder().uuid(user.getUuid()).build());
         }
         return invalidUsers.stream().map(User::getUuid).toList();
     }
