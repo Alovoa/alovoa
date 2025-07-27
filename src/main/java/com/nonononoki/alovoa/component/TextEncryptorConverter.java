@@ -101,7 +101,8 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		try {
 			return decode(dbData);
 		} catch (Exception e) {
-			return dbData;
+			//throw new DatabaseRuntimeException(e);
+			return null;
 		}
 	}
 }
