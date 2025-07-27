@@ -1,8 +1,6 @@
 package com.nonononoki.alovoa.service;
 
-import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
-import com.nonononoki.alovoa.entity.Captcha;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserReport;
 import com.nonononoki.alovoa.model.MailDto;
@@ -19,7 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -134,6 +135,15 @@ class AdminServiceTest {
 		adminService.addDonation(URLDecoder.decode(user2.getEmail(), StandardCharsets.UTF_8), donationAmount);
 		assertEquals(donationAmount, user2.getTotalDonations());
 		assertEquals(1, user2.getDonations().size());
+
+        String uuidString = user1.getUuid().toString() + System.lineSeparator() +
+                user2.getUuid().toString() + System.lineSeparator() +
+                user3.getUuid().toString() + System.lineSeparator();
+        InputStream targetStream = new ByteArrayInputStream(uuidString.getBytes());
+        MultipartFile fileMock = Mockito.mock(MultipartFile.class);
+        Mockito.when(fileMock.getInputStream()).thenReturn(targetStream);
+        adminService.deleteInvalidUsers(fileMock);
+        assertEquals(4, userRepo.count());
 
 	}
 

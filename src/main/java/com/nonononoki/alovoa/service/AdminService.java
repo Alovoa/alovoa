@@ -10,23 +10,23 @@ import com.nonononoki.alovoa.entity.user.UserVerificationPicture;
 import com.nonononoki.alovoa.model.*;
 import com.nonononoki.alovoa.repo.*;
 import jakarta.mail.MessagingException;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +35,7 @@ import java.util.UUID;
 public class AdminService {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
+
     @Autowired
     private AuthService authService;
     @Autowired
@@ -223,6 +224,33 @@ public class AdminService {
         User user = userService.findUserByUuid(uuid);
         user.setVerificationPicture(null);
         userRepo.saveAndFlush(user);
+    }
+
+    public List<UUID> deleteInvalidUsers(MultipartFile file) throws AlovoaException, IOException {
+        checkRights();
+        InputStream inputStream = file.getInputStream();
+        final List<UUID> uuidList = new ArrayList<>();
+        new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+                .lines()
+                .filter(s -> s != null && !s.isBlank())
+                .forEach(u -> {
+                    String s = u.replace("\uFEFF", "");
+                    uuidList.add(UUID.fromString(s));
+                });
+        logger.info("Found possible users");
+        for (UUID uuid : uuidList) {
+            logger.info(uuid.toString());
+        }
+        List<User> possibleUsers = userRepo.findByUuidIn(uuidList);
+        List<User> invalidUsers = possibleUsers.stream().filter(u -> u.getEmail() == null).toList();
+        logger.info("Found invalid users");
+        for (User user : invalidUsers) {
+            logger.info(user.getUuid().toString());
+        }
+        for (User user : invalidUsers) {
+            deleteAccount(AdminAccountDeleteDto.builder().email(user.getEmail()).build());
+        }
+        return invalidUsers.stream().map(User::getUuid).toList();
     }
 
     public void checkRights() throws AlovoaException {

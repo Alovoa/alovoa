@@ -9,6 +9,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -18,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -96,6 +98,11 @@ public class AdminController {
             IllegalBlockSizeException, NoSuchPaddingException, UnsupportedEncodingException, BadPaddingException,
             NoSuchAlgorithmException, InvalidKeyException {
         return adminService.viewProfile(uuid);
+    }
+
+    @PostMapping("/delete-invalid-users")
+    public List<UUID> deleteInvalidUsers(@RequestParam("file") MultipartFile file) throws AlovoaException, IOException {
+        return adminService.deleteInvalidUsers(file);
     }
 
 }
