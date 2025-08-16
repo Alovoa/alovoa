@@ -29,6 +29,9 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 	@Value("${app.text.salt}")
 	private String salt;
 
+    @Value("${app.text.encrypt.return-null-on-fail}")
+    private boolean returnNullOnFail;
+
 	private static final String TRANSFORMATION = "AES/CBC/PKCS5PADDING";
 
 	private static IvParameterSpec ivSpec;
@@ -92,7 +95,11 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		try {
 			return encode(attribute);
 		} catch (Exception e) {
-			throw new DatabaseRuntimeException(e);
+            if(returnNullOnFail) {
+                return null;
+            } else {
+                throw new DatabaseRuntimeException(e);
+            }
 		}
 	}
 
@@ -101,8 +108,11 @@ public class TextEncryptorConverter implements AttributeConverter<String, String
 		try {
 			return decode(dbData);
 		} catch (Exception e) {
-			//throw new DatabaseRuntimeException(e);
-			return null;
+            if(returnNullOnFail) {
+                return null;
+            } else {
+                throw new DatabaseRuntimeException(e);
+            }
 		}
 	}
 }

@@ -3,6 +3,7 @@ package com.nonononoki.alovoa.service;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserReport;
+import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.MailDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.UserReportRepository;
@@ -14,20 +15,23 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -83,7 +87,7 @@ class AdminServiceTest {
 
 	@BeforeEach
 	void before() throws Exception {
-		Mockito.when(mailService.sendMail(Mockito.any(String.class), any(String.class), any(String.class),
+		when(mailService.sendMail(Mockito.any(String.class), any(String.class), any(String.class),
 				any(String.class))).thenReturn(true);
 		testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax,
 				firstNameLengthMin);
@@ -103,8 +107,8 @@ class AdminServiceTest {
 		User user2 = testUsers.get(1);
 		User user3 = testUsers.get(2);
 
-		Mockito.when(authService.getCurrentUser()).thenReturn(adminUser);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(adminUser);
+		when(authService.getCurrentUser()).thenReturn(adminUser);
+		when(authService.getCurrentUser(true)).thenReturn(adminUser);
 
 		MailDto mailDto = new MailDto();
 		String mailBodyAll = "mailBodyAll";
@@ -135,24 +139,41 @@ class AdminServiceTest {
 		adminService.addDonation(URLDecoder.decode(user2.getEmail(), StandardCharsets.UTF_8), donationAmount);
 		assertEquals(donationAmount, user2.getTotalDonations());
 		assertEquals(1, user2.getDonations().size());
-
-        String uuidString = user1.getUuid().toString() + System.lineSeparator() +
-                user2.getUuid().toString() + System.lineSeparator() +
-                user3.getUuid().toString() + System.lineSeparator();
-        InputStream targetStream = new ByteArrayInputStream(uuidString.getBytes());
-        MultipartFile fileMock = Mockito.mock(MultipartFile.class);
-        Mockito.when(fileMock.getInputStream()).thenReturn(targetStream);
-        adminService.deleteInvalidUsers(fileMock);
-        assertEquals(4, userRepo.count());
-
 	}
 
+    @Test
+    @SuppressWarnings("unchecked")
+    void testDeleteInvalidUsers() throws AlovoaException {
+
+        User user1 = mock(User.class);
+        when(user1.getEmail()).thenReturn("test@test.com");
+        when(user1.getUuid()).thenReturn(UUID.fromString("b55081fa-9cd1-48c2-95d4-efe2db322a54"));
+        User user2 = mock(User.class);
+        when(user2.getUuid()).thenReturn(UUID.fromString("eb877ec2-bcc4-4404-9eb4-744f7142ea67"));
+        when(user2.getEmail()).thenReturn(null);
+        Page<User> userSlice = mock(Page.class);
+        UserRepository userRepoMock = mock(UserRepository.class);
+        AdminService adminService = spy(new AdminService());
+        ReflectionTestUtils.setField(adminService, "userRepo", userRepoMock);
+        when(userSlice.hasNext()).thenReturn(false);
+        when(userSlice.getContent()).thenReturn(List.of(user1, user2));
+        when(userRepoMock.findAll(any(PageRequest.class))).thenReturn(userSlice);
+        doNothing().when(adminService).deleteAccount(any());
+        doNothing().when(adminService).checkRights();
+
+        List<UUID> uuids = adminService.deleteInvalidUsers();
+
+        verify(adminService, times(1)).deleteInvalidUsers(any());
+        assertEquals(1, uuids.size());
+        assertEquals("eb877ec2-bcc4-4404-9eb4-744f7142ea67", uuids.get(0).toString());
+    }
+
 	private UserReport reportTest(User user1, User user2, User adminUser) throws Exception {
-		Mockito.when(authService.getCurrentUser()).thenReturn(user1);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(user1);
+		when(authService.getCurrentUser()).thenReturn(user1);
+		when(authService.getCurrentUser(true)).thenReturn(user1);
 		UserReport report = userService.reportUser(user2.getUuid(), "report");
-		Mockito.when(authService.getCurrentUser()).thenReturn(adminUser);
-		Mockito.when(authService.getCurrentUser(true)).thenReturn(adminUser);
+		when(authService.getCurrentUser()).thenReturn(adminUser);
+		when(authService.getCurrentUser(true)).thenReturn(adminUser);
 		return report;
 	}
 
