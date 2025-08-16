@@ -101,8 +101,8 @@ public class AdminController {
     }
 
     @PostMapping("/delete-invalid-users")
-    public List<UUID> deleteInvalidUsers(@RequestParam("file") MultipartFile file) throws AlovoaException, IOException {
-        return adminService.deleteInvalidUsers(file);
+    public List<UUID> deleteInvalidUsers() throws AlovoaException, IOException {
+        return adminService.deleteInvalidUsers();
     }
 
 }

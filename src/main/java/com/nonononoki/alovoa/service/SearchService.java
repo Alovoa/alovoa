@@ -44,7 +44,7 @@ public class SearchService {
     public static final int SORT_NEWEST_USER = 6;
     private static final double LATITUDE = 111.1;
     private static final double LONGITUDE = 111.320;
-    private static final int DEFAULT_DISTANCE = 50;
+    private static final int DEFAULT_DISTANCE = 150;
     private static final int SEARCH_MAX = 200;
     private static ReverseGeocoder geocoder = null;
 
@@ -93,7 +93,7 @@ public class SearchService {
         }
         if (user.getLocationLatitude() != null) {
             return searchComplete(SearchParams.builder().latitude(user.getLocationLatitude())
-                    .longitude(user.getLocationLongitude()).build());
+                    .longitude(user.getLocationLongitude()).showOutsideParameters(true).build());
         } else {
             return null;
         }
@@ -104,7 +104,7 @@ public class SearchService {
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
         return searchComplete(SearchParams.builder().latitude(latitude)
-                .longitude(longitude).distance(distance).sort(sortId).build());
+                .longitude(longitude).showOutsideParameters(true).distance(distance).sort(sortId).build());
     }
 
     public SearchDto searchComplete(SearchParams params) throws AlovoaException,
@@ -233,7 +233,7 @@ public class SearchService {
             // NO COMPATIBLE USERS FOUND NEARBY, SEARCH AROUND THE WORLD!
             users = userRepo.usersSearchAllIgnoreLocation(request, PageRequest.of(0, SEARCH_MAX, sort));
                 return SearchDto.builder().users(searchResultsToUserDto(users, sortId, user))
-                        .global(true).incompatible(true).stage(SearchStage.WORLD).build();
+                        .global(true).stage(SearchStage.WORLD).build();
         } else {
             return SearchDto.builder().users(List.of()).build();
         }
@@ -279,8 +279,7 @@ public class SearchService {
         private Integer preferredMaxAge = null;
         @Builder.Default
         private int distance = DEFAULT_DISTANCE;
-        @Builder.Default
-        private boolean showOutsideParameters = true;
+        private boolean showOutsideParameters;
         @Builder.Default
         private int sort = SORT_DEFAULT;
         private double latitude;

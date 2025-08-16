@@ -37,6 +37,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private static final String LOCALHOST_8081 = "http://localhost:8081";
+
     @Value("${app.text.key}")
     private String key;
 
@@ -135,7 +137,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowCredentials(true);
-                    configuration.setAllowedOrigins(List.of(domain, urlFrontEnd));
+                    configuration.setAllowedOrigins(List.of(domain, urlFrontEnd, LOCALHOST_8081));
                     configuration.setAllowedMethods(List.of("*"));
                     configuration.setAllowedHeaders(List.of("*"));
                     return configuration;

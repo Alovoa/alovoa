@@ -43,6 +43,7 @@ public class User implements UserDetails {
     private String password;
     @Column(updatable = false)
     @Convert(converter = TextEncryptorConverter.class)
+    @Immutable
     private String firstName;
     private String description;
     // used for emails
