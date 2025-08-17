@@ -147,12 +147,12 @@ class AdminServiceTest {
 
         User user1 = mock(User.class);
         when(user1.getEmail()).thenReturn("test+test@test.com");
-        when(user1.getUuid()).thenReturn(UUID.fromString("b55081fa-9cd1-48c2-95d4-efe2db322a54"));
+        when(user1.getId()).thenReturn(1L);
         User user2 = mock(User.class);
-        when(user2.getUuid()).thenReturn(UUID.fromString("eb877ec2-bcc4-4404-9eb4-744f7142ea67"));
+        when(user2.getId()).thenReturn(2L);
         when(user2.getEmail()).thenReturn(null);
         User user3 = mock(User.class);
-        when(user3.getUuid()).thenReturn(UUID.fromString("eb877ec2-bcc4-4a04-9eb4-744f7142ea67"));
+        when(user3.getId()).thenReturn(3L);
         when(user3.getEmail()).thenReturn("invalid-at-invalid-com");
         Page<User> userSlice = mock(Page.class);
         UserRepository userRepoMock = mock(UserRepository.class);
@@ -167,10 +167,10 @@ class AdminServiceTest {
         AdminService.DeleteInvalidUsersResult result = adminService.deleteInvalidUsers();
 
         verify(adminService, times(2)).deleteAccount(any());
-        assertEquals("eb877ec2-bcc4-4404-9eb4-744f7142ea67", result.getUsersToBeDeleted().get(0).toString());
-        assertEquals("eb877ec2-bcc4-4a04-9eb4-744f7142ea67", result.getUsersToBeDeleted().get(1).toString());
-        assertEquals("eb877ec2-bcc4-4404-9eb4-744f7142ea67", result.getUsersDeleted().get(0).toString());
-        assertEquals("eb877ec2-bcc4-4a04-9eb4-744f7142ea67", result.getUsersDeleted().get(1).toString());
+        assertEquals(2L, result.getUsersToBeDeleted().get(0));
+        assertEquals(3L, result.getUsersToBeDeleted().get(1));
+        assertEquals(2L, result.getUsersDeleted().get(0));
+        assertEquals(3L, result.getUsersDeleted().get(1));
         assertTrue(result.getUsersThatCouldNotBeDeleted().isEmpty());
     }
 
