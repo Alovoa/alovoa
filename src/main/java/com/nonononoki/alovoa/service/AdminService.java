@@ -10,6 +10,7 @@ import com.nonononoki.alovoa.entity.user.UserVerificationPicture;
 import com.nonononoki.alovoa.model.*;
 import com.nonononoki.alovoa.repo.*;
 import jakarta.mail.MessagingException;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -245,7 +246,7 @@ public class AdminService {
     List<UUID> deleteInvalidUsers(List<User> users) {
         List<UUID> uuids = new ArrayList<>();
         for(User user : users) {
-            if(user.getEmail() == null) {
+            if(user.getEmail() == null || !EmailValidator.getInstance(false).isValid((user.getEmail()))) {
                 try {
                     deleteAccount(AdminAccountDeleteDto.builder().uuid(user.getUuid()).build());
                     uuids.add(user.getUuid());
