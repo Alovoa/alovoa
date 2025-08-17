@@ -161,12 +161,12 @@ class AdminServiceTest {
         when(userSlice.hasNext()).thenReturn(false);
         when(userSlice.getContent()).thenReturn(List.of(user1, user2, user3));
         when(userRepoMock.findAll(any(PageRequest.class))).thenReturn(userSlice);
-        doNothing().when(adminService).deleteAccount(any());
+        doNothing().when(adminService).deleteAccount(anyLong());
         doNothing().when(adminService).checkRights();
 
         AdminService.DeleteInvalidUsersResult result = adminService.deleteInvalidUsers();
 
-        verify(adminService, times(2)).deleteAccount(any());
+        verify(adminService, times(2)).deleteAccount(anyLong());
         assertEquals(2L, result.getUsersToBeDeleted().get(0));
         assertEquals(3L, result.getUsersToBeDeleted().get(1));
         assertEquals(2L, result.getUsersDeleted().get(0));

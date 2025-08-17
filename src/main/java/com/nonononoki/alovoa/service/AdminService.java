@@ -268,7 +268,7 @@ public class AdminService {
         logger.info("To be deleted: {}", usersToBeDeleted);
         for(Long id : usersToBeDeleted) {
             try {
-                deleteAccount(AdminAccountDeleteDto.builder().id(id).build());
+                deleteAccount(id);
                 usersDeleted.add(id);
             } catch (Exception e) {
                 usersThatCouldNotBeDeleted.add(id);
