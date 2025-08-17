@@ -164,12 +164,14 @@ class AdminServiceTest {
         doNothing().when(adminService).deleteAccount(any());
         doNothing().when(adminService).checkRights();
 
-        List<UUID> uuids = adminService.deleteInvalidUsers();
+        AdminService.DeleteInvalidUsersResult result = adminService.deleteInvalidUsers();
 
-        verify(adminService, times(1)).deleteInvalidUsers(any());
-        assertEquals(2, uuids.size());
-        assertEquals("eb877ec2-bcc4-4404-9eb4-744f7142ea67", uuids.get(0).toString());
-        assertEquals("eb877ec2-bcc4-4a04-9eb4-744f7142ea67", uuids.get(1).toString());
+        verify(adminService, times(2)).deleteAccount(any());
+        assertEquals("eb877ec2-bcc4-4404-9eb4-744f7142ea67", result.getUsersToBeDeleted().get(0).toString());
+        assertEquals("eb877ec2-bcc4-4a04-9eb4-744f7142ea67", result.getUsersToBeDeleted().get(1).toString());
+        assertEquals("eb877ec2-bcc4-4404-9eb4-744f7142ea67", result.getUsersDeleted().get(0).toString());
+        assertEquals("eb877ec2-bcc4-4a04-9eb4-744f7142ea67", result.getUsersDeleted().get(1).toString());
+        assertTrue(result.getUsersThatCouldNotBeDeleted().isEmpty());
     }
 
 	private UserReport reportTest(User user1, User user2, User adminUser) throws Exception {

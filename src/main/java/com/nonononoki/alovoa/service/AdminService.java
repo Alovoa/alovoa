@@ -10,6 +10,9 @@ import com.nonononoki.alovoa.entity.user.UserVerificationPicture;
 import com.nonononoki.alovoa.model.*;
 import com.nonononoki.alovoa.repo.*;
 import jakarta.mail.MessagingException;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -29,10 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class AdminService {
@@ -231,37 +230,51 @@ public class AdminService {
         userRepo.saveAndFlush(user);
     }
 
-    public List<UUID> deleteInvalidUsers() throws AlovoaException {
+    public DeleteInvalidUsersResult deleteInvalidUsers() throws AlovoaException {
         checkRights();
-        Slice<User> slice = userRepo.findAll(PageRequest.of(0, 500));
-        List<User> users = slice.getContent();
-        List<UUID> uuids = new ArrayList<>(deleteInvalidUsers(users));
+        List<UUID> usersToBeDeleted = new ArrayList<>();
+        List<UUID> usersDeleted = new ArrayList<>();
+        List<UUID> usersThatCouldNotBeDeleted = new ArrayList<>();
+        DeleteInvalidUsersResult result
+                = new DeleteInvalidUsersResult(usersToBeDeleted, usersThatCouldNotBeDeleted, usersDeleted);
+        Slice<User> slice = userRepo.findAll(PageRequest.of(0, 10));
+        usersToBeDeleted.addAll(collectInvalidUsers(slice.getContent()));
         while(slice.hasNext()) {
             slice = userRepo.findAll( slice.nextPageable());
-            uuids.addAll(deleteInvalidUsers(slice.get().toList()));
+            usersToBeDeleted.addAll(collectInvalidUsers(slice.get().toList()));
         }
-        return uuids;
+        logger.info("To be deleted: {}", usersToBeDeleted);
+        for(UUID id : usersToBeDeleted) {
+            try {
+                deleteAccount(AdminAccountDeleteDto.builder().uuid(id).build());
+                usersDeleted.add(id);
+            } catch (Exception e) {
+                usersThatCouldNotBeDeleted.add(id);
+            }
+        }
+        logger.info("Could NOT be deleted: {}", usersThatCouldNotBeDeleted);
+        return result;
     }
 
-    List<UUID> deleteInvalidUsers(List<User> users) {
-        List<UUID> uuids = new ArrayList<>();
-        for(User user : users) {
-            if(user.getEmail() == null || !EmailValidator.getInstance(false).isValid((user.getEmail()))) {
-                try {
-                    deleteAccount(AdminAccountDeleteDto.builder().uuid(user.getUuid()).build());
-                    uuids.add(user.getUuid());
-                } catch (AlovoaException e) {
-                    logger.warn(e.toString());
-                }
-            }
-        };
-        return uuids;
+    private List<UUID> collectInvalidUsers(List<User> users) {
+        return users.stream()
+                .filter(user ->user.getEmail() == null
+                        || !EmailValidator.getInstance(false).isValid((user.getEmail())))
+                .map(User::getUuid).toList();
     }
 
     public void checkRights() throws AlovoaException {
         if (!authService.getCurrentUser(true).isAdmin()) {
             throw new AlovoaException("not_admin");
         }
+    }
+    
+    @AllArgsConstructor
+    @Getter
+    public static final class DeleteInvalidUsersResult {
+        List<UUID> usersToBeDeleted;
+        List<UUID> usersThatCouldNotBeDeleted;
+        List<UUID> usersDeleted;
     }
 
 }
