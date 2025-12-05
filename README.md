@@ -3,7 +3,7 @@
 Alovoa aims to be the first widespread free and open-source dating web platform.
 
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Falovoa.com%2F)](https://alovoa.com/)
-[![Testing Website](https://img.shields.io/website?url=https%3A%2F%2Fbeta.alovoa.com%2F?label=Testing)](https://beta.alovoa.com/)
+[![Testing Website](https://img.shields.io/website?url=https%3A%2F%2Fbeta.alovoa.com%2F&label=Testing%20website)](https://beta.alovoa.com/)
 [![Codeberg](https://img.shields.io/badge/Codeberg-Mirror-blue?logo=codeberg)](https://codeberg.org/Nonononoki/alovoa)
 [![GitHub issues](https://img.shields.io/github/issues/Alovoa/Alovoa?color=red)](https://github.com/Alovoa/alovoa/issues)
 [![Matrix](https://img.shields.io/matrix/alovoa_love:matrix.org?label=Matrix%20chat)](https://matrix.to/#/#alovoa_love:matrix.org)
@@ -54,8 +54,8 @@ Like this project? Consider making a donation.
 - Install maven: https://maven.apache.org/install.html
 - Setup a database (MariaDB is officially supported)
 - Setup an email server or use an existing one (any provider with IMAP support should work)
-- Enter credentials for database server, email server and encryption keys in application.properties
-- Execute "mvn install" in the root folder
+- Enter credentials for database server, email server and encryption keys in `application.properties`
+- Execute `mvn install` in the root folder
 
 Or you can use [Docker](https://docs.docker.com/engine/install/) and [Docker compose](https://docs.docker.com/compose/).
 To bring up the server, after setting the required values in ` src/main/resources/application.properties` you can just run below commands:
@@ -75,5 +75,5 @@ docker-compose logs -f
 ### Licenses:
 - All code is licensed under the AGPLv3 license, unless stated otherwise. 
 - All images are proprietary, unless stated otherwise.
-- Third-party web libraries can be found under resources/css/lib and resources/js/lib and have their own license.
-- Third-party Java libraries can be found in the pom.xml and have their own license.
+- Third-party web libraries can be found under `resources/css/lib` and `resources/js/lib` and have their own license.
+- Third-party Java libraries can be found in the `pom.xml` and have their own license.
