@@ -143,10 +143,6 @@ public class SecurityConfig {
                     return configuration;
                 }))
                 .securityContext((securityContext) -> securityContext.requireExplicitSave(false));
-
-        if (env.acceptsProfiles(Profiles.of("prod"))) {
-            http.requiresChannel(channel -> channel.anyRequest().requiresSecure());
-        }
         return http.build();
     }
 
