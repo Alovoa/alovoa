@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.html;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +12,10 @@ import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.service.AuthService;
 
 @Controller
+@RequiredArgsConstructor
 public class LoginResource {
 
-	@Autowired
+	@NonNull
 	private AuthService authService;
 
 	@Value("${app.privacy.update-date}")

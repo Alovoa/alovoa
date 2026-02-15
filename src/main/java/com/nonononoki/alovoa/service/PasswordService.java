@@ -10,8 +10,9 @@ import java.util.UUID;
 import com.nonononoki.alovoa.component.ExceptionHandler;
 import jakarta.mail.MessagingException;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,24 +28,25 @@ import com.nonononoki.alovoa.repo.UserPasswordTokenRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 
 @Service
+@RequiredArgsConstructor
 public class PasswordService {
 
-	@Autowired
+	@NonNull
 	private UserPasswordTokenRepository userPasswordTokenRepo;
 
-	@Autowired
+	@NonNull
 	private UserRepository userRepo;
 
-	@Autowired
+	@NonNull
 	private PasswordEncoder passwordEncoder;
 
-	@Autowired
+	@NonNull
 	private CaptchaService captchaService;
 
-	@Autowired
+	@NonNull
 	private AuthService authService;
 
-	@Autowired
+	@NonNull
 	private MailService mailService;
 	
 	@Value("${app.password-token.length}")

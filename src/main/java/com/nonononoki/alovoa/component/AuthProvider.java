@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -28,15 +29,14 @@ import com.nonononoki.alovoa.repo.CaptchaRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 
 @Component
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuthProvider implements AuthenticationProvider {
 
-	@Autowired
 	private UserRepository userRepo;
 
-	@Autowired
 	private CaptchaRepository captchaRepo;
 
-	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
 	@SuppressWarnings("unused")

@@ -6,7 +6,7 @@ import com.nonononoki.alovoa.model.MailDto;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.service.AdminService;
 import jakarta.mail.MessagingException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,9 +24,9 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/admin")
+@AllArgsConstructor
 public class AdminController {
 
-    @Autowired
     private AdminService adminService;
 
     @PostMapping("/report/delete/{id}")

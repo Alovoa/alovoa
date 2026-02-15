@@ -3,16 +3,16 @@ package com.nonononoki.alovoa.rest;
 import com.nonononoki.alovoa.entity.user.UserPrompt;
 import com.nonononoki.alovoa.model.*;
 import com.nonononoki.alovoa.service.UserPromptService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/user/prompt")
+@AllArgsConstructor
 public class UserPromptController {
 
-    @Autowired
     private UserPromptService promptService;
 
     @PostMapping("/delete/{promptId}")

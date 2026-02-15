@@ -1,11 +1,11 @@
 package com.nonononoki.alovoa.component;
 
+import lombok.AllArgsConstructor;
 import org.apache.catalina.connector.ClientAbortException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.StaleObjectStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +20,7 @@ import org.springframework.web.util.HtmlUtils;
 import com.nonononoki.alovoa.model.AlovoaException;
 
 @ControllerAdvice
+@AllArgsConstructor
 public class ExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandler.class);
@@ -27,7 +28,6 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 	public static final String USER_NOT_FOUND = "user_not_found";
 	public static final String USER_NOT_COMPATIBLE = "users_not_compatible";
 
-	@Autowired
 	private Environment env;
 
 	@org.springframework.web.bind.annotation.ExceptionHandler

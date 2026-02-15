@@ -4,16 +4,15 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserSettings;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.repo.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class UserSettingsService {
 
-    @Autowired
     private AuthService authService;
 
-    @Autowired
     private UserRepository userRepository;
 
     public void updateEmailLike(boolean value) throws AlovoaException {

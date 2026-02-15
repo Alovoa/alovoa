@@ -9,7 +9,8 @@ import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserIntentionRepository;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,18 +26,19 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 @Controller
+@RequiredArgsConstructor
 public class ProfileResource {
 
     public static final String URL = "/profile";
-    @Autowired
+    @NonNull
     private AuthService authService;
-    @Autowired
+    @NonNull
     private UserService userService;
-    @Autowired
+    @NonNull
     private GenderRepository genderRepo;
-    @Autowired
+    @NonNull
     private UserIntentionRepository userIntentionRepo;
-    @Autowired
+    @NonNull
     private TextEncryptorConverter textEncryptor;
     @Value("${app.profile.image.max}")
     private int imageMax;

@@ -9,7 +9,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +20,10 @@ import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.service.PublicService;
 
 @Controller
+@RequiredArgsConstructor
 public class PrivacyResource {
 
-	@Autowired
+	@NonNull
 	private PublicService publicService;
 
 	@Value("${app.company.name}")

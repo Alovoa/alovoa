@@ -6,7 +6,8 @@ import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,14 +22,15 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 @Controller
+@RequiredArgsConstructor
 public class AdminSearchResource {
 
     public static final String URL = "/admin-search";
-    @Autowired
+    @NonNull
     private AuthService authService;
-    @Autowired
+    @NonNull
     private UserService userService;
-    @Autowired
+    @NonNull
     private UserRepository userRepo;
     @Value("${app.donation.modulus}")
     private int donationModulus;

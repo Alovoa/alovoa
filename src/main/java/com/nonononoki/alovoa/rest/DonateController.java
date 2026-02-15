@@ -12,9 +12,9 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,15 +38,13 @@ import com.nonononoki.alovoa.service.DonateService;
 
 @Controller
 @RequestMapping("/donate")
+@AllArgsConstructor
 public class DonateController {
 
-	@Autowired
 	private DonateService donateService;
 
-	@Autowired
 	private ObjectMapper objectMapper;
 	
-	@Autowired
 	private AuthService authService;
 
 	private static final Logger logger = LoggerFactory.getLogger(DonateController.class);

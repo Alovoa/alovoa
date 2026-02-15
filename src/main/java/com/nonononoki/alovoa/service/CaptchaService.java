@@ -13,7 +13,8 @@ import java.util.Date;
 import javax.imageio.ImageIO;
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +23,13 @@ import com.nonononoki.alovoa.lib.OxCaptcha;
 import com.nonononoki.alovoa.repo.CaptchaRepository;
 
 @Service
+@RequiredArgsConstructor
 public class CaptchaService {
 
-	@Autowired
+	@NonNull
 	private CaptchaRepository captchaRepo;
 
-	@Autowired
+	@NonNull
 	private HttpServletRequest request;
 
 	@Value("${app.captcha.length}")
