@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 import jakarta.mail.MessagingException;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +17,9 @@ import com.nonononoki.alovoa.service.PasswordService;
 
 @RestController
 @RequestMapping("/password")
+@AllArgsConstructor
 public class PasswordController {
 
-	@Autowired
 	private PasswordService passwordService;
 
 	@PostMapping(value = "/reset", consumes = "application/json")

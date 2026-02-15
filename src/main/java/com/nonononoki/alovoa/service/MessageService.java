@@ -6,7 +6,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 
 @Service
+@RequiredArgsConstructor
 public class MessageService {
 
 	@Value("${app.message.size}")
@@ -27,13 +29,13 @@ public class MessageService {
 	@Value("${app.conversation.messages-max}")
 	private int maxConvoMessages;
 
-	@Autowired
+	@NonNull
 	private AuthService authService;
 
-	@Autowired
+	@NonNull
 	private ConversationRepository conversationRepo;
 
-	@Autowired
+	@NonNull
 	private MailService mailService;
 
 	public void send(Long convoId, String message)

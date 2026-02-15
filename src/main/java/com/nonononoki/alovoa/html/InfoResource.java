@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.html;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -16,18 +17,15 @@ import com.nonononoki.alovoa.repo.UserLikeRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 
 @RestController
+@AllArgsConstructor
 public class InfoResource {
 
-	@Autowired
 	private ObjectMapper objectMapper;
 
-	@Autowired
 	private UserRepository userRepo;
 
-	@Autowired
 	private ConversationRepository conversationRepo;
 
-	@Autowired
 	private UserLikeRepository userLikeRepo;
 
     @GetMapping(path = "/info", produces= MediaType.APPLICATION_JSON_VALUE)

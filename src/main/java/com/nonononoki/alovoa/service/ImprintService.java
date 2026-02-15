@@ -5,7 +5,8 @@ import com.nonononoki.alovoa.model.AccountDeletionRequestDto;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.repo.UserRepository;
 import jakarta.mail.MessagingException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,21 +16,22 @@ import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ImprintService {
 
-	@Autowired
+	@NonNull
 	private CaptchaService captchaService;
 
-	@Autowired
+	@NonNull
 	private PublicService publicService;
 
-	@Autowired
+	@NonNull
 	private UserService userService;
 
-	@Autowired
+	@NonNull
 	private UserRepository userRepository;
 
-	@Autowired
+	@NonNull
 	private MailService mailService;
 
 	@Value("${spring.mail.username}")

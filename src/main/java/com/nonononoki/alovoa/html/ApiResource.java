@@ -13,7 +13,8 @@ import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.*;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.ModelMap;
@@ -35,36 +36,37 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/resource")
+@RequiredArgsConstructor
 public class ApiResource {
 
-    @Autowired
+    @NonNull
     private UserRepository userRepo;
 
-    @Autowired
+    @NonNull
     private ProfileResource profileResource;
 
-    @Autowired
+    @NonNull
     private AdminSearchResource searchResource;
 
-    @Autowired
+    @NonNull
     private GenderRepository genderRepo;
 
-    @Autowired
+    @NonNull
     private UserIntentionRepository userIntentionRepo;
 
-    @Autowired
+    @NonNull
     private ConversationRepository conversationRepo;
 
-    @Autowired
+    @NonNull
     private UserBlockRepository userBlockRepo;
 
-    @Autowired
+    @NonNull
     private AuthService authService;
 
-    @Autowired
+    @NonNull
     private UserService userService;
 
-    @Autowired
+    @NonNull
     private TextEncryptorConverter textEncryptor;
 
     private static final long MAX_RESULTS = 50;

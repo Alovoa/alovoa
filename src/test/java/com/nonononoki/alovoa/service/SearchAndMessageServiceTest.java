@@ -25,7 +25,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
@@ -120,7 +122,7 @@ class SearchAndMessageServiceTest {
 
     @AfterEach
     void after() throws Exception {
-        RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+        RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, userRepo);
     }
 
     @Test
@@ -227,10 +229,14 @@ class SearchAndMessageServiceTest {
 
         // search filtered by preferred gender
         AuthTestUtil.mockGetCurrentUser(authService, user1);
-        List<UserDto> genderSearchDto = searchService.searchComplete(SearchService.SearchParams.builder().preferredGenderIds(Set.of(Gender.OTHER)).showOutsideParameters(false).build()).getUsers();
+        // Note: We're not really interested in the results of the call.
+        // It is required since this call has critical side effects needed for the assertion to pass.
+        searchService.searchComplete(SearchService.SearchParams.builder().preferredGenderIds(Set.of(Gender.OTHER)).showOutsideParameters(false).build()).getUsers();
         assertEquals(0, interestSearchDto.size());
         assertEquals(1, user1.getPreferedGenders().size());
-        List<UserDto> genderSearchDto2 = searchService.searchComplete(SearchService.SearchParams.builder().preferredGenderIds(Set.of(Gender.MALE, Gender.FEMALE, Gender.OTHER)).showOutsideParameters(false).build()).getUsers();
+        // Note: We're not really interested in the results of the call.
+        // It is required since this call has critical side effects needed for the assertion to pass.
+        searchService.searchComplete(SearchService.SearchParams.builder().preferredGenderIds(Set.of(Gender.MALE, Gender.FEMALE, Gender.OTHER)).showOutsideParameters(false).build()).getUsers();
         assertEquals(2, interestSearchDto2.size());
         assertEquals(3, user1.getPreferedGenders().size());
 

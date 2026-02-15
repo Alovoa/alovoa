@@ -14,7 +14,8 @@ import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -34,6 +35,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SearchService {
 
     public static final int SORT_DISTANCE = 1;
@@ -51,17 +53,17 @@ public class SearchService {
     private static final Set<Long> ALL_INTENTIONS = Set.of(UserIntention.MEET, UserIntention.DATE, UserIntention.SEX);
     private static final Set<Long> ALL_GENDER_IDS = Set.of(Gender.MALE, Gender.FEMALE, Gender.OTHER);
 
-    @Autowired
+    @NonNull
     private TextEncryptorConverter textEncryptor;
-    @Autowired
+    @NonNull
     private AuthService authService;
-    @Autowired
+    @NonNull
     private UserRepository userRepo;
-    @Autowired
+    @NonNull
     private PublicService publicService;
-    @Autowired
+    @NonNull
     private UserService userService;
-    @Autowired
+    @NonNull
     private GenderRepository genderRepo;
     @Value("${app.search.max}")
     private int maxResults;

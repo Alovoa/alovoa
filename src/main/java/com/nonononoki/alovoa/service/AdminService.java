@@ -12,11 +12,11 @@ import com.nonononoki.alovoa.repo.*;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -25,7 +25,8 @@ import org.springframework.stereotype.Service;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
@@ -34,33 +35,34 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class AdminService {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
 
-    @Autowired
+    @NonNull
     private AuthService authService;
-    @Autowired
+    @NonNull
     private UserService userService;
-    @Autowired
+    @NonNull
     private MailService mailService;
-    @Autowired
+    @NonNull
     private UserRepository userRepo;
-    @Autowired
+    @NonNull
     private UserLikeRepository userLikeRepo;
-    @Autowired
+    @NonNull
     private UserHideRepository userHideRepo;
-    @Autowired
+    @NonNull
     private UserBlockRepository userBlockRepo;
-    @Autowired
+    @NonNull
     private UserReportRepository userReportRepo;
-    @Autowired
+    @NonNull
     private UserNotificationRepository userNotificationRepo;
-    @Autowired
+    @NonNull
     private ConversationRepository conversationRepo;
-    @Autowired
+    @NonNull
     private UserVerificationPictureRepository userVerificationPictureRepo;
-    @Autowired
+    @NonNull
     private TextEncryptorConverter textEncryptor;
 
     @Value("${app.search.ignore-intention}")

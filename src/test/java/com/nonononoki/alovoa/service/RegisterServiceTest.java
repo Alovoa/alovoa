@@ -59,19 +59,7 @@ public class RegisterServiceTest {
 	@Autowired
 	private MessageRepository messageRepo;
 
-	@Value("${app.age.min}")
-	private int minAge;
-
-	@Value("${app.age.max}")
-	private int maxAge;
-
-	@Value("${app.message.size}")
-	private int maxMessageSize;
-
-	@Value("${app.conversation.messages-max}")
-	private int maxConvoMessages;
-
-	@Value("${app.first-name.length-max}")
+    @Value("${app.first-name.length-max}")
 	private int firstNameLengthMax;
 
 	@Value("${app.first-name.length-min}")
@@ -93,7 +81,7 @@ public class RegisterServiceTest {
 		assertEquals(1, userRepo.count());
 
 		RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
-		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, userRepo);
 
 		assertEquals(0, conversationRepo.count());
 		assertEquals(0, messageRepo.count());
@@ -168,7 +156,7 @@ public class RegisterServiceTest {
 	}
 
 	public static void deleteAllUsers(UserService userService, AuthService authService, CaptchaService captchaService,
-			ConversationRepository conversationRepo, UserRepository userRepo) throws Exception {
+									  UserRepository userRepo) throws Exception {
 		if (testUsers != null) {
 			for (User user : testUsers) {
 				deleteGivenUser(user, userService, userRepo, captchaService, authService);

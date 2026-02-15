@@ -7,9 +7,9 @@ import com.nonononoki.alovoa.entity.user.UserImage;
 import com.nonononoki.alovoa.entity.user.UserProfilePicture;
 import com.nonononoki.alovoa.entity.user.UserVerificationPicture;
 import com.nonononoki.alovoa.repo.*;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,25 +20,21 @@ import java.util.Base64;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class MediaService {
 
     private static final String IMAGE_DATA_START = "data:";
     public static final String MEDIA_TYPE_IMAGE_WEBP = "image/webp";
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaService.class);
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private UserImageRepository userImageRepository;
 
-    @Autowired
     private UserProfilePictureRepository userProfilePictureRepository;
 
-    @Autowired
     private UserAudioRepository userAudioRepository;
 
-    @Autowired
     private UserVerificationPictureRepository userVerificationPictureRepository;
 
     @SuppressWarnings("deprecation")
