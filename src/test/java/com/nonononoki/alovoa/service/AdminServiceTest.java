@@ -5,9 +5,7 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserReport;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.MailDto;
-import com.nonononoki.alovoa.repo.ConversationRepository;
-import com.nonononoki.alovoa.repo.UserReportRepository;
-import com.nonononoki.alovoa.repo.UserRepository;
+import com.nonononoki.alovoa.repo.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,16 +15,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -59,13 +54,7 @@ class AdminServiceTest {
 	@Autowired
 	private TextEncryptorConverter textEncryptor;
 
-	@Value("${app.age.min}")
-	private int minAge;
-
-	@Value("${app.message.size}")
-	private int maxMessageSize;
-
-	@Value("${app.first-name.length-max}")
+    @Value("${app.first-name.length-max}")
 	private int firstNameLengthMax;
 
 	@Value("${app.first-name.length-min}")
@@ -95,7 +84,7 @@ class AdminServiceTest {
 
 	@AfterEach
 	void after() throws Exception {
-		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, userRepo);
 	}
 
 	@Test
@@ -156,8 +145,7 @@ class AdminServiceTest {
         when(user3.getEmail()).thenReturn("invalid-at-invalid-com");
         Page<User> userSlice = mock(Page.class);
         UserRepository userRepoMock = mock(UserRepository.class);
-        AdminService adminService = spy(new AdminService());
-        ReflectionTestUtils.setField(adminService, "userRepo", userRepoMock);
+        AdminService adminService = spy(getAdminServiceWithMocks(userRepoMock));
         when(userSlice.hasNext()).thenReturn(false);
         when(userSlice.getContent()).thenReturn(List.of(user1, user2, user3));
         when(userRepoMock.findAll(any(PageRequest.class))).thenReturn(userSlice);
@@ -173,6 +161,23 @@ class AdminServiceTest {
         assertEquals(3L, result.getUsersDeleted().get(1));
         assertTrue(result.getUsersThatCouldNotBeDeleted().isEmpty());
     }
+
+	private AdminService getAdminServiceWithMocks(UserRepository userRepoMock) {
+		return new AdminService(
+				mock(AuthService.class),
+				mock(UserService.class),
+				mock(MailService.class),
+				userRepoMock,
+				mock(UserLikeRepository.class),
+				mock(UserHideRepository.class),
+				mock(UserBlockRepository.class),
+				mock(UserReportRepository.class),
+				mock(UserNotificationRepository.class),
+				mock(ConversationRepository.class),
+				mock(UserVerificationPictureRepository.class),
+				mock(TextEncryptorConverter.class)
+		);
+	}
 
 	private UserReport reportTest(User user1, User user2, User adminUser) throws Exception {
 		when(authService.getCurrentUser()).thenReturn(user1);

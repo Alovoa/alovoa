@@ -39,13 +39,7 @@ class DonateServiceTest {
 	@Autowired
 	private UserDonationRepository userDonationRepository;
 
-	@Value("${app.age.min}")
-	private int minAge;
-
-	@Value("${app.message.size}")
-	private int maxMessageSize;
-
-	@Value("${app.first-name.length-max}")
+    @Value("${app.first-name.length-max}")
 	private int firstNameLengthMax;
 
 	@Value("${app.first-name.length-min}")
@@ -87,7 +81,7 @@ class DonateServiceTest {
 
 	@AfterEach
 	void after() throws Exception {
-		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, userRepo);
 	}
 
 	@Test
