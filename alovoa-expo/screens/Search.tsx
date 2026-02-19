@@ -253,8 +253,12 @@ const Search = ({ route, navigation }: Props) => {
     Global.navigate(Global.SCREEN_PROFILE_SEARCHSETTINGS, false, {})
   }
 
+  function openAuraMatching() {
+    Global.navigate("Matching.Home", false, {});
+  }
+
   return (
-    <View style={{ flex: 1, backgroundColor: 'red' }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView style={{ backgroundColor: colors.background, flex: 1, }} contentContainerStyle={{ flexGrow: 1 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={load} />}>
           
@@ -266,17 +270,42 @@ const Search = ({ route, navigation }: Props) => {
 
         <View style={[styles.top, { zIndex: 1, position: "absolute", width: '100%', marginHorizontal: 0, paddingTop: STATUS_BAR_HEIGHT + 8, justifyContent: 'flex-end' }]}>
           {width > WIDESCREEN_HORIZONTAL_MAX &&
-            <Button icon="cog" mode="elevated" contentStyle={{ flexDirection: 'row-reverse', justifyContent: 'space-between' }}
-              style={{ alignSelf: 'stretch', marginBottom: 8 }} onPress={openSearchSetting}>
-              {i18n.t('profile.screen.search')}</Button>
+            <View style={{ alignSelf: 'stretch', marginBottom: 8, flexDirection: 'row', gap: 8 }}>
+              <Button
+                icon="star-four-points"
+                mode="contained-tonal"
+                contentStyle={{ flexDirection: 'row-reverse', justifyContent: 'space-between' }}
+                style={{ flex: 1 }}
+                onPress={openAuraMatching}
+              >
+                AURA Matches
+              </Button>
+              <Button
+                icon="cog"
+                mode="elevated"
+                contentStyle={{ flexDirection: 'row-reverse', justifyContent: 'space-between' }}
+                style={{ flex: 1 }}
+                onPress={openSearchSetting}
+              >
+                {i18n.t('profile.screen.search')}
+              </Button>
+            </View>
           }
           {width <= WIDESCREEN_HORIZONTAL_MAX &&
-            <IconButton
-              icon="cog"
-              mode="contained"
-              size={20}
-              onPress={() => Global.navigate(Global.SCREEN_PROFILE_SEARCHSETTINGS, false, {})}
-            />
+            <View style={{ flexDirection: 'row', gap: 6 }}>
+              <IconButton
+                icon="star-four-points"
+                mode="contained-tonal"
+                size={20}
+                onPress={openAuraMatching}
+              />
+              <IconButton
+                icon="cog"
+                mode="contained"
+                size={20}
+                onPress={() => Global.navigate(Global.SCREEN_PROFILE_SEARCHSETTINGS, false, {})}
+              />
+            </View>
           }
         </View>
 

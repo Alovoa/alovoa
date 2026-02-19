@@ -123,6 +123,28 @@ public class AssessmentController {
         }
     }
 
+    /**
+     * Traits vs State growth-context profile.
+     * Stores values hierarchy, tradeoffs, intentions, pace preferences, and shadow patterns.
+     */
+    @GetMapping("/growth-context")
+    public ResponseEntity<?> getGrowthContextProfile() {
+        try {
+            return ResponseEntity.ok(assessmentService.getGrowthContextProfile());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/growth-context")
+    public ResponseEntity<?> saveGrowthContextProfile(@RequestBody Map<String, Object> payload) {
+        try {
+            return ResponseEntity.ok(assessmentService.saveGrowthContextProfile(payload));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @PostMapping("/reset")
     public ResponseEntity<?> resetAssessment(@RequestParam(required = false) String category) {
         try {

@@ -15,6 +15,7 @@ import {
   Surface,
   Avatar,
   IconButton,
+  TextInput,
 } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Global from "../../Global";
@@ -44,6 +45,8 @@ const MatchWindowList = ({ navigation }: any) => {
   const [currentWindow, setCurrentWindow] = React.useState<MatchWindow | null>(null);
   const [windows, setWindows] = React.useState<MatchWindow[]>([]);
   const [responding, setResponding] = React.useState(false);
+  const [introMessage, setIntroMessage] = React.useState("");
+  const [sendingIntro, setSendingIntro] = React.useState(false);
 
   React.useEffect(() => {
     load();
@@ -61,6 +64,7 @@ const MatchWindowList = ({ navigation }: any) => {
         ? listRes.data
         : (listRes.data?.windows || []);
       setCurrentWindow(currentPayload as MatchWindow | null);
+      setIntroMessage("");
       setWindows(listPayload as MatchWindow[]);
     } catch (e) {
       console.error(e);
@@ -98,6 +102,27 @@ const MatchWindowList = ({ navigation }: any) => {
       Global.ShowToast(i18n.t('error.generic'));
     }
     setResponding(false);
+  }
+
+  async function sendIntro(windowId: string | number) {
+    const trimmed = introMessage.trim();
+    if (!trimmed) {
+      Global.ShowToast("Intro message cannot be empty");
+      return;
+    }
+    setSendingIntro(true);
+    try {
+      await Global.Fetch(Global.format(URL.API_MATCH_WINDOW_INTRO_MESSAGE, String(windowId)), 'post', {
+        message: trimmed,
+      });
+      Global.ShowToast("Intro sent");
+      setIntroMessage("");
+      await load();
+    } catch (e) {
+      console.error(e);
+      Global.ShowToast(i18n.t('error.generic'));
+    }
+    setSendingIntro(false);
   }
 
   function formatTimeRemaining(expiresAt: string): string {
@@ -150,10 +175,16 @@ const MatchWindowList = ({ navigation }: any) => {
               </Text>
             </View>
 
-            <IconButton
-              icon="calendar"
-              onPress={() => Global.navigate("Calendar.Availability", false, {})}
-            />
+            <View style={{ flexDirection: 'row' }}>
+              <IconButton
+                icon="bridge"
+                onPress={() => Global.navigate("Bridge.Journey", false, {})}
+              />
+              <IconButton
+                icon="calendar"
+                onPress={() => Global.navigate("Calendar.Availability", false, {})}
+              />
+            </View>
           </View>
 
           {/* Explanation Card */}
@@ -272,6 +303,54 @@ const MatchWindowList = ({ navigation }: any) => {
                     </Surface>
                   )}
 
+                  {currentWindow.theirIntroMessage && (
+                    <Surface style={{ marginTop: 12, padding: 12, borderRadius: 8, backgroundColor: colors.primaryContainer }} elevation={1}>
+                      <Text style={{ color: colors.onPrimaryContainer, fontWeight: '600', marginBottom: 4 }}>
+                        Their intro message
+                      </Text>
+                      <Text style={{ color: colors.onPrimaryContainer }}>
+                        {currentWindow.theirIntroMessage}
+                      </Text>
+                    </Surface>
+                  )}
+
+                  {currentWindow.myIntroMessage && (
+                    <Surface style={{ marginTop: 12, padding: 12, borderRadius: 8 }} elevation={1}>
+                      <Text style={{ color: colors.onSurfaceVariant, fontWeight: '600', marginBottom: 4 }}>
+                        Your intro message
+                      </Text>
+                      <Text style={{ color: colors.onSurface }}>
+                        {currentWindow.myIntroMessage}
+                      </Text>
+                    </Surface>
+                  )}
+
+                  {currentWindow.canSendIntroMessage && !currentWindow.myIntroMessage && (
+                    <View style={{ marginTop: 14 }}>
+                      <Text style={{ color: colors.onSurfaceVariant, marginBottom: 8 }}>
+                        Send one intro message before deciding
+                      </Text>
+                      <TextInput
+                        mode="outlined"
+                        value={introMessage}
+                        onChangeText={setIntroMessage}
+                        placeholder="Say hi with something meaningful..."
+                        maxLength={500}
+                        multiline
+                      />
+                      <Button
+                        mode="contained-tonal"
+                        onPress={() => sendIntro(currentWindow.id)}
+                        loading={sendingIntro}
+                        disabled={sendingIntro}
+                        style={{ marginTop: 8 }}
+                        icon="message-text"
+                      >
+                        Send Intro
+                      </Button>
+                    </View>
+                  )}
+
                   {/* Actions */}
                   <View style={{ flexDirection: 'row', gap: 12, marginTop: 20 }}>
                     <Button
@@ -372,12 +451,22 @@ const MatchWindowList = ({ navigation }: any) => {
                         </View>
 
                         {window.status === MatchWindowStatus.ACCEPTED && (
-                          <Button
-                            mode="text"
-                            onPress={() => Global.navigate("Messages.Detail", false, { odId: matchedUser.uuid })}
-                          >
-                            Chat
-                          </Button>
+                          <View style={{ flexDirection: 'row' }}>
+                            <Button
+                              mode="text"
+                              onPress={() => Global.navigate("Main", false, { screen: Global.SCREEN_CHAT })}
+                            >
+                              Open Chats
+                            </Button>
+                            {window.conversationId && (
+                              <Button
+                                mode="text"
+                                onPress={() => Global.navigate("Bridge.Journey", false, { conversationId: window.conversationId })}
+                              >
+                                Journey
+                              </Button>
+                            )}
+                          </View>
                         )}
                       </View>
                     </Card.Content>

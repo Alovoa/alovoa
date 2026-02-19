@@ -9,6 +9,7 @@ import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.component.ExceptionHandler;
 import com.nonononoki.alovoa.component.TextEncryptorConverter;
 import com.nonononoki.alovoa.entity.User;
+import com.nonononoki.alovoa.matching.rerank.service.MatchingEventIngestionService;
 import com.nonononoki.alovoa.entity.user.*;
 import com.nonononoki.alovoa.lib.OxCaptcha;
 import com.nonononoki.alovoa.model.*;
@@ -122,6 +123,8 @@ public class UserService {
     private ObjectMapper objectMapper;
     @Autowired
     private DonationService donationService;
+    @Autowired
+    private MatchingEventIngestionService matchingEventIngestionService;
     @Autowired
     private ContentModerationService moderationService;
     @Value("${app.age.min}")
@@ -759,6 +762,7 @@ public class UserService {
 
             userRepo.saveAndFlush(user);
             userRepo.saveAndFlush(currUser);
+            matchingEventIngestionService.recordLike(currUser, user);
 
             final boolean isMatch = user.getLikes().stream().filter(o -> o.getUserTo().getId() != null)
                     .anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()));
@@ -781,6 +785,8 @@ public class UserService {
                     userRepo.saveAndFlush(currUser);
                     userRepo.saveAndFlush(user);
                 }
+
+                matchingEventIngestionService.recordMatch(currUser, user);
 
                 // Show donation prompt after successful match
                 donationService.showAfterMatchPrompt(currUser);

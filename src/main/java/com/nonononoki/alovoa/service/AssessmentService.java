@@ -1,5 +1,6 @@
 package com.nonononoki.alovoa.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.entity.AssessmentQuestion;
@@ -799,6 +800,180 @@ public class AssessmentService {
         }
 
         return results;
+    }
+
+    /**
+     * Return persisted growth-context profile data (Traits vs State model).
+     */
+    public Map<String, Object> getGrowthContextProfile() throws Exception {
+        User user = authService.getCurrentUser(true);
+        UserAssessmentProfile profile = profileRepo.findByUser(user).orElse(null);
+        return buildGrowthContextPayload(profile);
+    }
+
+    /**
+     * Save growth-context profile fields.
+     * Accepts both top-level fields and nested traits/state payloads from mobile.
+     */
+    @Transactional
+    public Map<String, Object> saveGrowthContextProfile(Map<String, Object> payload) throws Exception {
+        User user = authService.getCurrentUser(true);
+        UserAssessmentProfile profile = profileRepo.findByUser(user)
+                .orElseGet(() -> {
+                    UserAssessmentProfile p = new UserAssessmentProfile();
+                    p.setUser(user);
+                    return p;
+                });
+
+        Map<String, Object> traits = asMap(payload.get("traits"));
+        Map<String, Object> state = asMap(payload.get("state"));
+
+        // Allow both nested and flat payloads
+        applyGrowthField(profile, "purposeStatement",
+                payload.containsKey("purposeStatement") ? payload.get("purposeStatement") : traits.get("purposeStatement"));
+        applyGrowthField(profile, "currentChapter",
+                payload.containsKey("currentChapter") ? payload.get("currentChapter") : state.get("currentChapter"));
+
+        applyGrowthJsonField(profile, "valuesHierarchy",
+                payload.containsKey("valuesHierarchy") ? payload.get("valuesHierarchy") : traits.get("valuesHierarchy"));
+        applyGrowthJsonField(profile, "valueTradeoffs",
+                payload.containsKey("valueTradeoffs") ? payload.get("valueTradeoffs") : traits.get("valueTradeoffs"));
+        applyGrowthJsonField(profile, "growthArchetypes",
+                payload.containsKey("growthArchetypes") ? payload.get("growthArchetypes") : traits.get("growthArchetypes"));
+        applyGrowthJsonField(profile, "pacePreferences",
+                payload.containsKey("pacePreferences") ? payload.get("pacePreferences") : state.get("pacePreferences"));
+        applyGrowthJsonField(profile, "relationshipIntentions",
+                payload.containsKey("relationshipIntentions") ? payload.get("relationshipIntentions") : traits.get("relationshipIntentions"));
+        applyGrowthJsonField(profile, "boundaries",
+                payload.containsKey("boundaries") ? payload.get("boundaries") : traits.get("boundaries"));
+        applyGrowthJsonField(profile, "shadowPatterns",
+                payload.containsKey("shadowPatterns") ? payload.get("shadowPatterns") : traits.get("shadowPatterns"));
+        applyGrowthJsonField(profile, "stateContext",
+                payload.containsKey("stateContext") ? payload.get("stateContext") : state.get("context"));
+
+        profile = profileRepo.save(profile);
+        return buildGrowthContextPayload(profile);
+    }
+
+    /**
+     * Internal helper used by matching to read growth-context for any user.
+     */
+    public Map<String, Object> getGrowthContextForUser(User user) {
+        UserAssessmentProfile profile = profileRepo.findByUser(user).orElse(null);
+        return buildGrowthContextPayload(profile);
+    }
+
+    private Map<String, Object> buildGrowthContextPayload(UserAssessmentProfile profile) {
+        Map<String, Object> traits = new HashMap<>();
+        Map<String, Object> state = new HashMap<>();
+
+        if (profile != null) {
+            traits.put("purposeStatement", defaultString(profile.getPurposeStatement()));
+            traits.put("valuesHierarchy", fromJsonOrDefault(profile.getValuesHierarchyJson(), List.of()));
+            traits.put("valueTradeoffs", fromJsonOrDefault(profile.getValueTradeoffsJson(), List.of()));
+            traits.put("growthArchetypes", fromJsonOrDefault(profile.getGrowthArchetypesJson(), Map.of()));
+            traits.put("relationshipIntentions", fromJsonOrDefault(profile.getRelationshipIntentionsJson(), Map.of()));
+            traits.put("boundaries", fromJsonOrDefault(profile.getBoundariesJson(), List.of()));
+            traits.put("shadowPatterns", fromJsonOrDefault(profile.getShadowPatternsJson(), List.of()));
+
+            state.put("currentChapter", defaultString(profile.getCurrentChapter()));
+            state.put("pacePreferences", fromJsonOrDefault(profile.getPacePreferencesJson(), Map.of()));
+            state.put("context", fromJsonOrDefault(profile.getStateContextJson(), Map.of()));
+        } else {
+            traits.put("purposeStatement", "");
+            traits.put("valuesHierarchy", List.of());
+            traits.put("valueTradeoffs", List.of());
+            traits.put("growthArchetypes", Map.of());
+            traits.put("relationshipIntentions", Map.of());
+            traits.put("boundaries", List.of());
+            traits.put("shadowPatterns", List.of());
+
+            state.put("currentChapter", "");
+            state.put("pacePreferences", Map.of());
+            state.put("context", Map.of());
+        }
+
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("traits", traits);
+        payload.put("state", state);
+        payload.put("purposeStatement", traits.get("purposeStatement"));
+        payload.put("currentChapter", state.get("currentChapter"));
+        payload.put("valuesHierarchy", traits.get("valuesHierarchy"));
+        payload.put("valueTradeoffs", traits.get("valueTradeoffs"));
+        payload.put("growthArchetypes", traits.get("growthArchetypes"));
+        payload.put("pacePreferences", state.get("pacePreferences"));
+        payload.put("relationshipIntentions", traits.get("relationshipIntentions"));
+        payload.put("boundaries", traits.get("boundaries"));
+        payload.put("shadowPatterns", traits.get("shadowPatterns"));
+        payload.put("stateContext", state.get("context"));
+        payload.put("updatedAt", profile != null ? profile.getLastUpdated() : null);
+        return payload;
+    }
+
+    private void applyGrowthField(UserAssessmentProfile profile, String key, Object value) {
+        if (value == null) {
+            return;
+        }
+        String normalized = String.valueOf(value).trim();
+        switch (key) {
+            case "purposeStatement" -> profile.setPurposeStatement(normalized);
+            case "currentChapter" -> profile.setCurrentChapter(normalized);
+            default -> {
+            }
+        }
+    }
+
+    private void applyGrowthJsonField(UserAssessmentProfile profile, String key, Object value) {
+        if (value == null) {
+            return;
+        }
+        String json = toJson(value);
+        switch (key) {
+            case "valuesHierarchy" -> profile.setValuesHierarchyJson(json);
+            case "valueTradeoffs" -> profile.setValueTradeoffsJson(json);
+            case "growthArchetypes" -> profile.setGrowthArchetypesJson(json);
+            case "pacePreferences" -> profile.setPacePreferencesJson(json);
+            case "relationshipIntentions" -> profile.setRelationshipIntentionsJson(json);
+            case "boundaries" -> profile.setBoundariesJson(json);
+            case "shadowPatterns" -> profile.setShadowPatternsJson(json);
+            case "stateContext" -> profile.setStateContextJson(json);
+            default -> {
+            }
+        }
+    }
+
+    private Map<String, Object> asMap(Object value) {
+        if (value instanceof Map<?, ?> raw) {
+            Map<String, Object> map = new HashMap<>();
+            raw.forEach((k, v) -> map.put(String.valueOf(k), v));
+            return map;
+        }
+        return Map.of();
+    }
+
+    private Object fromJsonOrDefault(String json, Object fallback) {
+        if (json == null || json.isBlank()) {
+            return fallback;
+        }
+        try {
+            return objectMapper.readValue(json, new TypeReference<Object>() {});
+        } catch (Exception e) {
+            LOGGER.debug("Failed to parse growth context JSON", e);
+            return fallback;
+        }
+    }
+
+    private String toJson(Object value) {
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (Exception e) {
+            LOGGER.debug("Failed to serialize growth context JSON", e);
+            return null;
+        }
+    }
+
+    private String defaultString(String value) {
+        return value == null ? "" : value;
     }
 
     @Transactional

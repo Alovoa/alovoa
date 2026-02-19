@@ -1,0 +1,25 @@
+{
+  email {$LETSENCRYPT_EMAIL}
+}
+
+{$DOMAIN} {
+  encode zstd gzip
+
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "SAMEORIGIN"
+    Referrer-Policy "strict-origin-when-cross-origin"
+  }
+
+  reverse_proxy app:8080
+}
+
+# Optional: route sub-app hostnames to the same platform backend.
+# Backend can branch by Host or X-App-Host.
+*.{$APPS_BASE_DOMAIN} {
+  encode zstd gzip
+  reverse_proxy app:8080 {
+    header_up X-App-Host {host}
+  }
+}

@@ -7,6 +7,7 @@ import com.nonononoki.alovoa.entity.MatchWindow;
 import com.nonononoki.alovoa.entity.MatchWindow.WindowStatus;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.UserBehaviorEvent;
+import com.nonononoki.alovoa.matching.rerank.service.MatchingEventIngestionService;
 import com.nonononoki.alovoa.repo.CompatibilityScoreRepository;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.MatchWindowRepository;
@@ -63,6 +64,9 @@ public class MatchWindowService {
 
     @Autowired
     private DonationService donationService;
+
+    @Autowired
+    private MatchingEventIngestionService matchingEventIngestionService;
 
     // ============================================
     // Creating Match Windows
@@ -177,6 +181,7 @@ public class MatchWindowService {
 
             // Show donation prompt after match window is confirmed
             donationService.showAfterMatchPrompt(currentUser);
+            matchingEventIngestionService.recordMatch(window.getUserA(), window.getUserB());
 
             notifyMatchConfirmed(window);
         } else {

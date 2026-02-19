@@ -1,0 +1,19 @@
+{
+  "name": "aura-platform-edge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260208.0",
+    "typescript": "^5.8.2",
+    "wrangler": "^4.7.0"
+  }
+}

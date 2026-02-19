@@ -1,0 +1,9 @@
+# Neon pooled connection string, e.g.
+# postgres://user:password@ep-xxxx.us-east-2.aws.neon.tech/dbname?sslmode=require
+DATABASE_URL=
+
+# Shared secret for admin-only endpoints (app creation, approvals, reconcile)
+PLATFORM_ADMIN_TOKEN=
+
+# Optional tier name for sponsor-pass entitlements
+DEFAULT_ENTITLEMENT_TIER=DONATION

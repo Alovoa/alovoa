@@ -168,6 +168,27 @@ const YourProfile = ({ route, navigation }: Props) => {
           <Button icon="chevron-right" mode="elevated" contentStyle={{ flexDirection: 'row-reverse', justifyContent: 'space-between' }}
             style={{ alignSelf: 'stretch', marginBottom: 8 }} onPress={() => Global.navigate(Global.SCREEN_PROFILE_SETTINGS, false, { data: data })}>{i18n.t('profile.screen.settings')}</Button>
 
+          <Card mode="contained" style={{ padding: 12, marginBottom: 10 }}>
+            <Text style={{ fontWeight: '600', marginBottom: 8 }}>AURA Hub</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+              <Button mode="contained-tonal" compact onPress={() => Global.navigate("Intake.Home", false, {})} icon="clipboard-check">
+                Intake
+              </Button>
+              <Button mode="contained-tonal" compact onPress={() => Global.navigate("Matching.Home", false, {})} icon="star-four-points">
+                Matches
+              </Button>
+              <Button mode="contained-tonal" compact onPress={() => Global.navigate("MatchWindow.List", false, {})} icon="window-open">
+                Windows
+              </Button>
+              <Button mode="contained-tonal" compact onPress={() => Global.navigate("VideoDate.List", false, {})} icon="video">
+                Video Dates
+              </Button>
+              <Button mode="contained-tonal" compact onPress={() => Global.navigate("Reputation.Score", false, {})} icon="shield-check">
+                Reputation
+              </Button>
+            </View>
+          </Card>
+
           {numReferred < MAX_REFERRALS && <View style={{ flexDirection: "row", marginBottom: 8 }}>
             <Button icon="content-copy" mode="elevated" contentStyle={{ flexDirection: 'row-reverse', justifyContent: 'space-between', flexGrow: 1 }}
               style={{ flexGrow: 1 }} onPress={copyReferralCodeToClipboard}>

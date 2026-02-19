@@ -1,0 +1,82 @@
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    container_name: aura-caddy
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+      APPS_BASE_DOMAIN: ${APPS_BASE_DOMAIN}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - aura-net
+
+  app:
+    image: ${AURA_IMAGE:-ghcr.io/tashiscool/alovoa:latest}
+    container_name: aura-app
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      PORT: 8080
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/${MYSQL_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST}
+      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT}
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: ${SPRING_MAIL_SMTP_AUTH}
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: ${SPRING_MAIL_STARTTLS}
+      APP_DOMAIN: https://${DOMAIN}
+      APP_URL_FRONT_END: https://${DOMAIN}
+      S3_ENDPOINT: ${S3_ENDPOINT}
+      S3_REGION: ${S3_REGION}
+      B2_APPLICATION_KEY_ID: ${B2_APPLICATION_KEY_ID}
+      B2_APPLICATION_KEY: ${B2_APPLICATION_KEY}
+      B2_BUCKET_MEDIA: ${B2_BUCKET_MEDIA}
+      B2_BUCKET_VIDEO: ${B2_BUCKET_VIDEO}
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS}
+    networks:
+      - aura-net
+
+  mariadb:
+    image: mariadb:11
+    container_name: aura-mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+    networks:
+      - aura-net
+
+volumes:
+  caddy_data:
+  caddy_config:
+  mariadb_data:
+
+networks:
+  aura-net:
+    driver: bridge

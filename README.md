@@ -141,6 +141,42 @@ Vectors:     Pinecone/pgvector
 
 ---
 
+## Deployment Strategy
+
+This repo supports both low-floor deployment tracks:
+
+| Strategy | Best for | Cost profile | Docs |
+|---|---|---|---|
+| **Edge + Serverless Postgres** (Cloudflare Workers + Neon) | Multi-app platform with bursty traffic and near-zero idle cost | Scales with requests; very low baseline | `deploy/edge/platform-worker/README.md` |
+| **Single VM + Docker** (Caddy + app + MariaDB) | Always-on backend with simple Linux operations | Small fixed monthly VM bill | `deploy/vm/README.md` |
+
+Shared entitlement schema for both tracks:
+
+- `deploy/shared/sql/001_platform_core.sql`
+
+Unified deployment overview:
+
+- `deploy/README.md`
+
+---
+
+## Matching Reranker
+
+This repo includes a modular, feature-flagged reciprocal reranker layer on top of existing candidate generation.
+
+- Design + formulas: `docs/matching-reranker-design.md`
+- Dashboard SQL: `docs/sql/reranker_dashboard_queries.sql`
+- Backfill script: `scripts/backfill-reranker.sh`
+- Migration: `src/main/resources/db/migration/V16__matching_reranker_core.sql`
+
+Admin endpoints:
+
+- `GET /api/v1/admin/matching-analytics/summary`
+- `GET /api/v1/admin/matching-analytics/distribution-shift`
+- `POST /api/v1/admin/matching-analytics/rebuild-stats`
+
+---
+
 ## Quick Start
 
 ### Prerequisites
@@ -182,9 +218,7 @@ docker run -d --name aura-db \
   -p 3306:3306 mariadb:10.11
 
 # Configure
-cp src/main/resources/application.properties.example \
-   src/main/resources/application.properties
-# Edit with your settings
+# Edit src/main/resources/application.properties with your local settings
 
 # Build & Run
 mvn clean install -DskipTests

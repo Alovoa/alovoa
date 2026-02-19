@@ -74,6 +74,10 @@ export const USER_PROMPT_UPDATE = DOMAIN + "/user/prompt/update"
 
 export const USER_SETTING_EMAIL_LIKE = DOMAIN + "/user/settings/emailLike/update/%s"
 export const USER_SETTING_EMAIL_CHAT = DOMAIN + "/user/settings/emailChat/update/%s"
+export const USER_SETTING_GROWTH_PRIVACY = DOMAIN + "/user/settings/growth-privacy"
+export const USER_SETTING_SHARE_GROWTH_PROFILE = DOMAIN + "/user/settings/shareGrowthProfile/update/%s"
+export const USER_SETTING_ALLOW_BEHAVIOR_SIGNALS = DOMAIN + "/user/settings/allowBehaviorSignals/update/%s"
+export const USER_SETTING_MONTHLY_GROWTH_CHECKINS = DOMAIN + "/user/settings/monthlyGrowthCheckins/update/%s"
 
 export const USER_UPDATE_LOCATION = DOMAIN + "/user/update/location/%s/%s"
 
@@ -94,6 +98,7 @@ export const API_ASSESSMENT_QUESTIONS_RANDOM = DOMAIN + "/api/v1/assessment/ques
 export const API_ASSESSMENT_ANSWER = DOMAIN + "/api/v1/assessment/answer";
 export const API_ASSESSMENT_ANSWER_BULK = DOMAIN + "/api/v1/assessment/answer/bulk";
 export const API_ASSESSMENT_PROFILE = DOMAIN + "/api/v1/assessment/profile";
+export const API_ASSESSMENT_GROWTH_CONTEXT = DOMAIN + "/api/v1/assessment/growth-context";
 export const API_ASSESSMENT_PROGRESS = DOMAIN + "/api/v1/assessment/progress";
 export const API_ASSESSMENT_CATEGORIES = DOMAIN + "/api/v1/assessment/categories";
 export const API_ASSESSMENT_RECALCULATE = DOMAIN + "/api/v1/assessment/recalculate";
@@ -165,9 +170,20 @@ export const API_MATCH_WINDOW_LIST = DOMAIN + "/api/v1/match-window/list";
 export const API_MATCH_WINDOW_CURRENT = DOMAIN + "/api/v1/match-window/current";
 export const API_MATCH_WINDOW_RESPOND = DOMAIN + "/api/v1/match-window/respond/%s";
 export const API_MATCH_WINDOW_SKIP = DOMAIN + "/api/v1/match-window/skip/%s";
+export const API_MATCH_WINDOW_INTRO_MESSAGE = DOMAIN + "/api/v1/match-window/%s/intro-message";
 export const API_CALENDAR_AVAILABILITY = DOMAIN + "/api/v1/calendar/availability";
 export const API_CALENDAR_UPDATE = DOMAIN + "/api/v1/calendar/update";
 export const API_CALENDAR_SLOTS = DOMAIN + "/api/v1/calendar/slots/%s";
+
+// Bridge To Real World
+export const API_BRIDGE_JOURNEY = DOMAIN + "/api/bridge/journey";
+export const API_BRIDGE_MILESTONES = DOMAIN + "/api/bridge/milestones/%s";
+export const API_BRIDGE_MILESTONE_RESPOND = DOMAIN + "/api/bridge/milestones/%s/respond";
+export const API_BRIDGE_SUGGESTIONS = DOMAIN + "/api/bridge/suggestions/%s";
+export const API_BRIDGE_SUGGESTIONS_GENERATE = DOMAIN + "/api/bridge/suggestions/%s/generate";
+export const API_BRIDGE_SUGGESTION_ACCEPT = DOMAIN + "/api/bridge/suggestions/%s/accept";
+export const API_BRIDGE_SUGGESTION_DISMISS = DOMAIN + "/api/bridge/suggestions/%s/dismiss";
+export const API_BRIDGE_SUCCESS = DOMAIN + "/api/bridge/success/%s";
 
 // Profile Scaffolding
 export const API_SCAFFOLDING_PROFILE = DOMAIN + "/api/v1/intake/scaffolded-profile";

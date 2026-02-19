@@ -179,6 +179,22 @@ public class MatchingController {
                 }
             }
 
+            List<Map<String, Object>> questionMatches = new ArrayList<>();
+            if (dto.getQuestionMatches() != null) {
+                for (CompatibilityExplanationDto.QuestionMatch q : dto.getQuestionMatches()) {
+                    questionMatches.add(Map.of(
+                            "questionText", q.getQuestionText() != null ? q.getQuestionText() : "",
+                            "yourAnswer", q.getYourAnswer() != null ? q.getYourAnswer() : "",
+                            "theirAnswer", q.getTheirAnswer() != null ? q.getTheirAnswer() : "",
+                            "yourImportance", q.getYourImportance() != null ? q.getYourImportance() : "somewhat",
+                            "theirImportance", q.getTheirImportance() != null ? q.getTheirImportance() : "somewhat",
+                            "importance", q.getImportance() != null ? q.getImportance() : "somewhat",
+                            "isMatch", Boolean.TRUE.equals(q.getIsMatch()),
+                            "isPartialMatch", Boolean.TRUE.equals(q.getIsPartialMatch())
+                    ));
+                }
+            }
+
             Map<String, Object> result = new HashMap<>();
             result.put("overallScore", dto.getOverallScore() != null ? dto.getOverallScore() : 0.0);
             result.put("matchCategoryLabel", dto.getMatchCategoryLabel());
@@ -188,6 +204,16 @@ public class MatchingController {
             result.put("summary", dto.getSummary());
             result.put("enemyScore", dto.getEnemyScore() != null ? dto.getEnemyScore() : 0.0);
             result.put("hasDealbreaker", dto.getHasDealbreaker() != null ? dto.getHasDealbreaker() : false);
+            result.put("questionsCompared", dto.getQuestionsCompared() != null ? dto.getQuestionsCompared() : 0);
+            result.put("yourSatisfaction", dto.getYourSatisfaction() != null ? dto.getYourSatisfaction() : 0.5);
+            result.put("theirSatisfaction", dto.getTheirSatisfaction() != null ? dto.getTheirSatisfaction() : 0.5);
+            result.put("topCompatibilities", dto.getTopCompatibilities() != null ? dto.getTopCompatibilities() : List.of());
+            result.put("areasToDiscuss", dto.getAreasToDiscuss() != null ? dto.getAreasToDiscuss() : List.of());
+            result.put("matchInsight", dto.getMatchInsight());
+            result.put("questionMatches", questionMatches);
+            result.put("growthContext", dto.getDetailedExplanation() != null
+                    ? dto.getDetailedExplanation().getOrDefault("growthContext", Map.of())
+                    : Map.of());
 
             return ResponseEntity.ok(result);
         } catch (Exception e) {

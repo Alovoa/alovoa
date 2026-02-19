@@ -28,6 +28,13 @@ public class UserSettings {
 
     private boolean emailChat = false;
 
+    // Growth-data controls (user-controlled, transparent, optional)
+    private boolean shareGrowthProfile = true;
+
+    private boolean allowBehaviorSignals = true;
+
+    private boolean monthlyGrowthCheckins = true;
+
     public UserSettings(User user) {
         this.user = user;
     }

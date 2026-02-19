@@ -1,0 +1,14 @@
+name = "aura-platform-edge"
+main = "src/index.ts"
+compatibility_date = "2026-02-19"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+DEFAULT_ENTITLEMENT_TIER = "DONATION"
+
+[env.production]
+name = "aura-platform-edge-production"
+
+[[env.production.routes]]
+pattern = "api.yourdomain.com/platform/*"
+zone_name = "yourdomain.com"

@@ -37,7 +37,10 @@ import VideoDateCall from "./screens/aura/VideoDateCall";
 import VideoDateFeedback from "./screens/aura/VideoDateFeedback";
 import MatchingHome from "./screens/aura/MatchingHome";
 import CompatibilityBreakdown from "./screens/aura/CompatibilityBreakdown";
+import GrowthContext from "./screens/aura/GrowthContext";
+import ValuesHierarchy from "./screens/aura/ValuesHierarchy";
 import MatchWindowList from "./screens/aura/MatchWindowList";
+import BridgeJourney from "./screens/aura/BridgeJourney";
 import CalendarAvailability from "./screens/aura/CalendarAvailability";
 import ProfileScaffolding from "./screens/aura/ProfileScaffolding";
 import ReportUser from "./screens/aura/ReportUser";
@@ -369,6 +372,16 @@ export default function App() {
               component={AssessmentQuestion}
             ></Stack.Screen>
             <Stack.Screen
+              name="Assessment.Category"
+              options={{
+                headerShown: false, animation: 'default', transitionSpec: {
+                  open: config,
+                  close: config,
+                },
+              }}
+              component={AssessmentQuestion}
+            ></Stack.Screen>
+            <Stack.Screen
               name="Assessment.Results"
               options={{
                 headerShown: false, animation: 'default', transitionSpec: {
@@ -463,6 +476,47 @@ export default function App() {
                 },
               }}
               component={CompatibilityBreakdown}
+            ></Stack.Screen>
+            <Stack.Screen
+              name="Matching.Filter"
+              options={{
+                title: i18n.t('profile.screen.search'),
+                headerShown: true, animation: 'default', transitionSpec: {
+                  open: config,
+                  close: config,
+                },
+              }}
+              component={SearchSettings}
+            ></Stack.Screen>
+            <Stack.Screen
+              name="Growth.Context"
+              options={{
+                headerShown: false, animation: 'default', transitionSpec: {
+                  open: config,
+                  close: config,
+                },
+              }}
+              component={GrowthContext}
+            ></Stack.Screen>
+            <Stack.Screen
+              name="Values.Hierarchy"
+              options={{
+                headerShown: false, animation: 'default', transitionSpec: {
+                  open: config,
+                  close: config,
+                },
+              }}
+              component={ValuesHierarchy}
+            ></Stack.Screen>
+            <Stack.Screen
+              name="Bridge.Journey"
+              options={{
+                headerShown: false, animation: 'default', transitionSpec: {
+                  open: config,
+                  close: config,
+                },
+              }}
+              component={BridgeJourney}
             ></Stack.Screen>
 
             {/* AURA - Match Window / Calendar */}

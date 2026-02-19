@@ -108,6 +108,46 @@ public class UserAssessmentProfile {
     @Column
     private Boolean profileComplete;
 
+    // === Growth-Context Profile (Traits vs State) ===
+
+    @Column(length = 255)
+    private String purposeStatement;
+
+    @Column(length = 80)
+    private String currentChapter;
+
+    @Lob
+    @Column(columnDefinition = "text")
+    private String valuesHierarchyJson;
+
+    @Lob
+    @Column(columnDefinition = "text")
+    private String valueTradeoffsJson;
+
+    @Lob
+    @Column(columnDefinition = "text")
+    private String growthArchetypesJson;
+
+    @Lob
+    @Column(columnDefinition = "text")
+    private String pacePreferencesJson;
+
+    @Lob
+    @Column(columnDefinition = "text")
+    private String relationshipIntentionsJson;
+
+    @Lob
+    @Column(columnDefinition = "text")
+    private String boundariesJson;
+
+    @Lob
+    @Column(columnDefinition = "text")
+    private String shadowPatternsJson;
+
+    @Lob
+    @Column(columnDefinition = "text")
+    private String stateContextJson;
+
     @Column(nullable = false)
     private Date lastUpdated;
 

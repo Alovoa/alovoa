@@ -87,6 +87,7 @@ const CompatibilityBreakdown = ({ route, navigation }: any) => {
 
   const [loading, setLoading] = React.useState(true);
   const [breakdown, setBreakdown] = React.useState<BreakdownType | null>(null);
+  const [showAllSharedQuestions, setShowAllSharedQuestions] = React.useState(false);
 
   React.useEffect(() => {
     load();
@@ -140,6 +141,17 @@ const CompatibilityBreakdown = ({ route, navigation }: any) => {
 
   const overallColor = getScoreColor(breakdown.overallScore);
   const dimensions = breakdown.dimensions || [];
+  const questionsCompared = breakdown.questionsCompared || 0;
+  const reliabilityLabel = questionsCompared >= 30
+    ? "High confidence"
+    : questionsCompared >= 10
+    ? "Medium confidence"
+    : "Low confidence";
+  const reliabilityColor = questionsCompared >= 30
+    ? "#10B981"
+    : questionsCompared >= 10
+    ? "#F59E0B"
+    : "#EF4444";
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
@@ -175,6 +187,103 @@ const CompatibilityBreakdown = ({ route, navigation }: any) => {
               </Text>
             </Card.Content>
           </Card>
+
+          {/* Reliability + Bidirectional Satisfaction */}
+          <Card style={{ marginBottom: 16 }}>
+            <Card.Content>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                <Text style={{ fontWeight: '600' }}>Reliability</Text>
+                <Chip style={{ backgroundColor: reliabilityColor + '20' }} textStyle={{ color: reliabilityColor, fontWeight: '600' }}>
+                  {reliabilityLabel}
+                </Chip>
+              </View>
+              <Text style={{ color: colors.onSurfaceVariant, marginBottom: 10 }}>
+                Based on {questionsCompared} shared answered questions.
+              </Text>
+
+              <View style={{ marginBottom: 8 }}>
+                <Text style={{ color: colors.onSurfaceVariant, marginBottom: 4 }}>{"You -> Them fit"}</Text>
+                <ProgressBar progress={Math.max(0, Math.min(1, breakdown.yourSatisfaction || 0))} color={colors.primary} style={{ height: 8, borderRadius: 4 }} />
+              </View>
+              <View style={{ marginBottom: 4 }}>
+                <Text style={{ color: colors.onSurfaceVariant, marginBottom: 4 }}>{"Them -> You fit"}</Text>
+                <ProgressBar progress={Math.max(0, Math.min(1, breakdown.theirSatisfaction || 0))} color={colors.secondary} style={{ height: 8, borderRadius: 4 }} />
+              </View>
+            </Card.Content>
+          </Card>
+
+          {(breakdown.topCompatibilities && breakdown.topCompatibilities.length > 0) && (
+            <Card style={{ marginBottom: 16 }}>
+              <Card.Content>
+                <Text style={{ fontWeight: '600', marginBottom: 10 }}>What Seems Strong</Text>
+                {breakdown.topCompatibilities.map((item, index) => (
+                  <View key={`top-${index}`} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 6 }}>
+                    <MaterialCommunityIcons name="check-circle" size={16} color="#10B981" style={{ marginTop: 2 }} />
+                    <Text style={{ marginLeft: 8, flex: 1 }}>{item}</Text>
+                  </View>
+                ))}
+              </Card.Content>
+            </Card>
+          )}
+
+          {(breakdown.areasToDiscuss && breakdown.areasToDiscuss.length > 0) && (
+            <Card style={{ marginBottom: 16 }}>
+              <Card.Content>
+                <Text style={{ fontWeight: '600', marginBottom: 10 }}>Areas To Discuss Early</Text>
+                {breakdown.areasToDiscuss.map((item, index) => (
+                  <View key={`discussion-${index}`} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 6 }}>
+                    <MaterialCommunityIcons name="message-text-outline" size={16} color={colors.primary} style={{ marginTop: 2 }} />
+                    <Text style={{ marginLeft: 8, flex: 1 }}>{item}</Text>
+                  </View>
+                ))}
+              </Card.Content>
+            </Card>
+          )}
+
+          {breakdown.growthContext && (
+            <Card style={{ marginBottom: 16 }}>
+              <Card.Content>
+                <Text style={{ fontWeight: '600', marginBottom: 10 }}>Growth Context Match</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
+                  {breakdown.growthContext.valuesAlignment !== undefined && (
+                    <Chip icon="heart-pulse">Values: {Math.round(breakdown.growthContext.valuesAlignment)}%</Chip>
+                  )}
+                  {breakdown.growthContext.paceAlignment !== undefined && (
+                    <Chip icon="speedometer">Pace: {Math.round(breakdown.growthContext.paceAlignment)}%</Chip>
+                  )}
+                  {breakdown.growthContext.intentionAlignment !== undefined && (
+                    <Chip icon="flag-checkered">Intentions: {Math.round(breakdown.growthContext.intentionAlignment)}%</Chip>
+                  )}
+                </View>
+                {!!breakdown.growthContext.trajectoryTypeLabel && (
+                  <Text style={{ color: colors.onSurfaceVariant, marginBottom: 10 }}>
+                    Trajectory type: {breakdown.growthContext.trajectoryTypeLabel}
+                  </Text>
+                )}
+                {(breakdown.growthContext.guidedConversationPrompts && breakdown.growthContext.guidedConversationPrompts.length > 0) && (
+                  <View>
+                    <Text style={{ fontWeight: '600', marginBottom: 6 }}>Guided first conversation</Text>
+                    {breakdown.growthContext.guidedConversationPrompts.map((prompt, index) => (
+                      <View key={`prompt-${index}`} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 5 }}>
+                        <MaterialCommunityIcons name="chat-question" size={16} color={colors.primary} style={{ marginTop: 2 }} />
+                        <Text style={{ marginLeft: 8, flex: 1 }}>{prompt}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+                {breakdown.growthContext.paceAgreementTemplate && (
+                  <View style={{ marginTop: 10 }}>
+                    <Text style={{ fontWeight: '600', marginBottom: 6 }}>Pace agreement starter</Text>
+                    {Object.entries(breakdown.growthContext.paceAgreementTemplate).map(([key, value]) => (
+                      <Text key={key} style={{ color: colors.onSurfaceVariant, marginBottom: 2 }}>
+                        {key}: you {String(value.you)} / them {String(value.them)}
+                      </Text>
+                    ))}
+                  </View>
+                )}
+              </Card.Content>
+            </Card>
+          )}
 
           {/* Compatibility Dimensions */}
           <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16 }}>
@@ -283,7 +392,10 @@ const CompatibilityBreakdown = ({ route, navigation }: any) => {
                 Questions You Both Answered
               </Text>
 
-              {breakdown.sharedQuestions.slice(0, 5).map((question, index) => (
+              {(showAllSharedQuestions
+                ? breakdown.sharedQuestions
+                : breakdown.sharedQuestions.slice(0, 5)
+              ).map((question, index) => (
                 <Card key={index} style={{ marginBottom: 12 }}>
                   <Card.Content>
                     <Text style={{ fontWeight: '500', marginBottom: 8 }}>
@@ -320,8 +432,14 @@ const CompatibilityBreakdown = ({ route, navigation }: any) => {
               ))}
 
               {breakdown.sharedQuestions.length > 5 && (
-                <Button mode="text" style={{ marginBottom: 12 }}>
-                  See All {breakdown.sharedQuestions.length} Questions
+                <Button
+                  mode="text"
+                  style={{ marginBottom: 12 }}
+                  onPress={() => setShowAllSharedQuestions((prev) => !prev)}
+                >
+                  {showAllSharedQuestions
+                    ? "Show Fewer Questions"
+                    : `See All ${breakdown.sharedQuestions.length} Questions`}
                 </Button>
               )}
             </>
@@ -344,6 +462,17 @@ const CompatibilityBreakdown = ({ route, navigation }: any) => {
             >
               Back to Matches
             </Button>
+            {!!userId && (
+              <Button
+                mode="text"
+                icon="flag-outline"
+                textColor={colors.error}
+                onPress={() => Global.navigate("Report.User", false, { userId })}
+                style={{ marginTop: 8 }}
+              >
+                Report User
+              </Button>
+            )}
           </View>
         </View>
       </ScrollView>

@@ -76,6 +76,11 @@ export type RootStackParamList = {
     userId: string;
   };
   'Matching.Filter': undefined;
+  'Growth.Context': undefined;
+  'Values.Hierarchy': undefined;
+  'Bridge.Journey': {
+    conversationId?: number;
+  } | undefined;
   'MatchWindow.List': undefined;
   'Calendar.Availability': undefined;
   'Intake.ScaffoldedProfile': undefined;
@@ -84,9 +89,6 @@ export type RootStackParamList = {
     userName?: string;
   };
   'Reputation.Score': undefined;
-  'Messages.Detail': {
-    odId: string;
-  };
 };
 
 export type CardItemT = {
@@ -311,6 +313,9 @@ export type UserDto = {
 export type UserSettings = {
   emailLike: boolean;
   emailChat: boolean;
+  shareGrowthProfile?: boolean;
+  allowBehaviorSignals?: boolean;
+  monthlyGrowthCheckins?: boolean;
 }
 
 export type UserInterestDto = {
@@ -880,10 +885,38 @@ export interface CompatibilityBreakdown {
   summary?: string;
   enemyScore?: number;
   hasDealbreaker?: boolean;
+  questionsCompared?: number;
+  yourSatisfaction?: number;
+  theirSatisfaction?: number;
+  topCompatibilities?: string[];
+  areasToDiscuss?: string[];
+  matchInsight?: {
+    topAreas?: string[];
+    areasToDiscuss?: string[];
+    summary?: string;
+  };
+  growthContext?: {
+    valuesAlignment?: number;
+    paceAlignment?: number;
+    intentionAlignment?: number;
+    trajectoryTypeLabel?: string;
+    guidedConversationPrompts?: string[];
+    paceAgreementTemplate?: { [key: string]: { you: string | number; them: string | number } };
+  };
   dimensionLabels?: { [key: string]: string };
   dimensions: CompatibilityDimension[];
   dealbreakers: CompatibilityDealbreaker[];
   sharedQuestions: SharedQuestion[];
+  questionMatches?: Array<{
+    questionText: string;
+    yourAnswer: string;
+    theirAnswer: string;
+    yourImportance?: string;
+    theirImportance?: string;
+    importance?: string;
+    isMatch?: boolean;
+    isPartialMatch?: boolean;
+  }>;
 }
 
 // Video Verification
@@ -1065,8 +1098,16 @@ export interface MatchWindow {
   matchedUserId: number;
   matchedUser?: UserDto;
   compatibilityScore?: number;
+  matchPercentage?: number;
+  hasMandatoryConflict?: boolean;
   matchCategory?: string;
   matchReason?: string;
+  conversationId?: number;
+  canSendIntroMessage?: boolean;
+  hasSentIntroMessage?: boolean;
+  hasReceivedIntroMessage?: boolean;
+  myIntroMessage?: string;
+  theirIntroMessage?: string;
 
   // Status
   status: MatchWindowStatus;
@@ -1079,6 +1120,67 @@ export interface MatchWindow {
 
   createdAt: Date;
   expiresAt: string;
+}
+
+export interface GrowthContextProfile {
+  traits: {
+    purposeStatement: string;
+    valuesHierarchy: string[];
+    valueTradeoffs: Array<{ left: string; right: string; choice: string }>;
+    growthArchetypes: { primary?: string; secondary?: string };
+    relationshipIntentions: { relationshipType?: string; priorities?: string[]; minimumViableRelationship?: string };
+    boundaries: string[];
+    shadowPatterns: string[];
+  };
+  state: {
+    currentChapter: string;
+    pacePreferences: {
+      messagesPerDay?: number;
+      datesPerWeek?: number;
+      aloneTimePerWeek?: number;
+      emotionalAvailability?: number;
+      timeAvailability?: number;
+    };
+    context: {
+      stressLevel?: number;
+      capacityLoad?: number;
+      focusAreas?: string[];
+    };
+  };
+  purposeStatement?: string;
+  currentChapter?: string;
+  valuesHierarchy?: string[];
+  valueTradeoffs?: Array<{ left: string; right: string; choice: string }>;
+  growthArchetypes?: { primary?: string; secondary?: string };
+  pacePreferences?: {
+    messagesPerDay?: number;
+    datesPerWeek?: number;
+    aloneTimePerWeek?: number;
+    emotionalAvailability?: number;
+    timeAvailability?: number;
+  };
+  relationshipIntentions?: { relationshipType?: string; priorities?: string[]; minimumViableRelationship?: string };
+  boundaries?: string[];
+  shadowPatterns?: string[];
+  stateContext?: { stressLevel?: number; capacityLoad?: number; focusAreas?: string[] };
+  updatedAt?: Date | string;
+}
+
+export interface BridgeMilestone {
+  uuid: string;
+  type: string;
+  date: string;
+  checkInSent?: boolean;
+  relationshipStatus?: string;
+  stillTogether?: boolean;
+  leftPlatformTogether?: boolean;
+}
+
+export interface BridgeJourneySummary {
+  totalMilestones: number;
+  activeSuggestions: number;
+  acceptedSuggestions: number;
+  latestMilestone?: BridgeMilestone;
 }
 
 export enum MatchWindowStatus {

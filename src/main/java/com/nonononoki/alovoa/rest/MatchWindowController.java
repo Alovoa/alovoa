@@ -215,8 +215,16 @@ public class MatchWindowController {
         dto.put("status", mapStatus(window.getStatus()));
         dto.put("expiresAt", window.getExpiresAt());
         dto.put("compatibilityScore", window.getCompatibilityScore());
+        dto.put("matchPercentage", window.getMatchPercentage());
+        dto.put("hasMandatoryConflict", Boolean.TRUE.equals(window.getHasMandatoryConflict()));
         dto.put("matchCategory", matchCategory(window.getCompatibilityScore()));
         dto.put("matchReason", "You two show strong compatibility across your answers.");
+        dto.put("conversationId", window.getConversation() != null ? window.getConversation().getId() : null);
+        dto.put("canSendIntroMessage", window.canSendIntroMessage(currentUser));
+        dto.put("hasSentIntroMessage", window.hasIntroMessageFrom(currentUser));
+        dto.put("hasReceivedIntroMessage", window.hasReceivedIntroMessage(currentUser));
+        dto.put("myIntroMessage", window.getIntroMessageFrom(currentUser));
+        dto.put("theirIntroMessage", window.getIntroMessageTo(currentUser));
         Map<String, Object> matchedUserDto = new HashMap<>();
         matchedUserDto.put("uuid", matchedUser.getUuid().toString());
         matchedUserDto.put("firstName", matchedUser.getFirstName() != null ? matchedUser.getFirstName() : "");

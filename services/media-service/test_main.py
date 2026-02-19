@@ -20,6 +20,7 @@ import numpy as np
 import os
 import tempfile
 import cv2
+import base64
 from unittest.mock import patch, AsyncMock
 from fastapi.testclient import TestClient
 
@@ -69,6 +70,13 @@ def sample_frames(sample_image):
         frame = np.clip(frame.astype(np.int16) + noise, 0, 255).astype(np.uint8)
         frames.append(frame)
     return frames
+
+
+@pytest.fixture
+def sample_image_base64(sample_image):
+    ok, encoded = cv2.imencode(".jpg", sample_image)
+    assert ok
+    return "data:image/jpeg;base64," + base64.b64encode(encoded.tobytes()).decode("utf-8")
 
 
 @pytest.fixture
@@ -495,6 +503,52 @@ class TestVideoAnalysisEndpoint:
                 assert 0 <= sentiment["positive"] <= 1
                 assert 0 <= sentiment["negative"] <= 1
                 assert 0 <= sentiment["neutral"] <= 1
+
+
+class TestAttractivenessEndpoint:
+    def test_attractiveness_score_from_base64(self, sample_image_base64):
+        response = client.post("/attractiveness/score", json={
+            "user_id": 42,
+            "front_image_base64": sample_image_base64
+        })
+        assert response.status_code == 200
+        data = response.json()
+        assert 0 <= data["score"] <= 1
+        assert 0 <= data["confidence"] <= 1
+        assert "provider" in data
+        assert "model_version" in data
+        assert "repo_refs" in data
+        assert "signals" in data
+        assert "front_face_confidence" in data["signals"]
+        assert "front_insightface_det" in data["signals"]
+
+    def test_attractiveness_requires_front_image(self):
+        response = client.post("/attractiveness/score", json={"user_id": 99})
+        assert response.status_code == 400
+
+    def test_attractiveness_with_side_view(self, sample_image_base64):
+        response = client.post("/attractiveness/score", json={
+            "user_id": 43,
+            "front_image_base64": sample_image_base64,
+            "side_image_base64": sample_image_base64
+        })
+        assert response.status_code == 200
+        data = response.json()
+        assert 0 <= data["score"] <= 1
+        assert 0 <= data["confidence"] <= 1
+        assert "side_face_confidence" in data["signals"]
+
+    def test_attractiveness_with_url_sources(self, sample_image):
+        with patch('main.load_image_from_url', new_callable=AsyncMock) as mock_load:
+            mock_load.return_value = sample_image
+            response = client.post("/attractiveness/score", json={
+                "front_image_url": "https://example.com/front.jpg",
+                "side_image_url": "https://example.com/side.jpg"
+            })
+            assert response.status_code == 200
+            data = response.json()
+            assert 0 <= data["score"] <= 1
+            assert 0 <= data["confidence"] <= 1
 
 
 # ============ Configuration Tests ============

@@ -115,7 +115,7 @@ const AssessmentHome = ({ navigation }: any) => {
   }
 
   function navigateToCategory(category: string) {
-    Global.navigate("Assessment.Question", false, { category });
+    Global.navigate("Assessment.Category", false, { category });
   }
 
   function navigateToResults() {

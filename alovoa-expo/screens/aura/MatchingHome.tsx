@@ -137,7 +137,7 @@ const MatchingHome = ({ navigation }: any) => {
             <Button
               mode="text"
               icon="cog"
-              onPress={() => Global.navigate(Global.SCREEN_PROFILE_SEARCHSETTINGS, false, {})}
+              onPress={() => Global.navigate("Matching.Filter", false, {})}
             >
               Filters
             </Button>
@@ -174,6 +174,48 @@ const MatchingHome = ({ navigation }: any) => {
               </Card.Content>
             </Card>
           )}
+
+          {/* Growth / Journey Quick Actions */}
+          <Card style={{ marginBottom: 20 }}>
+            <Card.Content>
+              <Text style={{ fontWeight: '600', marginBottom: 10 }}>Build Better Compatibility Data</Text>
+              <Text style={{ color: colors.onSurfaceVariant, marginBottom: 12 }}>
+                Add your current chapter, pace, and value tradeoffs to improve match quality and explanations.
+              </Text>
+              <View style={{ flexDirection: 'row', gap: 8, marginBottom: 8 }}>
+                <Button
+                  mode="contained-tonal"
+                  style={{ flex: 1 }}
+                  icon="chart-timeline-variant"
+                  onPress={() => Global.navigate("Growth.Context", false, {})}
+                >
+                  Growth Context
+                </Button>
+                <Button
+                  mode="outlined"
+                  style={{ flex: 1 }}
+                  icon="sort"
+                  onPress={() => Global.navigate("Values.Hierarchy", false, {})}
+                >
+                  Values Rank
+                </Button>
+              </View>
+              <Button
+                mode="text"
+                icon="bridge"
+                onPress={() => Global.navigate("Bridge.Journey", false, {})}
+              >
+                Relationship Journey
+              </Button>
+              <Button
+                mode="text"
+                icon="window-open"
+                onPress={() => Global.navigate("MatchWindow.List", false, {})}
+              >
+                Match Windows
+              </Button>
+            </Card.Content>
+          </Card>
 
           {/* Matches List */}
           {matches.length === 0 ? (

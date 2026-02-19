@@ -6,6 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.entity.CompatibilityScore;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.UserAssessmentProfile;
+import com.nonononoki.alovoa.matching.rerank.model.MatchingRequestContext;
+import com.nonononoki.alovoa.matching.rerank.model.RerankResult;
+import com.nonononoki.alovoa.matching.rerank.service.MatchRerankerService;
+import com.nonononoki.alovoa.matching.rerank.service.MatchingEventIngestionService;
 import com.nonononoki.alovoa.entity.user.UserDailyMatchLimit;
 import com.nonononoki.alovoa.entity.user.UserPersonalityProfile;
 import com.nonononoki.alovoa.model.MatchRecommendationDto;
@@ -87,6 +91,12 @@ public class MatchingService {
     @Autowired
     private DonationService donationService;
 
+    @Autowired
+    private MatchRerankerService matchRerankerService;
+
+    @Autowired
+    private MatchingEventIngestionService matchingEventIngestionService;
+
     public Map<String, Object> getDailyMatches() throws Exception {
         User user = authService.getCurrentUser(true);
 
@@ -136,6 +146,22 @@ public class MatchingService {
         } catch (Exception e) {
             LOGGER.warn("AI service unavailable, using fallback matching", e);
             matches = getFallbackMatches(user, remaining);
+        }
+
+        String requestId = UUID.randomUUID().toString();
+        RerankResult rerankResult = matchRerankerService.rerank(user, matches, requestId, "daily_matches");
+        matches = rerankResult.getRanked();
+
+        try {
+            MatchingRequestContext requestContext = MatchingRequestContext.builder()
+                    .requestId(requestId)
+                    .surface("daily_matches")
+                    .segmentKey(rerankResult.getSegmentKey())
+                    .variant(rerankResult.getVariant())
+                    .build();
+            matchingEventIngestionService.recordImpressions(user, matches, rerankResult.getScoreTraces(), requestContext);
+        } catch (Exception e) {
+            LOGGER.warn("Failed to persist impression events for request {}", requestId, e);
         }
 
         // Update daily limit
@@ -345,6 +371,56 @@ public class MatchingService {
             }
         }
 
+        // === Growth Context Compatibility (Traits vs State) ===
+        Map<String, Object> growthContext = buildGrowthContextCompatibility(user, matchUser);
+        if (!growthContext.isEmpty()) {
+            Map<String, Object> detailed = dto.getDetailedExplanation() != null
+                    ? new HashMap<>(dto.getDetailedExplanation())
+                    : new HashMap<>();
+            detailed.put("growthContext", growthContext);
+            dto.setDetailedExplanation(detailed);
+
+            List<String> strengths = dto.getTopCompatibilities() != null
+                    ? new ArrayList<>(dto.getTopCompatibilities())
+                    : new ArrayList<>();
+            List<String> discussion = dto.getAreasToDiscuss() != null
+                    ? new ArrayList<>(dto.getAreasToDiscuss())
+                    : new ArrayList<>();
+
+            double valuesAlignment = ((Number) growthContext.getOrDefault("valuesAlignment", 50.0)).doubleValue();
+            double paceAlignment = ((Number) growthContext.getOrDefault("paceAlignment", 50.0)).doubleValue();
+            double intentionAlignment = ((Number) growthContext.getOrDefault("intentionAlignment", 50.0)).doubleValue();
+            String trajectoryType = String.valueOf(growthContext.getOrDefault("trajectoryTypeLabel", ""));
+
+            if (valuesAlignment >= 70) {
+                strengths.add("Strong alignment in core values hierarchy and tradeoff style");
+            } else if (valuesAlignment < 45) {
+                discussion.add("Different value priorities may require explicit tradeoff conversations early");
+            }
+
+            if (paceAlignment >= 70) {
+                strengths.add("Similar relationship tempo and capacity expectations");
+            } else if (paceAlignment < 45) {
+                discussion.add("Possible pace mismatch (messages, dates, or alone-time expectations)");
+            }
+
+            if (intentionAlignment >= 70) {
+                strengths.add("Relationship intentions appear well aligned");
+            } else if (intentionAlignment < 45) {
+                discussion.add("Relationship purpose and structure may need clarification");
+            }
+
+            if (!trajectoryType.isBlank()) {
+                strengths.add("Growth trajectory fit: " + trajectoryType);
+            }
+
+            strengths = strengths.stream().filter(Objects::nonNull).distinct().limit(8).collect(Collectors.toList());
+            discussion = discussion.stream().filter(Objects::nonNull).distinct().limit(8).collect(Collectors.toList());
+            dto.setTopCompatibilities(strengths);
+            dto.setPotentialChallenges(discussion);
+            dto.setAreasToDiscuss(discussion);
+        }
+
         // === Summary ===
         dto.setSummary(generateCompatibilitySummary(compatibility));
 
@@ -372,6 +448,191 @@ public class MatchingService {
         } else {
             return "Different perspectives - could challenge each other in healthy ways";
         }
+    }
+
+    private Map<String, Object> buildGrowthContextCompatibility(User userA, User userB) {
+        try {
+            Map<String, Object> contextA = assessmentService.getGrowthContextForUser(userA);
+            Map<String, Object> contextB = assessmentService.getGrowthContextForUser(userB);
+
+            Map<String, Object> traitsA = asMap(contextA.get("traits"));
+            Map<String, Object> traitsB = asMap(contextB.get("traits"));
+            Map<String, Object> stateA = asMap(contextA.get("state"));
+            Map<String, Object> stateB = asMap(contextB.get("state"));
+
+            List<String> valuesA = asListOfStrings(traitsA.get("valuesHierarchy"));
+            List<String> valuesB = asListOfStrings(traitsB.get("valuesHierarchy"));
+            double valuesAlignment = computeRankedAlignment(valuesA, valuesB, 5);
+
+            Map<String, Object> paceA = asMap(stateA.get("pacePreferences"));
+            Map<String, Object> paceB = asMap(stateB.get("pacePreferences"));
+            double paceAlignment = computePaceAlignment(paceA, paceB);
+
+            Map<String, Object> intentionsA = asMap(traitsA.get("relationshipIntentions"));
+            Map<String, Object> intentionsB = asMap(traitsB.get("relationshipIntentions"));
+            List<String> intentionListA = asListOfStrings(intentionsA.get("priorities"));
+            List<String> intentionListB = asListOfStrings(intentionsB.get("priorities"));
+            double intentionAlignment = computeRankedAlignment(intentionListA, intentionListB, 5);
+            String relationTypeA = String.valueOf(intentionsA.getOrDefault("relationshipType", "")).trim();
+            String relationTypeB = String.valueOf(intentionsB.getOrDefault("relationshipType", "")).trim();
+            if (!relationTypeA.isBlank() && !relationTypeB.isBlank()) {
+                intentionAlignment = (intentionAlignment + (relationTypeA.equalsIgnoreCase(relationTypeB) ? 100.0 : 20.0)) / 2.0;
+            }
+
+            Map<String, Object> archetypesA = asMap(traitsA.get("growthArchetypes"));
+            Map<String, Object> archetypesB = asMap(traitsB.get("growthArchetypes"));
+            String primaryA = String.valueOf(archetypesA.getOrDefault("primary", "")).trim();
+            String primaryB = String.valueOf(archetypesB.getOrDefault("primary", "")).trim();
+            String chapterA = String.valueOf(stateA.getOrDefault("currentChapter", "")).trim();
+            String chapterB = String.valueOf(stateB.getOrDefault("currentChapter", "")).trim();
+            String trajectoryType = computeTrajectoryType(chapterA, chapterB, primaryA, primaryB);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("valuesAlignment", Math.round(valuesAlignment * 10.0) / 10.0);
+            result.put("paceAlignment", Math.round(paceAlignment * 10.0) / 10.0);
+            result.put("intentionAlignment", Math.round(intentionAlignment * 10.0) / 10.0);
+            result.put("trajectoryTypeLabel", trajectoryType);
+            result.put("guidedConversationPrompts", List.of(
+                    "What value is non-negotiable for you this year, and why?",
+                    "When conflict happens, what repair attempt helps you reconnect fastest?",
+                    "What pace feels sustainable this month for texting, dates, and alone-time?"
+            ));
+            result.put("paceAgreementTemplate", buildPaceAgreementTemplate(paceA, paceB));
+            return result;
+        } catch (Exception e) {
+            LOGGER.debug("Failed to build growth-context compatibility", e);
+            return Map.of();
+        }
+    }
+
+    private Map<String, Object> buildPaceAgreementTemplate(Map<String, Object> paceA, Map<String, Object> paceB) {
+        Map<String, Object> template = new HashMap<>();
+        template.put("messagesPerDay", Map.of(
+                "you", paceA.getOrDefault("messagesPerDay", ""),
+                "them", paceB.getOrDefault("messagesPerDay", "")
+        ));
+        template.put("datesPerWeek", Map.of(
+                "you", paceA.getOrDefault("datesPerWeek", ""),
+                "them", paceB.getOrDefault("datesPerWeek", "")
+        ));
+        template.put("aloneTimePerWeek", Map.of(
+                "you", paceA.getOrDefault("aloneTimePerWeek", paceA.getOrDefault("aloneTimeHoursPerWeek", "")),
+                "them", paceB.getOrDefault("aloneTimePerWeek", paceB.getOrDefault("aloneTimeHoursPerWeek", ""))
+        ));
+        return template;
+    }
+
+    private double computeRankedAlignment(List<String> listA, List<String> listB, int maxItems) {
+        if ((listA == null || listA.isEmpty()) && (listB == null || listB.isEmpty())) {
+            return 50.0;
+        }
+        if (listA == null || listA.isEmpty() || listB == null || listB.isEmpty()) {
+            return 35.0;
+        }
+
+        int n = Math.max(1, Math.min(maxItems, Math.min(listA.size(), listB.size())));
+        Map<String, Integer> positionsA = new HashMap<>();
+        for (int i = 0; i < Math.min(n, listA.size()); i++) {
+            positionsA.put(listA.get(i).toLowerCase(Locale.ROOT), i);
+        }
+
+        double score = 0.0;
+        double maxScore = 0.0;
+        for (int i = 0; i < n; i++) {
+            int weight = n - i;
+            maxScore += weight;
+            String candidate = listB.get(i).toLowerCase(Locale.ROOT);
+            Integer posA = positionsA.get(candidate);
+            if (posA != null) {
+                double distancePenalty = Math.abs(posA - i) / (double) Math.max(1, n - 1);
+                score += weight * (1.0 - distancePenalty);
+            }
+        }
+
+        if (maxScore <= 0) {
+            return 50.0;
+        }
+        return Math.max(0.0, Math.min(100.0, (score / maxScore) * 100.0));
+    }
+
+    private double computePaceAlignment(Map<String, Object> paceA, Map<String, Object> paceB) {
+        if ((paceA == null || paceA.isEmpty()) && (paceB == null || paceB.isEmpty())) {
+            return 50.0;
+        }
+
+        List<String> keys = List.of("messagesPerDay", "datesPerWeek", "aloneTimePerWeek", "aloneTimeHoursPerWeek");
+        double total = 0.0;
+        int compared = 0;
+
+        for (String key : keys) {
+            Double a = parseNumber(paceA != null ? paceA.get(key) : null);
+            Double b = parseNumber(paceB != null ? paceB.get(key) : null);
+            if (a == null || b == null) {
+                continue;
+            }
+            double max = Math.max(1.0, Math.max(Math.abs(a), Math.abs(b)));
+            double similarity = 100.0 - Math.min(100.0, (Math.abs(a - b) / max) * 100.0);
+            total += similarity;
+            compared++;
+        }
+
+        if (compared == 0) {
+            return 60.0;
+        }
+        return total / compared;
+    }
+
+    private String computeTrajectoryType(String chapterA, String chapterB, String archetypeA, String archetypeB) {
+        if (!chapterA.isBlank() && chapterA.equalsIgnoreCase(chapterB)) {
+            return "Parallel growth";
+        }
+        if (!archetypeA.isBlank() && archetypeA.equalsIgnoreCase(archetypeB)) {
+            return "Parallel growth";
+        }
+        if (!chapterA.isBlank() && !chapterB.isBlank() &&
+                (chapterA.equalsIgnoreCase("rebuilding") || chapterB.equalsIgnoreCase("rebuilding"))) {
+            return "Mentor-adjacent potential";
+        }
+        return "Complementary growth";
+    }
+
+    private Map<String, Object> asMap(Object value) {
+        if (value instanceof Map<?, ?> raw) {
+            Map<String, Object> mapped = new HashMap<>();
+            raw.forEach((k, v) -> mapped.put(String.valueOf(k), v));
+            return mapped;
+        }
+        return Map.of();
+    }
+
+    private List<String> asListOfStrings(Object value) {
+        if (!(value instanceof List<?> raw)) {
+            return List.of();
+        }
+        return raw.stream()
+                .filter(Objects::nonNull)
+                .map(Object::toString)
+                .map(String::trim)
+                .filter(s -> !s.isBlank())
+                .collect(Collectors.toList());
+    }
+
+    private Double parseNumber(Object value) {
+        if (value instanceof Number n) {
+            return n.doubleValue();
+        }
+        if (value instanceof String s) {
+            String normalized = s.replaceAll("[^0-9.\\-]", "");
+            if (normalized.isBlank()) {
+                return null;
+            }
+            try {
+                return Double.parseDouble(normalized);
+            } catch (NumberFormatException ignored) {
+                return null;
+            }
+        }
+        return null;
     }
 
     /**

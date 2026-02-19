@@ -20,6 +20,7 @@ import com.nonononoki.alovoa.entity.user.Conversation;
 import com.nonononoki.alovoa.entity.user.ConversationCheckedDate;
 import com.nonononoki.alovoa.entity.user.Message;
 import com.nonononoki.alovoa.entity.user.MessageReaction;
+import com.nonononoki.alovoa.matching.rerank.service.MatchingEventIngestionService;
 import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.MessageDto;
 import com.nonononoki.alovoa.model.MessageReactionDto;
@@ -62,6 +63,9 @@ public class MessageService {
 
 	@Autowired
 	private UserRepository userRepo;
+
+	@Autowired
+	private MatchingEventIngestionService matchingEventIngestionService;
 
 	/**
 	 * Open messaging entry point (OKCupid 2016 parity).
@@ -151,6 +155,7 @@ public class MessageService {
 
 		c.setLastUpdated(new Date());
 		conversationRepo.saveAndFlush(c);
+		matchingEventIngestionService.recordMessage(currUser, user, c.getId());
 
 		if(user.getUserSettings().isEmailChat()){
 			mailService.sendChatNotificationMail(user, currUser, message, c);

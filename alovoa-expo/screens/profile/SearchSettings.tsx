@@ -4,7 +4,7 @@ import {
   useWindowDimensions
 } from "react-native";
 import { ActivityIndicator, Checkbox, Divider, Text, useTheme } from "react-native-paper";
-import { YourProfileResource, GenderEnum, UserIntention, Gender, IntentionE, SearchParams, IntentionNameMap, GenderNameMap, RootStackParamList } from "../../myTypes";
+import { YourProfileResource, GenderEnum, UserIntention, Gender, IntentionE, SearchParams, IntentionNameMap, GenderNameMap } from "../../myTypes";
 import * as I18N from "../../i18n";
 import * as Global from "../../Global";
 import * as URL from "../../URL";
@@ -14,13 +14,18 @@ import VerticalView from "../../components/VerticalView";
 import { useHeaderHeight } from '@react-navigation/elements';
 import Slider from "@react-native-community/slider";
 import { GRAY } from "../../assets/styles";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
 const i18n = I18N.getI18n()
 const MIN_AGE = 18;
 const MAX_AGE = 100;
 
-type Props = BottomTabScreenProps<RootStackParamList, 'Profile.SearchSettings'>
+type Props = {
+  route: {
+    params?: {
+      data?: YourProfileResource;
+    };
+  };
+}
 
 const SearchSettings = ({ route }: Props) => {
 
@@ -29,7 +34,7 @@ const SearchSettings = ({ route }: Props) => {
   const { height, width } = useWindowDimensions();
   const headerHeight = useHeaderHeight();
 
-  const [data, setData] = React.useState<YourProfileResource>(route.params.data);
+  const [data, setData] = React.useState<YourProfileResource | undefined>(route?.params?.data);
   const [isLegal, setIsLegal] = React.useState(false);
   const [intention, setIntention] = React.useState(IntentionE.MEET);
   const [showIntention, setShowIntention] = React.useState(false);
@@ -136,6 +141,9 @@ const SearchSettings = ({ route }: Props) => {
     setIntention(num);
     setShowIntention(false);
 
+    if (!data) {
+      return;
+    }
     let intention: UserIntention = { id: num, text: "" };
     data.user.intention = intention;
     setChanged(true);
@@ -143,6 +151,9 @@ const SearchSettings = ({ route }: Props) => {
 
   async function updateGenders(genderId: number, state: boolean) {
     await Global.Fetch(Global.format(URL.USER_UPDATE_PREFERED_GENDER, genderId, state ? "1" : "0"), 'post');
+    if (!data) {
+      return;
+    }
     if (state) {
       let gender: Gender = {
         id: genderId,
@@ -160,6 +171,9 @@ const SearchSettings = ({ route }: Props) => {
   async function updateMinAge(num: number) {
     await Global.Fetch(Global.format(URL.USER_UPDATE_MIN_AGE, String(num)), 'post');
     setMinAge(num);
+    if (!data) {
+      return;
+    }
     data.user.preferedMinAge = num;
     setChanged(true);
   }
@@ -167,6 +181,9 @@ const SearchSettings = ({ route }: Props) => {
   async function updateMaxAge(num: number) {
     await Global.Fetch(Global.format(URL.USER_UPDATE_MAX_AGE, String(num)), 'post');
     setMaxAge(num);
+    if (!data) {
+      return;
+    }
     data.user.preferedMaxAge = num;
     setChanged(true);
   }
