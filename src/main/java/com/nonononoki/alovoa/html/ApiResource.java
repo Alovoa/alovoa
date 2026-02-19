@@ -151,11 +151,18 @@ public class ApiResource {
         List<UserNotification> nots = user.getNotifications();
         List<NotificationDto> notifications = new ArrayList<>();
         for (UserNotification n : nots) {
+            User notificationSender = n.getUserFrom();
+            if (notificationSender == null) {
+                NotificationDto dto = NotificationDto.notificationToNotificationDto(n, user, userService, textEncryptor, ignoreIntention);
+                notifications.add(dto);
+                continue;
+            }
+
             boolean blockedMe = user.getBlockedByUsers().stream()
-                    .anyMatch(b -> b.getUserFrom().getId().equals(n.getUserFrom().getId()));
+                    .anyMatch(b -> b.getUserFrom().getId().equals(notificationSender.getId()));
             boolean blockedYou = user.getBlockedUsers().stream()
-                    .anyMatch(b -> b.getUserTo().getId().equals(n.getUserFrom().getId()));
-            boolean matched = user.getLikes().stream().anyMatch(l -> n.getUserFrom().getId().equals(l.getUserTo().getId()));
+                    .anyMatch(b -> b.getUserTo().getId().equals(notificationSender.getId()));
+            boolean matched = user.getLikes().stream().anyMatch(l -> notificationSender.getId().equals(l.getUserTo().getId()));
 
             if (!blockedMe && !blockedYou && !matched) {
                 NotificationDto dto = NotificationDto.notificationToNotificationDto(n, user, userService, textEncryptor, ignoreIntention);

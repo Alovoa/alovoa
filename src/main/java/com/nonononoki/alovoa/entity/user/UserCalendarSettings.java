@@ -72,6 +72,13 @@ public class UserCalendarSettings {
      */
     private boolean showMatchName = false;
 
+    /**
+     * JSON blob containing weekly availability settings used by /api/v1/calendar.
+     */
+    @Lob
+    @Column(columnDefinition = "text")
+    private String weeklyAvailabilityJson;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 

@@ -7,6 +7,9 @@ import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.entity.User.DonationTier;
 import com.nonononoki.alovoa.repo.DonationPromptRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
+import com.stripe.Stripe;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.checkout.SessionCreateParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +72,12 @@ public class DonationService {
 
     @Value("${app.donation.payment-url:https://donate.stripe.com/aura}")
     private String donationPaymentUrl;
+
+    @Value("${stripe.api-key:}")
+    private String stripeApiKey;
+
+    @Value("${app.domain:https://dateaura.com}")
+    private String appDomain;
 
     @Autowired
     private DonationPromptRepository promptRepo;
@@ -210,6 +219,10 @@ public class DonationService {
      */
     @Transactional
     public void recordDonation(User user, BigDecimal amount, Long promptId) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            LOGGER.warn("Ignoring invalid donation amount {}", amount);
+            return;
+        }
         LOGGER.info("Recording donation of ${} from user {}", amount, user.getId());
 
         // Update prompt if provided
@@ -235,6 +248,28 @@ public class DonationService {
 
         userRepo.save(user);
         LOGGER.info("User {} now at tier {} with ${} total", user.getId(), user.getDonationTier(), newTotal);
+    }
+
+    /**
+     * Apply a refund to a user's donation total and update tier.
+     */
+    @Transactional
+    public void applyRefund(User user, BigDecimal refundAmount) {
+        if (user == null || refundAmount == null || refundAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            return;
+        }
+
+        double updatedTotal = Math.max(0.0, user.getTotalDonations() - refundAmount.doubleValue());
+        user.setTotalDonations(updatedTotal);
+        if (updatedTotal == 0.0) {
+            user.setDonationStreakMonths(0);
+            user.setLastDonationDate(null);
+        }
+        updateDonationTier(user);
+        userRepo.save(user);
+
+        LOGGER.info("Applied refund ${} to user {}. New total ${} and tier {}",
+                refundAmount, user.getId(), updatedTotal, user.getDonationTier());
     }
 
     /**
@@ -391,14 +426,21 @@ public class DonationService {
 
         LOGGER.info("Processing monthly donation prompts...");
 
-        // Get active users who haven't seen monthly prompt this month
-        // This would need a proper query, simplified for now
+        Calendar activeSince = Calendar.getInstance();
+        activeSince.add(Calendar.DAY_OF_MONTH, -30);
+
+        // Get recently active users and prompt at most once per month.
+        List<User> activeUsers = userRepo.findActiveUsersSince(activeSince.getTime());
         int prompted = 0;
-        // In production, iterate through active users and call:
-        // if (!promptRepo.hasMonthlyPromptThisMonth(user, monthStart.getTime())) {
-        //     showPrompt(user, PromptType.MONTHLY);
-        //     prompted++;
-        // }
+
+        for (User user : activeUsers) {
+            if (promptRepo.hasMonthlyPromptThisMonth(user, monthStart.getTime())) {
+                continue;
+            }
+            if (showPrompt(user, PromptType.MONTHLY)) {
+                prompted++;
+            }
+        }
 
         LOGGER.info("Sent {} monthly donation prompts", prompted);
     }
@@ -413,12 +455,33 @@ public class DonationService {
     public Map<String, Object> getDonationStats() {
         Map<String, Object> stats = new HashMap<>();
 
-        // These would be proper queries in production
-        stats.put("totalDonors", userRepo.count()); // Placeholder
-        stats.put("totalAmount", 0.0); // Sum of all donations
-        stats.put("avgDonation", 0.0);
-        stats.put("conversionRate", 0.0); // prompts that led to donations
-        stats.put("monthlyRecurring", 0); // users with 3+ month streaks
+        long totalPrompts = promptRepo.count();
+        long donatedPrompts = promptRepo.countDonatedPrompts();
+        long totalDonors = promptRepo.countDistinctDonors();
+        BigDecimal totalAmount = Optional.ofNullable(promptRepo.sumDonations()).orElse(BigDecimal.ZERO);
+        double avgDonation = Optional.ofNullable(promptRepo.averageDonationAmount()).orElse(0.0);
+
+        double conversionRate = totalPrompts > 0
+                ? (donatedPrompts * 100.0 / totalPrompts)
+                : 0.0;
+        long monthlyRecurring = userRepo
+                .countByDonationStreakMonthsGreaterThanEqualAndTotalDonationsGreaterThanEqual(3, 0.01);
+
+        stats.put("totalPrompts", totalPrompts);
+        stats.put("donatedPrompts", donatedPrompts);
+        stats.put("totalDonors", totalDonors);
+        stats.put("totalAmount", totalAmount.doubleValue());
+        stats.put("avgDonation", avgDonation);
+        stats.put("conversionRate", conversionRate);
+        stats.put("monthlyRecurring", monthlyRecurring);
+        stats.put("byPromptType", Map.of(
+                "AFTER_MATCH", promptRepo.countByPromptType(PromptType.AFTER_MATCH),
+                "AFTER_DATE", promptRepo.countByPromptType(PromptType.AFTER_DATE),
+                "MONTHLY", promptRepo.countByPromptType(PromptType.MONTHLY),
+                "FIRST_LIKE", promptRepo.countByPromptType(PromptType.FIRST_LIKE),
+                "MILESTONE", promptRepo.countByPromptType(PromptType.MILESTONE),
+                "RELATIONSHIP_EXIT", promptRepo.countByPromptType(PromptType.RELATIONSHIP_EXIT)
+        ));
 
         return stats;
     }
@@ -469,12 +532,6 @@ public class DonationService {
 
     /**
      * Create a Stripe Checkout session for a donation.
-     * In production, this would use the Stripe SDK to create a real session.
-     *
-     * @param amount Amount in dollars
-     * @param promptId Optional prompt ID that triggered this
-     * @param promptType Type of prompt
-     * @return Map containing checkoutUrl
      */
     public Map<String, Object> createCheckoutSession(int amount, Long promptId, String promptType) throws AlovoaException {
         // Validate amount
@@ -485,36 +542,57 @@ public class DonationService {
         User user = authService.getCurrentUser(true);
         LOGGER.info("Creating checkout session for user {} amount ${} prompt {}", user.getId(), amount, promptId);
 
-        Map<String, Object> result = new HashMap<>();
+        String normalizedPromptType = promptType != null ? promptType : "DEFAULT";
+        long amountCents = amount * 100L;
 
-        // TODO: In production, integrate with Stripe SDK:
-        // Stripe.apiKey = stripeSecretKey;
-        // SessionCreateParams params = SessionCreateParams.builder()
-        //     .setMode(SessionCreateParams.Mode.PAYMENT)
-        //     .setSuccessUrl(baseUrl + "/donation/success?session_id={CHECKOUT_SESSION_ID}")
-        //     .setCancelUrl(baseUrl + "/donation/cancel")
-        //     .addLineItem(SessionCreateParams.LineItem.builder()
-        //         .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
-        //             .setCurrency("usd")
-        //             .setUnitAmount((long) amount * 100) // Convert to cents
-        //             .setProductData(...)
-        //             .build())
-        //         .setQuantity(1L)
-        //         .build())
-        //     .putMetadata("promptId", String.valueOf(promptId))
-        //     .putMetadata("promptType", promptType)
-        //     .putMetadata("userId", String.valueOf(user.getId()))
-        //     .build();
-        // Session session = Session.create(params);
-        // result.put("checkoutUrl", session.getUrl());
+        if (isStripeCheckoutEnabled()) {
+            try {
+                Stripe.apiKey = stripeApiKey;
 
-        // For now, return the configured payment URL with metadata
-        // This is a fallback for environments without Stripe configured
+                SessionCreateParams params = SessionCreateParams.builder()
+                        .setMode(SessionCreateParams.Mode.PAYMENT)
+                        .setSuccessUrl(appDomain + "/donation/success?session_id={CHECKOUT_SESSION_ID}")
+                        .setCancelUrl(appDomain + "/donation/cancel")
+                        .addLineItem(
+                                SessionCreateParams.LineItem.builder()
+                                        .setPriceData(
+                                                SessionCreateParams.LineItem.PriceData.builder()
+                                                        .setCurrency("usd")
+                                                        .setUnitAmount(amountCents)
+                                                        .setProductData(
+                                                                SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                                                        .setName("AURA Donation")
+                                                                        .setDescription("Thank you for supporting AURA.")
+                                                                        .build()
+                                                        )
+                                                        .build()
+                                        )
+                                        .setQuantity(1L)
+                                        .build()
+                        )
+                        .putMetadata("prompt_id", promptId != null ? String.valueOf(promptId) : "")
+                        .putMetadata("prompt_type", normalizedPromptType)
+                        .putMetadata("user_id", String.valueOf(user.getId()))
+                        .putMetadata("type", "donation")
+                        .build();
+
+                Session session = Session.create(params);
+                Map<String, Object> result = new HashMap<>();
+                result.put("checkoutUrl", session.getUrl());
+                result.put("sessionId", session.getId());
+                result.put("provider", "stripe");
+                return result;
+            } catch (Exception e) {
+                LOGGER.error("Stripe checkout session creation failed, falling back to configured payment URL", e);
+            }
+        }
+
         String checkoutUrl = String.format("%s?amount=%d&promptId=%s&promptType=%s",
-                donationPaymentUrl, amount * 100, promptId != null ? promptId : "", promptType);
+                donationPaymentUrl, amountCents, promptId != null ? promptId : "", normalizedPromptType);
+        Map<String, Object> result = new HashMap<>();
         result.put("checkoutUrl", checkoutUrl);
-        result.put("sessionId", UUID.randomUUID().toString()); // Placeholder
-
+        result.put("sessionId", UUID.randomUUID().toString());
+        result.put("provider", "fallback");
         return result;
     }
 
@@ -536,5 +614,11 @@ public class DonationService {
             case NONE -> "AURA is free — like Wikipedia. If you'd like to donate so others can find " +
                     "someone too, any amount helps cover server costs.";
         };
+    }
+
+    private boolean isStripeCheckoutEnabled() {
+        return stripeApiKey != null
+                && !stripeApiKey.isBlank()
+                && !stripeApiKey.startsWith("sk_test_...");
     }
 }

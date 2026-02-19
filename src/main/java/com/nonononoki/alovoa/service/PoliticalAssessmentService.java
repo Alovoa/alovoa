@@ -797,56 +797,45 @@ public class PoliticalAssessmentService {
     }
 
     private String uploadVerificationDocument(MultipartFile file) throws Exception {
-        try {
-            // Create multipart request to media service with secure storage flag
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        // Create multipart request to media service with secure storage flag
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-            // Build multipart body
-            org.springframework.util.LinkedMultiValueMap<String, Object> body =
-                new org.springframework.util.LinkedMultiValueMap<>();
+        // Build multipart body
+        org.springframework.util.LinkedMultiValueMap<String, Object> body =
+            new org.springframework.util.LinkedMultiValueMap<>();
 
-            // Create a resource from the file bytes
-            org.springframework.core.io.ByteArrayResource resource =
-                new org.springframework.core.io.ByteArrayResource(file.getBytes()) {
-                    @Override
-                    public String getFilename() {
-                        return file.getOriginalFilename();
-                    }
-                };
-
-            body.add("file", resource);
-            body.add("type", "verification");
-            body.add("secure", "true"); // Store in secure location, not publicly accessible
-
-            HttpEntity<org.springframework.util.LinkedMultiValueMap<String, Object>> requestEntity =
-                new HttpEntity<>(body, headers);
-
-            ResponseEntity<Map> response = restTemplate.exchange(
-                mediaServiceUrl + "/upload/secure",
-                HttpMethod.POST,
-                requestEntity,
-                Map.class
-            );
-
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                String fileUrl = (String) response.getBody().get("url");
-                if (fileUrl != null) {
-                    LOGGER.info("Successfully uploaded verification document");
-                    return fileUrl;
+        // Create a resource from the file bytes
+        org.springframework.core.io.ByteArrayResource resource =
+            new org.springframework.core.io.ByteArrayResource(file.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename();
                 }
+            };
+
+        body.add("file", resource);
+        body.add("type", "verification");
+        body.add("secure", "true"); // Store in secure location, not publicly accessible
+
+        HttpEntity<org.springframework.util.LinkedMultiValueMap<String, Object>> requestEntity =
+            new HttpEntity<>(body, headers);
+
+        ResponseEntity<Map> response = restTemplate.exchange(
+            mediaServiceUrl + "/upload/secure",
+            HttpMethod.POST,
+            requestEntity,
+            Map.class
+        );
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            String fileUrl = (String) response.getBody().get("url");
+            if (fileUrl != null && !fileUrl.isBlank()) {
+                LOGGER.info("Successfully uploaded verification document");
+                return fileUrl;
             }
-
-            // Fallback to standard secure endpoint
-            LOGGER.warn("Secure upload endpoint failed, using fallback");
-            String fallbackUrl = mediaServiceUrl + "/secure/verification/" + UUID.randomUUID();
-            return fallbackUrl;
-
-        } catch (Exception e) {
-            LOGGER.error("Failed to upload verification document: {}", e.getMessage());
-            // Return a secure fallback URL - in production this would need proper handling
-            String filename = file.getOriginalFilename() != null ? file.getOriginalFilename() : "document";
-            return mediaServiceUrl + "/secure/verification/" + UUID.randomUUID() + "/" + filename;
         }
+
+        throw new IllegalStateException("Verification document upload failed");
     }
 }

@@ -38,8 +38,10 @@ public class VideoFirstController {
             @PathVariable UUID profileUuid) throws AlovoaException {
 
         User viewer = authService.getCurrentUser(true);
-        User profileOwner = userRepo.findByUuid(profileUuid)
-                .orElseThrow(() -> new AlovoaException("User not found"));
+        User profileOwner = userRepo.findByUuid(profileUuid);
+        if (profileOwner == null) {
+            throw new AlovoaException("User not found");
+        }
 
         videoFirstService.recordVideoWatch(viewer, profileOwner);
 
@@ -58,8 +60,10 @@ public class VideoFirstController {
             @RequestBody WatchProgressRequest request) throws AlovoaException {
 
         User viewer = authService.getCurrentUser(true);
-        User profileOwner = userRepo.findByUuid(profileUuid)
-                .orElseThrow(() -> new AlovoaException("User not found"));
+        User profileOwner = userRepo.findByUuid(profileUuid);
+        if (profileOwner == null) {
+            throw new AlovoaException("User not found");
+        }
 
         videoFirstService.updateWatchProgress(viewer, profileOwner,
                 request.durationSeconds, request.completed);
@@ -78,8 +82,10 @@ public class VideoFirstController {
             @PathVariable UUID profileUuid) throws AlovoaException {
 
         User viewer = authService.getCurrentUser(true);
-        User profileOwner = userRepo.findByUuid(profileUuid)
-                .orElseThrow(() -> new AlovoaException("User not found"));
+        User profileOwner = userRepo.findByUuid(profileUuid);
+        if (profileOwner == null) {
+            throw new AlovoaException("User not found");
+        }
 
         boolean hasWatched = videoFirstService.hasWatchedVideo(viewer, profileOwner);
         boolean hasCompleted = videoFirstService.hasCompletedWatching(viewer, profileOwner);

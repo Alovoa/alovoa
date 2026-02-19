@@ -1,6 +1,5 @@
 package com.nonononoki.alovoa.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.entity.AssessmentQuestion;
@@ -869,11 +868,16 @@ public class AssessmentService {
         List<UserAssessmentResponse> responsesB = responseRepo.findByUser(userB);
 
         if (responsesA.isEmpty() || responsesB.isEmpty()) {
-            return Map.of(
-                    "matchPercentage", 50.0,
-                    "hasEnoughData", false,
-                    "commonQuestions", 0
-            );
+            Map<String, Object> result = new HashMap<>();
+            result.put("matchPercentage", 50.0);
+            result.put("hasEnoughData", false);
+            result.put("commonQuestions", 0);
+            result.put("satisfactionA", 50.0);
+            result.put("satisfactionB", 50.0);
+            result.put("hasMandatoryConflict", false);
+            result.put("mandatoryConflicts", List.of());
+            result.put("questionMatches", List.of());
+            return result;
         }
 
         // Build maps for quick lookup
@@ -887,11 +891,16 @@ public class AssessmentService {
         commonQuestionIds.retainAll(responseMapB.keySet());
 
         if (commonQuestionIds.isEmpty()) {
-            return Map.of(
-                    "matchPercentage", 50.0,
-                    "hasEnoughData", false,
-                    "commonQuestions", 0
-            );
+            Map<String, Object> result = new HashMap<>();
+            result.put("matchPercentage", 50.0);
+            result.put("hasEnoughData", false);
+            result.put("commonQuestions", 0);
+            result.put("satisfactionA", 50.0);
+            result.put("satisfactionB", 50.0);
+            result.put("hasMandatoryConflict", false);
+            result.put("mandatoryConflicts", List.of());
+            result.put("questionMatches", List.of());
+            return result;
         }
 
         // Calculate satisfaction scores
@@ -901,20 +910,27 @@ public class AssessmentService {
         // OKCupid formula: geometric mean of both satisfactions
         double matchPercentage = Math.sqrt(satisfactionA * satisfactionB) * 100;
 
-        // Check for mandatory dealbreakers
-        boolean hasMandatoryConflict = checkMandatoryConflicts(responseMapA, responseMapB, commonQuestionIds);
+        // Check for mandatory dealbreakers and build detailed conflict entries
+        List<Map<String, Object>> mandatoryConflicts =
+                findMandatoryConflicts(responseMapA, responseMapB, commonQuestionIds);
+        boolean hasMandatoryConflict = !mandatoryConflicts.isEmpty();
         if (hasMandatoryConflict) {
             matchPercentage = Math.min(matchPercentage, 10.0); // Cap at 10% if mandatory conflict
         }
 
-        return Map.of(
-                "matchPercentage", Math.round(matchPercentage * 10.0) / 10.0,
-                "hasEnoughData", commonQuestionIds.size() >= 10,
-                "commonQuestions", commonQuestionIds.size(),
-                "satisfactionA", Math.round(satisfactionA * 1000.0) / 10.0,
-                "satisfactionB", Math.round(satisfactionB * 1000.0) / 10.0,
-                "hasMandatoryConflict", hasMandatoryConflict
-        );
+        List<Map<String, Object>> questionMatches =
+                buildQuestionMatches(responseMapA, responseMapB, commonQuestionIds);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("matchPercentage", Math.round(matchPercentage * 10.0) / 10.0);
+        result.put("hasEnoughData", commonQuestionIds.size() >= 10);
+        result.put("commonQuestions", commonQuestionIds.size());
+        result.put("satisfactionA", Math.round(satisfactionA * 1000.0) / 10.0);
+        result.put("satisfactionB", Math.round(satisfactionB * 1000.0) / 10.0);
+        result.put("hasMandatoryConflict", hasMandatoryConflict);
+        result.put("mandatoryConflicts", mandatoryConflicts);
+        result.put("questionMatches", questionMatches);
+        return result;
     }
 
     private double calculateSatisfaction(
@@ -963,8 +979,9 @@ public class AssessmentService {
 
         Integer myAnswer = myResponse.getNumericResponse();
         Integer theirAnswer = theirResponse.getNumericResponse();
+        String theirText = theirResponse.getTextResponse();
 
-        if (myAnswer == null || theirAnswer == null) {
+        if (myAnswer == null && (theirAnswer == null && (theirText == null || theirText.isBlank()))) {
             return true; // Can't compare, assume acceptable
         }
 
@@ -972,17 +989,32 @@ public class AssessmentService {
         String acceptableAnswersJson = myResponse.getAcceptableAnswers();
         if (acceptableAnswersJson != null && !acceptableAnswersJson.trim().isEmpty()) {
             try {
-                // Parse JSON array of acceptable answers
-                List<Integer> acceptable = objectMapper.readValue(
-                        acceptableAnswersJson,
-                        new TypeReference<List<Integer>>() {}
-                );
-                // Their answer must be in my acceptable list
-                return acceptable.contains(theirAnswer);
+                JsonNode acceptable = objectMapper.readTree(acceptableAnswersJson);
+                if (acceptable.isArray()) {
+                    for (JsonNode node : acceptable) {
+                        if (theirAnswer != null) {
+                            if (node.isInt() && node.asInt() == theirAnswer) {
+                                return true;
+                            }
+                            if (node.isTextual() && node.asText().equals(String.valueOf(theirAnswer))) {
+                                return true;
+                            }
+                        }
+                        if (theirText != null && node.isTextual() &&
+                            node.asText().equalsIgnoreCase(theirText.trim())) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
             } catch (Exception e) {
                 // If JSON parsing fails, fall back to proximity matching
                 LOGGER.debug("Failed to parse acceptable answers JSON, using proximity matching", e);
             }
+        }
+
+        if (myAnswer == null || theirAnswer == null) {
+            return true; // Can't compare numerically, assume acceptable
         }
 
         // Fallback: same answer or within 1 point is acceptable
@@ -991,31 +1023,31 @@ public class AssessmentService {
         return diff <= 1;
     }
 
-    private boolean checkMandatoryConflicts(
+    private List<Map<String, Object>> findMandatoryConflicts(
             Map<Long, UserAssessmentResponse> responsesA,
             Map<Long, UserAssessmentResponse> responsesB,
             Set<Long> commonQuestionIds) {
 
-        for (Long questionId : commonQuestionIds) {
+        List<Map<String, Object>> conflicts = new ArrayList<>();
+
+        for (Long questionId : commonQuestionIds.stream().sorted().collect(Collectors.toList())) {
             UserAssessmentResponse responseA = responsesA.get(questionId);
             UserAssessmentResponse responseB = responsesB.get(questionId);
-
+            if (responseA == null || responseB == null) {
+                continue;
+            }
             AssessmentQuestion question = responseA.getQuestion();
+            List<String> reasons = new ArrayList<>();
 
             // Check if EITHER user marked this question as mandatory (OKCupid-style)
             boolean aMandatory = "mandatory".equalsIgnoreCase(responseA.getImportance());
             boolean bMandatory = "mandatory".equalsIgnoreCase(responseB.getImportance());
 
-            if (aMandatory || bMandatory) {
-                // If mandatory, check if the other's answer is NOT acceptable
-                if (aMandatory && !isAnswerAcceptable(responseA, responseB, question)) {
-                    LOGGER.debug("Mandatory conflict: User A requires specific answer on question {}", questionId);
-                    return true;
-                }
-                if (bMandatory && !isAnswerAcceptable(responseB, responseA, question)) {
-                    LOGGER.debug("Mandatory conflict: User B requires specific answer on question {}", questionId);
-                    return true;
-                }
+            if (aMandatory && !isAnswerAcceptable(responseA, responseB, question)) {
+                reasons.add("YOU_MARKED_MANDATORY");
+            }
+            if (bMandatory && !isAnswerAcceptable(responseB, responseA, question)) {
+                reasons.add("THEY_MARKED_MANDATORY");
             }
 
             // Also check dealbreaker category questions with critical severity
@@ -1027,14 +1059,161 @@ public class AssessmentService {
                     // If answers are at opposite extremes on a dealbreaker, it's a conflict
                     if ((answerA == 1 && answerB >= 4) || (answerA >= 4 && answerB == 1)) {
                         if (question.getSeverity() == Severity.CRITICAL) {
-                            return true;
+                            reasons.add("CRITICAL_DEALBREAKER");
                         }
                     }
                 }
             }
+
+            if (!reasons.isEmpty()) {
+                Map<String, Object> conflict = new LinkedHashMap<>();
+                conflict.put("question", question.getText());
+                conflict.put("category", question.getCategory().name());
+                conflict.put("yourAnswer", formatAnswer(responseA));
+                conflict.put("theirAnswer", formatAnswer(responseB));
+                conflict.put("reason", String.join(", ", reasons));
+                conflicts.add(conflict);
+            }
         }
 
-        return false;
+        return conflicts;
+    }
+
+    private List<Map<String, Object>> buildQuestionMatches(
+            Map<Long, UserAssessmentResponse> responsesA,
+            Map<Long, UserAssessmentResponse> responsesB,
+            Set<Long> commonQuestionIds) {
+
+        List<Long> sortedQuestionIds = commonQuestionIds.stream()
+                .sorted((q1, q2) -> {
+                    UserAssessmentResponse a1 = responsesA.get(q1);
+                    UserAssessmentResponse b1 = responsesB.get(q1);
+                    UserAssessmentResponse a2 = responsesA.get(q2);
+                    UserAssessmentResponse b2 = responsesB.get(q2);
+                    int rank1 = Math.max(importanceRank(a1 != null ? a1.getImportance() : null),
+                            importanceRank(b1 != null ? b1.getImportance() : null));
+                    int rank2 = Math.max(importanceRank(a2 != null ? a2.getImportance() : null),
+                            importanceRank(b2 != null ? b2.getImportance() : null));
+                    if (rank1 != rank2) {
+                        return Integer.compare(rank2, rank1);
+                    }
+                    return Long.compare(q1, q2);
+                })
+                .limit(200)
+                .collect(Collectors.toList());
+
+        List<Map<String, Object>> matches = new ArrayList<>();
+        for (Long questionId : sortedQuestionIds) {
+            UserAssessmentResponse responseA = responsesA.get(questionId);
+            UserAssessmentResponse responseB = responsesB.get(questionId);
+            if (responseA == null || responseB == null) {
+                continue;
+            }
+
+            AssessmentQuestion question = responseA.getQuestion();
+            boolean aSatisfied = isAnswerAcceptable(responseA, responseB, question);
+            boolean bSatisfied = isAnswerAcceptable(responseB, responseA, question);
+            boolean isMatch = aSatisfied && bSatisfied;
+            boolean isPartial = false;
+
+            if (!isMatch &&
+                responseA.getNumericResponse() != null &&
+                responseB.getNumericResponse() != null) {
+                isPartial = Math.abs(responseA.getNumericResponse() - responseB.getNumericResponse()) == 1;
+            }
+
+            String mergedImportance = importanceRank(responseA.getImportance()) >= importanceRank(responseB.getImportance())
+                    ? responseA.getImportance()
+                    : responseB.getImportance();
+
+            Map<String, Object> questionMatch = new LinkedHashMap<>();
+            questionMatch.put("questionText", question.getText());
+            questionMatch.put("yourAnswer", formatAnswer(responseA));
+            questionMatch.put("theirAnswer", formatAnswer(responseB));
+            questionMatch.put("yourImportance", normalizeImportance(responseA.getImportance()));
+            questionMatch.put("theirImportance", normalizeImportance(responseB.getImportance()));
+            questionMatch.put("isMatch", isMatch);
+            questionMatch.put("isPartialMatch", isPartial);
+            questionMatch.put("importance", normalizeImportance(mergedImportance));
+            matches.add(questionMatch);
+        }
+
+        return matches;
+    }
+
+    private String formatAnswer(UserAssessmentResponse response) {
+        if (response == null) {
+            return "";
+        }
+        if (response.getTextResponse() != null && !response.getTextResponse().isBlank()) {
+            return response.getTextResponse().trim();
+        }
+        if (response.getNumericResponse() == null) {
+            return "";
+        }
+        String optionText = resolveOptionText(response.getQuestion(), response.getNumericResponse());
+        return optionText != null ? optionText : String.valueOf(response.getNumericResponse());
+    }
+
+    private String resolveOptionText(AssessmentQuestion question, Integer numericValue) {
+        if (question == null || numericValue == null || question.getOptions() == null || question.getOptions().isBlank()) {
+            return null;
+        }
+        try {
+            JsonNode options = objectMapper.readTree(question.getOptions());
+            if (!options.isArray() || options.isEmpty()) {
+                return null;
+            }
+
+            int index = numericValue - 1;
+            if (index >= 0 && index < options.size()) {
+                String indexedText = extractOptionText(options.get(index));
+                if (indexedText != null) {
+                    return indexedText;
+                }
+            }
+
+            for (JsonNode option : options) {
+                JsonNode idNode = option.get("id");
+                if (idNode != null && idNode.asText().equals(String.valueOf(numericValue))) {
+                    return extractOptionText(option);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.debug("Could not parse question options for {}", question.getExternalId(), e);
+        }
+        return null;
+    }
+
+    private String extractOptionText(JsonNode option) {
+        if (option == null || option.isNull()) {
+            return null;
+        }
+        if (option.has("text")) return option.get("text").asText();
+        if (option.has("label")) return option.get("label").asText();
+        if (option.has("value")) return option.get("value").asText();
+        if (option.has("title")) return option.get("title").asText();
+        if (option.has("id")) return option.get("id").asText();
+        if (option.isTextual()) return option.asText();
+        return null;
+    }
+
+    private String normalizeImportance(String importance) {
+        if (importance == null || importance.isBlank()) {
+            return "somewhat";
+        }
+        return importance.trim().toLowerCase();
+    }
+
+    private int importanceRank(String importance) {
+        return switch (normalizeImportance(importance)) {
+            case "mandatory" -> 5;
+            case "very" -> 4;
+            case "somewhat" -> 3;
+            case "a_little" -> 2;
+            case "irrelevant" -> 1;
+            default -> 3;
+        };
     }
 
     /**
@@ -1238,8 +1417,9 @@ public class AssessmentService {
                 if (numericResponse == null) {
                     return Map.of("valid", false, "error", "Numeric response required");
                 }
-                if (numericResponse < 1 || numericResponse > 5) {
-                    return Map.of("valid", false, "error", "Response must be between 1 and 5");
+                int maxAllowed = getNumericUpperBound(question);
+                if (numericResponse < 1 || numericResponse > maxAllowed) {
+                    return Map.of("valid", false, "error", "Response must be between 1 and " + maxAllowed);
                 }
                 break;
 
@@ -1267,6 +1447,21 @@ public class AssessmentService {
                 "questionId", questionId,
                 "responseScale", scale.name()
         );
+    }
+
+    private int getNumericUpperBound(AssessmentQuestion question) {
+        if (question.getOptions() == null || question.getOptions().isBlank()) {
+            return 5;
+        }
+        try {
+            JsonNode options = objectMapper.readTree(question.getOptions());
+            if (options.isArray() && !options.isEmpty()) {
+                return options.size();
+            }
+        } catch (Exception e) {
+            LOGGER.debug("Could not parse options for numeric bounds, defaulting to 5", e);
+        }
+        return 5;
     }
 
     /**

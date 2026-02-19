@@ -89,6 +89,7 @@ public class ReputationDisplayDto {
             case TRUSTED -> "Trusted member with positive history";
             case HIGHLY_TRUSTED -> "Exemplary member with excellent track record";
             case UNDER_REVIEW -> "Account under review";
+            case PROBATION -> "On probation while rebuilding trust";
             case RESTRICTED -> "Limited features due to policy violations";
         };
     }
@@ -106,6 +107,7 @@ public class ReputationDisplayDto {
             case VERIFIED -> "fas fa-user-check";
             case NEW_MEMBER -> "fas fa-user";
             case UNDER_REVIEW -> "fas fa-clock";
+            case PROBATION -> "fas fa-user-clock";
             case RESTRICTED -> "fas fa-exclamation-triangle";
         };
     }
@@ -123,6 +125,7 @@ public class ReputationDisplayDto {
             case VERIFIED -> "";
             case NEW_MEMBER -> "";
             case UNDER_REVIEW -> "aura-trait-warning";
+            case PROBATION -> "aura-trait-warning";
             case RESTRICTED -> "aura-trait-negative";
         };
     }

@@ -150,6 +150,26 @@ public class MatchingService {
         );
     }
 
+    /**
+     * Return daily limit metadata without generating a new batch of matches.
+     * This is used by mobile clients that fetch limit + matches via separate endpoints.
+     */
+    public Map<String, Object> getDailyLimitStatus() throws Exception {
+        User user = authService.getCurrentUser(true);
+        Date today = truncateToDay(new Date());
+
+        UserDailyMatchLimit matchLimit = matchLimitRepo
+                .findByUserAndMatchDate(user, today)
+                .orElseGet(() -> createNewDailyLimit(user, today));
+
+        return Map.of(
+                "remaining", matchLimit.getRemainingMatches(),
+                "limit", dailyMatchLimit,
+                "dailyLimitReached", matchLimit.hasReachedLimit(),
+                "resetsAt", getNextMidnight()
+        );
+    }
+
     @SuppressWarnings("unchecked")
     public CompatibilityExplanationDto getCompatibilityExplanation(String matchUuid) throws Exception {
         User user = authService.getCurrentUser(true);
@@ -160,7 +180,10 @@ public class MatchingService {
 
         CompatibilityScore compatibility = compatibilityRepo
                 .findByUserAAndUserB(user, matchUser)
-                .orElseGet(() -> calculateAndStoreCompatibility(user, matchUser));
+                .map(existing -> isCompatibilityStale(existing, user, matchUser)
+                        ? calculateAndStoreCompatibility(user, matchUser, existing)
+                        : existing)
+                .orElseGet(() -> calculateAndStoreCompatibility(user, matchUser, null));
 
         CompatibilityExplanationDto dto = new CompatibilityExplanationDto();
 
@@ -461,11 +484,14 @@ public class MatchingService {
         List<CompatibilityScore> cachedScores = compatibilityRepo
                 .findByUserAOrderByOverallScoreDesc(user);
 
-        for (CompatibilityScore score : cachedScores) {
+        for (CompatibilityScore cachedScore : cachedScores) {
             if (matches.size() >= limit) break;
-            if (score.getOverallScore() >= minimumCompatibility) {
-                User matchUser = score.getUserB();
-
+            User matchUser = cachedScore.getUserB();
+            CompatibilityScore score = cachedScore;
+            if (isCompatibilityStale(cachedScore, user, matchUser)) {
+                score = calculateAndStoreCompatibility(user, matchUser, cachedScore);
+            }
+            if (score.getOverallScore() != null && score.getOverallScore() >= minimumCompatibility) {
                 // Apply location filtering
                 TravelTimeService.TravelTimeInfo travelInfo = travelTimeService.getTravelTimeInfo(user, matchUser);
 
@@ -511,10 +537,13 @@ public class MatchingService {
         return matches;
     }
 
-    private CompatibilityScore calculateAndStoreCompatibility(User userA, User userB) {
-        CompatibilityScore score = new CompatibilityScore();
+    private CompatibilityScore calculateAndStoreCompatibility(User userA, User userB, CompatibilityScore existingScore) {
+        CompatibilityScore score = existingScore != null ? existingScore : new CompatibilityScore();
         score.setUserA(userA);
         score.setUserB(userB);
+        score.setCalculatedAt(new Date());
+        score.setUserAProfileUpdatedAt(getAssessmentProfileUpdatedAt(userA));
+        score.setUserBProfileUpdatedAt(getAssessmentProfileUpdatedAt(userB));
 
         // Try to call AI service for calculation
         try {
@@ -526,8 +555,17 @@ public class MatchingService {
             score.setCircumstantialScore((Double) result.getOrDefault("circumstantial", 50.0));
             score.setGrowthScore((Double) result.getOrDefault("growth", 50.0));
             score.setOverallScore((Double) result.getOrDefault("overall", 50.0));
+            score.setEnemyScore(0.0);
+            if (result.containsKey("enemy")) {
+                Object enemy = result.get("enemy");
+                if (enemy instanceof Number number) {
+                    score.setEnemyScore(number.doubleValue());
+                }
+            }
             if (result.containsKey("explanation")) {
                 score.setExplanationJson(objectMapper.writeValueAsString(result.get("explanation")));
+            } else {
+                score.setExplanationJson(null);
             }
         } catch (Exception e) {
             LOGGER.warn("AI service unavailable, using personality-based calculation", e);
@@ -535,6 +573,33 @@ public class MatchingService {
         }
 
         return compatibilityRepo.save(score);
+    }
+
+    private boolean isCompatibilityStale(CompatibilityScore score, User userA, User userB) {
+        if (score == null) {
+            return true;
+        }
+        if (score.getUserAProfileUpdatedAt() == null || score.getUserBProfileUpdatedAt() == null) {
+            return true;
+        }
+
+        Date userAUpdatedAt = getAssessmentProfileUpdatedAt(userA);
+        Date userBUpdatedAt = getAssessmentProfileUpdatedAt(userB);
+
+        if (userAUpdatedAt != null && score.getUserAProfileUpdatedAt().before(userAUpdatedAt)) {
+            return true;
+        }
+        if (userBUpdatedAt != null && score.getUserBProfileUpdatedAt().before(userBUpdatedAt)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private Date getAssessmentProfileUpdatedAt(User user) {
+        return assessmentProfileRepo.findByUser(user)
+                .map(UserAssessmentProfile::getLastUpdated)
+                .orElse(null);
     }
 
     private Map<String, Object> callAICompatibilityService(User userA, User userB) throws Exception {

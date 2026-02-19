@@ -592,54 +592,44 @@ public class AccountabilityService {
     }
 
     private String uploadToMediaService(MultipartFile file) throws Exception {
-        try {
-            // Create multipart request to media service
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        // Create multipart request to media service
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-            // Build multipart body
-            org.springframework.util.LinkedMultiValueMap<String, Object> body =
-                new org.springframework.util.LinkedMultiValueMap<>();
+        // Build multipart body
+        org.springframework.util.LinkedMultiValueMap<String, Object> body =
+            new org.springframework.util.LinkedMultiValueMap<>();
 
-            // Create a resource from the file bytes
-            org.springframework.core.io.ByteArrayResource resource =
-                new org.springframework.core.io.ByteArrayResource(file.getBytes()) {
-                    @Override
-                    public String getFilename() {
-                        return file.getOriginalFilename();
-                    }
-                };
-
-            body.add("file", resource);
-            body.add("type", "evidence");
-
-            HttpEntity<org.springframework.util.LinkedMultiValueMap<String, Object>> requestEntity =
-                new HttpEntity<>(body, headers);
-
-            ResponseEntity<Map> response = restTemplate.exchange(
-                mediaServiceUrl + "/upload",
-                HttpMethod.POST,
-                requestEntity,
-                Map.class
-            );
-
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                String fileUrl = (String) response.getBody().get("url");
-                if (fileUrl != null) {
-                    return fileUrl;
+        // Create a resource from the file bytes
+        org.springframework.core.io.ByteArrayResource resource =
+            new org.springframework.core.io.ByteArrayResource(file.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename();
                 }
+            };
+
+        body.add("file", resource);
+        body.add("type", "evidence");
+
+        HttpEntity<org.springframework.util.LinkedMultiValueMap<String, Object>> requestEntity =
+            new HttpEntity<>(body, headers);
+
+        ResponseEntity<Map> response = restTemplate.exchange(
+            mediaServiceUrl + "/upload",
+            HttpMethod.POST,
+            requestEntity,
+            Map.class
+        );
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            String fileUrl = (String) response.getBody().get("url");
+            if (fileUrl != null && !fileUrl.isBlank()) {
+                return fileUrl;
             }
-
-            // Fallback: generate a local storage URL
-            LOGGER.warn("Media service upload failed, using fallback storage");
-            return mediaServiceUrl + "/uploads/" + UUID.randomUUID() + "/" + file.getOriginalFilename();
-
-        } catch (Exception e) {
-            LOGGER.error("Failed to upload to media service: {}", e.getMessage());
-            // Return a fallback URL - in production this would need proper handling
-            return mediaServiceUrl + "/uploads/" + UUID.randomUUID() + "/" +
-                   (file.getOriginalFilename() != null ? file.getOriginalFilename() : "file");
         }
+
+        throw new IllegalStateException("Media service upload failed to return a file URL");
     }
 
     private String performOcr(String imageUrl) {

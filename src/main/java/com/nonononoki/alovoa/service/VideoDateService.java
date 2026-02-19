@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,9 @@ public class VideoDateService {
 
     @Value("${app.aura.video-date.proposal-expiry-hours:48}")
     private Integer proposalExpiryHours;
+
+    @Value("${app.aura.video-date.room-base-url:https://meet.aura.app}")
+    private String roomBaseUrl;
 
     @Autowired
     private AuthService authService;
@@ -330,10 +334,16 @@ public class VideoDateService {
     }
 
     private String generateRoomUrl(VideoDate videoDate) {
-        // Generate a unique room URL
-        // In production, integrate with Daily.co, Twilio, or similar
-        String roomId = UUID.randomUUID().toString().replace("-", "").substring(0, 12);
-        return "https://meet.aura.app/" + roomId;
+        String roomId;
+        if (videoDate != null && videoDate.getId() != null) {
+            String raw = "video-date:" + videoDate.getId() + ":" +
+                    (videoDate.getScheduledAt() != null ? videoDate.getScheduledAt().getTime() : System.currentTimeMillis());
+            roomId = UUID.nameUUIDFromBytes(raw.getBytes(StandardCharsets.UTF_8)).toString().replace("-", "");
+        } else {
+            roomId = UUID.randomUUID().toString().replace("-", "");
+        }
+        String shortId = roomId.substring(0, Math.min(roomId.length(), 16));
+        return roomBaseUrl.endsWith("/") ? roomBaseUrl + shortId : roomBaseUrl + "/" + shortId;
     }
 
     private Map<String, Object> mapVideoDateToResponse(VideoDate videoDate) {

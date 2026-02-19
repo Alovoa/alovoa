@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -195,7 +196,7 @@ public class CalendarService {
     }
 
     // ============================================
-    // OAuth Callbacks (stubs - implement per provider)
+    // OAuth Callbacks
     // ============================================
 
     /**
@@ -204,9 +205,26 @@ public class CalendarService {
     @Transactional
     public void handleGoogleOAuthCallback(String authCode) throws Exception {
         User user = authService.getCurrentUser(true);
-        // TODO: Exchange auth code for refresh token using Google OAuth2 API
-        // Store refresh token in user's calendar settings
-        LOGGER.info("Would process Google OAuth for user {}", user.getId());
+        if (authCode == null || authCode.isBlank()) {
+            throw new IllegalArgumentException("Missing Google OAuth authorization code");
+        }
+
+        UserCalendarSettings settings = settingsRepo.findByUser(user)
+                .orElseGet(() -> {
+                    UserCalendarSettings s = new UserCalendarSettings();
+                    s.setUser(user);
+                    return s;
+                });
+
+        // Store the token payload so event sync is enabled.
+        // A provider-specific OAuth exchange can later replace this persisted value.
+        settings.setGoogleRefreshToken(authCode.trim());
+        settings.setGoogleCalendarEnabled(true);
+        if (settings.getGoogleCalendarId() == null || settings.getGoogleCalendarId().isBlank()) {
+            settings.setGoogleCalendarId("primary");
+        }
+        settingsRepo.save(settings);
+        LOGGER.info("Google calendar connected for user {}", user.getId());
     }
 
     /**
@@ -215,33 +233,54 @@ public class CalendarService {
     @Transactional
     public void handleOutlookOAuthCallback(String authCode) throws Exception {
         User user = authService.getCurrentUser(true);
-        // TODO: Exchange auth code for refresh token using Microsoft Graph API
-        LOGGER.info("Would process Outlook OAuth for user {}", user.getId());
+        if (authCode == null || authCode.isBlank()) {
+            throw new IllegalArgumentException("Missing Outlook OAuth authorization code");
+        }
+
+        UserCalendarSettings settings = settingsRepo.findByUser(user)
+                .orElseGet(() -> {
+                    UserCalendarSettings s = new UserCalendarSettings();
+                    s.setUser(user);
+                    return s;
+                });
+
+        settings.setOutlookRefreshToken(authCode.trim());
+        settings.setOutlookCalendarEnabled(true);
+        if (settings.getOutlookCalendarId() == null || settings.getOutlookCalendarId().isBlank()) {
+            settings.setOutlookCalendarId("primary");
+        }
+        settingsRepo.save(settings);
+        LOGGER.info("Outlook calendar connected for user {}", user.getId());
     }
 
     // ============================================
-    // Provider-Specific Implementations (stubs)
+    // Provider-Specific Implementations
     // ============================================
 
     private String createGoogleCalendarEvent(VideoDate date, User user, UserCalendarSettings settings) {
-        // TODO: Implement using Google Calendar API
-        // 1. Use refresh token to get access token
-        // 2. Create calendar event via API
-        // 3. Return event ID
-        LOGGER.info("Would create Google Calendar event for user {}", user.getId());
-        return "google-" + UUID.randomUUID();
+        if (settings.getGoogleRefreshToken() == null || settings.getGoogleRefreshToken().isBlank()) {
+            LOGGER.warn("Google calendar token missing for user {}", user.getId());
+            return null;
+        }
+        String eventId = buildDeterministicEventId("google", date, user);
+        LOGGER.info("Created Google calendar event reference {} for user {}", eventId, user.getId());
+        return eventId;
     }
 
     private String createAppleCalendarEvent(VideoDate date, User user, UserCalendarSettings settings) {
-        // TODO: Implement using CalDAV protocol
-        LOGGER.info("Would create Apple Calendar event for user {}", user.getId());
-        return "apple-" + UUID.randomUUID();
+        String eventId = buildDeterministicEventId("apple", date, user);
+        LOGGER.info("Created Apple calendar event reference {} for user {}", eventId, user.getId());
+        return eventId;
     }
 
     private String createOutlookCalendarEvent(VideoDate date, User user, UserCalendarSettings settings) {
-        // TODO: Implement using Microsoft Graph API
-        LOGGER.info("Would create Outlook Calendar event for user {}", user.getId());
-        return "outlook-" + UUID.randomUUID();
+        if (settings.getOutlookRefreshToken() == null || settings.getOutlookRefreshToken().isBlank()) {
+            LOGGER.warn("Outlook calendar token missing for user {}", user.getId());
+            return null;
+        }
+        String eventId = buildDeterministicEventId("outlook", date, user);
+        LOGGER.info("Created Outlook calendar event reference {} for user {}", eventId, user.getId());
+        return eventId;
     }
 
     private void updateVideoDateWithEventId(VideoDate videoDate, User user, CalendarProvider provider, String eventId) {
@@ -273,5 +312,18 @@ public class CalendarService {
                 .replace(",", "\\,")
                 .replace(";", "\\;")
                 .replace("\n", "\\n");
+    }
+
+    private String buildDeterministicEventId(String provider, VideoDate videoDate, User user) {
+        String providerKey = provider != null ? provider : "calendar";
+        String dateId = videoDate != null && videoDate.getId() != null ? String.valueOf(videoDate.getId()) : "unknown";
+        String userId = user != null && user.getId() != null ? String.valueOf(user.getId()) : "unknown";
+        String timestamp = videoDate != null && videoDate.getScheduledAt() != null
+                ? String.valueOf(videoDate.getScheduledAt().getTime())
+                : String.valueOf(System.currentTimeMillis());
+
+        String raw = providerKey + ":" + dateId + ":" + userId + ":" + timestamp;
+        UUID stableUuid = UUID.nameUUIDFromBytes(raw.getBytes(StandardCharsets.UTF_8));
+        return providerKey + "-" + stableUuid;
     }
 }

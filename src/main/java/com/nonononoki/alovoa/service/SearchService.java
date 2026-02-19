@@ -10,6 +10,7 @@ import com.nonononoki.alovoa.model.SearchDto;
 import com.nonononoki.alovoa.model.SearchDto.SearchStage;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.model.UserSearchRequest;
+import com.nonononoki.alovoa.repo.CompatibilityScoreRepository;
 import com.nonononoki.alovoa.repo.GenderRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
 import lombok.Builder;
@@ -63,6 +64,8 @@ public class SearchService {
     private UserService userService;
     @Autowired
     private GenderRepository genderRepo;
+    @Autowired
+    private CompatibilityScoreRepository compatibilityRepo;
     @Value("${app.search.max}")
     private int maxResults;
     @Value("${app.search.max.distance}")
@@ -215,7 +218,7 @@ public class SearchService {
 
         if (!users.isEmpty()) {
             // Apply extended profile filters (height, body type, ethnicity, etc.)
-            users = applyExtendedFilters(users, params);
+            users = applyExtendedFilters(users, params, user);
 
             if (!users.isEmpty()) {
                 return SearchDto.builder().users(searchResultsToUserDto(users, sortId, user))
@@ -230,6 +233,7 @@ public class SearchService {
             request.setIntentionIds(ALL_INTENTIONS);
             request.setMiscInfos(Set.of());
             users = userRepo.usersBaseSearch(request, PageRequest.of(0, SEARCH_MAX, sort));
+            users = applyExtendedFilters(users, params, user);
             if (!users.isEmpty()) {
                 return SearchDto.builder().users(searchResultsToUserDto(users, sortId, user))
                         .global(false).build();
@@ -237,8 +241,9 @@ public class SearchService {
 
             // NO COMPATIBLE USERS FOUND NEARBY, SEARCH AROUND THE WORLD!
             users = userRepo.usersSearchAllIgnoreLocation(request, PageRequest.of(0, SEARCH_MAX, sort));
-                return SearchDto.builder().users(searchResultsToUserDto(users, sortId, user))
-                        .global(true).stage(SearchStage.WORLD).build();
+            users = applyExtendedFilters(users, params, user);
+            return SearchDto.builder().users(searchResultsToUserDto(users, sortId, user))
+                    .global(true).stage(SearchStage.WORLD).build();
         } else {
             return SearchDto.builder().users(List.of()).build();
         }
@@ -414,7 +419,7 @@ public class SearchService {
      * Apply extended profile filters to search results.
      * Note: Income filtering has been removed to prevent wealth-based discrimination.
      */
-    private List<User> applyExtendedFilters(List<User> users, SearchParams params) {
+    private List<User> applyExtendedFilters(List<User> users, SearchParams params, User currentUser) {
         return users.stream()
                 .filter(u -> matchesHeightFilter(u, params.getMinHeightCm(), params.getMaxHeightCm()))
                 .filter(u -> matchesEnumFilter(u, params.getBodyTypes(), "bodyType"))
@@ -422,6 +427,7 @@ public class SearchService {
                 .filter(u -> matchesEnumFilter(u, params.getDiets(), "diet"))
                 .filter(u -> matchesEnumFilter(u, params.getEducationLevels(), "education"))
                 .filter(u -> matchesEnumFilter(u, params.getZodiacSigns(), "zodiacSign"))
+                .filter(u -> matchesMinMatchPercentFilter(currentUser, u, params.getMinMatchPercent()))
                 // Income filter removed - users can display income but cannot filter by it
                 .collect(Collectors.toList());
     }
@@ -457,6 +463,21 @@ public class SearchService {
 
         if (value == null) return true; // Don't filter out users who haven't set this field
         return allowedValues.contains(value);
+    }
+
+    private boolean matchesMinMatchPercentFilter(User currentUser, User candidate, Integer minMatchPercent) {
+        if (minMatchPercent == null) {
+            return true;
+        }
+        if (currentUser == null || candidate == null || currentUser.getId().equals(candidate.getId())) {
+            return false;
+        }
+
+        return compatibilityRepo.findByUserAAndUserB(currentUser, candidate)
+                .map(score -> score.getOverallScore() != null && score.getOverallScore() >= minMatchPercent)
+                .or(() -> compatibilityRepo.findByUserAAndUserB(candidate, currentUser)
+                        .map(score -> score.getOverallScore() != null && score.getOverallScore() >= minMatchPercent))
+                .orElse(false);
     }
 
 }

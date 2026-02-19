@@ -270,5 +270,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
            "AND (u.lastMeaningfulActivity IS NULL OR u.lastMeaningfulActivity < :cutoffDate)")
     int countInactiveUsers(@Param("cutoffDate") java.time.LocalDate cutoffDate);
 
-    java.util.Optional<User> findByUuid(UUID uuid);
+    @Query("SELECT u FROM User u WHERE u.disabled = FALSE AND u.admin = FALSE AND u.confirmed = TRUE " +
+            "AND u.dates.activeDate >= :since")
+    List<User> findActiveUsersSince(@Param("since") Date since);
+
+    long countByDonationStreakMonthsGreaterThanEqualAndTotalDonationsGreaterThanEqual(int donationStreakMonths, double totalDonations);
+
 }

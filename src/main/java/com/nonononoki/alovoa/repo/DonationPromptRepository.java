@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.math.BigDecimal;
 
 public interface DonationPromptRepository extends JpaRepository<DonationPrompt, Long> {
 
@@ -57,4 +58,22 @@ public interface DonationPromptRepository extends JpaRepository<DonationPrompt, 
      */
     @Query("SELECT COUNT(dp) > 0 FROM DonationPrompt dp WHERE dp.user = :user AND dp.promptType = 'MONTHLY' AND dp.shownAt >= :monthStart")
     boolean hasMonthlyPromptThisMonth(@Param("user") User user, @Param("monthStart") Date monthStart);
+
+    @Query("SELECT COUNT(dp) FROM DonationPrompt dp WHERE dp.donated = true")
+    long countDonatedPrompts();
+
+    @Query("SELECT COUNT(dp) FROM DonationPrompt dp WHERE dp.donated = true AND dp.user IS NOT NULL")
+    long countDonationEvents();
+
+    @Query("SELECT COUNT(DISTINCT dp.user.id) FROM DonationPrompt dp WHERE dp.donated = true")
+    long countDistinctDonors();
+
+    @Query("SELECT COALESCE(SUM(dp.donationAmount), 0) FROM DonationPrompt dp WHERE dp.donated = true AND dp.donationAmount IS NOT NULL")
+    BigDecimal sumDonations();
+
+    @Query("SELECT COALESCE(AVG(dp.donationAmount), 0) FROM DonationPrompt dp WHERE dp.donated = true AND dp.donationAmount IS NOT NULL")
+    Double averageDonationAmount();
+
+    @Query("SELECT COUNT(dp) FROM DonationPrompt dp WHERE dp.promptType = :type")
+    long countByPromptType(@Param("type") DonationPrompt.PromptType type);
 }

@@ -36,6 +36,12 @@ import java.util.*;
 public class MatchWindowService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MatchWindowService.class);
+    private static final String TYPE_MATCH_WINDOW_NEW = "MATCH_WINDOW_NEW";
+    private static final String TYPE_MATCH_WINDOW_PENDING = "MATCH_WINDOW_PENDING";
+    private static final String TYPE_MATCH_WINDOW_CONFIRMED = "MATCH_WINDOW_CONFIRMED";
+    private static final String TYPE_MATCH_WINDOW_EXTENSION = "MATCH_WINDOW_EXTENSION";
+    private static final String TYPE_MATCH_WINDOW_EXPIRING = "MATCH_WINDOW_EXPIRING";
+    private static final String TYPE_MATCH_WINDOW_INTRO = "MATCH_WINDOW_INTRO";
 
     @Autowired
     private MatchWindowRepository windowRepo;
@@ -376,34 +382,87 @@ public class MatchWindowService {
     }
 
     // ============================================
-    // Notification Helpers (stubs - implement based on your notification system)
+    // Notification Helpers
     // ============================================
 
     private void notifyNewMatch(MatchWindow window) {
-        // TODO: Send push/email notification to both users about new match
-        LOGGER.debug("Would notify users about new match window {}", window.getUuid());
+        User userA = window.getUserA();
+        User userB = window.getUserB();
+
+        sendMatchWindowNotification(
+                userA,
+                userB,
+                TYPE_MATCH_WINDOW_NEW,
+                String.format("%s is a new high-compatibility match. You have 24 hours to respond.",
+                        safeName(userB)),
+                "New match decision window"
+        );
+
+        sendMatchWindowNotification(
+                userB,
+                userA,
+                TYPE_MATCH_WINDOW_NEW,
+                String.format("%s is a new high-compatibility match. You have 24 hours to respond.",
+                        safeName(userA)),
+                "New match decision window"
+        );
     }
 
     private void notifyPartnerPending(MatchWindow window, User whoConfirmed) {
-        // TODO: Notify the other user that their match confirmed
         User other = window.getOtherUser(whoConfirmed);
-        LOGGER.debug("Would notify user {} that {} confirmed interest", other.getId(), whoConfirmed.getId());
+        sendMatchWindowNotification(
+                other,
+                whoConfirmed,
+                TYPE_MATCH_WINDOW_PENDING,
+                String.format("%s confirmed interest. Confirm now to open your conversation.",
+                        safeName(whoConfirmed)),
+                "Your match just confirmed"
+        );
     }
 
     private void notifyMatchConfirmed(MatchWindow window) {
-        // TODO: Notify both users that match is confirmed
-        LOGGER.debug("Would notify both users about confirmed match {}", window.getUuid());
+        sendMatchWindowNotification(
+                window.getUserA(),
+                window.getUserB(),
+                TYPE_MATCH_WINDOW_CONFIRMED,
+                String.format("You and %s both confirmed. Your conversation is now open.",
+                        safeName(window.getUserB())),
+                "Match confirmed"
+        );
+        sendMatchWindowNotification(
+                window.getUserB(),
+                window.getUserA(),
+                TYPE_MATCH_WINDOW_CONFIRMED,
+                String.format("You and %s both confirmed. Your conversation is now open.",
+                        safeName(window.getUserA())),
+                "Match confirmed"
+        );
     }
 
     private void notifyExtensionRequested(MatchWindow window, User requester) {
-        // TODO: Notify other user about extension
-        LOGGER.debug("Would notify about extension request for window {}", window.getUuid());
+        User other = window.getOtherUser(requester);
+        sendMatchWindowNotification(
+                other,
+                requester,
+                TYPE_MATCH_WINDOW_EXTENSION,
+                String.format("%s extended the match window by %d hours.",
+                        safeName(requester), MatchWindow.EXTENSION_HOURS),
+                "Match window extended"
+        );
     }
 
     private void notifyExpirationReminder(MatchWindow window, User user) {
-        // TODO: Send reminder that window is expiring soon
-        LOGGER.debug("Would send expiration reminder to user {} for window {}",
-                user.getId(), window.getUuid());
+        User other = window.getOtherUser(user);
+        long remainingMillis = Math.max(0, window.getExpiresAt().getTime() - System.currentTimeMillis());
+        long remainingHours = Math.max(1, remainingMillis / (60 * 60 * 1000L));
+        sendMatchWindowNotification(
+                user,
+                other,
+                TYPE_MATCH_WINDOW_EXPIRING,
+                String.format("Your match window with %s expires in about %d hour(s).",
+                        safeName(other), remainingHours),
+                "Match window expiring soon"
+        );
     }
 
     // ============================================
@@ -442,8 +501,37 @@ public class MatchWindowService {
 
     private void notifyIntroMessageReceived(MatchWindow window, User sender) {
         User recipient = window.getOtherUser(sender);
-        // TODO: Send notification that an intro message was received
-        LOGGER.debug("Would notify user {} about intro message from {} in window {}",
-                recipient.getId(), sender.getId(), window.getUuid());
+        sendMatchWindowNotification(
+                recipient,
+                sender,
+                TYPE_MATCH_WINDOW_INTRO,
+                String.format("%s sent you an intro message in your match window.",
+                        safeName(sender)),
+                "New intro message"
+        );
+    }
+
+    private void sendMatchWindowNotification(
+            User recipient,
+            User sender,
+            String type,
+            String message,
+            String emailSubject) {
+        try {
+            notificationService.sendUserNotification(recipient, sender, type, message);
+            notificationService.sendPushNotification(recipient.getId(), emailSubject, message);
+            if (recipient.getUserSettings() != null && recipient.getUserSettings().isEmailChat()) {
+                notificationService.sendEmailNotification(recipient.getEmail(), emailSubject, message);
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Failed to notify user {} for window update: {}", recipient.getId(), e.getMessage());
+        }
+    }
+
+    private String safeName(User user) {
+        if (user == null || user.getFirstName() == null || user.getFirstName().isBlank()) {
+            return "your match";
+        }
+        return user.getFirstName();
     }
 }

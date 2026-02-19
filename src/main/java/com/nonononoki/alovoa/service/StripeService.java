@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Service for Stripe payment integration.
@@ -211,8 +210,12 @@ public class StripeService {
 
         // Try to find user by email if not in metadata
         if (user == null && session.getCustomerEmail() != null) {
-            // Would need to implement lookup by email
-            LOGGER.info("Anonymous donation received: ${}", amount);
+            user = userRepo.findByEmail(session.getCustomerEmail().trim().toLowerCase());
+            if (user != null) {
+                LOGGER.info("Matched Stripe checkout {} to user {} by email", session.getId(), user.getId());
+            } else {
+                LOGGER.info("Anonymous donation received: ${}", amount);
+            }
         }
 
         // Parse prompt ID
@@ -272,7 +275,7 @@ public class StripeService {
         Charge charge = (Charge) stripeObject;
         LOGGER.warn("Charge refunded: {} for ${}", charge.getId(),
                 charge.getAmountRefunded() / 100.0);
-        // TODO: Potentially adjust user's donation tier if needed
+        applyRefundToUserIfPossible(charge);
     }
 
     // ============================================
@@ -297,5 +300,43 @@ public class StripeService {
         result.put("email", session.getCustomerEmail());
 
         return result;
+    }
+
+    private void applyRefundToUserIfPossible(Charge charge) {
+        try {
+            Long refundedCents = charge.getAmountRefunded();
+            if (refundedCents == null || refundedCents <= 0) {
+                return;
+            }
+
+            String userIdMetadata = charge.getMetadata() != null ? charge.getMetadata().get("user_id") : null;
+            if ((userIdMetadata == null || userIdMetadata.isBlank()) && charge.getPaymentIntent() != null) {
+                try {
+                    PaymentIntent paymentIntent = PaymentIntent.retrieve(charge.getPaymentIntent());
+                    if (paymentIntent != null && paymentIntent.getMetadata() != null) {
+                        userIdMetadata = paymentIntent.getMetadata().get("user_id");
+                    }
+                } catch (Exception e) {
+                    LOGGER.debug("Could not fetch payment intent metadata for refund {}", charge.getId(), e);
+                }
+            }
+
+            if (userIdMetadata == null || userIdMetadata.isBlank()) {
+                LOGGER.info("Refund {} has no user metadata; skipping donation adjustment", charge.getId());
+                return;
+            }
+
+            Long userId = Long.parseLong(userIdMetadata);
+            User user = userRepo.findById(userId).orElse(null);
+            if (user == null) {
+                LOGGER.warn("Refund {} references missing user {}", charge.getId(), userId);
+                return;
+            }
+
+            BigDecimal refundAmount = BigDecimal.valueOf(refundedCents).divide(BigDecimal.valueOf(100));
+            donationService.applyRefund(user, refundAmount);
+        } catch (Exception e) {
+            LOGGER.error("Failed applying refund adjustment: {}", e.getMessage());
+        }
     }
 }

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,8 @@ public class CaptureService {
     private static final String CAPTURE_PREFIX = "capture/";
     private static final String WEBM_VIDEO_MIME_TYPE = "video/webm";
     private static final String WEBM_AUDIO_MIME_TYPE = "audio/webm";
+    private static final int DEFAULT_VIDEO_BITRATE_BPS = 2_500_000;
+    private static final int DEFAULT_AUDIO_BITRATE_BPS = 64_000;
 
     // Max file size: 100MB for 2-3 min 720p @ 2.5Mbps
     private static final long MAX_VIDEO_FILE_SIZE_BYTES = 100 * 1024 * 1024;
@@ -214,13 +217,13 @@ public class CaptureService {
 
         LOGGER.info("Confirmed upload for session {}: {} bytes", captureId, fileSize);
 
-        // TODO: Trigger async processing (transcoding to MP4/HLS)
-        // This would publish an event or add to a processing queue
+        // Trigger processing pipeline for this upload.
+        processUploadedSession(session.getCaptureId());
 
         return Map.of(
-            "status", session.getStatus().name(),
-            "fileSizeBytes", fileSize,
-            "mimeType", contentType,
+                "status", session.getStatus().name(),
+                "fileSizeBytes", fileSize,
+                "mimeType", contentType,
             "s3Key", session.getS3Key()
         );
     }
@@ -310,6 +313,84 @@ public class CaptureService {
         );
     }
 
+    /**
+     * Periodic processor for uploaded captures.
+     * Handles uploads that were confirmed but not processed yet.
+     */
+    @Scheduled(fixedDelayString = "${app.capture.processing.poll-ms:60000}")
+    @Transactional
+    public void processPendingUploads() {
+        List<CaptureSession> pending = captureSessionRepository.findPendingProcessing();
+        if (pending.isEmpty()) {
+            return;
+        }
+
+        for (CaptureSession session : pending) {
+            try {
+                processUploadedSession(session.getCaptureId());
+            } catch (Exception e) {
+                LOGGER.warn("Capture processing failed for {}: {}", session.getCaptureId(), e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Process a capture that finished upload.
+     */
+    @Transactional
+    public void processUploadedSession(UUID captureId) {
+        if (captureId == null) {
+            return;
+        }
+
+        CaptureSession session = captureSessionRepository.findByCaptureId(captureId).orElse(null);
+        if (session == null) {
+            return;
+        }
+        if (session.getStatus() != CaptureStatus.UPLOADED && session.getStatus() != CaptureStatus.PROCESSING) {
+            return;
+        }
+
+        session.setStatus(CaptureStatus.PROCESSING);
+        captureSessionRepository.save(session);
+
+        try {
+            if (!s3StorageService.objectExists(session.getS3Key())) {
+                throw new IllegalStateException("Uploaded object no longer exists");
+            }
+
+            boolean audioOnly = session.getCaptureType() == CaptureType.AUDIO_ONLY;
+            long fileSize = session.getFileSizeBytes() != null ? session.getFileSizeBytes() : 0L;
+            int bitrate = audioOnly ? DEFAULT_AUDIO_BITRATE_BPS : DEFAULT_VIDEO_BITRATE_BPS;
+            int estimatedDuration = estimateDurationSeconds(fileSize, bitrate);
+
+            session.setBitrateBps(bitrate);
+            if (session.getDurationSeconds() == null || session.getDurationSeconds() <= 0) {
+                session.setDurationSeconds(estimatedDuration);
+            }
+
+            // Tier-A processing keeps original object as playback asset.
+            session.setTranscodedUrl(session.getS3Key());
+            if (!audioOnly) {
+                // HLS manifest placeholder path for downstream transcoder integration.
+                session.setHlsPlaylistUrl(session.getS3Key().replace(".webm", ".m3u8"));
+            } else {
+                session.setHlsPlaylistUrl(null);
+            }
+            session.setProcessedAt(new Date());
+            session.setStatus(CaptureStatus.READY);
+            session.setErrorMessage(null);
+            captureSessionRepository.save(session);
+            LOGGER.info("Capture session {} is READY", session.getCaptureId());
+        } catch (Exception e) {
+            session.setStatus(CaptureStatus.FAILED);
+            session.setProcessedAt(new Date());
+            session.setErrorMessage(e.getMessage());
+            captureSessionRepository.save(session);
+            LOGGER.error("Capture session {} failed processing: {}", session.getCaptureId(), e.getMessage());
+        }
+    }
+
     private Map<String, Object> sessionToMap(CaptureSession session) {
         return Map.ofEntries(
             Map.entry("captureId", session.getCaptureId().toString()),
@@ -326,5 +407,13 @@ public class CaptureService {
             Map.entry("isFailed", session.isFailed()),
             Map.entry("errorMessage", session.getErrorMessage() != null ? session.getErrorMessage() : "")
         );
+    }
+
+    private int estimateDurationSeconds(long fileSizeBytes, int bitrateBps) {
+        if (fileSizeBytes <= 0 || bitrateBps <= 0) {
+            return 0;
+        }
+        long bits = fileSizeBytes * 8L;
+        return Math.max(1, (int) (bits / bitrateBps));
     }
 }

@@ -44,8 +44,7 @@ public class ExitVelocityController {
         User partner = null;
 
         if (request.partnerUuid != null) {
-            partner = userRepo.findByUuid(request.partnerUuid)
-                    .orElse(null);
+            partner = userRepo.findByUuid(request.partnerUuid);
         }
 
         ExitVelocityEvent event = exitVelocityService.recordRelationshipFormed(user, partner);

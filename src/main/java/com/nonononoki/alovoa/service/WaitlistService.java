@@ -233,8 +233,8 @@ public class WaitlistService {
         try {
             String subject = "You're on the AURA waitlist (yes, it's really free)";
             String body = buildConfirmationEmailBody(entry);
-            // mailService.sendMail(entry.getEmail(), subject, body);
-            LOGGER.info("Would send confirmation email to {}", entry.getEmail());
+            mailService.sendAdminMail(entry.getEmail(), subject, body);
+            LOGGER.info("Sent waitlist confirmation email to {}", entry.getEmail());
         } catch (Exception e) {
             LOGGER.error("Failed to send confirmation email: {}", e.getMessage());
         }
@@ -249,8 +249,8 @@ public class WaitlistService {
         try {
             String subject = "Your AURA invite is ready!";
             String body = buildInviteEmailBody(entry);
-            // mailService.sendMail(entry.getEmail(), subject, body);
-            LOGGER.info("Would send invite email to {}", entry.getEmail());
+            mailService.sendAdminMail(entry.getEmail(), subject, body);
+            LOGGER.info("Sent waitlist invite email to {}", entry.getEmail());
         } catch (Exception e) {
             LOGGER.error("Failed to send invite email: {}", e.getMessage());
         }
