@@ -348,6 +348,16 @@ public class UserService {
         user.setVerificationPicture(null);
         AbstractMap.SimpleEntry<byte[], String> adjustedImage = adjustPicture(bytes, mimeType);
 
+        ModerationResult imageModeration = moderationService.moderateImage(
+                adjustedImage.getKey(),
+                adjustedImage.getValue(),
+                user,
+                "PROFILE_IMAGE"
+        );
+        if (!imageModeration.isAllowed()) {
+            throw new AlovoaException("profile_content_blocked");
+        }
+
         // Delete old S3 object if exists
         if (user.getProfilePicture() != null && user.getProfilePicture().getS3Key() != null) {
             s3StorageService.deleteMedia(user.getProfilePicture().getS3Key());
@@ -386,6 +396,16 @@ public class UserService {
 
         UserProfilePicture profilePic = new UserProfilePicture();
         AbstractMap.SimpleEntry<byte[], String> adjustedImage = adjustPicture(bytes, model.getProfilePictureMime());
+
+        ModerationResult imageModeration = moderationService.moderateImage(
+                adjustedImage.getKey(),
+                adjustedImage.getValue(),
+                user,
+                "ONBOARDING_PROFILE_IMAGE"
+        );
+        if (!imageModeration.isAllowed()) {
+            throw new AlovoaException("profile_content_blocked");
+        }
 
         // Upload to S3
         String s3Key = s3StorageService.uploadMedia(
@@ -628,6 +648,16 @@ public class UserService {
         if (user.getImages() != null && user.getImages().size() < imageMax) {
             UserImage img = new UserImage();
             AbstractMap.SimpleEntry<byte[], String> adjustedImage = adjustPicture(bytes, mimeType);
+
+            ModerationResult imageModeration = moderationService.moderateImage(
+                    adjustedImage.getKey(),
+                    adjustedImage.getValue(),
+                    user,
+                    "GALLERY_IMAGE"
+            );
+            if (!imageModeration.isAllowed()) {
+                throw new AlovoaException("profile_content_blocked");
+            }
 
             // Upload to S3
             String s3Key = s3StorageService.uploadMedia(

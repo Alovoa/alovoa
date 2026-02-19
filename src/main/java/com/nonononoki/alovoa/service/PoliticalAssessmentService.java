@@ -9,6 +9,7 @@ import com.nonononoki.alovoa.entity.user.UserPoliticalAssessment.*;
 import static com.nonononoki.alovoa.entity.user.UserPoliticalAssessment.WealthContributionView;
 import com.nonononoki.alovoa.repo.UserPoliticalAssessmentRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
+import com.nonononoki.alovoa.service.ml.JavaMediaBackendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,9 @@ public class PoliticalAssessmentService {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private JavaMediaBackendService javaMediaBackendService;
 
     @Value("${app.aura.media-service.url:http://localhost:8001}")
     private String mediaServiceUrl;
@@ -797,6 +801,13 @@ public class PoliticalAssessmentService {
     }
 
     private String uploadVerificationDocument(MultipartFile file) throws Exception {
+        if (javaMediaBackendService.isEnabled()) {
+            String contentType = file.getContentType() == null ? "application/octet-stream" : file.getContentType();
+            String url = javaMediaBackendService.uploadBinary(file.getBytes(), contentType, "verification", "verification", true);
+            LOGGER.info("Successfully uploaded verification document via Java backend");
+            return url;
+        }
+
         // Create multipart request to media service with secure storage flag
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);

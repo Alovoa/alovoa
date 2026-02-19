@@ -134,6 +134,10 @@ VALUES (
       "n0": 200,
       "baselineAttractiveness": 0.5,
       "enableExploration": true,
+      "enableCollaborativePrior": false,
+      "collaborativeBeta": 0.15,
+      "collaborativeMinFactor": 0.85,
+      "collaborativeMaxFactor": 1.15,
       "debugTrace": false,
       "experimentKey": "reranker_v1",
       "trafficPercent": 100

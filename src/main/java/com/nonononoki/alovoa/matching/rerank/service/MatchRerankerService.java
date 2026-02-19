@@ -3,6 +3,7 @@ package com.nonononoki.alovoa.matching.rerank.service;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.matching.rerank.model.*;
 import com.nonononoki.alovoa.matching.rerank.policy.CapacityPolicy;
+import com.nonononoki.alovoa.matching.rerank.policy.CollaborativePriorPolicy;
 import com.nonononoki.alovoa.matching.rerank.policy.DesirabilityPolicy;
 import com.nonononoki.alovoa.matching.rerank.policy.ExplorationPolicy;
 import com.nonononoki.alovoa.matching.rerank.policy.ExposurePolicy;
@@ -27,6 +28,7 @@ public class MatchRerankerService {
     private final CapacityPolicy capacityPolicy;
     private final DesirabilityPolicy desirabilityPolicy;
     private final ExplorationPolicy explorationPolicy;
+    private final CollaborativePriorPolicy collaborativePriorPolicy;
 
     public MatchRerankerService(CandidateGenerator candidateGenerator,
                                 SegmentKeyService segmentKeyService,
@@ -35,7 +37,8 @@ public class MatchRerankerService {
                                 ExposurePolicy exposurePolicy,
                                 CapacityPolicy capacityPolicy,
                                 DesirabilityPolicy desirabilityPolicy,
-                                ExplorationPolicy explorationPolicy) {
+                                ExplorationPolicy explorationPolicy,
+                                CollaborativePriorPolicy collaborativePriorPolicy) {
         this.candidateGenerator = candidateGenerator;
         this.segmentKeyService = segmentKeyService;
         this.policyConfigService = policyConfigService;
@@ -44,6 +47,7 @@ public class MatchRerankerService {
         this.capacityPolicy = capacityPolicy;
         this.desirabilityPolicy = desirabilityPolicy;
         this.explorationPolicy = explorationPolicy;
+        this.collaborativePriorPolicy = collaborativePriorPolicy;
     }
 
     public RerankResult rerank(User viewer,
@@ -121,6 +125,7 @@ public class MatchRerankerService {
                 double fExposure = exposurePolicy.factor(candidateStats, config);
                 double fCapacity = capacityPolicy.factor(candidateStats, config);
                 double fGap = desirabilityPolicy.gapFactor(viewerStats, candidateStats, config);
+                double fCollaborative = collaborativePriorPolicy.factor(viewerStats, candidateStats, config);
                 int decile = desirabilityPolicy.desirabilityDecile(candidateStats, config);
                 double ucb = explorationPolicy.ucbBonus(
                         viewerStats,
@@ -130,17 +135,21 @@ public class MatchRerankerService {
                         config
                 );
 
-                double finalScore = (s * fExposure * fCapacity * fGap) + (config.getEpsilon() * ucb);
+                double finalScore = (s * fExposure * fCapacity * fGap * fCollaborative) + (config.getEpsilon() * ucb);
 
-                Map<String, Object> windowStats = Map.of(
-                        "E_7d", candidateStats.getImpressions7d(),
-                        "C_openMatches", candidateStats.getOpenMatches(),
-                        "C_unreadThreads", candidateStats.getUnreadThreads(),
-                        "C_pendingInboundLikes", candidateStats.getPendingInboundLikes(),
-                        "D_viewer", desirabilityPolicy.smoothedDesirability(viewerStats, config),
-                        "D_candidate", desirabilityPolicy.smoothedDesirability(candidateStats, config),
-                        "backendAttractiveness_viewer", viewerStats.getBackendAttractivenessScore(),
-                        "backendAttractiveness_candidate", candidateStats.getBackendAttractivenessScore()
+                Map<String, Object> windowStats = Map.ofEntries(
+                        Map.entry("E_7d", candidateStats.getImpressions7d()),
+                        Map.entry("C_openMatches", candidateStats.getOpenMatches()),
+                        Map.entry("C_unreadThreads", candidateStats.getUnreadThreads()),
+                        Map.entry("C_pendingInboundLikes", candidateStats.getPendingInboundLikes()),
+                        Map.entry("D_viewer", desirabilityPolicy.smoothedDesirability(viewerStats, config)),
+                        Map.entry("D_candidate", desirabilityPolicy.smoothedDesirability(candidateStats, config)),
+                        Map.entry("backendAttractiveness_viewer", viewerStats.getBackendAttractivenessScore()),
+                        Map.entry("backendAttractiveness_candidate", candidateStats.getBackendAttractivenessScore()),
+                        Map.entry("collaborativePrior_viewer", viewerStats.getCollaborativePrior()),
+                        Map.entry("collaborativePrior_candidate", candidateStats.getCollaborativePrior()),
+                        Map.entry("collaborativeConfidence_viewer", viewerStats.getCollaborativeConfidence()),
+                        Map.entry("collaborativeConfidence_candidate", candidateStats.getCollaborativeConfidence())
                 );
 
                 ScoreTrace trace = ScoreTrace.builder()
@@ -148,6 +157,7 @@ public class MatchRerankerService {
                         .fExposure(fExposure)
                         .fCapacity(fCapacity)
                         .fGap(fGap)
+                        .fCollaborative(fCollaborative)
                         .ucb(ucb)
                         .finalScore(finalScore)
                         .segment(segmentKey)

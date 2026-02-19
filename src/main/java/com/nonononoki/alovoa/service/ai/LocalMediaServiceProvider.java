@@ -2,6 +2,7 @@ package com.nonononoki.alovoa.service.ai;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.model.VideoAnalysisResult;
+import com.nonononoki.alovoa.service.ml.JavaMediaBackendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +15,7 @@ import java.util.Base64;
 import java.util.Map;
 
 /**
- * Local media service provider that uses the Python media-service
- * for both transcription and analysis (no external API costs).
+ * Local media service provider that can run fully Java-local, with optional legacy media-service fallback.
  */
 @Service
 @ConditionalOnProperty(name = "app.aura.ai.provider", havingValue = "local")
@@ -27,16 +27,27 @@ public class LocalMediaServiceProvider implements AiAnalysisProvider {
     @Value("${app.aura.media-service.url:http://localhost:8001}")
     private String mediaServiceUrl;
 
+    @Value("${app.aura.backend.java-media.enabled:true}")
+    private boolean javaLocalMediaEnabled;
+
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final JavaMediaBackendService javaMediaBackendService;
 
-    public LocalMediaServiceProvider(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public LocalMediaServiceProvider(RestTemplate restTemplate,
+                                     ObjectMapper objectMapper,
+                                     JavaMediaBackendService javaMediaBackendService) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.javaMediaBackendService = javaMediaBackendService;
     }
 
     @Override
     public String transcribeVideo(byte[] videoData, String mimeType) throws AiProviderException {
+        if (javaLocalMediaEnabled) {
+            return javaMediaBackendService.transcribeVideo(videoData, mimeType);
+        }
+
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -72,6 +83,20 @@ public class LocalMediaServiceProvider implements AiAnalysisProvider {
     @Override
     @SuppressWarnings("unchecked")
     public VideoAnalysisResult analyzeTranscript(String transcript) throws AiProviderException {
+        if (javaLocalMediaEnabled) {
+            Map<String, Object> payload = javaMediaBackendService.analyzeTranscript(transcript);
+            return VideoAnalysisResult.builder()
+                    .worldviewSummary((String) payload.getOrDefault("worldview_summary",
+                            "Worldview summary unavailable in java-local mode."))
+                    .backgroundSummary((String) payload.getOrDefault("background_summary",
+                            "Background summary unavailable in java-local mode."))
+                    .lifeStorySummary((String) payload.getOrDefault("life_story_summary",
+                            "Life-story summary unavailable in java-local mode."))
+                    .personalityIndicators((Map<String, Object>) payload.getOrDefault("personality_indicators", Map.of()))
+                    .providerName((String) payload.getOrDefault("provider", "java_local"))
+                    .build();
+        }
+
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -120,6 +145,9 @@ public class LocalMediaServiceProvider implements AiAnalysisProvider {
 
     @Override
     public boolean isAvailable() {
+        if (javaLocalMediaEnabled) {
+            return true;
+        }
         try {
             ResponseEntity<Map> response = restTemplate.getForEntity(
                     mediaServiceUrl + "/health",

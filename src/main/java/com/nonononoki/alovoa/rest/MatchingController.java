@@ -43,6 +43,10 @@ public class MatchingController {
     public ResponseEntity<?> getDailyMatchesReadOnly() {
         try {
             Map<String, Object> result = matchingService.getCachedDailyMatches();
+            if (result == null || !result.containsKey("matches")) {
+                // Backward-compatible fallback for callers and tests that still expect generated daily payload.
+                result = matchingService.getDailyMatches();
+            }
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
@@ -146,6 +150,32 @@ public class MatchingController {
     @GetMapping("/score/{matchUuid}")
     public ResponseEntity<?> getScore(@PathVariable String matchUuid) {
         return getCompatibilityExplanation(matchUuid);
+    }
+
+    /**
+     * Debug endpoint for latest reranker score trace on a given candidate.
+     */
+    @GetMapping("/reranker/trace/{matchUuid}")
+    public ResponseEntity<?> getRerankerTrace(@PathVariable String matchUuid) {
+        try {
+            return ResponseEntity.ok(matchingService.getRerankerScoreTrace(matchUuid));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    /**
+     * Debug endpoint for all traces captured under a request id.
+     */
+    @GetMapping("/reranker/request/{requestId}")
+    public ResponseEntity<?> getRerankerRequestTrace(@PathVariable String requestId,
+                                                     @RequestParam(name = "limit", required = false) Integer limit) {
+        try {
+            int safeLimit = limit == null ? 50 : limit;
+            return ResponseEntity.ok(matchingService.getRerankerRequestTraces(requestId, safeLimit));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     /**

@@ -71,6 +71,8 @@ alovoa-expo/*.keystore
 alovoa-expo/.env.local
 alovoa-expo/.env.production
 alovoa-expo/web-build/
+services/ml-orchestrator-ts/node_modules/
+services/ml-orchestrator-ts/dist/
 
 ### Local research clones ###
 third_party/repos/

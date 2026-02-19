@@ -3,10 +3,16 @@ package com.nonononoki.alovoa.matching.rerank;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.matching.UserVisualAttractiveness;
 import com.nonononoki.alovoa.entity.user.UserProfilePicture;
+import com.nonononoki.alovoa.matching.rerank.service.FaceQualityScoringService;
+import com.nonononoki.alovoa.matching.rerank.service.SegmentKeyService;
 import com.nonononoki.alovoa.matching.rerank.service.VisualAttractivenessSyncService;
 import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.repo.matching.UserVisualAttractivenessRepository;
 import com.nonononoki.alovoa.service.S3StorageService;
+import com.nonononoki.alovoa.service.ml.JavaMediaBackendService;
+import com.nonononoki.alovoa.service.ml.OpenFgaIntegrationService;
+import com.nonononoki.alovoa.service.ml.QdrantIntegrationService;
+import com.nonononoki.alovoa.service.ml.UnleashIntegrationService;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -32,18 +38,33 @@ class VisualAttractivenessSyncServiceTest {
         UserVisualAttractivenessRepository visualRepo = Mockito.mock(UserVisualAttractivenessRepository.class);
         S3StorageService s3StorageService = Mockito.mock(S3StorageService.class);
         RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+        FaceQualityScoringService faceQualityScoringService = Mockito.mock(FaceQualityScoringService.class);
+        SegmentKeyService segmentKeyService = Mockito.mock(SegmentKeyService.class);
+        QdrantIntegrationService qdrantIntegrationService = Mockito.mock(QdrantIntegrationService.class);
+        UnleashIntegrationService unleashIntegrationService = Mockito.mock(UnleashIntegrationService.class);
+        OpenFgaIntegrationService openFgaIntegrationService = Mockito.mock(OpenFgaIntegrationService.class);
+        JavaMediaBackendService javaMediaBackendService = Mockito.mock(JavaMediaBackendService.class);
 
         VisualAttractivenessSyncService service = new VisualAttractivenessSyncService(
                 userRepo,
                 visualRepo,
                 s3StorageService,
-                restTemplate
+                restTemplate,
+                faceQualityScoringService,
+                segmentKeyService,
+                qdrantIntegrationService,
+                unleashIntegrationService,
+                openFgaIntegrationService,
+                javaMediaBackendService
         );
         ReflectionTestUtils.setField(service, "mediaServiceUrl", "http://media");
         ReflectionTestUtils.setField(service, "maxUsersPerRun", 10);
         ReflectionTestUtils.setField(service, "rescoreDays", 14);
+        ReflectionTestUtils.setField(service, "faceQualityEnabled", false);
 
         User user = buildUser(100L, "profile/u100.webp", "image/webp");
+        Mockito.when(segmentKeyService.segmentKey(any(User.class))).thenReturn("*");
+        Mockito.when(javaMediaBackendService.isEnabled()).thenReturn(false);
 
         Mockito.when(userRepo.findByDisabledFalseAndAdminFalseAndConfirmedTrue()).thenReturn(List.of(user));
         Mockito.when(visualRepo.findByUserIdIn(anyCollection())).thenReturn(List.of());
@@ -82,16 +103,30 @@ class VisualAttractivenessSyncServiceTest {
         UserVisualAttractivenessRepository visualRepo = Mockito.mock(UserVisualAttractivenessRepository.class);
         S3StorageService s3StorageService = Mockito.mock(S3StorageService.class);
         RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+        FaceQualityScoringService faceQualityScoringService = Mockito.mock(FaceQualityScoringService.class);
+        SegmentKeyService segmentKeyService = Mockito.mock(SegmentKeyService.class);
+        QdrantIntegrationService qdrantIntegrationService = Mockito.mock(QdrantIntegrationService.class);
+        UnleashIntegrationService unleashIntegrationService = Mockito.mock(UnleashIntegrationService.class);
+        OpenFgaIntegrationService openFgaIntegrationService = Mockito.mock(OpenFgaIntegrationService.class);
+        JavaMediaBackendService javaMediaBackendService = Mockito.mock(JavaMediaBackendService.class);
 
         VisualAttractivenessSyncService service = new VisualAttractivenessSyncService(
                 userRepo,
                 visualRepo,
                 s3StorageService,
-                restTemplate
+                restTemplate,
+                faceQualityScoringService,
+                segmentKeyService,
+                qdrantIntegrationService,
+                unleashIntegrationService,
+                openFgaIntegrationService,
+                javaMediaBackendService
         );
         ReflectionTestUtils.setField(service, "mediaServiceUrl", "http://media");
         ReflectionTestUtils.setField(service, "maxUsersPerRun", 10);
         ReflectionTestUtils.setField(service, "rescoreDays", 14);
+        ReflectionTestUtils.setField(service, "faceQualityEnabled", false);
+        Mockito.when(javaMediaBackendService.isEnabled()).thenReturn(false);
 
         User user = buildUser(101L, "profile/u101.webp", "image/webp");
         UserVisualAttractiveness existing = new UserVisualAttractiveness();

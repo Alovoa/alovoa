@@ -18,6 +18,7 @@ from pydantic import BaseModel
 import numpy as np
 import cv2
 from deepface import DeepFace
+from PIL import Image
 import redis
 from dotenv import load_dotenv
 
@@ -39,8 +40,24 @@ except Exception:
     FaceAnalysis = None
     INSIGHTFACE_AVAILABLE = False
 
+try:
+    import opennsfw2
+    OPENNSFW2_AVAILABLE = True
+except Exception:
+    opennsfw2 = None
+    OPENNSFW2_AVAILABLE = False
+
+try:
+    from nudenet import NudeDetector
+    NUDENET_AVAILABLE = True
+except Exception:
+    NudeDetector = None
+    NUDENET_AVAILABLE = False
+
 _INSIGHTFACE_APP = None
 _INSIGHTFACE_INIT_FAILED = False
+_NUDENET_DETECTOR = None
+_NUDENET_INIT_FAILED = False
 
 # CORS
 app.add_middleware(
@@ -80,13 +97,51 @@ ATTRACTIVENESS_MODEL_VERSION = os.getenv("ATTRACTIVENESS_MODEL_VERSION", "oss_v1
 INSIGHTFACE_ENABLED = os.getenv("INSIGHTFACE_ENABLED", "true").lower() == "true"
 ATTRACTIVENESS_EXTERNAL_SCORER_ENABLED = os.getenv("ATTRACTIVENESS_EXTERNAL_SCORER_ENABLED", "false").lower() == "true"
 ATTRACTIVENESS_EXTERNAL_SCORER_CMD = os.getenv("ATTRACTIVENESS_EXTERNAL_SCORER_CMD", "").strip()
+ATTRACTIVENESS_EXTERNAL_SCORER_CMDS_JSON = os.getenv("ATTRACTIVENESS_EXTERNAL_SCORER_CMDS", "").strip()
 ATTRACTIVENESS_EXTERNAL_WEIGHT = float(os.getenv("ATTRACTIVENESS_EXTERNAL_WEIGHT", "0.25"))
 ATTRACTIVENESS_EXTERNAL_TIMEOUT_SEC = int(os.getenv("ATTRACTIVENESS_EXTERNAL_TIMEOUT_SEC", "10"))
+ANTISPOOF_EXTERNAL_ENABLED = os.getenv("ANTISPOOF_EXTERNAL_ENABLED", "false").lower() == "true"
+ANTISPOOF_EXTERNAL_CMD = os.getenv("ANTISPOOF_EXTERNAL_CMD", "").strip()
+ANTISPOOF_EXTERNAL_TIMEOUT_SEC = int(os.getenv("ANTISPOOF_EXTERNAL_TIMEOUT_SEC", "10"))
+ANTISPOOF_EXTERNAL_WEIGHT = float(os.getenv("ANTISPOOF_EXTERNAL_WEIGHT", "0.45"))
+NSFW_ENABLED = os.getenv("NSFW_ENABLED", "true").lower() == "true"
+NSFW_THRESHOLD = float(os.getenv("NSFW_THRESHOLD", "0.60"))
+NSFW_BASELINE = float(os.getenv("NSFW_BASELINE", "0.02"))
+NSFW_USE_OPENNSFW2 = os.getenv("NSFW_USE_OPENNSFW2", "false").lower() == "true"
+NSFW_USE_NUDENET = os.getenv("NSFW_USE_NUDENET", "false").lower() == "true"
+NSFW_USE_CLIP_NSFW = os.getenv("NSFW_USE_CLIP_NSFW", "false").lower() == "true"
+NSFW_CLIP_CMD = os.getenv(
+    "NSFW_CLIP_CMD",
+    "python3 /app/scripts/nsfw_clip_adapter.py --image {image_path}",
+).strip()
+NSFW_CLIP_TIMEOUT_SEC = int(os.getenv("NSFW_CLIP_TIMEOUT_SEC", "12"))
+NSFW_CLIP_WEIGHT = float(os.getenv("NSFW_CLIP_WEIGHT", "0.35"))
+NSFW_EXTERNAL_SCORER_ENABLED = os.getenv("NSFW_EXTERNAL_SCORER_ENABLED", "false").lower() == "true"
+NSFW_EXTERNAL_SCORER_CMD = os.getenv("NSFW_EXTERNAL_SCORER_CMD", "").strip()
+NSFW_EXTERNAL_TIMEOUT_SEC = int(os.getenv("NSFW_EXTERNAL_TIMEOUT_SEC", "10"))
+NSFW_PROVIDER = os.getenv("NSFW_PROVIDER", "").strip()
+TEXT_MODERATION_ENABLED = os.getenv("TEXT_MODERATION_ENABLED", "true").lower() == "true"
+TEXT_MODERATION_MODEL = os.getenv("TEXT_MODERATION_MODEL", "multilingual").strip() or "multilingual"
+TEXT_MODERATION_BLOCK_THRESHOLD = float(os.getenv("TEXT_MODERATION_BLOCK_THRESHOLD", "0.72"))
+TEXT_MODERATION_WARN_THRESHOLD = float(os.getenv("TEXT_MODERATION_WARN_THRESHOLD", "0.52"))
+FACE_QUALITY_ENABLED = os.getenv("FACE_QUALITY_ENABLED", "true").lower() == "true"
+FACE_QUALITY_PROVIDER = os.getenv("FACE_QUALITY_PROVIDER", "faceqan")
+FACE_QUALITY_MODEL_VERSION = os.getenv("FACE_QUALITY_MODEL_VERSION", "faceqan_v1")
+FACE_QUALITY_USE_ADAPTER = os.getenv("FACE_QUALITY_USE_ADAPTER", "true").lower() == "true"
+FACE_QUALITY_CMD = os.getenv(
+    "FACE_QUALITY_CMD",
+    "python3 /app/scripts/faceqan_adapter.py --image {image_path}",
+).strip()
+FACE_QUALITY_TIMEOUT_SEC = int(os.getenv("FACE_QUALITY_TIMEOUT_SEC", "12"))
+FACE_QUALITY_ADAPTER_WEIGHT = float(os.getenv("FACE_QUALITY_ADAPTER_WEIGHT", "0.65"))
 
 OPEN_SOURCE_MODEL_REPOS = [
     "serengil/deepface",
     "deepinsight/insightface",
     "google-ai-edge/mediapipe",
+    "minivision-ai/Silent-Face-Anti-Spoofing",
+    "bhky/opennsfw2",
+    "notAI-tech/NudeNet",
     "HCIILAB/SCUT-FBP5500-Database-Release",
     "lucasxlu/ComboLoss",
     "ustcqidi/BeautyPredict",
@@ -97,6 +152,11 @@ OPEN_SOURCE_MODEL_REPOS = [
     "1adrianb/face-alignment",
     "yfeng95/DECA",
     "sicxu/Deep3DFaceRecon_pytorch",
+    "unitaryai/detoxify",
+    "LSIbabnikz/FaceQAN",
+    "LAION-AI/CLIP-based-NSFW-Detector",
+    "SCLBD/DeepfakeBench",
+    "recommenders-team/recommenders",
 ]
 
 
@@ -135,6 +195,62 @@ class AttractivenessScoreRequest(BaseModel):
 
 class AttractivenessScoreResponse(BaseModel):
     score: float
+    confidence: float
+    provider: str
+    model_version: str
+    signals: Dict[str, float]
+    repo_refs: List[str]
+
+
+class ImageModerationRequest(BaseModel):
+    user_id: Optional[int] = None
+    image_base64: Optional[str] = None
+    image_url: Optional[str] = None
+    image_type: Optional[str] = "PROFILE"
+
+
+class ImageModerationResponse(BaseModel):
+    is_safe: bool
+    nsfw_score: float
+    confidence: float
+    action: str
+    provider: str
+    categories: Dict[str, float]
+    signals: Dict[str, float]
+    repo_refs: List[str]
+
+
+class TextModerationRequest(BaseModel):
+    user_id: Optional[int] = None
+    text: str
+    content_type: Optional[str] = None
+    segment_key: Optional[str] = None
+
+
+class TextModerationResponse(BaseModel):
+    is_allowed: bool
+    decision: str
+    toxicity_score: float
+    max_label: Optional[str] = None
+    blocked_categories: List[str]
+    labels: Dict[str, float]
+    reason: Optional[str] = None
+    provider: str
+    model_version: str
+    signals: Dict[str, float]
+    repo_refs: List[str]
+
+
+class FaceQualityRequest(BaseModel):
+    user_id: Optional[int] = None
+    image_base64: Optional[str] = None
+    image_url: Optional[str] = None
+    surface: Optional[str] = None
+    segment_key: Optional[str] = None
+
+
+class FaceQualityResponse(BaseModel):
+    quality_score: float
     confidence: float
     provider: str
     model_version: str
@@ -403,6 +519,126 @@ async def score_attractiveness(request: AttractivenessScoreRequest):
     )
 
 
+@app.post("/moderation/image", response_model=ImageModerationResponse)
+async def moderate_image(request: ImageModerationRequest):
+    """
+    Image moderation endpoint (backend-safe; no UI exposure required).
+    Uses OSS hooks (OpenNSFW2 / NudeNet / optional external scorer) with conservative fallbacks.
+    """
+    image = await load_image_from_sources(request.image_base64, request.image_url)
+    if image is None:
+        raise HTTPException(status_code=400, detail="Image is required")
+
+    if not NSFW_ENABLED:
+        return ImageModerationResponse(
+            is_safe=True,
+            nsfw_score=round(clamp01(NSFW_BASELINE), 6),
+            confidence=0.0,
+            action="ALLOW",
+            provider=resolve_nsfw_provider_name(),
+            categories={"nsfw": round(clamp01(NSFW_BASELINE), 6)},
+            signals={"moderation_disabled": 1.0},
+            repo_refs=OPEN_SOURCE_MODEL_REPOS,
+        )
+
+    nsfw_score, confidence, categories, signals = compute_nsfw_score(image)
+    nsfw_score = clamp01(nsfw_score)
+    confidence = clamp01(confidence)
+    is_safe = nsfw_score < NSFW_THRESHOLD
+
+    return ImageModerationResponse(
+        is_safe=is_safe,
+        nsfw_score=round(nsfw_score, 6),
+        confidence=round(confidence, 6),
+        action="ALLOW" if is_safe else "BLOCK",
+        provider=resolve_nsfw_provider_name(),
+        categories=categories,
+        signals=signals,
+        repo_refs=OPEN_SOURCE_MODEL_REPOS,
+    )
+
+
+@app.post("/moderation/text", response_model=TextModerationResponse)
+async def moderate_text(request: TextModerationRequest):
+    text = (request.text or "").strip()
+    if not text:
+        raise HTTPException(status_code=400, detail="Text is required")
+
+    if not TEXT_MODERATION_ENABLED:
+        return TextModerationResponse(
+            is_allowed=True,
+            decision="ALLOW",
+            toxicity_score=0.0,
+            max_label=None,
+            blocked_categories=[],
+            labels={"toxicity": 0.0},
+            reason=None,
+            provider="text_moderation_disabled",
+            model_version="disabled",
+            signals={"moderation_disabled": 1.0},
+            repo_refs=OPEN_SOURCE_MODEL_REPOS,
+        )
+
+    labels = detoxify_labels(text)
+    max_label, max_score = max(labels.items(), key=lambda x: x[1])
+    toxicity = clamp01(labels.get("toxicity", max_score))
+
+    blocked_categories = [k.upper() for k, v in labels.items() if v >= TEXT_MODERATION_BLOCK_THRESHOLD]
+    decision = "ALLOW"
+    reason = None
+    if toxicity >= TEXT_MODERATION_BLOCK_THRESHOLD or blocked_categories:
+        decision = "BLOCK"
+        reason = "Content flagged by toxicity model"
+    elif toxicity >= TEXT_MODERATION_WARN_THRESHOLD:
+        decision = "WARN"
+        reason = "Content near moderation threshold"
+
+    return TextModerationResponse(
+        is_allowed=decision != "BLOCK",
+        decision=decision,
+        toxicity_score=round(toxicity, 6),
+        max_label=max_label,
+        blocked_categories=blocked_categories,
+        labels=labels,
+        reason=reason,
+        provider="detoxify",
+        model_version=f"detoxify_{TEXT_MODERATION_MODEL}",
+        signals={
+            "threshold_block": round(clamp01(TEXT_MODERATION_BLOCK_THRESHOLD), 6),
+            "threshold_warn": round(clamp01(TEXT_MODERATION_WARN_THRESHOLD), 6),
+            "label_count": float(len(labels)),
+        },
+        repo_refs=OPEN_SOURCE_MODEL_REPOS,
+    )
+
+
+@app.post("/quality/face", response_model=FaceQualityResponse)
+async def score_face_quality(request: FaceQualityRequest):
+    image = await load_image_from_sources(request.image_base64, request.image_url)
+    if image is None:
+        raise HTTPException(status_code=400, detail="Image is required")
+
+    if not FACE_QUALITY_ENABLED:
+        return FaceQualityResponse(
+            quality_score=0.5,
+            confidence=0.0,
+            provider=FACE_QUALITY_PROVIDER,
+            model_version=FACE_QUALITY_MODEL_VERSION,
+            signals={"quality_disabled": 1.0},
+            repo_refs=OPEN_SOURCE_MODEL_REPOS,
+        )
+
+    score, confidence, signals = compute_face_quality_score(image)
+    return FaceQualityResponse(
+        quality_score=round(clamp01(score), 6),
+        confidence=round(clamp01(confidence), 6),
+        provider=FACE_QUALITY_PROVIDER,
+        model_version=FACE_QUALITY_MODEL_VERSION,
+        signals=signals,
+        repo_refs=OPEN_SOURCE_MODEL_REPOS,
+    )
+
+
 async def load_image_from_url(url: str) -> Optional[np.ndarray]:
     """Load image from URL or local path"""
     try:
@@ -449,6 +685,97 @@ def load_image_from_base64(image_base64: str) -> Optional[np.ndarray]:
         return None
 
 
+def detoxify_labels(text: str) -> Dict[str, float]:
+    try:
+        from detoxify import Detoxify  # type: ignore
+
+        model = Detoxify(TEXT_MODERATION_MODEL)
+        raw = model.predict(text)
+        out: Dict[str, float] = {}
+        for key, value in (raw or {}).items():
+            parsed = None
+            if isinstance(value, (list, tuple)) and value:
+                parsed = float(value[0])
+            elif hasattr(value, "shape"):
+                arr = np.asarray(value).reshape(-1)
+                if arr.size:
+                    parsed = float(arr[0])
+            elif isinstance(value, (int, float)):
+                parsed = float(value)
+            if parsed is not None:
+                out[str(key).strip().lower()] = round(clamp01(parsed), 6)
+        if out:
+            return out
+    except Exception:
+        pass
+
+    lowered = text.lower()
+    hits = 0
+    for token in ["kill", "rape", "die", "nazi", "terrorist", "fag", "nigger", "kike", "bitch", "cunt", "asshole"]:
+        if token in lowered:
+            hits += 1
+    toxicity = clamp01(0.05 + min(0.85, hits * 0.18))
+    return {
+        "toxicity": round(toxicity, 6),
+        "severe_toxicity": round(clamp01(0.75 * toxicity), 6),
+        "insult": round(clamp01(0.70 * toxicity), 6),
+        "threat": round(clamp01(0.55 * toxicity if "kill" in lowered else 0.05 * toxicity), 6),
+        "obscene": round(clamp01(0.60 * toxicity), 6),
+        "identity_attack": round(clamp01(0.70 * toxicity if ("nigger" in lowered or "kike" in lowered) else 0.04 * toxicity), 6),
+    }
+
+
+def compute_face_quality_score(image: np.ndarray) -> tuple[float, float, Dict[str, float]]:
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    sharpness = normalize_laplacian_variance(float(cv2.Laplacian(gray, cv2.CV_64F).var()))
+    exposure = normalize_exposure(gray)
+    symmetry = mediapipe_symmetry_score(image)
+    if symmetry is None:
+        symmetry = estimate_symmetry(gray)
+    face_fill = detect_face_fill_ratio(image)
+    framing = clamp01(1.0 - abs(face_fill - 0.28) / 0.28) if face_fill > 0 else 0.0
+
+    quality = clamp01(
+        (0.32 * sharpness)
+        + (0.24 * exposure)
+        + (0.22 * symmetry)
+        + (0.22 * framing)
+    )
+    confidence = clamp01(0.42 + 0.42 * face_fill + 0.16 * symmetry)
+
+    signals: Dict[str, float] = {
+        "sharpness": round(sharpness, 6),
+        "exposure": round(exposure, 6),
+        "symmetry": round(symmetry, 6),
+        "face_fill": round(face_fill, 6),
+        "framing": round(framing, 6),
+    }
+
+    adapter = face_quality_adapter_signals(image)
+    if adapter is not None:
+        adapter_quality = clamp01(float(adapter.get("quality_score", quality)))
+        adapter_conf = clamp01(float(adapter.get("confidence", 0.0)))
+        w_adapter = clamp01(FACE_QUALITY_ADAPTER_WEIGHT) * max(0.25, adapter_conf)
+        quality = clamp01(((1.0 - w_adapter) * quality) + (w_adapter * adapter_quality))
+        confidence = clamp01(((1.0 - w_adapter) * confidence) + (w_adapter * adapter_conf))
+
+        signals["adapter_quality_score"] = round(adapter_quality, 6)
+        signals["adapter_confidence"] = round(adapter_conf, 6)
+        signals["adapter_weight"] = round(w_adapter, 6)
+
+        adapter_signals = adapter.get("signals", {}) or {}
+        if isinstance(adapter_signals, dict):
+            for key, value in adapter_signals.items():
+                if isinstance(value, (int, float)):
+                    signals[f"adapter_{key}"] = round(float(value), 6)
+    else:
+        signals["adapter_quality_score"] = 0.0
+        signals["adapter_confidence"] = 0.0
+        signals["adapter_weight"] = 0.0
+
+    return quality, confidence, signals
+
+
 def clamp01(value: float) -> float:
     return max(0.0, min(1.0, float(value)))
 
@@ -462,7 +789,25 @@ def resolve_provider_name() -> str:
         providers.append("insightface")
     if MEDIAPIPE_AVAILABLE:
         providers.append("mediapipe")
-    if ATTRACTIVENESS_EXTERNAL_SCORER_ENABLED and ATTRACTIVENESS_EXTERNAL_SCORER_CMD:
+    if ATTRACTIVENESS_EXTERNAL_SCORER_ENABLED and (
+        ATTRACTIVENESS_EXTERNAL_SCORER_CMD or ATTRACTIVENESS_EXTERNAL_SCORER_CMDS_JSON
+    ):
+        providers.append("external")
+    return "+".join(providers)
+
+
+def resolve_nsfw_provider_name() -> str:
+    if NSFW_PROVIDER:
+        return NSFW_PROVIDER
+
+    providers = ["heuristic"]
+    if NSFW_USE_OPENNSFW2 and OPENNSFW2_AVAILABLE:
+        providers.append("opennsfw2")
+    if NSFW_USE_NUDENET and NUDENET_AVAILABLE:
+        providers.append("nudenet")
+    if NSFW_USE_CLIP_NSFW and NSFW_CLIP_CMD:
+        providers.append("clip_nsfw")
+    if NSFW_EXTERNAL_SCORER_ENABLED and NSFW_EXTERNAL_SCORER_CMD:
         providers.append("external")
     return "+".join(providers)
 
@@ -490,6 +835,27 @@ def get_insightface_app():
         _INSIGHTFACE_APP = None
 
     return _INSIGHTFACE_APP
+
+
+def get_nudenet_detector():
+    global _NUDENET_DETECTOR, _NUDENET_INIT_FAILED
+
+    if not NSFW_USE_NUDENET or not NUDENET_AVAILABLE or _NUDENET_INIT_FAILED:
+        return None
+    if _NUDENET_DETECTOR is not None:
+        return _NUDENET_DETECTOR
+
+    try:
+        model_path = os.getenv("NUDENET_MODEL_PATH", "").strip()
+        if model_path:
+            _NUDENET_DETECTOR = NudeDetector(model_path=model_path)
+        else:
+            _NUDENET_DETECTOR = NudeDetector()
+    except Exception:
+        _NUDENET_INIT_FAILED = True
+        _NUDENET_DETECTOR = None
+
+    return _NUDENET_DETECTOR
 
 
 def normalize_laplacian_variance(laplacian_var: float) -> float:
@@ -602,24 +968,48 @@ def insightface_signals(image: np.ndarray) -> Optional[Dict[str, float]]:
         return None
 
 
-def external_scorer_signals(image: np.ndarray, view_prefix: str) -> Optional[Dict[str, Any]]:
-    if not ATTRACTIVENESS_EXTERNAL_SCORER_ENABLED or not ATTRACTIVENESS_EXTERNAL_SCORER_CMD:
-        return None
+def safe_provider_key(value: str) -> str:
+    out = "".join(ch if ch.isalnum() else "_" for ch in str(value).strip().lower())
+    out = out.strip("_")
+    return out or "provider"
 
-    tmp_file_path = None
+
+def parse_external_attractiveness_cmds() -> List[Dict[str, Any]]:
+    out: List[Dict[str, Any]] = []
+    raw = ATTRACTIVENESS_EXTERNAL_SCORER_CMDS_JSON
+    if raw:
+        try:
+            parsed = json.loads(raw)
+            if isinstance(parsed, list):
+                for item in parsed:
+                    if not isinstance(item, dict):
+                        continue
+                    name = str(item.get("name", "")).strip()
+                    cmd = str(item.get("cmd", "")).strip()
+                    weight_raw = item.get("weight", 1.0)
+                    try:
+                        weight = float(weight_raw)
+                    except Exception:
+                        weight = 0.0
+                    if name and cmd and weight > 0:
+                        out.append({"name": name, "cmd": cmd, "weight": weight})
+        except Exception:
+            pass
+
+    if not out and ATTRACTIVENESS_EXTERNAL_SCORER_CMD:
+        out.append({"name": "external", "cmd": ATTRACTIVENESS_EXTERNAL_SCORER_CMD, "weight": 1.0})
+
+    return out
+
+
+def run_external_attractiveness_cmd(
+    cmd_template: str, image_path: str, view_prefix: str
+) -> Optional[Dict[str, Any]]:
     try:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
-            tmp_file_path = tmp_file.name
-        if not cv2.imwrite(tmp_file_path, image):
-            return None
-
-        cmd_template = ATTRACTIVENESS_EXTERNAL_SCORER_CMD
-        cmd = cmd_template.format(image_path=tmp_file_path, view=view_prefix)
+        cmd = cmd_template.format(image_path=image_path, view=view_prefix)
         args = shlex.split(cmd)
-
-        # Backward-compatible fallback if template has no placeholders.
         if "{image_path}" not in cmd_template and "{view}" not in cmd_template:
-            args.extend([tmp_file_path, view_prefix])
+            args.extend([image_path, view_prefix])
 
         proc = subprocess.run(
             args,
@@ -638,13 +1028,79 @@ def external_scorer_signals(image: np.ndarray, view_prefix: str) -> Optional[Dic
         signals = payload.get("signals", {})
         if not isinstance(signals, dict):
             signals = {}
-
-        normalized_signals = {f"external_{k}": float(v) for k, v in signals.items() if isinstance(v, (int, float))}
-
+        normalized = {str(k): float(v) for k, v in signals.items() if isinstance(v, (int, float))}
         return {
             "score": score,
             "confidence": confidence,
-            "signals": normalized_signals,
+            "signals": normalized,
+        }
+    except Exception:
+        return None
+
+
+def external_scorer_signals(image: np.ndarray, view_prefix: str) -> Optional[Dict[str, Any]]:
+    if not ATTRACTIVENESS_EXTERNAL_SCORER_ENABLED:
+        return None
+
+    external_cmds = parse_external_attractiveness_cmds()
+    if not external_cmds:
+        return None
+
+    tmp_file_path = None
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
+            tmp_file_path = tmp_file.name
+        if not cv2.imwrite(tmp_file_path, image):
+            return None
+
+        weighted_score = 0.0
+        weighted_conf = 0.0
+        total_score_weight = 0.0
+        total_conf_weight = 0.0
+        merged_signals: Dict[str, float] = {}
+        providers_used = 0.0
+
+        for provider in external_cmds:
+            name = safe_provider_key(provider.get("name", "external"))
+            cmd = str(provider.get("cmd", "")).strip()
+            weight = max(0.0, float(provider.get("weight", 1.0)))
+            if not cmd or weight <= 0:
+                continue
+
+            result = run_external_attractiveness_cmd(cmd, tmp_file_path, view_prefix)
+            if result is None:
+                continue
+
+            score = clamp01(float(result.get("score", ATTRACTIVENESS_BASELINE)))
+            conf = clamp01(float(result.get("confidence", 0.0)))
+            score_weight = weight * max(0.1, conf)
+            conf_weight = weight
+
+            weighted_score += score * score_weight
+            weighted_conf += conf * conf_weight
+            total_score_weight += score_weight
+            total_conf_weight += conf_weight
+            providers_used += 1.0
+
+            merged_signals[f"external_{name}_score"] = round(score, 6)
+            merged_signals[f"external_{name}_confidence"] = round(conf, 6)
+
+            raw_signals = result.get("signals", {}) or {}
+            if isinstance(raw_signals, dict):
+                for key, value in raw_signals.items():
+                    if isinstance(value, (int, float)):
+                        merged_signals[f"external_{name}_{safe_provider_key(key)}"] = float(value)
+
+        if total_score_weight <= 0.0:
+            return None
+
+        return {
+            "score": clamp01(weighted_score / total_score_weight),
+            "confidence": clamp01(weighted_conf / max(1e-9, total_conf_weight)),
+            "signals": {
+                **merged_signals,
+                "external_provider_count": providers_used,
+            },
         }
     except Exception:
         return None
@@ -654,6 +1110,420 @@ def external_scorer_signals(image: np.ndarray, view_prefix: str) -> Optional[Dic
                 os.remove(tmp_file_path)
             except Exception:
                 pass
+
+
+def external_nsfw_signals(image: np.ndarray) -> Optional[Dict[str, Any]]:
+    if not NSFW_EXTERNAL_SCORER_ENABLED or not NSFW_EXTERNAL_SCORER_CMD:
+        return None
+
+    tmp_file_path = None
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
+            tmp_file_path = tmp_file.name
+        if not cv2.imwrite(tmp_file_path, image):
+            return None
+
+        cmd_template = NSFW_EXTERNAL_SCORER_CMD
+        cmd = cmd_template.format(image_path=tmp_file_path)
+        args = shlex.split(cmd)
+        if "{image_path}" not in cmd_template:
+            args.append(tmp_file_path)
+
+        proc = subprocess.run(
+            args,
+            capture_output=True,
+            text=True,
+            timeout=max(1, NSFW_EXTERNAL_TIMEOUT_SEC),
+            check=False
+        )
+        if proc.returncode != 0:
+            return None
+
+        payload = json.loads((proc.stdout or "").strip() or "{}")
+        score = clamp01(float(payload.get("nsfw_score", NSFW_BASELINE)))
+        confidence = clamp01(float(payload.get("confidence", 0.0)))
+
+        categories = payload.get("categories", {})
+        if not isinstance(categories, dict):
+            categories = {}
+        categories = {str(k): clamp01(float(v)) for k, v in categories.items() if isinstance(v, (int, float))}
+
+        signals = payload.get("signals", {})
+        if not isinstance(signals, dict):
+            signals = {}
+        signals = {f"external_{k}": float(v) for k, v in signals.items() if isinstance(v, (int, float))}
+
+        return {
+            "nsfw_score": score,
+            "confidence": confidence,
+            "categories": categories,
+            "signals": signals,
+        }
+    except Exception:
+        return None
+    finally:
+        if tmp_file_path and os.path.exists(tmp_file_path):
+            try:
+                os.remove(tmp_file_path)
+            except Exception:
+                pass
+
+
+def clip_nsfw_score(image: np.ndarray) -> Optional[Dict[str, Any]]:
+    if not NSFW_USE_CLIP_NSFW or not NSFW_CLIP_CMD:
+        return None
+
+    tmp_file_path = None
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
+            tmp_file_path = tmp_file.name
+        if not cv2.imwrite(tmp_file_path, image):
+            return None
+
+        cmd = NSFW_CLIP_CMD.format(image_path=tmp_file_path)
+        args = shlex.split(cmd)
+        if "{image_path}" not in NSFW_CLIP_CMD:
+            args.append(tmp_file_path)
+
+        proc = subprocess.run(
+            args,
+            capture_output=True,
+            text=True,
+            timeout=max(1, NSFW_CLIP_TIMEOUT_SEC),
+            check=False
+        )
+        if proc.returncode != 0:
+            return None
+
+        payload = json.loads((proc.stdout or "").strip() or "{}")
+        nsfw_score = clamp01(float(payload.get("nsfw_score", NSFW_BASELINE)))
+        confidence = clamp01(float(payload.get("confidence", 0.0)))
+
+        categories = payload.get("categories", {})
+        if not isinstance(categories, dict):
+            categories = {}
+        categories = {str(k): clamp01(float(v)) for k, v in categories.items() if isinstance(v, (int, float))}
+
+        signals = payload.get("signals", {})
+        if not isinstance(signals, dict):
+            signals = {}
+        signals = {f"clip_{k}": float(v) for k, v in signals.items() if isinstance(v, (int, float))}
+
+        return {
+            "nsfw_score": nsfw_score,
+            "confidence": confidence,
+            "categories": categories,
+            "signals": signals,
+        }
+    except Exception:
+        return None
+    finally:
+        if tmp_file_path and os.path.exists(tmp_file_path):
+            try:
+                os.remove(tmp_file_path)
+            except Exception:
+                pass
+
+
+def face_quality_adapter_signals(image: np.ndarray) -> Optional[Dict[str, Any]]:
+    if not FACE_QUALITY_USE_ADAPTER or not FACE_QUALITY_CMD:
+        return None
+
+    tmp_file_path = None
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
+            tmp_file_path = tmp_file.name
+        if not cv2.imwrite(tmp_file_path, image):
+            return None
+
+        cmd = FACE_QUALITY_CMD.format(image_path=tmp_file_path)
+        args = shlex.split(cmd)
+        if "{image_path}" not in FACE_QUALITY_CMD:
+            args.append(tmp_file_path)
+
+        proc = subprocess.run(
+            args,
+            capture_output=True,
+            text=True,
+            timeout=max(1, FACE_QUALITY_TIMEOUT_SEC),
+            check=False
+        )
+        if proc.returncode != 0:
+            return None
+
+        payload = json.loads((proc.stdout or "").strip() or "{}")
+        score = clamp01(float(payload.get("quality_score", payload.get("score", 0.5))))
+        confidence = clamp01(float(payload.get("confidence", 0.0)))
+        signals = payload.get("signals", {})
+        if not isinstance(signals, dict):
+            signals = {}
+        normalized = {str(k): float(v) for k, v in signals.items() if isinstance(v, (int, float))}
+        return {
+            "quality_score": score,
+            "confidence": confidence,
+            "signals": normalized,
+            "provider": str(payload.get("provider", "faceqan")),
+            "model_version": str(payload.get("model_version", FACE_QUALITY_MODEL_VERSION)),
+        }
+    except Exception:
+        return None
+    finally:
+        if tmp_file_path and os.path.exists(tmp_file_path):
+            try:
+                os.remove(tmp_file_path)
+            except Exception:
+                pass
+
+
+def external_antispoof_signals(image: np.ndarray) -> Optional[Dict[str, Any]]:
+    if not ANTISPOOF_EXTERNAL_ENABLED or not ANTISPOOF_EXTERNAL_CMD:
+        return None
+
+    tmp_file_path = None
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
+            tmp_file_path = tmp_file.name
+        if not cv2.imwrite(tmp_file_path, image):
+            return None
+
+        cmd_template = ANTISPOOF_EXTERNAL_CMD
+        cmd = cmd_template.format(image_path=tmp_file_path)
+        args = shlex.split(cmd)
+        if "{image_path}" not in cmd_template:
+            args.append(tmp_file_path)
+
+        proc = subprocess.run(
+            args,
+            capture_output=True,
+            text=True,
+            timeout=max(1, ANTISPOOF_EXTERNAL_TIMEOUT_SEC),
+            check=False
+        )
+        if proc.returncode != 0:
+            return None
+
+        payload = json.loads((proc.stdout or "").strip() or "{}")
+        liveness = clamp01(float(payload.get("liveness", 0.5)))
+        spoof_prob = clamp01(float(payload.get("spoof_prob", 1.0 - liveness)))
+        confidence = clamp01(float(payload.get("confidence", 0.0)))
+        signals = payload.get("signals", {})
+        if not isinstance(signals, dict):
+            signals = {}
+
+        return {
+            "liveness": liveness,
+            "spoof_prob": spoof_prob,
+            "confidence": confidence,
+            "signals": {f"antispoof_{k}": float(v) for k, v in signals.items() if isinstance(v, (int, float))},
+        }
+    except Exception:
+        return None
+    finally:
+        if tmp_file_path and os.path.exists(tmp_file_path):
+            try:
+                os.remove(tmp_file_path)
+            except Exception:
+                pass
+
+
+def detect_face_fill_ratio(image: np.ndarray) -> float:
+    try:
+        faces = DeepFace.extract_faces(
+            image,
+            detector_backend=DETECTOR_BACKEND,
+            enforce_detection=False
+        )
+        if not faces:
+            return 0.0
+        facial_area = faces[0].get("facial_area", {}) or {}
+        w = float(facial_area.get("w", 0.0))
+        h = float(facial_area.get("h", 0.0))
+        frame_area = float(max(1, image.shape[0] * image.shape[1]))
+        return clamp01((w * h) / frame_area)
+    except Exception:
+        return 0.0
+
+
+def nsfw_skin_exposure_proxy(image: np.ndarray) -> float:
+    # Broad YCrCb skin range; treated as weak heuristic only.
+    ycrcb = cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)
+    mask = cv2.inRange(ycrcb, (0, 133, 77), (255, 173, 127))
+    skin_ratio = float(np.mean(mask > 0))
+    face_fill = detect_face_fill_ratio(image)
+    adjusted = skin_ratio - (0.65 * face_fill)
+    return clamp01((adjusted - 0.10) / 0.55)
+
+
+def opennsfw2_score(image: np.ndarray) -> Optional[float]:
+    if not NSFW_USE_OPENNSFW2 or not OPENNSFW2_AVAILABLE:
+        return None
+    try:
+        rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        pil_image = Image.fromarray(rgb)
+        score = float(opennsfw2.predict_image(pil_image))
+        return clamp01(score)
+    except Exception:
+        return None
+
+
+def nudenet_score(image: np.ndarray) -> Optional[Dict[str, Any]]:
+    detector = get_nudenet_detector()
+    if detector is None:
+        return None
+
+    try:
+        detections = detector.detect(image)
+        if detections is None:
+            detections = []
+        if isinstance(detections, dict):
+            detections = [detections]
+
+        categories: Dict[str, float] = {}
+        for det in detections:
+            if not isinstance(det, dict):
+                continue
+            cls = str(det.get("class", "")).strip()
+            if not cls:
+                continue
+            score = clamp01(float(det.get("score", 0.0)))
+            categories[cls] = max(categories.get(cls, 0.0), score)
+
+        explicit_labels = {
+            "FEMALE_GENITALIA_EXPOSED",
+            "MALE_GENITALIA_EXPOSED",
+            "ANUS_EXPOSED",
+            "BUTTOCKS_EXPOSED",
+            "FEMALE_BREAST_EXPOSED",
+        }
+        implied_labels = {
+            "BELLY_EXPOSED",
+            "ARMPITS_EXPOSED",
+            "MALE_BREAST_EXPOSED",
+        }
+
+        explicit = max([categories.get(k, 0.0) for k in explicit_labels], default=0.0)
+        implied = max([categories.get(k, 0.0) for k in implied_labels], default=0.0)
+        nsfw_score = clamp01(max(explicit, implied * 0.55))
+        confidence = clamp01(max(categories.values(), default=0.0))
+
+        return {
+            "nsfw_score": nsfw_score,
+            "confidence": confidence,
+            "categories": categories,
+        }
+    except Exception:
+        return None
+
+
+def compute_nsfw_score(image: np.ndarray) -> tuple[float, float, Dict[str, float], Dict[str, float]]:
+    baseline = clamp01(NSFW_BASELINE)
+    score_num = 0.0
+    score_den = 0.0
+    confidence_num = 0.0
+    confidence_den = 0.0
+
+    categories: Dict[str, float] = {}
+    signals: Dict[str, float] = {}
+
+    heuristic = nsfw_skin_exposure_proxy(image)
+    heuristic_conf = 0.35
+    score_num += 0.20 * heuristic
+    score_den += 0.20
+    confidence_num += 0.20 * heuristic_conf
+    confidence_den += 0.20
+    signals["heuristic_skin_proxy"] = round(heuristic, 6)
+
+    open_nsfw = opennsfw2_score(image)
+    if open_nsfw is not None:
+        score_num += 0.45 * open_nsfw
+        score_den += 0.45
+        confidence_num += 0.45 * 0.80
+        confidence_den += 0.45
+        categories["opennsfw2"] = round(open_nsfw, 6)
+        signals["opennsfw2_score"] = round(open_nsfw, 6)
+
+    nude = nudenet_score(image)
+    if nude is not None:
+        nude_score = clamp01(float(nude.get("nsfw_score", 0.0)))
+        nude_conf = clamp01(float(nude.get("confidence", 0.0)))
+        score_num += 0.55 * nude_score
+        score_den += 0.55
+        confidence_num += 0.55 * nude_conf
+        confidence_den += 0.55
+        signals["nudenet_score"] = round(nude_score, 6)
+        signals["nudenet_confidence"] = round(nude_conf, 6)
+
+        nude_categories = nude.get("categories", {}) or {}
+        if isinstance(nude_categories, dict):
+            for key, value in nude_categories.items():
+                if not isinstance(value, (int, float)):
+                    continue
+                categories[f"nudenet_{key.lower()}"] = round(clamp01(float(value)), 6)
+
+    clip = clip_nsfw_score(image)
+    if clip is not None:
+        clip_score = clamp01(float(clip.get("nsfw_score", baseline)))
+        clip_conf = clamp01(float(clip.get("confidence", 0.0)))
+        clip_categories = clip.get("categories", {}) or {}
+        clip_signals = clip.get("signals", {}) or {}
+
+        clip_weight = clamp01(NSFW_CLIP_WEIGHT) * max(0.25, clip_conf)
+        score_num += clip_weight * clip_score
+        score_den += clip_weight
+        confidence_num += clip_weight * clip_conf
+        confidence_den += clip_weight
+
+        signals["clip_nsfw_score"] = round(clip_score, 6)
+        signals["clip_nsfw_confidence"] = round(clip_conf, 6)
+
+        if isinstance(clip_categories, dict):
+            for key, value in clip_categories.items():
+                if isinstance(value, (int, float)):
+                    categories[f"clip_{key.lower()}"] = round(clamp01(float(value)), 6)
+        if isinstance(clip_signals, dict):
+            for key, value in clip_signals.items():
+                if isinstance(value, (int, float)):
+                    signals[key] = round(float(value), 6)
+
+    external = external_nsfw_signals(image)
+    if external is not None:
+        ext_score = clamp01(float(external.get("nsfw_score", baseline)))
+        ext_conf = clamp01(float(external.get("confidence", 0.0)))
+        ext_categories = external.get("categories", {}) or {}
+        ext_signals = external.get("signals", {}) or {}
+
+        weight = 0.70 * ext_conf
+        score_num += weight * ext_score
+        score_den += weight
+        confidence_num += weight * ext_conf
+        confidence_den += weight
+
+        signals["external_nsfw_score"] = round(ext_score, 6)
+        signals["external_nsfw_confidence"] = round(ext_conf, 6)
+
+        if isinstance(ext_categories, dict):
+            for key, value in ext_categories.items():
+                if isinstance(value, (int, float)):
+                    categories[f"external_{key}"] = round(clamp01(float(value)), 6)
+        if isinstance(ext_signals, dict):
+            for key, value in ext_signals.items():
+                if isinstance(value, (int, float)):
+                    signals[key] = round(float(value), 6)
+
+    if score_den <= 0.0:
+        score = baseline
+    else:
+        score = score_num / score_den
+    if confidence_den <= 0.0:
+        confidence = 0.0
+    else:
+        confidence = confidence_num / confidence_den
+
+    score = clamp01((0.15 * baseline) + (0.85 * score))
+    confidence = clamp01(confidence)
+
+    categories.setdefault("nsfw", round(score, 6))
+    return score, confidence, categories, signals
 
 
 def compute_view_score(image: np.ndarray, view_prefix: str) -> tuple[float, float, Dict[str, float]]:
@@ -827,7 +1697,24 @@ async def detect_liveness(frames: List[np.ndarray]) -> float:
         # This is a simplified check - production would use proper eye tracking
         scores.append(0.85)  # Placeholder
 
-        return np.mean(scores) if scores else 0.5
+        internal_score = float(np.mean(scores) if scores else 0.5)
+
+        external_live_scores: List[float] = []
+        external_conf_scores: List[float] = []
+        for frame in frames[:min(3, len(frames))]:
+            external = external_antispoof_signals(frame)
+            if external is None:
+                continue
+            external_live_scores.append(clamp01(float(external.get("liveness", 0.5))))
+            external_conf_scores.append(clamp01(float(external.get("confidence", 0.0))))
+
+        if external_live_scores:
+            ext_live = float(np.mean(external_live_scores))
+            ext_conf = float(np.mean(external_conf_scores)) if external_conf_scores else 0.0
+            w_ext = clamp01(ANTISPOOF_EXTERNAL_WEIGHT * ext_conf)
+            return clamp01(((1.0 - w_ext) * internal_score) + (w_ext * ext_live))
+
+        return clamp01(internal_score)
 
     except Exception as e:
         return 0.5
@@ -848,7 +1735,8 @@ async def detect_deepfake(frames: List[np.ndarray]) -> float:
     scores = []
 
     try:
-        for frame in frames[:3]:
+        frame_subset = frames[:3]
+        for frame in frame_subset:
             # 1. Check for compression artifacts around face boundary
             try:
                 faces = DeepFace.extract_faces(
@@ -870,7 +1758,24 @@ async def detect_deepfake(frames: List[np.ndarray]) -> float:
             texture_score = 1.0 - abs(laplacian_var - 500) / 1000
             scores.append(max(0, min(1, texture_score)))
 
-        return np.mean(scores) if scores else 0.85
+        internal_authenticity = float(np.mean(scores) if scores else 0.85)
+
+        external_spoof_probs: List[float] = []
+        external_conf_scores: List[float] = []
+        for frame in frame_subset:
+            external = external_antispoof_signals(frame)
+            if external is None:
+                continue
+            external_spoof_probs.append(clamp01(float(external.get("spoof_prob", 0.5))))
+            external_conf_scores.append(clamp01(float(external.get("confidence", 0.0))))
+
+        if external_spoof_probs:
+            ext_authenticity = 1.0 - float(np.mean(external_spoof_probs))
+            ext_conf = float(np.mean(external_conf_scores)) if external_conf_scores else 0.0
+            w_ext = clamp01(ANTISPOOF_EXTERNAL_WEIGHT * ext_conf)
+            return clamp01(((1.0 - w_ext) * internal_authenticity) + (w_ext * ext_authenticity))
+
+        return clamp01(internal_authenticity)
 
     except:
         return 0.85

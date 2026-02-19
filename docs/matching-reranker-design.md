@@ -61,7 +61,15 @@ Exploration (UCB-like):
 
 Final rerank score:
 
-- `R_ij = S_ij * f_exposure * f_capacity * f_gap + epsilon * UCB_ij`
+- `R_ij = S_ij * f_exposure * f_capacity * f_gap * f_collab + epsilon * UCB_ij`
+
+Collaborative prior (optional, feature-flagged):
+
+- offline models (`implicit` / `lightfm`) compute per-user prior and confidence
+- persisted in `user_collaborative_prior`
+- default policy maps compatibility/alignment into bounded factor:
+  - `f_collab in [collaborativeMinFactor, collaborativeMaxFactor]`
+  - disabled by default (`enableCollaborativePrior=false`)
 
 Hard quality floor:
 
@@ -96,6 +104,7 @@ Swappable interfaces:
 - `CapacityPolicy`
 - `DesirabilityPolicy`
 - `ExplorationPolicy`
+- `CollaborativePriorPolicy`
 
 Default implementations use the formulas above.
 
@@ -107,6 +116,11 @@ Flag table: `feature_flags`
 - `segment_key` specific or `*`
 - `enabled`
 - `json_config` (tau, p, kappa, lambda, sMin, epsilon, n0, trafficPercent)
+- optional collaborative params:
+  - `enableCollaborativePrior`
+  - `collaborativeBeta`
+  - `collaborativeMinFactor`
+  - `collaborativeMaxFactor`
 
 Safety rules implemented:
 
@@ -123,6 +137,7 @@ Safety rules implemented:
 - `user_rolling_stats`
 - `user_visual_attractiveness`
 - `feature_flags`
+- `user_collaborative_prior`
 
 ## Jobs
 
@@ -137,6 +152,12 @@ Safety rules implemented:
 - scheduled sync of profile pictures to media-service `/attractiveness/score`
 - persists hidden visual priors in `user_visual_attractiveness`
 - uses stale-window refresh + safe fallback on service failures
+
+Offline collaborative prior job:
+
+- `scripts/recommender/train_cf_priors.py`
+- computes user priors from implicit feedback logs using `implicit` (ALS) or `lightfm`
+- outputs SQL upserts for `user_collaborative_prior`
 
 ### External scorer hook
 
@@ -163,9 +184,26 @@ Expected stdout JSON from external scorer:
 
 This enables plugging in ComboLoss / BeautyPredict / FaceAttract / MetaFBP / 3D model pipelines without changing the serving API contract.
 
+Additional OSS media hooks:
+
+- anti-spoof command hook:
+  - `ANTISPOOF_EXTERNAL_ENABLED=true`
+  - `ANTISPOOF_EXTERNAL_CMD='python /path/to/silent_face_antispoof_adapter.py --image {image_path}'`
+- image moderation command hook:
+  - `NSFW_EXTERNAL_SCORER_ENABLED=true`
+  - `NSFW_EXTERNAL_SCORER_CMD='python /path/to/nsfw_nudenet_adapter.py --image {image_path}'`
+
 Backfill script:
 
 - `scripts/sql/backfill_reranker_events.sql`
+
+Score-trace persistence:
+
+- migration `V19__reranker_score_trace_events.sql`
+- populated during impression ingestion
+- debug endpoints:
+  - `GET /api/v1/matching/reranker/trace/{matchUuid}`
+  - `GET /api/v1/matching/reranker/request/{requestId}?limit=50`
 
 ## Observability
 

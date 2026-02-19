@@ -16,6 +16,10 @@ public class RerankerConfig {
     private double n0 = 200.0;
     private double baselineAttractiveness = 0.5;
     private boolean enableExploration = true;
+    private boolean enableCollaborativePrior = false;
+    private double collaborativeBeta = 0.15;
+    private double collaborativeMinFactor = 0.85;
+    private double collaborativeMaxFactor = 1.15;
     private boolean debugTrace = false;
     private String experimentKey = "reranker_v1";
     private int trafficPercent = 100;

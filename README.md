@@ -168,12 +168,51 @@ This repo includes a modular, feature-flagged reciprocal reranker layer on top o
 - Dashboard SQL: `docs/sql/reranker_dashboard_queries.sql`
 - Backfill script: `scripts/backfill-reranker.sh`
 - Migration: `src/main/resources/db/migration/V16__matching_reranker_core.sql`
+- Collaborative prior migration: `src/main/resources/db/migration/V18__collaborative_priors.sql`
+- Offline CF trainer: `scripts/recommender/train_cf_priors.py` (`implicit` / `lightfm`)
+
+Media-model ports (backend-only):
+
+- Hidden attractiveness scoring endpoint: `POST /attractiveness/score`
+- Image moderation endpoint: `POST /moderation/image`
+- Text moderation endpoint: `POST /moderation/text`
+- Face quality endpoint: `POST /quality/face`
+- Optional OSS adapters:
+  - `services/media-service/scripts/silent_face_antispoof_adapter.py`
+  - `services/media-service/scripts/nsfw_opennsfw2_adapter.py`
+  - `services/media-service/scripts/nsfw_nudenet_adapter.py`
+  - `services/media-service/scripts/nsfw_clip_adapter.py`
+  - `services/media-service/scripts/text_detoxify_adapter.py`
+  - `services/media-service/scripts/faceqan_adapter.py`
+- Face-quality event persistence:
+  - `src/main/resources/db/migration/V21__face_quality_events.sql`
+  - `src/main/java/com/nonononoki/alovoa/matching/rerank/service/FaceQualityScoringService.java`
 
 Admin endpoints:
 
 - `GET /api/v1/admin/matching-analytics/summary`
 - `GET /api/v1/admin/matching-analytics/distribution-shift`
 - `POST /api/v1/admin/matching-analytics/rebuild-stats`
+
+---
+
+## ML Backend (Java + Python Workers)
+
+Backend orchestration is now Java-first, with Python worker scripts for model execution/calibration.
+
+- Java ML integration endpoints:
+  - `GET /api/v1/ml/integrations/status`
+  - `GET /api/v1/ml/integrations/qdrant/candidate-enrichment`
+- Java runtime integration paths:
+  - attractiveness sync policy gates/hints in `VisualAttractivenessSyncService`
+  - Qdrant/Unleash/OpenFGA clients in `src/main/java/com/nonononoki/alovoa/service/ml/`
+- Java job runner for offline ML jobs:
+  - Main class: `com.nonononoki.alovoa.jobs.ml.MlJobsRunner`
+  - Jobs: `train-cf-priors`, `build-scut-calibration`, `build-nsfw-calibration`,
+    `build-deepfake-calibration`, `evaluate-reranker-offline`, `manage-reranker-rollout`
+- Python worker/adapters remain under:
+  - `services/media-service/scripts/`
+  - `scripts/recommender/`
 
 ---
 
@@ -193,8 +232,11 @@ Admin endpoints:
 git clone https://github.com/tashiscool/alovoa.git
 cd alovoa
 
-# Start all services
+# Start Java-first backend stack (default)
 docker-compose -f docker-compose.aura.yml up -d
+
+# Optional: include legacy Python ML microservices
+docker-compose -f docker-compose.aura.yml --profile python-ml up -d
 
 # View logs
 docker-compose -f docker-compose.aura.yml logs -f

@@ -17,6 +17,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import com.nonononoki.alovoa.service.ml.JavaMediaBackendService;
 
 import java.util.*;
 
@@ -57,6 +58,9 @@ public class VideoVerificationService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private JavaMediaBackendService javaMediaBackendService;
 
     public Map<String, Object> uploadIntroVideo(MultipartFile video) throws Exception {
         User user = authService.getCurrentUser(true);
@@ -176,7 +180,7 @@ public class VideoVerificationService {
         // Call verification service
         Map<String, Object> verificationResult;
         try {
-            verificationResult = callVerificationService(user, videoUrl, sessionId);
+            verificationResult = callVerificationService(user, videoUrl, sessionId, video);
         } catch (Exception e) {
             LOGGER.error("Verification service failed", e);
             verification.setStatus(VerificationStatus.FAILED);
@@ -289,6 +293,11 @@ public class VideoVerificationService {
     }
 
     private String uploadToMediaService(MultipartFile video, String path, String type) throws Exception {
+        if (javaMediaBackendService.isEnabled()) {
+            String contentType = video.getContentType() == null ? "video/mp4" : video.getContentType();
+            return javaMediaBackendService.uploadBinary(video.getBytes(), contentType, path, type, false);
+        }
+
         try {
             String url = mediaServiceUrl + "/upload/video";
 
@@ -329,6 +338,10 @@ public class VideoVerificationService {
     }
 
     private Map<String, Object> getLivenessChallenges(String sessionId, Long userId) {
+        if (javaMediaBackendService.isEnabled()) {
+            return javaMediaBackendService.getLivenessChallenges(userId);
+        }
+
         String url = mediaServiceUrl + "/verify/liveness/challenges";
 
         HttpHeaders headers = new HttpHeaders();
@@ -362,7 +375,11 @@ public class VideoVerificationService {
         );
     }
 
-    private Map<String, Object> callVerificationService(User user, String videoUrl, String sessionId) throws Exception {
+    private Map<String, Object> callVerificationService(User user, String videoUrl, String sessionId, MultipartFile uploadedVideo) throws Exception {
+        if (javaMediaBackendService.isEnabled()) {
+            return javaMediaBackendService.verifyFace(user, uploadedVideo.getBytes(), sessionId);
+        }
+
         String url = mediaServiceUrl + "/verify/face";
 
         HttpHeaders headers = new HttpHeaders();
@@ -413,6 +430,25 @@ public class VideoVerificationService {
 
     private void analyzeVideoAsync(UserVideo video) {
         // This would typically be done asynchronously
+        if (javaMediaBackendService.isEnabled()) {
+            try {
+                Map<String, Object> result = javaMediaBackendService.analyzeVideo(new byte[0]);
+                if (result.containsKey("transcript")) {
+                    video.setTranscript((String) result.get("transcript"));
+                }
+                if (result.containsKey("duration")) {
+                    video.setDurationSeconds(((Number) result.get("duration")).intValue());
+                }
+                if (result.containsKey("sentiment")) {
+                    video.setSentimentScores(objectMapper.writeValueAsString(result.get("sentiment")));
+                }
+                videoRepo.save(video);
+            } catch (Exception e) {
+                LOGGER.warn("Java-local video analysis failed", e);
+            }
+            return;
+        }
+
         try {
             String url = mediaServiceUrl + "/video/analyze";
 

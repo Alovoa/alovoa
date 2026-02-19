@@ -1,0 +1,31 @@
+# Optional OSS model dependencies for extended moderation/anti-spoof adapters.
+# Not installed in CI by default.
+
+opennsfw2>=0.14.0
+nudenet>=3.4.2
+
+# Silent-Face adapter can run with modern torch stack if available.
+torch>=2.2.0
+torchvision>=0.17.0
+easydict>=1.13
+
+# BeautyPredict adapter optional runtime.
+tensorflow>=2.13.0
+
+# face-alignment adapter optional runtime.
+face-alignment>=1.4.1
+
+# dlib geometry adapter optional runtime.
+dlib>=19.24.6
+
+# Dedicated attractiveness adapters.
+deepface>=0.0.93
+insightface>=0.7.3
+mediapipe>=0.10.14
+
+# Text moderation adapter.
+detoxify>=0.5.2
+
+# CLIP NSFW adapter (optional heavy deps).
+git+https://github.com/openai/CLIP.git
+autokeras>=1.1.0

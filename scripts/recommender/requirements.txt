@@ -1,0 +1,7 @@
+pandas>=2.2.0
+numpy>=2.0.0
+scipy>=1.12.0
+sqlalchemy>=2.0.0
+pymysql>=1.1.0
+implicit>=0.7.2
+lightfm>=1.17

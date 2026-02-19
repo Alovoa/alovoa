@@ -12,6 +12,7 @@ public class ScoreTrace {
     double fExposure;
     double fCapacity;
     double fGap;
+    double fCollaborative;
     double ucb;
     double finalScore;
     String segment;

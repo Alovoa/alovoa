@@ -3,6 +3,7 @@ package com.nonononoki.alovoa.matching.rerank;
 import com.nonononoki.alovoa.matching.rerank.model.RerankerConfig;
 import com.nonononoki.alovoa.matching.rerank.model.UserStatsSnapshot;
 import com.nonononoki.alovoa.matching.rerank.policy.impl.DefaultCapacityPolicy;
+import com.nonononoki.alovoa.matching.rerank.policy.impl.DefaultCollaborativePriorPolicy;
 import com.nonononoki.alovoa.matching.rerank.policy.impl.DefaultDesirabilityPolicy;
 import com.nonononoki.alovoa.matching.rerank.policy.impl.DefaultExplorationPolicy;
 import com.nonononoki.alovoa.matching.rerank.policy.impl.DefaultExposurePolicy;
@@ -19,6 +20,7 @@ class PolicyFormulaTest {
     private final DefaultCapacityPolicy capacityPolicy = new DefaultCapacityPolicy();
     private final DefaultDesirabilityPolicy desirabilityPolicy = new DefaultDesirabilityPolicy();
     private final DefaultExplorationPolicy explorationPolicy = new DefaultExplorationPolicy();
+    private final DefaultCollaborativePriorPolicy collaborativePriorPolicy = new DefaultCollaborativePriorPolicy();
 
     @Test
     void exposureFactorMatchesFormula() {
@@ -115,5 +117,32 @@ class PolicyFormulaTest {
 
         double bonus = explorationPolicy.ucbBonus(viewer, candidate, 7, Map.of(7, 1), cfg);
         assertTrue(bonus > 0.0);
+    }
+
+    @Test
+    void collaborativePriorFactorStaysWithinConfiguredBounds() {
+        RerankerConfig cfg = new RerankerConfig();
+        cfg.setEnableCollaborativePrior(true);
+        cfg.setCollaborativeBeta(0.2);
+        cfg.setCollaborativeMinFactor(0.85);
+        cfg.setCollaborativeMaxFactor(1.15);
+
+        UserStatsSnapshot viewer = UserStatsSnapshot.builder()
+                .userId(1L)
+                .segmentKey("seg")
+                .collaborativePrior(0.55)
+                .collaborativeConfidence(0.80)
+                .build();
+
+        UserStatsSnapshot candidate = UserStatsSnapshot.builder()
+                .userId(2L)
+                .segmentKey("seg")
+                .collaborativePrior(0.60)
+                .collaborativeConfidence(0.75)
+                .build();
+
+        double factor = collaborativePriorPolicy.factor(viewer, candidate, cfg);
+        assertTrue(factor >= 0.85);
+        assertTrue(factor <= 1.15);
     }
 }

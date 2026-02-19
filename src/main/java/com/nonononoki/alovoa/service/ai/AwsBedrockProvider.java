@@ -2,6 +2,7 @@ package com.nonononoki.alovoa.service.ai;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonononoki.alovoa.model.VideoAnalysisResult;
+import com.nonononoki.alovoa.service.ml.JavaMediaBackendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,15 +60,23 @@ public class AwsBedrockProvider implements AiAnalysisProvider {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final JavaMediaBackendService javaMediaBackendService;
 
-    public AwsBedrockProvider(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public AwsBedrockProvider(RestTemplate restTemplate,
+                              ObjectMapper objectMapper,
+                              JavaMediaBackendService javaMediaBackendService) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.javaMediaBackendService = javaMediaBackendService;
     }
 
     @Override
     public String transcribeVideo(byte[] videoData, String mimeType) throws AiProviderException {
-        // AWS Transcribe could be used here, but for simplicity use media service
+        if (javaMediaBackendService.isEnabled()) {
+            return javaMediaBackendService.transcribeVideo(videoData, mimeType);
+        }
+
+        // AWS Transcribe could be used here, but for simplicity use legacy media service
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

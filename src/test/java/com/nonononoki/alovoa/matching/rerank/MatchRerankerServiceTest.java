@@ -7,6 +7,7 @@ import com.nonononoki.alovoa.matching.rerank.model.RerankResult;
 import com.nonononoki.alovoa.matching.rerank.model.RerankerConfig;
 import com.nonononoki.alovoa.matching.rerank.model.UserStatsSnapshot;
 import com.nonononoki.alovoa.matching.rerank.policy.impl.DefaultCapacityPolicy;
+import com.nonononoki.alovoa.matching.rerank.policy.impl.DefaultCollaborativePriorPolicy;
 import com.nonononoki.alovoa.matching.rerank.policy.impl.DefaultDesirabilityPolicy;
 import com.nonononoki.alovoa.matching.rerank.policy.impl.DefaultExplorationPolicy;
 import com.nonononoki.alovoa.matching.rerank.policy.impl.DefaultExposurePolicy;
@@ -66,7 +67,8 @@ class MatchRerankerServiceTest {
                 new DefaultExposurePolicy(),
                 new DefaultCapacityPolicy(),
                 new DefaultDesirabilityPolicy(),
-                new DefaultExplorationPolicy()
+                new DefaultExplorationPolicy(),
+                new DefaultCollaborativePriorPolicy()
         );
 
         User viewer = viewer(100L);
@@ -113,7 +115,8 @@ class MatchRerankerServiceTest {
                 (candidateStats, config) -> { throw new RuntimeException("boom"); },
                 new DefaultCapacityPolicy(),
                 new DefaultDesirabilityPolicy(),
-                new DefaultExplorationPolicy()
+                new DefaultExplorationPolicy(),
+                new DefaultCollaborativePriorPolicy()
         );
 
         User viewer = viewer(101L);

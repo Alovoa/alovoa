@@ -22,8 +22,11 @@ public class PersonalityService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonalityService.class);
 
-    @Value("${aura.ai-service.url:http://localhost:8002}")
+    @Value("${app.aura.ai-service.url:http://localhost:8002}")
     private String aiServiceUrl;
+
+    @Value("${app.aura.backend.java-ai.enabled:true}")
+    private boolean javaAiEnabled;
 
     @Autowired
     private AuthService authService;
@@ -214,6 +217,22 @@ public class PersonalityService {
     }
 
     private void generatePersonalityEmbeddings(User user, UserPersonalityProfile profile) {
+        if (javaAiEnabled) {
+            String seed = String.format(
+                    Locale.ROOT,
+                    "%d:%.2f:%.2f:%.2f:%.2f:%.2f",
+                    user.getId(),
+                    profile.getOpenness() == null ? 0.0 : profile.getOpenness(),
+                    profile.getConscientiousness() == null ? 0.0 : profile.getConscientiousness(),
+                    profile.getExtraversion() == null ? 0.0 : profile.getExtraversion(),
+                    profile.getAgreeableness() == null ? 0.0 : profile.getAgreeableness(),
+                    profile.getNeuroticism() == null ? 0.0 : profile.getNeuroticism()
+            );
+            profile.setPersonalityEmbeddingId("java_local_" + Integer.toHexString(seed.hashCode()));
+            personalityRepo.save(profile);
+            return;
+        }
+
         try {
             String url = aiServiceUrl + "/embeddings/personality";
 

@@ -37,6 +37,9 @@ public class MatchingService {
     @Value("${app.aura.ai-service.url:http://localhost:8002}")
     private String aiServiceUrl;
 
+    @Value("${app.aura.backend.java-ai.enabled:true}")
+    private boolean javaAiEnabled;
+
     @Value("${app.aura.daily-match.limit.default:5}")
     private Integer dailyMatchLimit;
 
@@ -140,12 +143,19 @@ public class MatchingService {
         int remaining = matchLimit.getRemainingMatches();
         List<MatchRecommendationDto> matches;
 
-        try {
-            // Try to call AI service
-            matches = callAIMatchingService(user, remaining);
-        } catch (Exception e) {
-            LOGGER.warn("AI service unavailable, using fallback matching", e);
+        if (javaAiEnabled) {
             matches = getFallbackMatches(user, remaining);
+        } else {
+            try {
+                // Try to call AI service
+                matches = callAIMatchingService(user, remaining);
+                if (matches == null || matches.isEmpty()) {
+                    matches = getFallbackMatches(user, remaining);
+                }
+            } catch (Exception e) {
+                LOGGER.warn("AI service unavailable, using fallback matching", e);
+                matches = getFallbackMatches(user, remaining);
+            }
         }
 
         String requestId = UUID.randomUUID().toString();
@@ -172,7 +182,11 @@ public class MatchingService {
         return Map.of(
                 "matches", matches,
                 "remaining", matchLimit.getRemainingMatches(),
-                "dailyLimitReached", matchLimit.hasReachedLimit()
+                "dailyLimitReached", matchLimit.hasReachedLimit(),
+                "requestId", requestId,
+                "rerankerApplied", rerankResult.isRerankerApplied(),
+                "rerankerVariant", rerankResult.getVariant(),
+                "rerankerReason", rerankResult.getReason()
         );
     }
 
@@ -480,6 +494,44 @@ public class MatchingService {
         dto.setSummary(generateCompatibilitySummary(compatibility));
 
         return dto;
+    }
+
+    public Map<String, Object> getRerankerScoreTrace(String matchUuid) throws Exception {
+        User viewer = authService.getCurrentUser(true);
+        User candidate = userRepo.findByUuid(UUID.fromString(matchUuid));
+        if (candidate == null) {
+            throw new Exception("User not found");
+        }
+
+        Optional<Map<String, Object>> row = matchingEventIngestionService.latestScoreTrace(viewer.getId(), candidate.getId());
+        if (row.isEmpty()) {
+            return Map.of(
+                    "found", false,
+                    "viewerId", viewer.getId(),
+                    "candidateId", candidate.getId(),
+                    "message", "No reranker trace found for this pair"
+            );
+        }
+
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("found", true);
+        payload.put("viewerId", viewer.getId());
+        payload.put("candidateId", candidate.getId());
+        payload.put("candidateUuid", candidate.getUuid() != null ? candidate.getUuid().toString() : null);
+        payload.put("trace", row.get());
+        return payload;
+    }
+
+    public Map<String, Object> getRerankerRequestTraces(String requestId, int limit) throws Exception {
+        User viewer = authService.getCurrentUser(true);
+        List<Map<String, Object>> traces = matchingEventIngestionService.requestScoreTraces(viewer.getId(), requestId, limit);
+        return Map.of(
+                "viewerId", viewer.getId(),
+                "requestId", requestId,
+                "limit", Math.max(1, Math.min(100, limit)),
+                "count", traces.size(),
+                "traces", traces
+        );
     }
 
     /**
@@ -860,6 +912,19 @@ public class MatchingService {
         score.setCalculatedAt(new Date());
         score.setUserAProfileUpdatedAt(getAssessmentProfileUpdatedAt(userA));
         score.setUserBProfileUpdatedAt(getAssessmentProfileUpdatedAt(userB));
+
+        if (javaAiEnabled) {
+            calculatePersonalityBasedCompatibility(score, userA, userB);
+            try {
+                score.setExplanationJson(objectMapper.writeValueAsString(Map.of(
+                        "provider", "java_local",
+                        "summary", generateCompatibilitySummary(score)
+                )));
+            } catch (Exception ignored) {
+                score.setExplanationJson(null);
+            }
+            return compatibilityRepo.save(score);
+        }
 
         // Try to call AI service for calculation
         try {

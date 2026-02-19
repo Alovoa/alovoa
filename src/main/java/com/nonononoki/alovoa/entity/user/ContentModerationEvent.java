@@ -27,6 +27,18 @@ public class ContentModerationEvent {
     @Column(length = 255)
     private String flaggedCategories;
 
+    @Column(length = 100)
+    private String provider;
+
+    @Column(length = 120)
+    private String modelVersion;
+
+    @Column(length = 32)
+    private String sourceMode;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String signalJson;
+
     @Column(nullable = false)
     private boolean blocked;
 

@@ -24,6 +24,7 @@ import base64
 from unittest.mock import patch, AsyncMock
 from fastapi.testclient import TestClient
 
+import main as media_main
 from main import (
     app,
     VerificationRequest,
@@ -549,6 +550,119 @@ class TestAttractivenessEndpoint:
             data = response.json()
             assert 0 <= data["score"] <= 1
             assert 0 <= data["confidence"] <= 1
+
+
+class TestImageModerationEndpoint:
+    def test_image_moderation_from_base64(self, sample_image_base64):
+        response = client.post("/moderation/image", json={
+            "user_id": 42,
+            "image_base64": sample_image_base64,
+            "image_type": "PROFILE"
+        })
+        assert response.status_code == 200
+        data = response.json()
+        assert "is_safe" in data
+        assert data["action"] in {"ALLOW", "BLOCK"}
+        assert 0 <= data["nsfw_score"] <= 1
+        assert 0 <= data["confidence"] <= 1
+        assert "provider" in data
+        assert "repo_refs" in data
+        assert isinstance(data["categories"], dict)
+        assert isinstance(data["signals"], dict)
+
+    def test_image_moderation_requires_image(self):
+        response = client.post("/moderation/image", json={"user_id": 42})
+        assert response.status_code == 400
+        assert "Image is required" in response.json()["detail"]
+
+    def test_image_moderation_disabled(self, sample_image_base64):
+        with patch.object(media_main, "NSFW_ENABLED", False):
+            response = client.post("/moderation/image", json={
+                "user_id": 42,
+                "image_base64": sample_image_base64
+            })
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["is_safe"] is True
+        assert data["action"] == "ALLOW"
+        assert "moderation_disabled" in data["signals"]
+
+    def test_image_moderation_with_clip_provider(self, sample_image_base64):
+        with patch.object(media_main, "NSFW_USE_CLIP_NSFW", True):
+            with patch("main.clip_nsfw_score") as mock_clip:
+                mock_clip.return_value = {
+                    "nsfw_score": 0.91,
+                    "confidence": 0.86,
+                    "categories": {"nsfw": 0.91, "sfw": 0.09},
+                    "signals": {"provider_clip_nsfw": 1.0},
+                }
+                response = client.post("/moderation/image", json={
+                    "user_id": 42,
+                    "image_base64": sample_image_base64,
+                })
+
+        assert response.status_code == 200
+        data = response.json()
+        assert "clip_nsfw_score" in data["signals"]
+        assert any(k.startswith("clip_") for k in data["categories"].keys())
+
+
+class TestTextModerationEndpoint:
+    def test_text_moderation_response(self):
+        response = client.post("/moderation/text", json={
+            "user_id": 42,
+            "text": "hello world"
+        })
+        assert response.status_code == 200
+        data = response.json()
+        assert data["decision"] in {"ALLOW", "WARN", "BLOCK"}
+        assert 0 <= data["toxicity_score"] <= 1
+        assert isinstance(data["labels"], dict)
+        assert "provider" in data
+        assert "model_version" in data
+
+    def test_text_moderation_requires_text(self):
+        response = client.post("/moderation/text", json={"user_id": 42})
+        assert response.status_code == 422
+
+
+class TestFaceQualityEndpoint:
+    def test_face_quality_from_base64(self, sample_image_base64):
+        response = client.post("/quality/face", json={
+            "user_id": 42,
+            "image_base64": sample_image_base64
+        })
+        assert response.status_code == 200
+        data = response.json()
+        assert 0 <= data["quality_score"] <= 1
+        assert 0 <= data["confidence"] <= 1
+        assert "provider" in data
+        assert "model_version" in data
+        assert isinstance(data["signals"], dict)
+
+    def test_face_quality_requires_image(self):
+        response = client.post("/quality/face", json={"user_id": 42})
+        assert response.status_code == 400
+
+    def test_face_quality_with_adapter_blend(self, sample_image_base64):
+        with patch("main.face_quality_adapter_signals") as mock_adapter:
+            mock_adapter.return_value = {
+                "quality_score": 0.82,
+                "confidence": 0.93,
+                "signals": {"provider_faceqan": 1.0, "face_ratio": 0.24},
+                "provider": "faceqan",
+                "model_version": "faceqan_v1",
+            }
+            response = client.post("/quality/face", json={
+                "user_id": 42,
+                "image_base64": sample_image_base64,
+            })
+
+        assert response.status_code == 200
+        data = response.json()
+        assert "adapter_quality_score" in data["signals"]
+        assert "adapter_provider_faceqan" in data["signals"]
 
 
 # ============ Configuration Tests ============

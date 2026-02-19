@@ -115,6 +115,11 @@ class ContentModerationServiceTest {
         ReflectionTestUtils.setField(moderationService, "toxicityThreshold", 0.7);
         ReflectionTestUtils.setField(moderationService, "insultThreshold", 0.8);
         ReflectionTestUtils.setField(moderationService, "profanityThreshold", 0.9);
+        ReflectionTestUtils.setField(moderationService, "textModerationServiceEnabled", false);
+        ReflectionTestUtils.setField(moderationService, "textModerationServiceUrl", "http://localhost:8081");
+        ReflectionTestUtils.setField(moderationService, "imageModerationEnabled", false);
+        ReflectionTestUtils.setField(moderationService, "imageModerationThreshold", 0.6);
+        ReflectionTestUtils.setField(moderationService, "mediaServiceUrl", "http://localhost:8001");
     }
 
     @AfterEach
@@ -375,6 +380,130 @@ class ContentModerationServiceTest {
         // Should fallback to keyword filter and still block
         assertFalse(result.isAllowed());
         assertTrue(result.getFlaggedCategories().contains("BLOCKED_WORD"));
+    }
+
+    @Test
+    void testTextModerationService_RemoteBlocked_LogsRemoteProvider() throws Exception {
+        ReflectionTestUtils.setField(moderationService, "textModerationServiceEnabled", true);
+        ReflectionTestUtils.setField(moderationService, "textModerationServiceUrl", "http://mock-moderation");
+
+        User user = testUsers.get(0);
+        String remoteResponse = """
+                {
+                  "is_allowed": false,
+                  "decision": "BLOCK",
+                  "toxicity_score": 0.93,
+                  "blocked_categories": ["toxicity", "insult"],
+                  "reason": "High toxicity",
+                  "provider": "detoxify",
+                  "model_version": "detoxify_multilingual",
+                  "signals": {"toxicity": 0.93, "insult": 0.74}
+                }
+                """;
+
+        Mockito.doReturn(new ResponseEntity<>(remoteResponse, HttpStatus.OK))
+                .when(restTemplate).exchange(
+                        eq("http://mock-moderation/moderation/text"),
+                        eq(HttpMethod.POST),
+                        any(HttpEntity.class),
+                        eq(String.class)
+                );
+
+        ModerationResult result = moderationService.moderateContent("problematic message", user, "MESSAGE");
+
+        assertFalse(result.isAllowed());
+        assertEquals(0.93, result.getToxicityScore());
+        assertTrue(result.getFlaggedCategories().contains("TOXICITY"));
+        assertTrue(result.getFlaggedCategories().contains("INSULT"));
+
+        List<ContentModerationEvent> events = moderationEventRepo.findByUser(user);
+        assertEquals(1, events.size());
+        ContentModerationEvent event = events.get(0);
+        assertEquals("detoxify", event.getProvider());
+        assertEquals("detoxify_multilingual", event.getModelVersion());
+        assertEquals("remote_text_service", event.getSourceMode());
+        assertNotNull(event.getSignalJson());
+        assertTrue(event.getSignalJson().contains("\"toxicity\""));
+
+        Mockito.verify(restTemplate, Mockito.times(1))
+                .exchange(
+                        eq("http://mock-moderation/moderation/text"),
+                        eq(HttpMethod.POST),
+                        any(HttpEntity.class),
+                        eq(String.class)
+                );
+    }
+
+    @Test
+    void testTextModerationService_Non2xx_FallsBackToKeywordFilter() throws Exception {
+        ReflectionTestUtils.setField(moderationService, "textModerationServiceEnabled", true);
+        ReflectionTestUtils.setField(moderationService, "textModerationServiceUrl", "http://mock-moderation");
+
+        User user = testUsers.get(0);
+
+        Mockito.doReturn(new ResponseEntity<>("{\"error\":\"temporary\"}", HttpStatus.SERVICE_UNAVAILABLE))
+                .when(restTemplate).exchange(
+                        eq("http://mock-moderation/moderation/text"),
+                        eq(HttpMethod.POST),
+                        any(HttpEntity.class),
+                        eq(String.class)
+                );
+
+        ModerationResult result = moderationService.moderateContent("contains badword1", user, "MESSAGE");
+
+        assertFalse(result.isAllowed());
+        assertTrue(result.getFlaggedCategories().contains("BLOCKED_WORD"));
+
+        List<ContentModerationEvent> events = moderationEventRepo.findByUser(user);
+        assertEquals(1, events.size());
+        ContentModerationEvent event = events.get(0);
+        assertEquals("keyword_filter", event.getProvider());
+        assertEquals("fallback", event.getSourceMode());
+        assertNull(event.getModelVersion());
+    }
+
+    @Test
+    void testTextModerationService_Exception_FallsBackToPerspective() throws Exception {
+        ReflectionTestUtils.setField(moderationService, "textModerationServiceEnabled", true);
+        ReflectionTestUtils.setField(moderationService, "textModerationServiceUrl", "http://mock-moderation");
+        ReflectionTestUtils.setField(moderationService, "perspectiveApiKey", "test-api-key");
+
+        User user = testUsers.get(0);
+
+        String perspectiveResponse = """
+                {
+                  "attributeScores": {
+                    "TOXICITY": {"summaryScore": {"value": 0.84}},
+                    "INSULT": {"summaryScore": {"value": 0.30}},
+                    "PROFANITY": {"summaryScore": {"value": 0.20}},
+                    "THREAT": {"summaryScore": {"value": 0.10}},
+                    "IDENTITY_ATTACK": {"summaryScore": {"value": 0.10}}
+                  }
+                }
+                """;
+
+        Mockito.doAnswer(invocation -> {
+                    String url = invocation.getArgument(0, String.class);
+                    if (url.contains("/moderation/text")) {
+                        throw new RuntimeException("remote moderation unavailable");
+                    }
+                    if (url.contains("commentanalyzer.googleapis.com")) {
+                        return new ResponseEntity<>(perspectiveResponse, HttpStatus.OK);
+                    }
+                    throw new IllegalArgumentException("Unexpected URL " + url);
+                })
+                .when(restTemplate).exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(String.class));
+
+        ModerationResult result = moderationService.moderateContent("text routed to perspective", user, "MESSAGE");
+
+        assertFalse(result.isAllowed());
+        assertTrue(result.getFlaggedCategories().contains("TOXICITY"));
+
+        List<ContentModerationEvent> events = moderationEventRepo.findByUser(user);
+        assertEquals(1, events.size());
+        ContentModerationEvent event = events.get(0);
+        assertEquals("perspective_api", event.getProvider());
+        assertEquals("api", event.getSourceMode());
     }
 
     // === Moderation Event Logging Tests ===

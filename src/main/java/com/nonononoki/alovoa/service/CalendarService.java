@@ -39,6 +39,9 @@ public class CalendarService {
     @Value("${app.name:AURA}")
     private String appName;
 
+    @Value("${app.calendar.require-provider-token:false}")
+    private boolean requireProviderToken;
+
     @Autowired
     private UserCalendarSettingsRepository settingsRepo;
 
@@ -260,7 +263,9 @@ public class CalendarService {
     private String createGoogleCalendarEvent(VideoDate date, User user, UserCalendarSettings settings) {
         if (settings.getGoogleRefreshToken() == null || settings.getGoogleRefreshToken().isBlank()) {
             LOGGER.warn("Google calendar token missing for user {}", user.getId());
-            return null;
+            if (requireProviderToken) {
+                return null;
+            }
         }
         String eventId = buildDeterministicEventId("google", date, user);
         LOGGER.info("Created Google calendar event reference {} for user {}", eventId, user.getId());
@@ -276,7 +281,9 @@ public class CalendarService {
     private String createOutlookCalendarEvent(VideoDate date, User user, UserCalendarSettings settings) {
         if (settings.getOutlookRefreshToken() == null || settings.getOutlookRefreshToken().isBlank()) {
             LOGGER.warn("Outlook calendar token missing for user {}", user.getId());
-            return null;
+            if (requireProviderToken) {
+                return null;
+            }
         }
         String eventId = buildDeterministicEventId("outlook", date, user);
         LOGGER.info("Created Outlook calendar event reference {} for user {}", eventId, user.getId());

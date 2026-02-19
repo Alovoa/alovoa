@@ -18,6 +18,8 @@ public class UserStatsSnapshot {
     double a7d;
     double dPercentile7d;
     double backendAttractivenessScore;
+    double collaborativePrior;
+    double collaborativeConfidence;
 
     public static UserStatsSnapshot empty(Long userId, String segmentKey) {
         return UserStatsSnapshot.builder()
@@ -33,6 +35,8 @@ public class UserStatsSnapshot {
                 .a7d(0.0)
                 .dPercentile7d(0.5)
                 .backendAttractivenessScore(0.5)
+                .collaborativePrior(0.5)
+                .collaborativeConfidence(0.0)
                 .build();
     }
 }

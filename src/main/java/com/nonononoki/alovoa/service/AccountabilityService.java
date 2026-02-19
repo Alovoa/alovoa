@@ -15,6 +15,7 @@ import com.nonononoki.alovoa.repo.MessageRepository;
 import com.nonononoki.alovoa.repo.ReportEvidenceRepository;
 import com.nonononoki.alovoa.repo.UserAccountabilityReportRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
+import com.nonononoki.alovoa.service.ml.JavaMediaBackendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,9 @@ public class AccountabilityService {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private JavaMediaBackendService javaMediaBackendService;
 
     @Value("${app.aura.media-service.url:http://localhost:8001}")
     private String mediaServiceUrl;
@@ -592,6 +596,11 @@ public class AccountabilityService {
     }
 
     private String uploadToMediaService(MultipartFile file) throws Exception {
+        if (javaMediaBackendService.isEnabled()) {
+            String contentType = file.getContentType() == null ? "application/octet-stream" : file.getContentType();
+            return javaMediaBackendService.uploadBinary(file.getBytes(), contentType, "evidence", "evidence", true);
+        }
+
         // Create multipart request to media service
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -633,6 +642,9 @@ public class AccountabilityService {
     }
 
     private String performOcr(String imageUrl) {
+        if (javaMediaBackendService.isEnabled()) {
+            return javaMediaBackendService.ocrFromUrl(imageUrl);
+        }
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
