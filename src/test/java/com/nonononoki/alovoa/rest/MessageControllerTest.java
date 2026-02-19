@@ -455,15 +455,15 @@ class MessageControllerTest {
         Conversation conversation = new Conversation();
         conversation.setUsers(new ArrayList<>());
         conversation.setDate(new Date());
-        conversation.getUsers().add(user1);
-        conversation.getUsers().add(user2);
+        conversation.addUser(user1);
+        conversation.addUser(user2);
         conversation.setLastUpdated(new Date());
         conversation.setMessages(new ArrayList<>());
         conversation.setCheckedDates(new ArrayList<>());
         conversation = conversationRepo.saveAndFlush(conversation);
 
-        user1.getConversations().add(conversation);
-        user2.getConversations().add(conversation);
+        user1.addConversation(conversation);
+        user2.addConversation(conversation);
         userRepo.saveAndFlush(user1);
         userRepo.saveAndFlush(user2);
 

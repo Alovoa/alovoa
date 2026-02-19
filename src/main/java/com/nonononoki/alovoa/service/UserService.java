@@ -238,7 +238,7 @@ public class UserService {
         for (Conversation c : conversationRepo.findByUsers_Id(user.getId())) {
             for (User u : c.getUsers()) {
                 if (u != null && u.getConversations() != null) {
-                    u.getConversations().remove(c);
+                    u.removeConversation(c);
                     userRepo.save(u);
                 }
             }
@@ -773,14 +773,14 @@ public class UserService {
                     convo = new Conversation();
                     convo.setUsers(new ArrayList<>());
                     convo.setDate(new Date());
-                    convo.getUsers().add(currUser);
-                    convo.getUsers().add(user);
+                    convo.addUser(currUser);
+                    convo.addUser(user);
                     convo.setLastUpdated(new Date());
                     convo.setMessages(new ArrayList<>());
                     conversationRepo.saveAndFlush(convo);
 
-                    user.getConversations().add(convo);
-                    currUser.getConversations().add(convo);
+                    user.addConversation(convo);
+                    currUser.addConversation(convo);
 
                     userRepo.saveAndFlush(currUser);
                     userRepo.saveAndFlush(user);

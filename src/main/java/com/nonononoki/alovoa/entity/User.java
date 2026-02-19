@@ -143,6 +143,8 @@ public class User implements UserDetails {
     private List<Message> messageReceived;
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "users")
     @JsonIgnore
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private List<Conversation> conversations;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userFrom")
     @JsonIgnore
@@ -309,6 +311,33 @@ public class User implements UserDetails {
             .filter(v -> Boolean.TRUE.equals(v.getIsIntro()))
             .findFirst()
             .orElse(null);
+    }
+
+    public List<Conversation> getConversations() {
+        return conversations == null ? null : List.copyOf(conversations);
+    }
+
+    public void setConversations(List<Conversation> conversations) {
+        this.conversations = conversations == null ? null : new ArrayList<>(conversations);
+    }
+
+    public void addConversation(Conversation conversation) {
+        if (conversation == null) {
+            return;
+        }
+        if (conversations == null) {
+            conversations = new ArrayList<>();
+        }
+        if (!conversations.contains(conversation)) {
+            conversations.add(conversation);
+        }
+    }
+
+    public void removeConversation(Conversation conversation) {
+        if (conversation == null || conversations == null) {
+            return;
+        }
+        conversations.remove(conversation);
     }
 
     public boolean isPoliticalAssessmentComplete() {

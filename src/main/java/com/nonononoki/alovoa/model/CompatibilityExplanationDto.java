@@ -41,6 +41,20 @@ public class CompatibilityExplanationDto {
     private Double matchPercentage;
 
     /**
+     * Non-deprecated internal accessor for legacy API payload compatibility.
+     */
+    public Double getOverallScoreValue() {
+        return overallScore;
+    }
+
+    /**
+     * Non-deprecated internal accessor for legacy API payload compatibility.
+     */
+    public Double getMatchPercentageValue() {
+        return matchPercentage;
+    }
+
+    /**
      * Human-readable match category label for user-facing display.
      * Values: "Exceptional Match", "Strong Match", "Good Match", "Fair Match", "Exploring Match"
      */

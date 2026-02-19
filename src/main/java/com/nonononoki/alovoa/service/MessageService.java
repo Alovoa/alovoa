@@ -427,18 +427,12 @@ public class MessageService {
 		convo.setLastUpdated(new Date());
 		convo.setUsers(new ArrayList<>());
 		convo.setMessages(new ArrayList<>());
-		convo.getUsers().add(userA);
-		convo.getUsers().add(userB);
+		convo.addUser(userA);
+		convo.addUser(userB);
 		convo = conversationRepo.saveAndFlush(convo);
 
-		if (userA.getConversations() == null) {
-			userA.setConversations(new ArrayList<>());
-		}
-		if (userB.getConversations() == null) {
-			userB.setConversations(new ArrayList<>());
-		}
-		userA.getConversations().add(convo);
-		userB.getConversations().add(convo);
+		userA.addConversation(convo);
+		userB.addConversation(convo);
 		userRepo.saveAndFlush(userA);
 		userRepo.saveAndFlush(userB);
 

@@ -13,6 +13,7 @@ import java.util.List;
  */
 public interface CandidateGenerator {
 
+    @SuppressWarnings("unused")
     List<RerankCandidate> getCandidates(User viewer,
                                         List<MatchRecommendationDto> existingCandidates,
                                         MatchingRequestContext context);

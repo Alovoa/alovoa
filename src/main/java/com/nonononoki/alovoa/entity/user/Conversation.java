@@ -20,6 +20,7 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.repo.UserBlockRepository;
 
 import lombok.Getter;
+import lombok.AccessLevel;
 import lombok.Setter;
 
 @Getter
@@ -32,6 +33,8 @@ public class Conversation {
 	private Long id;
 
 	@ManyToMany
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	private List<User> users = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "conversation")
@@ -67,6 +70,30 @@ public class Conversation {
 
 	public boolean containsUser(User user) {
 		return users.contains(user);
+	}
+
+	public List<User> getUsers() {
+		return List.copyOf(users);
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users == null ? new ArrayList<>() : new ArrayList<>(users);
+	}
+
+	public void addUser(User user) {
+		if (user == null) {
+			return;
+		}
+		if (!users.contains(user)) {
+			users.add(user);
+		}
+	}
+
+	public void removeUser(User user) {
+		if (user == null) {
+			return;
+		}
+		users.remove(user);
 	}
 
 	public User getPartner(User user) {

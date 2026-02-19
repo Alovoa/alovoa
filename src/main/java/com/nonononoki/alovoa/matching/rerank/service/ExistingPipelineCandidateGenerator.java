@@ -16,6 +16,9 @@ public class ExistingPipelineCandidateGenerator implements CandidateGenerator {
     public List<RerankCandidate> getCandidates(User viewer,
                                                List<MatchRecommendationDto> existingCandidates,
                                                MatchingRequestContext context) {
+        if (viewer == null || context == null || existingCandidates == null || existingCandidates.isEmpty()) {
+            return List.of();
+        }
         List<RerankCandidate> out = new ArrayList<>();
         int position = 0;
         for (MatchRecommendationDto dto : existingCandidates) {

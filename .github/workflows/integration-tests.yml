@@ -88,7 +88,7 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
-          cache-dependency-path: services/media-service/requirements.txt
+          cache-dependency-path: services/media-service/requirements-ci.txt
 
       - name: Check if requirements.txt exists
         id: check-requirements
@@ -103,7 +103,11 @@ jobs:
         if: steps.check-requirements.outputs.exists == 'true'
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          REQ_FILE="requirements.txt"
+          if [ -f requirements-ci.txt ]; then
+            REQ_FILE="requirements-ci.txt"
+          fi
+          pip install -r "$REQ_FILE"
           pip install pytest pytest-cov pytest-asyncio
 
       - name: Run tests

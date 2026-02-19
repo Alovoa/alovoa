@@ -424,8 +424,8 @@ public class VideoDateService {
         Conversation conversation = conversationRepo.findByUsers(initiator.getId(), participant.getId())
                 .orElseGet(() -> {
                     Conversation newConv = new Conversation();
-                    newConv.getUsers().add(initiator);
-                    newConv.getUsers().add(participant);
+                    newConv.addUser(initiator);
+                    newConv.addUser(participant);
                     return conversationRepo.save(newConv);
                 });
 

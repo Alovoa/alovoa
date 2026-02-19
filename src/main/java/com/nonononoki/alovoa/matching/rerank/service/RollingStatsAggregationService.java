@@ -60,7 +60,6 @@ public class RollingStatsAggregationService {
         Instant windowEnd = Instant.now();
         Instant windowStart = windowEnd.minus(7, ChronoUnit.DAYS);
         Timestamp tsWindowStart = Timestamp.from(windowStart);
-        Timestamp tsWindowEnd = Timestamp.from(windowEnd);
 
         List<User> users = userRepo.findByDisabledFalseAndAdminFalseAndConfirmedTrue();
         if (users.isEmpty()) {

@@ -26,10 +26,23 @@ public class MatchingController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/daily")
+    @PostMapping("/daily")
     public ResponseEntity<?> getDailyMatches() {
         try {
             Map<String, Object> result = matchingService.getDailyMatches();
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    /**
+     * Read-only daily payload (does not generate/consume additional matches).
+     */
+    @GetMapping("/daily")
+    public ResponseEntity<?> getDailyMatchesReadOnly() {
+        try {
+            Map<String, Object> result = matchingService.getCachedDailyMatches();
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
@@ -43,7 +56,7 @@ public class MatchingController {
     @GetMapping("/matches")
     public ResponseEntity<?> getMatches() {
         try {
-            Map<String, Object> result = matchingService.getDailyMatches();
+            Map<String, Object> result = matchingService.getCachedDailyMatches();
             Object rawMatches = result.getOrDefault("matches", java.util.Collections.emptyList());
             if (!(rawMatches instanceof List<?> list)) {
                 return ResponseEntity.ok(List.of());
@@ -72,7 +85,9 @@ public class MatchingController {
                 Map<String, Object> compatibility = new HashMap<>();
                 compatibility.put("overallScore", dto.getCompatibilityScore() != null ? dto.getCompatibilityScore() : 0.0);
                 compatibility.put("enemyScore", dto.getEnemyScore() != null ? dto.getEnemyScore() : 0.0);
-                compatibility.put("matchPercentage", dto.getMatchPercentage() != null ? dto.getMatchPercentage() : dto.getCompatibilityScore());
+                compatibility.put("matchPercentage", dto.getMatchPercentageValue() != null
+                        ? dto.getMatchPercentageValue()
+                        : dto.getCompatibilityScore());
 
                 mapped.add(Map.of(
                         "user", userMap,
@@ -196,7 +211,7 @@ public class MatchingController {
             }
 
             Map<String, Object> result = new HashMap<>();
-            result.put("overallScore", dto.getOverallScore() != null ? dto.getOverallScore() : 0.0);
+            result.put("overallScore", dto.getOverallScoreValue() != null ? dto.getOverallScoreValue() : 0.0);
             result.put("matchCategoryLabel", dto.getMatchCategoryLabel());
             result.put("dimensions", dimensions);
             result.put("dealbreakers", dealbreakers);

@@ -81,17 +81,17 @@ public class EssayController {
     public ResponseEntity<?> addEssay(@RequestBody Map<String, Object> body) throws AlovoaException {
         Object promptIdRaw = body.get("promptId");
         if (promptIdRaw != null) {
-            Long promptId = promptIdRaw instanceof Number n ? n.longValue() : Long.parseLong(String.valueOf(promptIdRaw));
+            Long promptId = parsePromptId(promptIdRaw);
             String text = body.get("text") != null ? String.valueOf(body.get("text")) : null;
             essayService.saveEssay(promptId, text);
             return ResponseEntity.ok().build();
         }
 
-        Map<Long, String> essayMap = body.entrySet().stream()
-                .collect(java.util.stream.Collectors.toMap(
-                        e -> Long.parseLong(e.getKey()),
-                        e -> e.getValue() != null ? String.valueOf(e.getValue()) : null
-                ));
+        Map<Long, String> essayMap = new java.util.HashMap<>();
+        for (Map.Entry<String, Object> entry : body.entrySet()) {
+            Long promptId = parsePromptId(entry.getKey());
+            essayMap.put(promptId, entry.getValue() != null ? String.valueOf(entry.getValue()) : null);
+        }
         essayService.saveEssays(essayMap);
         return ResponseEntity.ok().build();
     }
@@ -102,12 +102,11 @@ public class EssayController {
      */
     @PostMapping
     public ResponseEntity<Void> saveEssays(@RequestBody Map<String, String> essays) throws AlovoaException {
-        // Convert string keys to Long
-        Map<Long, String> essayMap = essays.entrySet().stream()
-                .collect(java.util.stream.Collectors.toMap(
-                        e -> Long.parseLong(e.getKey()),
-                        Map.Entry::getValue
-                ));
+        Map<Long, String> essayMap = new java.util.HashMap<>();
+        for (Map.Entry<String, String> entry : essays.entrySet()) {
+            Long promptId = parsePromptId(entry.getKey());
+            essayMap.put(promptId, entry.getValue());
+        }
         essayService.saveEssays(essayMap);
         return ResponseEntity.ok().build();
     }
@@ -137,5 +136,19 @@ public class EssayController {
     @DeleteMapping("/delete/{promptId}")
     public ResponseEntity<Void> deleteEssayAlias(@PathVariable Long promptId) throws AlovoaException {
         return deleteEssay(promptId);
+    }
+
+    private Long parsePromptId(Object rawPromptId) throws AlovoaException {
+        if (rawPromptId == null) {
+            throw new AlovoaException("invalid_prompt_id");
+        }
+        if (rawPromptId instanceof Number number) {
+            return number.longValue();
+        }
+        try {
+            return Long.parseLong(String.valueOf(rawPromptId));
+        } catch (NumberFormatException e) {
+            throw new AlovoaException("invalid_prompt_id");
+        }
     }
 }

@@ -157,12 +157,12 @@ public class VideoVerificationService {
                 captureMetadata = objectMapper.readValue(metadataJson, Map.class);
                 verification.setCaptureMetadata(metadataJson);
                 LOGGER.debug("Capture metadata: mimeType={}, durationMs={}, resolution={}x{}",
-                        captureMetadata.get("mimeType"),
-                        captureMetadata.get("durationMs"),
-                        captureMetadata.get("videoWidth"),
-                        captureMetadata.get("videoHeight"));
+                        sanitizeForLog(captureMetadata.get("mimeType")),
+                        sanitizeForLog(captureMetadata.get("durationMs")),
+                        sanitizeForLog(captureMetadata.get("videoWidth")),
+                        sanitizeForLog(captureMetadata.get("videoHeight")));
             } catch (Exception e) {
-                LOGGER.warn("Failed to parse capture metadata: {}", e.getMessage());
+                LOGGER.warn("Failed to parse capture metadata", e);
             }
         }
 
@@ -395,6 +395,20 @@ public class VideoVerificationService {
             return "/media/profile-picture/" + user.getProfilePicture().getUuid().toString();
         }
         return null;
+    }
+
+    private String sanitizeForLog(Object rawValue) {
+        if (rawValue == null) {
+            return "null";
+        }
+        String asString = String.valueOf(rawValue)
+                .replace('\r', '_')
+                .replace('\n', '_')
+                .replace('\t', '_');
+        if (asString.length() > 120) {
+            return asString.substring(0, 120);
+        }
+        return asString;
     }
 
     private void analyzeVideoAsync(UserVideo video) {

@@ -5,6 +5,7 @@ import com.nonononoki.alovoa.entity.matching.FeatureFlagConfig;
 import com.nonononoki.alovoa.matching.rerank.model.RerankerConfig;
 import com.nonononoki.alovoa.repo.matching.FeatureFlagConfigRepository;
 import lombok.Builder;
+import lombok.ToString;
 import lombok.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,9 +86,13 @@ public class RerankerPolicyConfigService {
 
     @Value
     @Builder
+    @ToString(onlyExplicitlyIncluded = true)
     public static class ResolvedConfig {
+        @ToString.Include
         boolean enabled;
+        @ToString.Include
         String segmentKey;
+        @ToString.Include
         String source;
         RerankerConfig config;
     }

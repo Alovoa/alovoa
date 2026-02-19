@@ -39,6 +39,13 @@ public class MatchRecommendationDto {
     private Double matchPercentage;
 
     /**
+     * Non-deprecated internal accessor for API adapters that still need the numeric value.
+     */
+    public Double getMatchPercentageValue() {
+        return matchPercentage;
+    }
+
+    /**
      * Human-readable match category label for user-facing display.
      * Replaces numerical percentages to prevent optimization/gaming behavior.
      *

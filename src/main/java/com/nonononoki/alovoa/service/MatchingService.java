@@ -196,6 +196,61 @@ public class MatchingService {
         );
     }
 
+    /**
+     * Return already-generated daily matches without consuming additional daily quota.
+     * This keeps GET endpoints read-only while POST /refresh generates new batches.
+     */
+    public Map<String, Object> getCachedDailyMatches() throws Exception {
+        User user = authService.getCurrentUser(true);
+
+        if (!intakeService.isIntakeComplete(user)) {
+            return Map.of(
+                    "matches", Collections.emptyList(),
+                    "gated", true,
+                    "gateMessage", "Complete your profile intake to start matching. Answer the 10 core questions and upload your video introduction.",
+                    "gateStatus", "INTAKE_INCOMPLETE",
+                    "intakeRequired", true
+            );
+        }
+
+        if (politicalAssessmentRequired && !politicalAssessmentService.canAccessMatching(user)) {
+            String message = politicalAssessmentService.getGateStatusMessage(user);
+            return Map.of(
+                    "matches", Collections.emptyList(),
+                    "gated", true,
+                    "gateMessage", message,
+                    "gateStatus", user.getPoliticalGateStatus().name()
+            );
+        }
+
+        Date today = truncateToDay(new Date());
+        UserDailyMatchLimit matchLimit = matchLimitRepo.findByUserAndMatchDate(user, today).orElse(null);
+
+        if (matchLimit == null) {
+            return Map.of(
+                    "matches", Collections.emptyList(),
+                    "remaining", dailyMatchLimit,
+                    "dailyLimitReached", false
+            );
+        }
+
+        List<Long> shownUserIds = readShownUserIds(matchLimit);
+        if (shownUserIds.isEmpty()) {
+            return Map.of(
+                    "matches", Collections.emptyList(),
+                    "remaining", matchLimit.getRemainingMatches(),
+                    "dailyLimitReached", matchLimit.hasReachedLimit()
+            );
+        }
+
+        List<MatchRecommendationDto> matches = buildCachedMatchDtos(user, shownUserIds);
+        return Map.of(
+                "matches", matches,
+                "remaining", matchLimit.getRemainingMatches(),
+                "dailyLimitReached", matchLimit.hasReachedLimit()
+        );
+    }
+
     @SuppressWarnings("unchecked")
     public CompatibilityExplanationDto getCompatibilityExplanation(String matchUuid) throws Exception {
         User user = authService.getCurrentUser(true);
@@ -840,12 +895,25 @@ public class MatchingService {
         if (score == null) {
             return true;
         }
-        if (score.getUserAProfileUpdatedAt() == null || score.getUserBProfileUpdatedAt() == null) {
-            return true;
-        }
 
         Date userAUpdatedAt = getAssessmentProfileUpdatedAt(userA);
         Date userBUpdatedAt = getAssessmentProfileUpdatedAt(userB);
+
+        // Legacy rows may not have profile-updated timestamps. In that case, compare profile updates
+        // against calculation time and only invalidate if the profile changed after calculation.
+        if (score.getUserAProfileUpdatedAt() == null || score.getUserBProfileUpdatedAt() == null) {
+            Date calculatedAt = score.getCalculatedAt();
+            if (calculatedAt == null) {
+                return false;
+            }
+            if (userAUpdatedAt != null && userAUpdatedAt.after(calculatedAt)) {
+                return true;
+            }
+            if (userBUpdatedAt != null && userBUpdatedAt.after(calculatedAt)) {
+                return true;
+            }
+            return false;
+        }
 
         if (userAUpdatedAt != null && score.getUserAProfileUpdatedAt().before(userAUpdatedAt)) {
             return true;
@@ -1402,6 +1470,64 @@ public class MatchingService {
         } catch (JsonProcessingException e) {
             LOGGER.error("Failed to update shown user IDs", e);
         }
+    }
+
+    private List<Long> readShownUserIds(UserDailyMatchLimit limit) {
+        if (limit == null || limit.getShownUserIds() == null || limit.getShownUserIds().isBlank()) {
+            return List.of();
+        }
+        try {
+            List<Long> parsed = objectMapper.readValue(limit.getShownUserIds(), new TypeReference<List<Long>>() {});
+            if (parsed == null || parsed.isEmpty()) {
+                return List.of();
+            }
+            return parsed.stream()
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.collectingAndThen(
+                            Collectors.toCollection(LinkedHashSet::new),
+                            ArrayList::new
+                    ));
+        } catch (JsonProcessingException e) {
+            LOGGER.warn("Failed to parse shown user IDs for daily match limit {}", limit.getId(), e);
+            return List.of();
+        }
+    }
+
+    private List<MatchRecommendationDto> buildCachedMatchDtos(User viewer, List<Long> shownUserIds) {
+        List<MatchRecommendationDto> matches = new ArrayList<>();
+        for (Long userId : shownUserIds) {
+            User matchUser = userRepo.findById(userId).orElse(null);
+            if (matchUser == null) {
+                continue;
+            }
+
+            MatchRecommendationDto dto = new MatchRecommendationDto();
+            dto.setUserId(matchUser.getId());
+            dto.setUserUuid(matchUser.getUuid().toString());
+
+            CompatibilityScore score = compatibilityRepo.findByUserAAndUserB(viewer, matchUser).orElse(null);
+            if (score != null) {
+                dto.setCompatibilityScore(score.getOverallScore());
+                dto.setEnemyScore(score.getEnemyScore());
+            } else {
+                dto.setCompatibilityScore(50.0);
+                dto.setEnemyScore(0.0);
+            }
+
+            try {
+                TravelTimeService.TravelTimeInfo travelInfo = travelTimeService.getTravelTimeInfo(viewer, matchUser);
+                dto.setTravelTimeMinutes(travelInfo.getMinutes());
+                dto.setTravelTimeDisplay(travelInfo.getDisplay());
+                dto.setHasOverlappingAreas(travelInfo.isHasOverlappingAreas());
+                dto.setOverlappingAreas(travelInfo.getOverlappingAreas());
+            } catch (Exception e) {
+                LOGGER.debug("Could not load travel info for cached match {} -> {}", viewer.getId(), matchUser.getId(), e);
+            }
+
+            populateOkCupidMatchData(dto, viewer, matchUser);
+            matches.add(dto);
+        }
+        return matches;
     }
 
     /**
