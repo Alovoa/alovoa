@@ -74,8 +74,8 @@ const ReputationScore = ({ navigation }: any) => {
         Global.Fetch(URL.API_REPUTATION_HISTORY),
       ]);
       setScore(scoreRes.data);
-      setBadges(badgesRes.data || []);
-      setHistory(historyRes.data || []);
+      setBadges((badgesRes.data?.badges || badgesRes.data || []) as ReputationBadge[]);
+      setHistory((historyRes.data?.history || historyRes.data || []) as ReputationHistoryItem[]);
     } catch (e) {
       console.error(e);
     }

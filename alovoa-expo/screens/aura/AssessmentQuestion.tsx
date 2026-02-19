@@ -73,7 +73,10 @@ const AssessmentQuestionScreen = ({ route, navigation }: any) => {
       }
 
       const response = await Global.Fetch(url);
-      setQuestions(response.data || []);
+      const payload = response.data;
+      const rawQuestions = Array.isArray(payload) ? payload : (payload?.questions || []);
+      const normalized = rawQuestions.map((q: any) => normalizeQuestion(q));
+      setQuestions(normalized);
     } catch (e) {
       console.error(e);
       Global.ShowToast(i18n.t('error.generic'));
@@ -95,7 +98,7 @@ const AssessmentQuestionScreen = ({ route, navigation }: any) => {
     setSubmitting(true);
     try {
       const answer: UserQuestionAnswer = {
-        questionId: questions[currentIndex].id,
+        questionId: String((questions[currentIndex] as any).externalId || questions[currentIndex].id),
         selectedOptionId: selectedOption,
         acceptableOptionIds: acceptableOptions.length > 0 ? acceptableOptions : [selectedOption],
         importance,
@@ -103,7 +106,7 @@ const AssessmentQuestionScreen = ({ route, navigation }: any) => {
         answeredAt: new Date(),
       };
 
-      await Global.Fetch(URL.API_ASSESSMENT_ANSWER, 'post', answer);
+      await Global.Fetch(URL.API_ASSESSMENT_ANSWER + "/mobile", 'post', answer);
 
       // Animate transition to next question
       Animated.timing(fadeAnim, {
@@ -130,6 +133,40 @@ const AssessmentQuestionScreen = ({ route, navigation }: any) => {
       Global.ShowToast(i18n.t('error.generic'));
     }
     setSubmitting(false);
+  }
+
+  function normalizeQuestion(question: any): QuestionType {
+    const options = Array.isArray(question?.options) && question.options.length > 0
+      ? question.options.map((o: any, index: number) => ({
+          id: String(o?.id ?? index + 1),
+          text: String(o?.text ?? o?.label ?? `Option ${index + 1}`),
+          value: Number(o?.value ?? index + 1),
+        }))
+      : buildFallbackOptions(question?.responseScale);
+
+    return {
+      ...(question || {}),
+      id: String(question?.id ?? ""),
+      text: String(question?.text ?? ""),
+      category: (question?.category || category || AssessmentCategory.VALUES),
+      options,
+    } as QuestionType;
+  }
+
+  function buildFallbackOptions(responseScale?: string) {
+    if (responseScale === "BINARY") {
+      return [
+        { id: "0", text: "No", value: 0 },
+        { id: "1", text: "Yes", value: 1 },
+      ];
+    }
+    return [
+      { id: "1", text: "Strongly Disagree", value: 1 },
+      { id: "2", text: "Disagree", value: 2 },
+      { id: "3", text: "Neutral", value: 3 },
+      { id: "4", text: "Agree", value: 4 },
+      { id: "5", text: "Strongly Agree", value: 5 },
+    ];
   }
 
   function toggleAcceptable(optionId: string) {

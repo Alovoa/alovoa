@@ -248,6 +248,10 @@ export function useTranscription(language = "en-US"): UseTranscriptionReturn {
 async function createWhisperInstance() {
   const { Platform } = await import("react-native");
 
+  const getDocumentDirectory = (fileSystemModule: any): string => {
+    return fileSystemModule.documentDirectory || fileSystemModule.Paths?.document?.uri || "";
+  };
+
   // State for the instance
   let modelLoaded = false;
   let backendType: "local" | "api" | null = null;
@@ -277,7 +281,8 @@ async function createWhisperInstance() {
           const FileSystem = await import("expo-file-system");
 
           // Get or download model
-          const modelDir = `${FileSystem.documentDirectory}whisper-models/`;
+          const documentDirectory = getDocumentDirectory(FileSystem);
+          const modelDir = `${documentDirectory}whisper-models/`;
           const modelFile = `ggml-${model}.bin`;
           const modelPath = `${modelDir}${modelFile}`;
 
@@ -411,7 +416,7 @@ async function createWhisperInstance() {
     const mimeType = mimeTypes[extension] || "audio/m4a";
 
     const base64Audio = await FileSystem.readAsStringAsync(audioUri, {
-      encoding: FileSystem.EncodingType.Base64,
+      encoding: ((FileSystem as any).EncodingType?.Base64 || "base64") as any,
     });
 
     const byteCharacters = atob(base64Audio);

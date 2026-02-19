@@ -2,10 +2,12 @@ package com.nonononoki.alovoa.service;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +27,7 @@ import com.nonononoki.alovoa.model.MessageStatusDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
 import com.nonononoki.alovoa.repo.MessageReactionRepository;
 import com.nonononoki.alovoa.repo.MessageRepository;
+import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.rest.ChatWebSocketController;
 
 @Service
@@ -56,6 +59,38 @@ public class MessageService {
 
 	@Autowired
 	private ContentModerationService moderationService;
+
+	@Autowired
+	private UserRepository userRepo;
+
+	/**
+	 * Open messaging entry point (OKCupid 2016 parity).
+	 * Creates a conversation if needed, and optionally sends an initial message.
+	 */
+	public Conversation openConversation(UUID targetUserUuid, String initialMessage)
+			throws AlovoaException, GeneralSecurityException, IOException {
+		User currentUser = authService.getCurrentUser(true);
+		User targetUser = userRepo.findByUuid(targetUserUuid);
+
+		if (targetUser == null) {
+			throw new AlovoaException("user_not_found");
+		}
+		if (currentUser.getId().equals(targetUser.getId())) {
+			throw new AlovoaException("user_is_same_user");
+		}
+		if (isBlocked(currentUser, targetUser) || isBlocked(targetUser, currentUser)) {
+			throw new AlovoaException("user_blocked");
+		}
+
+		Conversation conversation = conversationRepo.findByUsers(currentUser.getId(), targetUser.getId())
+				.orElseGet(() -> createConversation(currentUser, targetUser));
+
+		if (initialMessage != null && !initialMessage.trim().isEmpty()) {
+			send(conversation.getId(), initialMessage.trim());
+		}
+
+		return conversation;
+	}
 
 	public void send(Long convoId, String message)
 			throws AlovoaException, GeneralSecurityException, IOException {
@@ -136,6 +171,9 @@ public class MessageService {
 		User user = authService.getCurrentUser(true);
 		Date now = new Date();
 		Date lastCheckedDate = null;
+		if (c.getCheckedDates() == null) {
+			c.setCheckedDates(new ArrayList<>());
+		}
 		ConversationCheckedDate convoCheckedDate = c.getCheckedDates().stream()
 				.filter(d -> d.getUserId().equals(user.getId())).findAny().orElse(null);
 		if (convoCheckedDate == null) {
@@ -376,6 +414,36 @@ public class MessageService {
 		}
 
 		return MessageReactionDto.reactionsToDtos(message.getReactions());
+	}
+
+	private Conversation createConversation(User userA, User userB) {
+		Conversation convo = new Conversation();
+		convo.setDate(new Date());
+		convo.setLastUpdated(new Date());
+		convo.setUsers(new ArrayList<>());
+		convo.setMessages(new ArrayList<>());
+		convo.getUsers().add(userA);
+		convo.getUsers().add(userB);
+		convo = conversationRepo.saveAndFlush(convo);
+
+		if (userA.getConversations() == null) {
+			userA.setConversations(new ArrayList<>());
+		}
+		if (userB.getConversations() == null) {
+			userB.setConversations(new ArrayList<>());
+		}
+		userA.getConversations().add(convo);
+		userB.getConversations().add(convo);
+		userRepo.saveAndFlush(userA);
+		userRepo.saveAndFlush(userB);
+
+		return convo;
+	}
+
+	private boolean isBlocked(User from, User to) {
+		return from.getBlockedUsers().stream()
+				.filter(o -> o.getUserTo() != null)
+				.anyMatch(o -> o.getUserTo().getId().equals(to.getId()));
 	}
 
 }

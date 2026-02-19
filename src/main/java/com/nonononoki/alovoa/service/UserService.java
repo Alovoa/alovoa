@@ -764,20 +764,23 @@ public class UserService {
                     .anyMatch(o -> o.getUserTo().getId().equals(currUser.getId()));
 
             if (!currUser.isDisabled() && isMatch) {
-                Conversation convo = new Conversation();
-                convo.setUsers(new ArrayList<>());
-                convo.setDate(new Date());
-                convo.getUsers().add(currUser);
-                convo.getUsers().add(user);
-                convo.setLastUpdated(new Date());
-                convo.setMessages(new ArrayList<>());
-                conversationRepo.saveAndFlush(convo);
+                Conversation convo = conversationRepo.findByUsers(currUser.getId(), user.getId()).orElse(null);
+                if (convo == null) {
+                    convo = new Conversation();
+                    convo.setUsers(new ArrayList<>());
+                    convo.setDate(new Date());
+                    convo.getUsers().add(currUser);
+                    convo.getUsers().add(user);
+                    convo.setLastUpdated(new Date());
+                    convo.setMessages(new ArrayList<>());
+                    conversationRepo.saveAndFlush(convo);
 
-                user.getConversations().add(convo);
-                currUser.getConversations().add(convo);
+                    user.getConversations().add(convo);
+                    currUser.getConversations().add(convo);
 
-                userRepo.saveAndFlush(currUser);
-                userRepo.saveAndFlush(user);
+                    userRepo.saveAndFlush(currUser);
+                    userRepo.saveAndFlush(user);
+                }
 
                 // Show donation prompt after successful match
                 donationService.showAfterMatchPrompt(currUser);

@@ -255,7 +255,7 @@ export const MOCK_USERS: UserDto[] = [
     },
     politicalAssessment: {
       politicalOrientation: "PROGRESSIVE" as any,
-      gateStatus: GateStatus.APPROVED,
+      gateStatus: "APPROVED" as any,
       economicValuesScore: 75,
     },
     reputationScore: {
@@ -302,7 +302,7 @@ export const MOCK_USERS: UserDto[] = [
     },
     politicalAssessment: {
       politicalOrientation: "LIBERAL" as any,
-      gateStatus: GateStatus.APPROVED,
+      gateStatus: "APPROVED" as any,
     },
   }),
 
@@ -338,7 +338,7 @@ export const MOCK_USERS: UserDto[] = [
       employer: 'Google',
       zodiacSign: "SCORPIO" as any,
       responseRate: "REPLIES_OFTEN" as any,
-      income: "INCOME_" as any150K_250K,
+      income: "INCOME_150K_250K" as any,
     },
     personalityProfile: {
       openness: 82,
@@ -350,7 +350,7 @@ export const MOCK_USERS: UserDto[] = [
     },
     politicalAssessment: {
       politicalOrientation: "PROGRESSIVE" as any,
-      gateStatus: GateStatus.APPROVED,
+      gateStatus: "APPROVED" as any,
       economicValuesScore: 80,
     },
     reputationScore: {
@@ -397,7 +397,7 @@ export const MOCK_USERS: UserDto[] = [
     },
     politicalAssessment: {
       politicalOrientation: "SOCIALIST" as any,
-      gateStatus: GateStatus.APPROVED,
+      gateStatus: "APPROVED" as any,
       economicValuesScore: 92,
     },
   }),
@@ -481,7 +481,7 @@ export const MOCK_USERS: UserDto[] = [
     },
     politicalAssessment: {
       politicalOrientation: "PROGRESSIVE" as any,
-      gateStatus: GateStatus.APPROVED,
+      gateStatus: "APPROVED" as any,
       economicValuesScore: 76,
     },
     reputationScore: {
@@ -525,7 +525,7 @@ export const MOCK_USERS: UserDto[] = [
       employer: 'Startup',
       zodiacSign: "LEO" as any,
       responseRate: "REPLIES_OFTEN" as any,
-      income: "INCOME_" as any80K_100K,
+      income: "INCOME_80K_100K" as any,
     },
     personalityProfile: {
       openness: 80,
@@ -537,7 +537,7 @@ export const MOCK_USERS: UserDto[] = [
     },
     politicalAssessment: {
       politicalOrientation: "LIBERAL" as any,
-      gateStatus: GateStatus.APPROVED,
+      gateStatus: "APPROVED" as any,
     },
     reputationScore: {
       trustLevel: "TRUSTED" as any,
@@ -580,7 +580,7 @@ export const MOCK_USERS: UserDto[] = [
     },
     politicalAssessment: {
       politicalOrientation: "PROGRESSIVE" as any,
-      gateStatus: GateStatus.APPROVED,
+      gateStatus: "APPROVED" as any,
     },
   }),
 ];

@@ -37,6 +37,11 @@ const STORAGE_KEY = "alovoa_recordings";
 const DB_NAME = "alovoa_recordings_db";
 const STORE_NAME = "recordings";
 
+const getDocumentDirectory = (): string => {
+  const fsAny = FileSystem as any;
+  return fsAny.documentDirectory || fsAny.Paths?.document?.uri || "";
+};
+
 /**
  * Cross-platform recording storage hook.
  * Uses IndexedDB on web, AsyncStorage + FileSystem on native.
@@ -158,7 +163,11 @@ export function useRecordingStorage(): UseRecordingStorageReturn {
       return sourceUri; // Blob URLs work directly on web
     }
 
-    const destDir = `${FileSystem.documentDirectory}recordings/`;
+    const documentDirectory = getDocumentDirectory();
+    if (!documentDirectory) {
+      throw new Error("No writable document directory available");
+    }
+    const destDir = `${documentDirectory}recordings/`;
     await FileSystem.makeDirectoryAsync(destDir, { intermediates: true });
 
     const extension = sourceUri.split(".").pop() || "m4a";
@@ -260,7 +269,8 @@ export function useRecordingStorage(): UseRecordingStorageReturn {
       await clearIndexedDB();
     } else {
       // Delete all audio files
-      const recordingsDir = `${FileSystem.documentDirectory}recordings/`;
+      const documentDirectory = getDocumentDirectory();
+      const recordingsDir = `${documentDirectory}recordings/`;
       await FileSystem.deleteAsync(recordingsDir, { idempotent: true }).catch(
         () => {}
       );

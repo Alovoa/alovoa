@@ -56,8 +56,12 @@ const MatchWindowList = ({ navigation }: any) => {
         Global.Fetch(URL.API_MATCH_WINDOW_CURRENT),
         Global.Fetch(URL.API_MATCH_WINDOW_LIST),
       ]);
-      setCurrentWindow(currentRes.data);
-      setWindows(listRes.data || []);
+      const currentPayload = currentRes.data && typeof currentRes.data === "object" ? currentRes.data : null;
+      const listPayload = Array.isArray(listRes.data)
+        ? listRes.data
+        : (listRes.data?.windows || []);
+      setCurrentWindow(currentPayload as MatchWindow | null);
+      setWindows(listPayload as MatchWindow[]);
     } catch (e) {
       console.error(e);
     }
@@ -170,7 +174,10 @@ const MatchWindowList = ({ navigation }: any) => {
           </Card>
 
           {/* Current Window */}
-          {currentWindow && currentWindow.status === MatchWindowStatus.PENDING && (
+          {currentWindow && (
+            currentWindow.status === MatchWindowStatus.PENDING
+            || currentWindow.status === MatchWindowStatus.ACTIVE
+          ) && (
             <>
               <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16 }}>
                 ⏰ Current Match
@@ -314,13 +321,20 @@ const MatchWindowList = ({ navigation }: any) => {
           )}
 
           {/* Previous Windows */}
-          {windows.filter(w => w.status !== MatchWindowStatus.PENDING).length > 0 && (
+          {windows.filter(w =>
+            w.status !== MatchWindowStatus.PENDING
+            && w.status !== MatchWindowStatus.ACTIVE
+          ).length > 0 && (
             <>
               <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16 }}>
                 Previous Matches
               </Text>
 
-              {windows.filter(w => w.status !== MatchWindowStatus.PENDING && w.matchedUser).map((window) => {
+              {windows.filter(w =>
+                w.status !== MatchWindowStatus.PENDING
+                && w.status !== MatchWindowStatus.ACTIVE
+                && w.matchedUser
+              ).map((window) => {
                 const statusConfig = STATUS_CONFIG[window.status];
                 const matchedUser = window.matchedUser!;
 

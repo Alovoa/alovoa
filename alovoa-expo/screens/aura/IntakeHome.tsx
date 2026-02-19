@@ -91,8 +91,39 @@ const IntakeHome = ({ navigation }: any) => {
     setLoading(true);
     try {
       const response = await Global.Fetch(URL.API_INTAKE_PROGRESS);
-      setProgress(response.data);
-      setEncouragement(response.data.lastEncouragement || getDefaultEncouragement(response.data));
+      const raw = response.data?.progress || response.data || {};
+      const stepsCompleted: IntakeStep[] = [];
+      if (raw.questionsComplete) stepsCompleted.push(IntakeStep.ASSESSMENT);
+      if (raw.videoIntroComplete) stepsCompleted.push(IntakeStep.VIDEO_INTRO);
+      if (raw.picturesComplete) {
+        stepsCompleted.push(IntakeStep.PHOTOS);
+        stepsCompleted.push(IntakeStep.BASIC_PROFILE);
+      }
+      if (raw.intakeComplete) stepsCompleted.push(IntakeStep.COMPLETE);
+
+      const mappedProgress: IntakeProgressDto = {
+        userId: raw.userId || 0,
+        currentStep: raw.currentStep || IntakeStep.VIDEO_INTRO,
+        stepsCompleted,
+        basicProfileComplete: raw.picturesComplete || false,
+        photoUploaded: raw.picturesCount > 0,
+        videoIntroComplete: raw.videoIntroComplete || false,
+        assessmentStarted: (raw.questionsAnswered || 0) > 0,
+        assessmentComplete: raw.questionsComplete || false,
+        politicalAssessmentComplete: false,
+        verificationComplete: false,
+        questionsAnswered: raw.questionsAnswered || 0,
+        totalQuestionsRequired: 10,
+        estimatedTimeRemaining: raw.intakeComplete ? 0 : 20,
+      };
+
+      setProgress(mappedProgress);
+      const encouragementText =
+        response.data?.encouragement?.stepEncouragement ||
+        response.data?.encouragement?.message ||
+        mappedProgress.lastEncouragement ||
+        getDefaultEncouragement(mappedProgress);
+      setEncouragement(encouragementText);
     } catch (e) {
       console.error(e);
       // Use default progress if API fails

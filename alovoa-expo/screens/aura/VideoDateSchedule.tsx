@@ -53,7 +53,10 @@ const VideoDateSchedule = ({ route, navigation }: any) => {
     try {
       const dateStr = selectedDate.toISOString().split('T')[0];
       const response = await Global.Fetch(Global.format(URL.API_CALENDAR_SLOTS, partnerId) + `?date=${dateStr}`);
-      setAvailableSlots(response.data || []);
+      const payload = Array.isArray(response.data)
+        ? response.data
+        : (response.data?.slots || []);
+      setAvailableSlots((payload as CalendarSlot[]).filter((slot) => slot.available !== false));
     } catch (e) {
       console.error(e);
       Global.ShowToast(i18n.t('error.generic'));

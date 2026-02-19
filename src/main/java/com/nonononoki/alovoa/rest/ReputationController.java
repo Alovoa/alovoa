@@ -61,6 +61,40 @@ public class ReputationController {
         }
     }
 
+    /**
+     * Expo compatibility endpoint.
+     * Returns a numeric score breakdown used by legacy mobile UI.
+     */
+    @GetMapping("/score")
+    public ResponseEntity<?> getMyReputationScore() {
+        try {
+            User user = authService.getCurrentUser(true);
+            UserReputationScore reputation = reputationService.getOrCreateReputation(user);
+
+            int verificationPoints = user.isVideoVerified() ? 200 : 0;
+            int responsePoints = (int) Math.round(safeScore(reputation.getResponseQuality()) * 4);
+            int reliabilityPoints = (int) Math.round(safeScore(reputation.getRespectScore()) * 4);
+            int feedbackPoints = Math.min(400, Math.max(0, reputation.getPositiveFeedbackCount() * 20));
+            int tenurePoints = (int) Math.round(safeScore(reputation.getInvestmentScore()) * 4);
+            int authenticityPoints = (int) Math.round(safeScore(reputation.getAuthenticityScore()) * 4);
+
+            int totalScore = verificationPoints + responsePoints + reliabilityPoints + feedbackPoints + tenurePoints + authenticityPoints;
+
+            return ResponseEntity.ok(Map.of(
+                    "totalScore", totalScore,
+                    "verificationPoints", verificationPoints,
+                    "responsePoints", responsePoints,
+                    "reliabilityPoints", reliabilityPoints,
+                    "feedbackPoints", feedbackPoints,
+                    "tenurePoints", tenurePoints,
+                    "trustLevel", reputation.getTrustLevel().name(),
+                    "updatedAt", reputation.getUpdatedAt()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
     private String getStandingLabel(Double score) {
         if (score == null) return "Building";
         if (score >= 80) return "Excellent Standing";
@@ -77,6 +111,10 @@ public class ReputationController {
         if (score >= 40) return "Fair";
         if (score >= 20) return "Building";
         return "New";
+    }
+
+    private double safeScore(Double value) {
+        return value != null ? value : 0.0;
     }
 
     @GetMapping("/badges")
@@ -104,7 +142,7 @@ public class ReputationController {
             }
 
             // Response quality badge
-            if (reputation.getResponseQuality() >= 80) {
+            if (safeScore(reputation.getResponseQuality()) >= 80) {
                 badges.add(Map.of(
                         "id", "responsive",
                         "name", "Great Communicator",
@@ -113,7 +151,7 @@ public class ReputationController {
             }
 
             // Dates completed badge
-            if (reputation.getDatesCompleted() >= 5) {
+            if (reputation.getDatesCompleted() != null && reputation.getDatesCompleted() >= 5) {
                 badges.add(Map.of(
                         "id", "active_dater",
                         "name", "Active Dater",

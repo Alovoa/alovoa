@@ -29,11 +29,27 @@ public class EssayController {
     }
 
     /**
+     * Mobile compatibility alias.
+     */
+    @GetMapping("/list")
+    public ResponseEntity<List<EssayDto>> getEssaysList() throws AlovoaException {
+        return getEssays();
+    }
+
+    /**
      * Get essay templates (prompts only, no user answers).
      */
     @GetMapping("/templates")
     public ResponseEntity<List<EssayDto>> getTemplates() throws AlovoaException {
         return ResponseEntity.ok(essayService.getEssayTemplates());
+    }
+
+    /**
+     * Mobile compatibility alias.
+     */
+    @GetMapping("/prompts")
+    public ResponseEntity<List<EssayDto>> getPrompts() throws AlovoaException {
+        return getTemplates();
     }
 
     /**
@@ -57,6 +73,30 @@ public class EssayController {
     }
 
     /**
+     * Mobile compatibility alias.
+     * Accepts either:
+     * { "promptId": 1, "text": "..." } or { "1": "..." }.
+     */
+    @PostMapping("/add")
+    public ResponseEntity<?> addEssay(@RequestBody Map<String, Object> body) throws AlovoaException {
+        Object promptIdRaw = body.get("promptId");
+        if (promptIdRaw != null) {
+            Long promptId = promptIdRaw instanceof Number n ? n.longValue() : Long.parseLong(String.valueOf(promptIdRaw));
+            String text = body.get("text") != null ? String.valueOf(body.get("text")) : null;
+            essayService.saveEssay(promptId, text);
+            return ResponseEntity.ok().build();
+        }
+
+        Map<Long, String> essayMap = body.entrySet().stream()
+                .collect(java.util.stream.Collectors.toMap(
+                        e -> Long.parseLong(e.getKey()),
+                        e -> e.getValue() != null ? String.valueOf(e.getValue()) : null
+                ));
+        essayService.saveEssays(essayMap);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
      * Save multiple essays at once.
      * Request body: { "1": "My self summary...", "2": "I work as...", ... }
      */
@@ -73,11 +113,29 @@ public class EssayController {
     }
 
     /**
+     * Mobile compatibility alias.
+     */
+    @PostMapping("/update/{promptId}")
+    public ResponseEntity<Void> updateEssay(
+            @PathVariable Long promptId,
+            @RequestBody Map<String, String> body) throws AlovoaException {
+        return saveEssay(promptId, body);
+    }
+
+    /**
      * Delete an essay (clear the answer).
      */
     @DeleteMapping("/{promptId}")
     public ResponseEntity<Void> deleteEssay(@PathVariable Long promptId) throws AlovoaException {
         essayService.saveEssay(promptId, null);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Mobile compatibility alias.
+     */
+    @DeleteMapping("/delete/{promptId}")
+    public ResponseEntity<Void> deleteEssayAlias(@PathVariable Long promptId) throws AlovoaException {
+        return deleteEssay(promptId);
     }
 }

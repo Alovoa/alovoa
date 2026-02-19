@@ -12,6 +12,7 @@ import com.nonononoki.alovoa.model.NotificationDto;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.repo.*;
 import com.nonononoki.alovoa.service.AuthService;
+import com.nonononoki.alovoa.service.ProfileVisitService;
 import com.nonononoki.alovoa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,6 +64,9 @@ public class ApiResource {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProfileVisitService profileVisitService;
 
     @Autowired
     private TextEncryptorConverter textEncryptor;
@@ -200,6 +204,9 @@ public class ApiResource {
         if (userView.getBlockedUsers().stream().filter(o -> o.getUserTo() != null).anyMatch(o -> o.getUserTo().getId().equals(user.getId()))) {
             throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
         }
+
+        // OKCupid-style visitors feature: record profile view.
+        profileVisitService.recordVisit(user, userView);
 
         ModelMap map = new ModelMap();
 

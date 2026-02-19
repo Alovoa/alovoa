@@ -316,7 +316,7 @@
                 statusEl.textContent = 'Saving...';
                 statusEl.className = 'save-indicator saving';
 
-                fetch(`/api/v1/essay/${promptId}`, {
+                fetch(`/api/v1/essays/${promptId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -403,7 +403,7 @@
             });
 
             try {
-                const response = await fetch('/api/v1/essay/bulk', {
+                const response = await fetch('/api/v1/essays', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

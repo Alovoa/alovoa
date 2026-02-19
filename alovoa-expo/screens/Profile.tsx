@@ -125,59 +125,65 @@ const Profile = ({ route, navigation }: Props) => {
   });
 
   async function load(fetch = false) {
+    let currentUser = user;
 
-    if (fetch || !user) {
-      let response = await Global.Fetch(Global.format(URL.API_RESOURCE_PROFILE, user == null ? uuid : user.uuid));
+    if (fetch || !currentUser) {
+      let response = await Global.Fetch(Global.format(URL.API_RESOURCE_PROFILE, currentUser == null ? uuid : currentUser.uuid));
       let data: ProfileResource = response.data;
       setUser(data.user);
       setYou(data.currUserDto);
       setIsLegal(data.isLegal);
+      currentUser = data.user;
     }
 
-    setLikesMe(user.likesCurrentUser);
-    setLiked(user.likedByCurrentUser);
-    setHidden(user.hiddenByCurrentUser);
-    setCompatible(user.compatible);
-    setDistance(user.distanceToUser);
-    setName(user.firstName);
-    setDonated(user.totalDonations);
-    setAge(user.age);
-    setProfilePicture(user.profilePicture);
-    setBlocked(user.blockedByCurrentUser);
-    setReported(user.reportedByCurrentUser);
-    setBlocks(user.numBlockedByUsers);
-    setReports(user.numReports);
-    setMinAge(user.preferedMinAge);
-    setMaxAge(user.preferedMaxAge);
-    setDescription(user.description);
-    setGender(user.gender);
-    if (user.email) {
+    if (!currentUser) {
+      return;
+    }
+
+    setLikesMe(currentUser.likesCurrentUser);
+    setLiked(currentUser.likedByCurrentUser);
+    setHidden(currentUser.hiddenByCurrentUser);
+    setCompatible(currentUser.compatible);
+    setDistance(currentUser.distanceToUser);
+    setName(currentUser.firstName);
+    setDonated(currentUser.totalDonations);
+    setAge(currentUser.age);
+    setProfilePicture(currentUser.profilePicture);
+    setBlocked(currentUser.blockedByCurrentUser);
+    setReported(currentUser.reportedByCurrentUser);
+    setBlocks(currentUser.numBlockedByUsers);
+    setReports(currentUser.numReports);
+    setMinAge(currentUser.preferedMinAge);
+    setMaxAge(currentUser.preferedMaxAge);
+    setDescription(currentUser.description);
+    setGender(currentUser.gender);
+    if (currentUser.email) {
       setIsSelf(true);
     }
-    if (user.lastActiveState) {
-      setLastActiveState(user.lastActiveState);
+    if (currentUser.lastActiveState) {
+      setLastActiveState(currentUser.lastActiveState);
     }
-    setPreferredGenders(user.preferedGenders);
-    setInterests(Global.shuffleArray(user.interests));
-    setPrompts(Global.shuffleArray(user.prompts));
+    setPreferredGenders(currentUser.preferedGenders || []);
+    setInterests(Global.shuffleArray(currentUser.interests || []));
+    setPrompts(Global.shuffleArray(currentUser.prompts || []));
     const swiperImageData: string[] = [];
-    swiperImageData.push(user.profilePicture);
-    if (user.images) {
-      Global.shuffleArray(user.images).forEach(function (image) {
+    swiperImageData.push(currentUser.profilePicture);
+    if (currentUser.images) {
+      Global.shuffleArray(currentUser.images).forEach(function (image) {
         swiperImageData.push(image.content);
       });
     }
     setSwiperImages(swiperImageData);
 
     // Video-first display properties
-    setHasVideoIntro(user.hasVideoIntro || false);
-    setVideoIntroUrl(user.videoIntroUrl);
-    setVideoIntroThumbnail(user.videoIntroThumbnail);
-    setVideoIntroDuration(user.videoIntroDuration);
-    setVideoWatchRequired(user.videoWatchRequired || false);
-    setVideoWatched(user.videoWatched || false);
+    setHasVideoIntro(currentUser.hasVideoIntro || false);
+    setVideoIntroUrl(currentUser.videoIntroUrl);
+    setVideoIntroThumbnail(currentUser.videoIntroThumbnail);
+    setVideoIntroDuration(currentUser.videoIntroDuration);
+    setVideoWatchRequired(currentUser.videoWatchRequired || false);
+    setVideoWatched(currentUser.videoWatched || false);
 
-    let intentionText = user.intention.text;
+    let intentionText = currentUser.intention?.text;
     switch (intentionText) {
       case IntentionText.MEET:
         setIntention(Intention.MEET);
@@ -190,7 +196,7 @@ const Profile = ({ route, navigation }: Props) => {
         break;
     }
 
-    setMiscInfo(user.miscInfos);
+    setMiscInfo(currentUser.miscInfos || []);
 
   }
 
@@ -235,6 +241,7 @@ const Profile = ({ route, navigation }: Props) => {
   }
 
   async function blockUser() {
+    if (!user) return;
     await Global.Fetch(Global.format(URL.USER_BLOCK, user.uuid), 'post');
     hideMenu();
     setBlocked(true);
@@ -242,6 +249,7 @@ const Profile = ({ route, navigation }: Props) => {
   }
 
   async function unblockUser() {
+    if (!user) return;
     await Global.Fetch(Global.format(URL.USER_UNBLOCK, user.uuid), 'post');
     hideMenu();
     setBlocked(false);
@@ -253,6 +261,7 @@ const Profile = ({ route, navigation }: Props) => {
   }
 
   async function reportUserSend() {
+    if (!user) return;
     if (reportOption) {
       await Global.Fetch(Global.format(URL.USER_REPORT, user.uuid), 'post', reportOption, 'text/plain');
       setReported(true);
@@ -262,6 +271,7 @@ const Profile = ({ route, navigation }: Props) => {
   }
 
   async function likeUser(message?: string) {
+    if (!user) return;
     if (!message) {
       await Global.Fetch(Global.format(URL.USER_LIKE, user.uuid), 'post');
     } else {
@@ -273,6 +283,7 @@ const Profile = ({ route, navigation }: Props) => {
   }
 
   async function hideUser() {
+    if (!user) return;
     await Global.Fetch(Global.format(URL.USER_HIDE, user.uuid), 'post');
     setHidden(true);
     setRemoveUser(true);

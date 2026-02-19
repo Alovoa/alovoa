@@ -158,8 +158,9 @@ export function useWhisperTranscription(): UseWhisperTranscriptionReturn {
     // In production, you'd download the model or bundle it
     // Models available at: https://huggingface.co/ggerganov/whisper.cpp
     const FileSystem = await import("expo-file-system");
-
-    const modelDir = `${FileSystem.documentDirectory}whisper-models/`;
+    const fsAny = FileSystem as any;
+    const documentDirectory = fsAny.documentDirectory || fsAny.Paths?.document?.uri || "";
+    const modelDir = `${documentDirectory}whisper-models/`;
     const modelFile = `ggml-${model}.bin`;
     const modelPath = `${modelDir}${modelFile}`;
 
@@ -363,7 +364,7 @@ export function useWhisperTranscription(): UseWhisperTranscriptionReturn {
 
     // Read file as base64
     const base64Audio = await FileSystem.readAsStringAsync(audioUri, {
-      encoding: FileSystem.EncodingType.Base64,
+      encoding: ((FileSystem as any).EncodingType?.Base64 || "base64") as any,
     });
 
     // Convert base64 to blob for FormData

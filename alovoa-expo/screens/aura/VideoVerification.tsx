@@ -24,19 +24,14 @@ import { STATUS_BAR_HEIGHT } from "../../assets/styles";
 
 // Platform-specific imports
 import WebCamera, { WebCameraRef, requestWebCameraPermissions } from "../../components/WebCamera";
-import { createUploadTask as createWebUploadTask } from "../../utils/webUpload";
 
 // Native imports (conditional)
 let Camera: any;
 let CameraView: any;
-let FileSystemLegacy: any;
-let FileSystemUploadType: any;
 
 if (Platform.OS !== "web") {
   Camera = require("expo-camera").Camera;
   CameraView = require("expo-camera").CameraView;
-  FileSystemLegacy = require("expo-file-system/legacy");
-  FileSystemUploadType = require("expo-file-system/legacy").FileSystemUploadType;
 }
 
 type CameraType = "front" | "back";
@@ -166,48 +161,30 @@ const VideoVerification = ({ navigation }: any) => {
     setUploadProgress(0);
 
     try {
-      // First, get upload URL
+      // Start verification session
       const startResponse = await Global.Fetch(URL.API_VIDEO_VERIFICATION_START, 'post', { gesture });
-
-      const { uploadUrl, verificationId } = startResponse.data;
-
-      // Platform-specific upload
-      if (Platform.OS === "web") {
-        const uploadTask = createWebUploadTask(
-          uploadUrl,
-          uri,
-          {
-            httpMethod: 'PUT',
-            contentType: 'video/webm',
-            headers: {},
-          },
-          (progress) => {
-            setUploadProgress(progress.totalBytesSent / progress.totalBytesExpectedToSend);
-          }
-        );
-
-        if (uploadTask) {
-          await uploadTask.uploadAsync();
-        }
-      } else {
-        const uploadTask = FileSystemLegacy.createUploadTask(
-          uploadUrl,
-          uri,
-          {
-            httpMethod: 'PUT',
-            uploadType: FileSystemUploadType.BINARY_CONTENT,
-            headers: { 'Content-Type': 'video/mp4' },
-          },
-          (progress: any) => {
-            setUploadProgress(progress.totalBytesSent / progress.totalBytesExpectedToSend);
-          }
-        );
-
-        await uploadTask.uploadAsync();
+      const sessionId = startResponse.data?.sessionId;
+      if (!sessionId) {
+        throw new Error("Missing verification session");
       }
 
-      // Confirm upload
-      await Global.Fetch(URL.API_VIDEO_VERIFICATION_CONFIRM, 'post', { verificationId });
+      const formData = new FormData();
+      if (Platform.OS === "web") {
+        const blob = await fetch(uri).then((r) => r.blob());
+        formData.append("video", blob as any, "verification.webm");
+      } else {
+        formData.append("video", {
+          uri,
+          name: "verification.mp4",
+          type: "video/mp4",
+        } as any);
+      }
+      formData.append("sessionId", sessionId);
+      formData.append("metadata", JSON.stringify({ gesture }));
+
+      setUploadProgress(0.5);
+      await Global.Fetch(URL.API_VIDEO_VERIFICATION_UPLOAD, 'post', formData, 'multipart/form-data');
+      setUploadProgress(1);
 
       setStep(ScreenStep.COMPLETE);
       await loadStatus();

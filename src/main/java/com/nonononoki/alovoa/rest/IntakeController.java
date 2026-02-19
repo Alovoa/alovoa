@@ -25,7 +25,7 @@ import java.util.Map;
  * including answering core questions, uploading media, and AI analysis.
  */
 @RestController
-@RequestMapping("/intake")
+@RequestMapping({"/intake", "/api/v1/intake"})
 public class IntakeController {
 
     @Autowired
@@ -283,6 +283,59 @@ public class IntakeController {
                     "stepEncouragement", encouragementService.getStepEncouragement(step),
                     "funFact", encouragementService.getRelationshipFact()
             ));
+        }
+    }
+
+    /**
+     * Expo compatibility endpoint.
+     * Returns encouragement for the user's current next step.
+     */
+    @GetMapping("/encouragement")
+    public ResponseEntity<?> getCurrentEncouragement() {
+        try {
+            User user = authService.getCurrentUser(true);
+            IntakeProgressDto progress = intakeService.getIntakeProgress();
+            String step = progress.getNextStep() != null ? progress.getNextStep() : "complete";
+            return ResponseEntity.ok(encouragementService.getIntakeEncouragement(user, step));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    /**
+     * Expo compatibility endpoint.
+     * Provides step-level status for the intake flow.
+     */
+    @GetMapping("/step/{step}")
+    public ResponseEntity<?> getStepStatus(@PathVariable String step) {
+        try {
+            IntakeProgressDto progress = intakeService.getIntakeProgress();
+            Map<String, Object> response = new LinkedHashMap<>();
+            response.put("step", step.toUpperCase());
+            response.put("progress", progress);
+            response.put("complete", progress.isIntakeComplete());
+            response.put("nextStep", progress.getNextStep());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    /**
+     * Expo compatibility endpoint.
+     * Step completion is handled by dedicated intake endpoints; this is a no-op success wrapper.
+     */
+    @PostMapping("/complete/{step}")
+    public ResponseEntity<?> completeStep(@PathVariable String step) {
+        try {
+            IntakeProgressDto progress = intakeService.getIntakeProgress();
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "step", step.toUpperCase(),
+                    "progress", progress
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 

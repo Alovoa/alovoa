@@ -56,8 +56,17 @@ const MatchingHome = ({ navigation }: any) => {
         Global.Fetch(URL.API_MATCHING_MATCHES),
         Global.Fetch(URL.API_MATCHING_DAILY_LIMIT),
       ]);
-      setMatches(matchesRes.data || []);
-      setDailyLimit(limitRes.data);
+      const rawMatches = Array.isArray(matchesRes.data)
+        ? matchesRes.data
+        : (matchesRes.data?.matches || []);
+      const normalizedMatches = (rawMatches as any[]).map((match) => ({
+        ...match,
+        compatibilityScore: match.compatibilityScore || match.score || { overallScore: 0 },
+      }));
+      setMatches(normalizedMatches as MatchWithScore[]);
+
+      const limitPayload = limitRes.data || matchesRes.data?.dailyLimit || null;
+      setDailyLimit(limitPayload);
     } catch (e) {
       console.error(e);
       Global.ShowToast(i18n.t('error.generic'));
@@ -128,7 +137,7 @@ const MatchingHome = ({ navigation }: any) => {
             <Button
               mode="text"
               icon="cog"
-              onPress={() => Global.navigate("Matching.Filter", false, {})}
+              onPress={() => Global.navigate(Global.SCREEN_PROFILE_SEARCHSETTINGS, false, {})}
             >
               Filters
             </Button>

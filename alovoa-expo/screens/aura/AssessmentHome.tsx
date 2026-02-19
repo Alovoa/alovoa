@@ -52,6 +52,7 @@ const AssessmentHome = ({ navigation }: any) => {
   const [loading, setLoading] = React.useState(true);
   const [resource, setResource] = React.useState<AssessmentResource | null>(null);
   const [profile, setProfile] = React.useState<UserAssessmentProfile | null>(null);
+  const [availableCategories, setAvailableCategories] = React.useState<string[]>([]);
 
   React.useEffect(() => {
     load();
@@ -64,8 +65,36 @@ const AssessmentHome = ({ navigation }: any) => {
         Global.Fetch(URL.API_ASSESSMENT_PROGRESS),
         Global.Fetch(URL.API_ASSESSMENT_PROFILE),
       ]);
+      const progressData = progressRes.data || {};
+      const categoryKeys = Object.keys(progressData).filter((key) => {
+        const value = (progressData as any)[key];
+        return value && typeof value === "object" && value.answered !== undefined && value.total !== undefined;
+      });
 
-      setResource(progressRes.data);
+      let answeredCount = 0;
+      let totalRequired = 0;
+      const categoryProgress: Record<string, number> = {};
+
+      categoryKeys.forEach((category) => {
+        const item = (progressData as any)[category];
+        const answered = Number(item?.answered || 0);
+        const total = Number(item?.total || 0);
+        answeredCount += answered;
+        totalRequired += total;
+        categoryProgress[category] = total > 0 ? answered / total : 0;
+      });
+
+      setResource({
+        questions: [],
+        categories: categoryKeys as any,
+        userProgress: {
+          answeredCount,
+          totalRequired,
+          categoryProgress,
+        },
+        profile: profileRes.data,
+      });
+      setAvailableCategories(categoryKeys);
       setProfile(profileRes.data);
     } catch (e) {
       console.error(e);
@@ -85,8 +114,8 @@ const AssessmentHome = ({ navigation }: any) => {
     return resource.userProgress.categoryProgress[category] || 0;
   }
 
-  function navigateToCategory(category: AssessmentCategory) {
-    Global.navigate("Assessment.Category", false, { category });
+  function navigateToCategory(category: string) {
+    Global.navigate("Assessment.Question", false, { category });
   }
 
   function navigateToResults() {
@@ -181,7 +210,7 @@ const AssessmentHome = ({ navigation }: any) => {
           </Text>
 
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
-            {Object.values(AssessmentCategory).map((category) => {
+            {availableCategories.map((category) => {
               const meta = CATEGORY_META[category] || {
                 icon: "help-circle",
                 color: colors.primary,

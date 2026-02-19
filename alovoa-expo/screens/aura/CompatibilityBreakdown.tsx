@@ -96,7 +96,7 @@ const CompatibilityBreakdown = ({ route, navigation }: any) => {
     setLoading(true);
     try {
       const response = await Global.Fetch(Global.format(URL.API_MATCHING_BREAKDOWN, userId));
-      setBreakdown(response.data);
+      setBreakdown((response.data?.breakdown || response.data) as BreakdownType);
     } catch (e) {
       console.error(e);
       Global.ShowToast(i18n.t('error.generic'));
@@ -139,6 +139,7 @@ const CompatibilityBreakdown = ({ route, navigation }: any) => {
   }
 
   const overallColor = getScoreColor(breakdown.overallScore);
+  const dimensions = breakdown.dimensions || [];
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
@@ -180,7 +181,7 @@ const CompatibilityBreakdown = ({ route, navigation }: any) => {
             Breakdown by Category
           </Text>
 
-          {breakdown.dimensions.map((dimension) => {
+          {dimensions.map((dimension) => {
             const meta = DIMENSION_META[dimension.dimension] || {
               icon: "help-circle",
               color: colors.primary,
@@ -211,7 +212,9 @@ const CompatibilityBreakdown = ({ route, navigation }: any) => {
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Text style={{ fontWeight: '600' }}>{meta.label}</Text>
                         <Text style={{ fontWeight: '700', color: scoreColor, fontSize: 16 }}>
-                          {breakdown.dimensionLabels?.[meta.label] || getScoreLabel(dimension.score)}
+                          {breakdown.dimensionLabels?.[dimension.dimension]
+                            || breakdown.dimensionLabels?.[meta.label]
+                            || getScoreLabel(dimension.score)}
                         </Text>
                       </View>
 

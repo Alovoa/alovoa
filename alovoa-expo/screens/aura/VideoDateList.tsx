@@ -52,7 +52,16 @@ const VideoDateList = ({ navigation }: any) => {
     setLoading(true);
     try {
       const response = await Global.Fetch(URL.API_VIDEO_DATE_LIST);
-      setVideoDates(response.data || []);
+      const payload = Array.isArray(response.data)
+        ? response.data
+        : (response.data?.dates
+          || response.data?.videoDates
+          || [
+            ...(response.data?.pendingRequests || []),
+            ...(response.data?.upcomingDates || []),
+            ...(response.data?.pastDates || []),
+          ]);
+      setVideoDates(payload as VideoDate[]);
     } catch (e) {
       console.error(e);
       Global.ShowToast(i18n.t('error.generic'));

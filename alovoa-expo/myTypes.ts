@@ -842,6 +842,7 @@ export interface CompatibilityScore {
   questionsCompared: number;
   matchPercentage: number;
   conflictCount: number;
+  matchCategory?: string;
 
   // Status
   calculatedAt: Date;
@@ -875,6 +876,11 @@ export interface CompatibilityBreakdown {
   strengths?: string[];
   // Full breakdown fields
   overallScore: number;
+  matchCategoryLabel?: string;
+  summary?: string;
+  enemyScore?: number;
+  hasDealbreaker?: boolean;
+  dimensionLabels?: { [key: string]: string };
   dimensions: CompatibilityDimension[];
   dealbreakers: CompatibilityDealbreaker[];
   sharedQuestions: SharedQuestion[];
@@ -1048,7 +1054,7 @@ export interface VideoDateFeedback {
 
 // Match Window / Calendar
 export interface MatchWindow {
-  id: number;
+  id: string | number;
   userId: number;
 
   // Window timing
@@ -1059,6 +1065,7 @@ export interface MatchWindow {
   matchedUserId: number;
   matchedUser?: UserDto;
   compatibilityScore?: number;
+  matchCategory?: string;
   matchReason?: string;
 
   // Status

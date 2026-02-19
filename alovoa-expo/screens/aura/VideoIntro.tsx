@@ -31,21 +31,16 @@ import { STATUS_BAR_HEIGHT } from "../../assets/styles";
 
 // Platform-specific imports
 import WebCamera, { WebCameraRef, requestWebCameraPermissions } from "../../components/WebCamera";
-import { createUploadTask as createWebUploadTask } from "../../utils/webUpload";
 
 // Native imports (conditional)
 let Camera: any;
 let CameraView: any;
 let Audio: any;
-let FileSystemLegacy: any;
-let FileSystemUploadType: any;
 
 if (Platform.OS !== "web") {
   Camera = require("expo-camera").Camera;
   CameraView = require("expo-camera").CameraView;
   Audio = require("expo-av").Audio;
-  FileSystemLegacy = require("expo-file-system/legacy");
-  FileSystemUploadType = require("expo-file-system/legacy").FileSystemUploadType;
 }
 
 type CameraType = "front" | "back";
@@ -129,7 +124,7 @@ const VideoIntro = ({ navigation }: any) => {
       const response = await Global.Fetch(URL.API_VIDEO_INTRO_STATUS);
       setIntro(response.data);
 
-      if (response.data?.status === VideoIntroStatus.READY) {
+      if (response.data?.status === VideoIntroStatus.READY || response.data?.status === VideoIntroStatus.COMPLETE) {
         // Load analysis if ready
         try {
           const analysisRes = await Global.Fetch(URL.API_VIDEO_INTRO_ANALYSIS);
@@ -200,49 +195,21 @@ const VideoIntro = ({ navigation }: any) => {
     setUploadProgress(0);
 
     try {
-      // Get upload URL
-      const startResponse = await Global.Fetch(URL.API_VIDEO_INTRO_START, 'post');
-      const { uploadUrl, introId } = startResponse.data;
-
-      // Platform-specific upload
+      const formData = new FormData();
       if (Platform.OS === "web") {
-        // Use web upload utility
-        const uploadTask = createWebUploadTask(
-          uploadUrl,
-          uri,
-          {
-            httpMethod: 'PUT',
-            contentType: 'video/webm', // Web records in webm format
-            headers: {},
-          },
-          (progress) => {
-            setUploadProgress(progress.totalBytesSent / progress.totalBytesExpectedToSend);
-          }
-        );
-
-        if (uploadTask) {
-          await uploadTask.uploadAsync();
-        }
+        const blob = await fetch(uri).then((r) => r.blob());
+        formData.append("video", blob as any, "intro.webm");
       } else {
-        // Use native expo-file-system
-        const uploadTask = FileSystemLegacy.createUploadTask(
-          uploadUrl,
+        formData.append("video", {
           uri,
-          {
-            httpMethod: 'PUT',
-            uploadType: FileSystemUploadType.BINARY_CONTENT,
-            headers: { 'Content-Type': 'video/mp4' },
-          },
-          (progress: any) => {
-            setUploadProgress(progress.totalBytesSent / progress.totalBytesExpectedToSend);
-          }
-        );
-
-        await uploadTask.uploadAsync();
+          name: "intro.mp4",
+          type: "video/mp4",
+        } as any);
       }
 
-      // Confirm upload - triggers AI analysis
-      await Global.Fetch(URL.API_VIDEO_INTRO_CONFIRM, 'post', { introId });
+      setUploadProgress(0.5);
+      await Global.Fetch(URL.API_VIDEO_INTRO_UPLOAD, 'post', formData, 'multipart/form-data');
+      setUploadProgress(1);
 
       setStep(ScreenStep.ANALYZING);
 
@@ -264,7 +231,7 @@ const VideoIntro = ({ navigation }: any) => {
         const response = await Global.Fetch(URL.API_VIDEO_INTRO_STATUS);
         setIntro(response.data);
 
-        if (response.data?.status === VideoIntroStatus.READY) {
+        if (response.data?.status === VideoIntroStatus.READY || response.data?.status === VideoIntroStatus.COMPLETE) {
           const analysisRes = await Global.Fetch(URL.API_VIDEO_INTRO_ANALYSIS);
           setAnalysis(analysisRes.data);
           setStep(ScreenStep.RESULTS);
@@ -399,7 +366,7 @@ const VideoIntro = ({ navigation }: any) => {
       {/* Status Screen */}
       {step === ScreenStep.STATUS && (
         <ScrollView style={{ flex: 1, padding: 16 }}>
-          {intro?.status === VideoIntroStatus.READY ? (
+          {intro?.status === VideoIntroStatus.READY || intro?.status === VideoIntroStatus.COMPLETE ? (
             <>
               <Card style={{ marginBottom: 20, backgroundColor: '#D1FAE5' }}>
                 <Card.Content>
