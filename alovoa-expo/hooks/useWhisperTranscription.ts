@@ -71,6 +71,10 @@ export function useWhisperTranscription(): UseWhisperTranscriptionReturn {
   const configRef = useRef<WhisperConfig>({
     preferLocal: true,
   });
+  const importOptionalModule = useCallback(async <T = any>(moduleName: string): Promise<T> => {
+    const dynamicImport = new Function("m", "return import(m)");
+    return (await dynamicImport(moduleName)) as T;
+  }, []);
 
   const configure = useCallback((config: WhisperConfig) => {
     configRef.current = { ...configRef.current, ...config };
@@ -93,11 +97,12 @@ export function useWhisperTranscription(): UseWhisperTranscriptionReturn {
       setState((s) => ({ ...s, isLoading: false, error: message }));
       throw error;
     }
-  }, [state.modelLoaded]);
+  }, [state.modelLoaded, importOptionalModule]);
 
   const loadWebModel = async (model: WhisperModel) => {
     // Dynamically import transformers.js
-    const { pipeline } = await import("@xenova/transformers");
+    const transformers = await importOptionalModule<{ pipeline: any }>("@xenova/transformers");
+    const { pipeline } = transformers;
 
     const modelId = `Xenova/whisper-${model}`;
 
@@ -120,7 +125,7 @@ export function useWhisperTranscription(): UseWhisperTranscriptionReturn {
     // Try whisper.rn first if preferLocal is true
     if (config.preferLocal) {
       try {
-        const whisperRn = await import("whisper.rn");
+        const whisperRn = await importOptionalModule<any>("whisper.rn");
         const { initWhisper } = whisperRn;
 
         // Model files need to be bundled or downloaded
@@ -133,7 +138,7 @@ export function useWhisperTranscription(): UseWhisperTranscriptionReturn {
 
         setState((s) => ({ ...s, backendType: "local" }));
         return;
-      } catch (e) {
+      } catch {
         // whisper.rn not installed, try API fallback
         console.log("whisper.rn not available, trying API fallback");
       }
@@ -303,7 +308,8 @@ export function useWhisperTranscription(): UseWhisperTranscriptionReturn {
       throw new Error("Model not loaded");
     }
 
-    const { transcribe: whisperTranscribe } = await import("whisper.rn");
+    const whisperRn = await importOptionalModule<any>("whisper.rn");
+    const whisperTranscribe = whisperRn.transcribe;
 
     const result = await whisperTranscribe(whisperContextRef.current, audioUri, {
       language: "en",

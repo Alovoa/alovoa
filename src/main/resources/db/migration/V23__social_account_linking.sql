@@ -1,0 +1,40 @@
+CREATE TABLE IF NOT EXISTS user_social_account (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    uuid VARCHAR(36) NOT NULL,
+    user_id BIGINT NOT NULL,
+    provider VARCHAR(32) NOT NULL,
+    provider_user_id VARCHAR(255) NOT NULL,
+    provider_username VARCHAR(255) NULL,
+    profile_url VARCHAR(1024) NULL,
+    linked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_social_account_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
+    CONSTRAINT uk_social_account_uuid UNIQUE (uuid),
+    CONSTRAINT uk_social_account_provider_user UNIQUE (provider, provider_user_id),
+    CONSTRAINT uk_social_account_user_provider UNIQUE (user_id, provider),
+    INDEX idx_social_account_user (user_id),
+    INDEX idx_social_account_provider (provider)
+);
+
+CREATE TABLE IF NOT EXISTS user_social_link_session (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    uuid VARCHAR(36) NOT NULL,
+    user_id BIGINT NOT NULL,
+    provider VARCHAR(32) NOT NULL,
+    state_token VARCHAR(255) NOT NULL,
+    code_verifier VARCHAR(255) NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'PENDING',
+    error_message VARCHAR(255) NULL,
+    provider_user_id VARCHAR(255) NULL,
+    provider_username VARCHAR(255) NULL,
+    started_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expires_at DATETIME NOT NULL,
+    completed_at DATETIME NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_social_link_session_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
+    CONSTRAINT uk_social_link_session_uuid UNIQUE (uuid),
+    CONSTRAINT uk_social_link_session_state UNIQUE (state_token),
+    INDEX idx_social_link_session_user_status (user_id, status),
+    INDEX idx_social_link_session_provider_state (provider, state_token),
+    INDEX idx_social_link_session_expires_at (expires_at)
+);

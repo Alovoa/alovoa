@@ -32,5 +32,14 @@ public class UserImage {
 
 	private String binMime;
 
+	@Column(name = "source_provider", length = 64)
+	private String sourceProvider;
+
+	@Column(name = "source_url", length = 1024)
+	private String sourceUrl;
+
+	@Column(name = "source_verified")
+	private Boolean sourceVerified;
+
 	private Date date;
 }

@@ -1,6 +1,7 @@
 package com.nonononoki.alovoa.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nonononoki.alovoa.Tools;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.model.UserDeleteAccountDto;
 import com.nonononoki.alovoa.repo.ConversationRepository;
@@ -66,6 +67,12 @@ class UserControllerTest {
     @MockitoBean
     private IntakeService intakeService;
 
+    @MockitoBean
+    private S3StorageService s3StorageService;
+
+    @MockitoBean
+    private SocialMediaImportService socialMediaImportService;
+
     @Value("${app.first-name.length-max}")
     private int firstNameLengthMax;
 
@@ -78,6 +85,8 @@ class UserControllerTest {
     void before() throws Exception {
         Mockito.when(mailService.sendMail(any(String.class), any(String.class), any(String.class), any(String.class)))
                 .thenReturn(true);
+        Mockito.when(s3StorageService.uploadMedia(any(byte[].class), any(String.class), any(S3StorageService.S3MediaType.class)))
+                .thenReturn("test-key-" + UUID.randomUUID());
         testUsers = RegisterServiceTest.getTestUsers(captchaService, registerService, firstNameLengthMax, firstNameLengthMin);
     }
 
@@ -402,6 +411,34 @@ class UserControllerTest {
         // Deleting a non-existent image returns OK (idempotent behavior)
         mockMvc.perform(post("/user/image/delete/1"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("POST /user/image/import-social - Import image from validated social media")
+    void testImportSocialImage() throws Exception {
+        User user = testUsers.get(0);
+        Mockito.doReturn(user).when(authService).getCurrentUser(true);
+
+        byte[] imageBytes = Tools.resourceToBytes("img/profile1.png");
+        Mockito.when(socialMediaImportService.importImage(any(User.class), any(SocialMediaImageImportDto.class)))
+                .thenReturn(new SocialMediaImportService.ImportedImage(
+                        "tiktok",
+                        "https://p16-sign-va.tiktokcdn.com/imported.png",
+                        imageBytes,
+                        "image/png",
+                        true
+                ));
+
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("provider", "tiktok");
+        payload.put("postUrl", "https://www.tiktok.com/@sample/video/123");
+
+        mockMvc.perform(post("/user/image/import-social")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(payload)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray());
     }
 
     @Test

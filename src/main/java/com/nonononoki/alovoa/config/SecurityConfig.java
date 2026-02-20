@@ -127,6 +127,7 @@ public class SecurityConfig {
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/v1/waitlist/**").permitAll()
                         .requestMatchers("/api/v1/stripe/**").permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

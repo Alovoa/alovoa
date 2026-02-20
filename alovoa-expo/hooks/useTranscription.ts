@@ -247,6 +247,10 @@ export function useTranscription(language = "en-US"): UseTranscriptionReturn {
  */
 async function createWhisperInstance() {
   const { Platform } = await import("react-native");
+  const importOptionalModule = async <T = any>(moduleName: string): Promise<T> => {
+    const dynamicImport = new Function("m", "return import(m)");
+    return (await dynamicImport(moduleName)) as T;
+  };
 
   const getDocumentDirectory = (fileSystemModule: any): string => {
     return fileSystemModule.documentDirectory || fileSystemModule.Paths?.document?.uri || "";
@@ -268,7 +272,7 @@ async function createWhisperInstance() {
 
     if (Platform.OS === "web") {
       // Web: Use transformers.js
-      const transformers = await import("@xenova/transformers");
+      const transformers = await importOptionalModule<{ pipeline: (...args: any[]) => Promise<any> }>("@xenova/transformers");
       const modelId = `Xenova/whisper-${model}`;
       pipeline = await transformers.pipeline("automatic-speech-recognition", modelId);
       backendType = "local";
@@ -277,7 +281,7 @@ async function createWhisperInstance() {
       // Native: Try whisper.rn first, then API fallback
       if (config.preferLocal) {
         try {
-          const whisperRn = await import("whisper.rn");
+          const whisperRn = await importOptionalModule<any>("whisper.rn");
           const FileSystem = await import("expo-file-system");
 
           // Get or download model
@@ -299,7 +303,7 @@ async function createWhisperInstance() {
           backendType = "local";
           modelLoaded = true;
           return;
-        } catch (e) {
+        } catch {
           console.log("whisper.rn not available, trying API fallback");
         }
       }
@@ -369,7 +373,8 @@ async function createWhisperInstance() {
     }
 
     // Local whisper.rn
-    const { transcribe: whisperTranscribe } = await import("whisper.rn");
+    const whisperRn = await importOptionalModule<any>("whisper.rn");
+    const whisperTranscribe = whisperRn.transcribe;
     const result = await whisperTranscribe(whisperContext, audioUri, {
       language: "en",
       translate: false,

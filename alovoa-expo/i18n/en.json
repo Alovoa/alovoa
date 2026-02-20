@@ -119,7 +119,14 @@
             "manage": "Manage photos",
             "delete": "Delete photo?",
             "change-profile-pic": "Change profile picture",
-            "add": "Add photo"
+            "add": "Add photo",
+            "import-social": "Import from social",
+            "import-social-title": "Import from validated social media",
+            "import-social-subtitle": "Paste a post URL (TikTok/YouTube) or a direct media URL (Instagram/X/TikTok/YouTube).",
+            "import-social-url": "Social URL",
+            "import-social-post": "Import post",
+            "import-social-media": "Import media URL",
+            "import-social-success": "Social media image imported"
         },
         "logout": "Logout",
         "report": {

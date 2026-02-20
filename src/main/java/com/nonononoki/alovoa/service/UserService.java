@@ -127,6 +127,8 @@ public class UserService {
     private MatchingEventIngestionService matchingEventIngestionService;
     @Autowired
     private ContentModerationService moderationService;
+    @Autowired
+    private SocialMediaImportService socialMediaImportService;
     @Value("${app.age.min}")
     private int minAge;
     @Value("${app.age.max}")
@@ -645,37 +647,62 @@ public class UserService {
 
     public List<UserImageDto> addImage(byte[] bytes, String mimeType) throws AlovoaException, IOException {
         User user = authService.getCurrentUser(true);
-        if (user.getImages() != null && user.getImages().size() < imageMax) {
-            UserImage img = new UserImage();
-            AbstractMap.SimpleEntry<byte[], String> adjustedImage = adjustPicture(bytes, mimeType);
+        return addImageInternal(user, bytes, mimeType, "GALLERY_IMAGE", null, null, false);
+    }
 
-            ModerationResult imageModeration = moderationService.moderateImage(
-                    adjustedImage.getKey(),
-                    adjustedImage.getValue(),
-                    user,
-                    "GALLERY_IMAGE"
-            );
-            if (!imageModeration.isAllowed()) {
-                throw new AlovoaException("profile_content_blocked");
-            }
+    public List<UserImageDto> importImageFromSocial(SocialMediaImageImportDto dto) throws AlovoaException, IOException {
+        User user = authService.getCurrentUser(true);
+        SocialMediaImportService.ImportedImage importedImage = socialMediaImportService.importImage(user, dto);
+        return addImageInternal(
+                user,
+                importedImage.getBytes(),
+                importedImage.getMimeType(),
+                "SOCIAL_IMPORT_IMAGE",
+                importedImage.getProvider(),
+                importedImage.getSourceUrl(),
+                importedImage.isSourceVerified()
+        );
+    }
 
-            // Upload to S3
-            String s3Key = s3StorageService.uploadMedia(
-                    adjustedImage.getKey(),
-                    adjustedImage.getValue(),
-                    S3StorageService.S3MediaType.GALLERY
-            );
-            img.setS3Key(s3Key);
-            img.setBinMime(adjustedImage.getValue());
-            img.setUuid(UUID.randomUUID());
-            img.setDate(new Date());
-            img.setUser(user);
-            user.getImages().add(img);
-            user = userRepo.saveAndFlush(user);
-            return UserImageDto.buildFromUserImages(user, this);
-        } else {
+    private List<UserImageDto> addImageInternal(User user, byte[] bytes, String mimeType, String moderationType,
+                                                String sourceProvider, String sourceUrl, boolean sourceVerified)
+            throws AlovoaException, IOException {
+        if (user.getImages() == null) {
+            user.setImages(new ArrayList<>());
+        }
+        if (user.getImages().size() >= imageMax) {
             throw new AlovoaException("max_image_amount_exceeded");
         }
+
+        UserImage img = new UserImage();
+        AbstractMap.SimpleEntry<byte[], String> adjustedImage = adjustPicture(bytes, mimeType);
+
+        ModerationResult imageModeration = moderationService.moderateImage(
+                adjustedImage.getKey(),
+                adjustedImage.getValue(),
+                user,
+                moderationType
+        );
+        if (!imageModeration.isAllowed()) {
+            throw new AlovoaException("profile_content_blocked");
+        }
+
+        String s3Key = s3StorageService.uploadMedia(
+                adjustedImage.getKey(),
+                adjustedImage.getValue(),
+                S3StorageService.S3MediaType.GALLERY
+        );
+        img.setS3Key(s3Key);
+        img.setBinMime(adjustedImage.getValue());
+        img.setSourceProvider(sourceProvider);
+        img.setSourceUrl(sourceUrl);
+        img.setSourceVerified(sourceVerified);
+        img.setUuid(UUID.randomUUID());
+        img.setDate(new Date());
+        img.setUser(user);
+        user.getImages().add(img);
+        User savedUser = userRepo.saveAndFlush(user);
+        return UserImageDto.buildFromUserImages(savedUser, this);
     }
 
     public void deleteImage(long id) throws AlovoaException {

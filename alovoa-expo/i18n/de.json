@@ -120,7 +120,14 @@
             "manage": "Fotos verwalten",
             "delete": "Foto löschen?",
             "change-profile-pic": "Profilbild ändern",
-            "add": "Foto hinzufügen"
+            "add": "Foto hinzufügen",
+            "import-social": "Aus Social Media importieren",
+            "import-social-title": "Von validierten Social-Media-Plattformen importieren",
+            "import-social-subtitle": "Post-URL (TikTok/YouTube) oder direkte Medien-URL (Instagram/X/TikTok/YouTube) einfügen.",
+            "import-social-url": "Social-URL",
+            "import-social-post": "Post importieren",
+            "import-social-media": "Medien-URL importieren",
+            "import-social-success": "Social-Media-Bild importiert"
         },
         "logout": "Ausloggen",
         "report": {

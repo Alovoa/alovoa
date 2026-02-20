@@ -1,8 +1,13 @@
 import React from "react";
 import {
+  ActivityIndicator,
+  Text,
+  TouchableOpacity,
   View,
+  Platform,
   useWindowDimensions
 } from "react-native";
+import * as WebBrowser from "expo-web-browser";
 import styles from "../../assets/styles";
 import { RootStackParamList, SettingsEmailEnum, SettingsEmailNameMap, UnitsEnum, UnitsNameMap, YourProfileResource } from "../../myTypes";
 import * as I18N from "../../i18n";
@@ -20,6 +25,22 @@ const GrowthSettingEnum = {
   MONTHLY_CHECKINS: 103,
 } as const;
 
+const SOCIAL_PROVIDERS: Array<{ id: string; label: string }> = [
+  { id: "instagram", label: "Instagram" },
+  { id: "tiktok", label: "TikTok" },
+  { id: "youtube", label: "YouTube" },
+  { id: "x", label: "X" },
+];
+
+type LinkedSocialAccount = {
+  id: string;
+  provider: string;
+  providerUserId: string;
+  providerUsername?: string;
+  profileUrl?: string;
+  linkedAt?: string;
+};
+
 type Props = BottomTabScreenProps<RootStackParamList, 'Profile.Settings'>
 
 const Settings = ({ route }: Props) => {
@@ -30,6 +51,9 @@ const Settings = ({ route }: Props) => {
   const [units, setUnits] = React.useState(UnitsEnum.SI);
   const [emailSettings, setEmailSettings] = React.useState<Map<number, boolean>>(new Map());
   const [growthSettings, setGrowthSettings] = React.useState<Map<number, boolean>>(new Map());
+  const [socialAccounts, setSocialAccounts] = React.useState<LinkedSocialAccount[]>([]);
+  const [connectingProvider, setConnectingProvider] = React.useState<string | null>(null);
+  const [socialMessage, setSocialMessage] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     load();
@@ -64,6 +88,7 @@ const Settings = ({ route }: Props) => {
     } catch (e) {
       console.error(e);
     }
+    await loadSocialAccounts();
   }
 
   async function updateUnits(num: number) {
@@ -96,6 +121,85 @@ const Settings = ({ route }: Props) => {
     } else if (id === GrowthSettingEnum.MONTHLY_CHECKINS) {
       await Global.Fetch(Global.format(URL.USER_SETTING_MONTHLY_GROWTH_CHECKINS, value), 'post');
     }
+  }
+
+  async function loadSocialAccounts() {
+    try {
+      const response = await Global.Fetch(URL.USER_SOCIAL_CONNECT_ACCOUNTS);
+      setSocialAccounts(Array.isArray(response?.data) ? response.data : []);
+    } catch (e) {
+      console.error(e);
+      setSocialAccounts([]);
+    }
+  }
+
+  async function connectSocialProvider(provider: string) {
+    try {
+      setSocialMessage(null);
+      setConnectingProvider(provider);
+      const response = await Global.Fetch(Global.format(URL.USER_SOCIAL_CONNECT_START, provider), "post");
+      const authorizationUrl = response?.data?.authorizationUrl;
+      const sessionId = response?.data?.sessionId;
+      if (!authorizationUrl || !sessionId) {
+        throw new Error("Invalid social connect response");
+      }
+
+      if (Platform.OS === "web" && typeof window !== "undefined") {
+        window.open(authorizationUrl, "_blank", "noopener,noreferrer");
+      } else {
+        await WebBrowser.openBrowserAsync(authorizationUrl);
+      }
+
+      await pollSocialLinkStatus(String(sessionId), provider);
+      await loadSocialAccounts();
+      setSocialMessage(`${provider} connected`);
+    } catch (e: any) {
+      console.error(e);
+      setSocialMessage(extractErrorMessage(e, `${provider} connection failed`));
+    } finally {
+      setConnectingProvider(null);
+    }
+  }
+
+  async function disconnectSocialProvider(provider: string) {
+    try {
+      setSocialMessage(null);
+      await Global.Fetch(Global.format(URL.USER_SOCIAL_CONNECT_UNLINK, provider), "delete");
+      await loadSocialAccounts();
+      setSocialMessage(`${provider} disconnected`);
+    } catch (e: any) {
+      console.error(e);
+      setSocialMessage(extractErrorMessage(e, `${provider} disconnect failed`));
+    }
+  }
+
+  async function pollSocialLinkStatus(sessionId: string, provider: string) {
+    const maxAttempts = 45;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      await sleep(2000);
+      const response = await Global.Fetch(Global.format(URL.USER_SOCIAL_CONNECT_STATUS, sessionId));
+      const status = response?.data?.status;
+      if (status === "LINKED") {
+        return;
+      }
+      if (status === "FAILED" || status === "EXPIRED") {
+        const message = response?.data?.errorMessage || `${provider} connection failed`;
+        throw new Error(message);
+      }
+    }
+    throw new Error("Connection timed out");
+  }
+
+  function linkedAccount(provider: string): LinkedSocialAccount | undefined {
+    return socialAccounts.find((account) => account.provider === provider);
+  }
+
+  function extractErrorMessage(error: any, fallback: string): string {
+    return error?.response?.data || error?.message || fallback;
+  }
+
+  function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   return (
@@ -139,6 +243,78 @@ const Settings = ({ route }: Props) => {
               selected={[...growthSettings.entries()].filter((item) => item[1]).map((item) => item[0])}
               onValueChanged={updateGrowthSettings}>
             </SelectModal>
+          </View>
+          <View style={{ marginTop: 12 }}>
+            <View style={{
+              borderWidth: 1,
+              borderColor: "#e5e7eb",
+              borderRadius: 12,
+              padding: 12
+            }}>
+              <Text style={{ fontSize: 16, fontWeight: "600", marginBottom: 4 }}>
+                Connected social accounts
+              </Text>
+              <Text style={{ fontSize: 12, color: "#6b7280", marginBottom: 8 }}>
+                A social account can only be linked to one ALOVOA account.
+              </Text>
+              {SOCIAL_PROVIDERS.map((provider, index) => {
+                const account = linkedAccount(provider.id);
+                const isConnecting = connectingProvider === provider.id;
+                return (
+                  <View
+                    key={provider.id}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      paddingVertical: 10,
+                      borderTopWidth: index === 0 ? 0 : 1,
+                      borderTopColor: "#f1f5f9"
+                    }}
+                  >
+                    <View style={{ flex: 1, paddingRight: 8 }}>
+                      <Text style={{ fontSize: 14, fontWeight: "500" }}>{provider.label}</Text>
+                      <Text style={{ fontSize: 12, color: "#6b7280" }}>
+                        {account
+                          ? `Connected as ${account.providerUsername || account.providerUserId}`
+                          : "Not connected"}
+                      </Text>
+                    </View>
+                    {isConnecting ? (
+                      <ActivityIndicator size="small" color="#ec407a" />
+                    ) : account ? (
+                      <TouchableOpacity
+                        onPress={() => disconnectSocialProvider(provider.id)}
+                        style={{
+                          paddingVertical: 8,
+                          paddingHorizontal: 12,
+                          borderRadius: 8,
+                          borderWidth: 1,
+                          borderColor: "#ef4444"
+                        }}
+                      >
+                        <Text style={{ color: "#ef4444", fontWeight: "600" }}>Disconnect</Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity
+                        onPress={() => connectSocialProvider(provider.id)}
+                        style={{
+                          paddingVertical: 8,
+                          paddingHorizontal: 12,
+                          borderRadius: 8,
+                          backgroundColor: "#ec407a"
+                        }}
+                      >
+                        <Text style={{ color: "#fff", fontWeight: "600" }}>Connect</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                );
+              })}
+              {socialMessage ? (
+                <Text style={{ marginTop: 8, fontSize: 12, color: "#6b7280" }}>{socialMessage}</Text>
+              ) : null}
+            </View>
           </View>
         </View>
       </VerticalView>

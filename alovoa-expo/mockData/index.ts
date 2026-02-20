@@ -7,20 +7,20 @@
  * Password: aura123
  */
 
+import MockProvider from './MockProvider';
+import { BYPASS_CREDENTIALS as MOCK_BYPASS_CREDENTIALS } from './mockUsers';
+
 export * from './mockUsers';
 export * from './mockAura';
 export * from './MockProvider';
 
-import MockProvider from './MockProvider';
-import { BYPASS_CREDENTIALS } from './mockUsers';
-
 // Re-export for convenience
-export { MockProvider, BYPASS_CREDENTIALS };
+export { MockProvider };
 
 // Quick reference for test credentials
 export const TEST_CREDENTIALS = {
-  email: 'test@aura.dev',
-  password: 'aura123',
+  email: MOCK_BYPASS_CREDENTIALS.email,
+  password: MOCK_BYPASS_CREDENTIALS.password,
   hint: 'Use these credentials to bypass auth and test AURA features',
 };
 

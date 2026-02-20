@@ -232,6 +232,19 @@ public class UserController {
         return result;
     }
 
+    @PostMapping(value = "/image/import-social", consumes = "application/json")
+    public List<UserImageDto> importImageFromSocial(@RequestBody SocialMediaImageImportDto dto)
+            throws AlovoaException, IOException {
+        // Validate that user has completed video before uploading photos
+        User user = authService.getCurrentUser(true);
+        intakeService.validateCanStartStep(user, IntakeStep.PHOTOS);
+
+        List<UserImageDto> result = userService.importImageFromSocial(dto);
+        profileCoachService.recordEdit(user, ProfileEditEvent.EditType.PHOTO_ADD,
+                "image-social:" + (dto != null ? dto.getProvider() : "auto"));
+        return result;
+    }
+
     @PostMapping("/image/delete/{imageId}")
     public void deleteImage(@PathVariable long imageId) throws AlovoaException {
         User user = authService.getCurrentUser(true);
