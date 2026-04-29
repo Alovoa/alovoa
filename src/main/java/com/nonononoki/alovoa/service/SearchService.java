@@ -45,7 +45,7 @@ public class SearchService {
     private static final double LATITUDE = 111.1;
     private static final double LONGITUDE = 111.320;
     private static final int DEFAULT_DISTANCE = 150;
-    private static final int SEARCH_MAX = 200;
+    private static final int SEARCH_MAX = 30;
     private static ReverseGeocoder geocoder = null;
 
     private static final Set<Long> ALL_INTENTIONS = Set.of(UserIntention.MEET, UserIntention.DATE, UserIntention.SEX);
