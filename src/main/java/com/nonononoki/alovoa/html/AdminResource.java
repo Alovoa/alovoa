@@ -10,7 +10,7 @@ import com.nonononoki.alovoa.repo.UserReportRepository;
 import com.nonononoki.alovoa.service.AdminService;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,18 +27,14 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
+@AllArgsConstructor
 public class AdminResource {
 
     public static final String URL = "/admin";
-    @Autowired
     private UserReportRepository userReportRepo;
-    @Autowired
     private TextEncryptorConverter textEncryptor;
-    @Autowired
     private AuthService authService;
-    @Autowired
     private UserService userService;
-    @Autowired
     private AdminService adminService;
 
     @GetMapping(URL)

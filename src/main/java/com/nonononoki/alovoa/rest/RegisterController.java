@@ -11,7 +11,7 @@ import javax.crypto.NoSuchPaddingException;
 import jakarta.mail.MessagingException;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import com.nonononoki.alovoa.model.AlovoaException;
@@ -20,9 +20,9 @@ import com.nonononoki.alovoa.service.RegisterService;
 
 @RestController
 @RequestMapping("/")
+@AllArgsConstructor
 public class RegisterController {
 
-	@Autowired
 	private RegisterService registerService;
 
 	@PostMapping(value = "/register", consumes = "application/json")

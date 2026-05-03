@@ -19,6 +19,8 @@ import com.nonononoki.alovoa.repo.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
@@ -34,6 +36,7 @@ import java.security.SecureRandom;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class RegisterService {
 
     @Value("${app.token.length}")
@@ -66,37 +69,37 @@ public class RegisterService {
     @Value("${app.referral.max}")
     private int referralMax;
 
-    @Autowired
+    @NonNull
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
+    @NonNull
     private MailService mailService;
 
-    @Autowired
+    @NonNull
     private PublicService publicService;
 
-    @Autowired
+    @NonNull
     private UserRepository userRepo;
 
-    @Autowired
+    @NonNull
     private GenderRepository genderRepo;
 
-    @Autowired
+    @NonNull
     private UserIntentionRepository userIntentionRepo;
 
-    @Autowired
+    @NonNull
     private UserRegisterTokenRepository registerTokenRepo;
 
-    @Autowired
+    @NonNull
     private AuthService authService;
 
-    @Autowired
+    @NonNull
     protected CaptchaService captchaService;
 
-    @Autowired
+    @NonNull
     private UserService userService;
 
-    @Autowired
+    @NonNull
     private TextEncryptorConverter textEncryptor;
 
     private static final int MIN_PASSWORD_SIZE = 7;

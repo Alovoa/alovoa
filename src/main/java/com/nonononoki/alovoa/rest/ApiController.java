@@ -6,11 +6,11 @@ import com.nonononoki.alovoa.model.MessageDto;
 import com.nonononoki.alovoa.model.SearchDto;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.SearchService;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,21 +26,17 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
+@AllArgsConstructor
 public class ApiController {
 
-    @Autowired
     private SearchService searchService;
 
-    @Autowired
     private AuthService authService;
 
-    @Autowired
     private DonateController donateController;
 
-    @Autowired
     private MessageController messageController;
 
-    @Autowired
     private SearchController searchController;
 
     @SuppressWarnings("unchecked")

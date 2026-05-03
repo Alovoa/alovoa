@@ -11,16 +11,18 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ToolsTest {
 
     @Test
     void test() throws Exception {
-        int dist = (int) Math.round(Tools.calcDistanceKm(0, 0, 0, 0));
+        int dist = Math.round((float) Tools.calcDistanceKm(0, 0, 0, 0));
         assertEquals(0, dist);
 
-        int dist2 = (int) Math.round(Tools.calcDistanceKm(0.45, 0, 0, 0));
+        int dist2 = Math.round((float) Tools.calcDistanceKm(0.45, 0, 0, 0));
         assertEquals(50, dist2);
 
         assertTrue(Tools.isTextContainingLineFromFile(Tools.TEMP_EMAIL_FILE_NAME, "jmpant.com"));

@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 import com.nonononoki.alovoa.model.AccountDeletionRequestDto;
 import jakarta.mail.MessagingException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +18,9 @@ import com.nonononoki.alovoa.service.ImprintService;
 
 @RestController
 @RequestMapping("/imprint")
+@AllArgsConstructor
 public class ImprintController {
 
-	@Autowired
 	private ImprintService imprintService;
 
 	@PostMapping(value = "/contact", consumes = "application/json")

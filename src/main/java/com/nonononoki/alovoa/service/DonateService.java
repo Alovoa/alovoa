@@ -11,9 +11,10 @@ import com.nonononoki.alovoa.model.DonationDto;
 import com.nonononoki.alovoa.model.DonationKofi;
 import com.nonononoki.alovoa.repo.UserDonationRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DonateService {
 
     private static final int FILTER_RECENT = 1;
@@ -38,17 +40,17 @@ public class DonateService {
     private static final String KOFI_TEST_TRANSACTION_ID = "1234-1234-1234-1234";
     private static final String KOFI_TEST_EMAIL = "john@example.com";
     private static final String BMAC_TEST_EMAIL = "test@example.com";
-    @Autowired
+    @NonNull
     private UserDonationRepository userDonationRepo;
-    @Autowired
+    @NonNull
     private UserRepository userRepo;
-    @Autowired
+    @NonNull
     private AuthService authService;
-    @Autowired
+    @NonNull
     private UserService userService;
-    @Autowired
+    @NonNull
     private ObjectMapper objectMapper;
-    @Autowired
+    @NonNull
     private TextEncryptorConverter textEncryptor;
     @Value("${app.donate.users.max}")
     private int maxEntries;

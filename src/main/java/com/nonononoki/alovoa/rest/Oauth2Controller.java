@@ -18,10 +18,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -49,30 +49,31 @@ import com.nonononoki.alovoa.service.PublicService;
 
 @RestController
 @RequestMapping("/")
+@RequiredArgsConstructor
 public class Oauth2Controller {
 
-	@Autowired
+	@NonNull
 	private UserRepository userRepo;
 
-	@Autowired
+	@NonNull
 	private OAuth2AuthorizedClientService clientService;
 
-	@Autowired
+	@NonNull
 	private IndexResource indexResource;
 
-	@Autowired
+	@NonNull
 	private PublicService publicService;
 
-	@Autowired
+	@NonNull
 	private HttpSession httpSession;
 
-	@Autowired
+	@NonNull
 	private SecurityConfig securityConfig;
 
-	@Autowired
+	@NonNull
 	private HttpServletRequest request;
 
-	@Autowired
+	@NonNull
 	private HttpServletResponse response;
 
 	@Value("${app.first-name.length-max}")

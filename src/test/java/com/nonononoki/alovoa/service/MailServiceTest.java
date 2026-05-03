@@ -35,12 +35,6 @@ class MailServiceTest {
     @Autowired
     private CaptchaService captchaService;
 
-    @Value("${app.age.min}")
-    private int minAge;
-
-    @Value("${app.message.size}")
-    private int maxMessageSize;
-
     @Value("${app.first-name.length-max}")
     private int firstNameLengthMax;
 
@@ -77,7 +71,7 @@ class MailServiceTest {
 
     @AfterEach
     void after() throws Exception {
-        RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+        RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, userRepo);
     }
 
     @Disabled

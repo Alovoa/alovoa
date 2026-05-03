@@ -5,7 +5,7 @@ import java.security.GeneralSecurityException;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
@@ -26,15 +26,13 @@ import com.nonononoki.alovoa.service.MessageService;
 
 @Controller
 @RequestMapping("/message")
+@AllArgsConstructor
 public class MessageController {
 
-	@Autowired
 	private ConversationRepository conversationRepo;
 
-	@Autowired
 	private AuthService authService;
 
-	@Autowired
 	private MessageService messageService;
 	
 	private final int MAX_MESSAGES = 50;

@@ -18,14 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class UserSettingsServiceTest {
+class UserSettingsServiceTest {
 
     @Autowired
     private RegisterService registerService;
@@ -70,7 +72,7 @@ public class UserSettingsServiceTest {
 
     @AfterEach
     void after() throws Exception {
-        RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+        RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, userRepo);
     }
 
     @Test

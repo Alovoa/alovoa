@@ -6,7 +6,8 @@ import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.UserPromptDto;
 import com.nonononoki.alovoa.repo.UserPromptRepository;
 import com.nonononoki.alovoa.repo.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +16,13 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserPromptService {
 
-    @Autowired
+    @NonNull
     private UserRepository userRepo;
 
-    @Autowired
+    @NonNull
     private AuthService authService;
 
     @Value("${app.prompt.max}")

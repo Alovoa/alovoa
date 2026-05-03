@@ -10,7 +10,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
@@ -24,12 +24,11 @@ import com.nonononoki.alovoa.service.SearchService;
 
 @Controller
 @RequestMapping("/search")
+@AllArgsConstructor
 public class SearchController {
 
-	@Autowired
 	private SearchService searchService;
 
-	@Autowired
 	private AuthService authService;
 
 	/**

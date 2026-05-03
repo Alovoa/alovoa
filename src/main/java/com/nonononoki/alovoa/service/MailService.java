@@ -5,9 +5,10 @@ import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.entity.user.Conversation;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -21,6 +22,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class MailService {
 
     private static String UUID_FORMAT = "<br><br><br><p style=\"color:#848484\">%s</p>";
@@ -28,10 +30,10 @@ public class MailService {
     @Value("${spring.mail.username}")
     private String defaultFrom;
 
-    @Autowired
+    @NonNull
     private MessageSource messageSource;
 
-    @Autowired
+    @NonNull
     private JavaMailSender mailSender;
 
     @Value("${app.name}")

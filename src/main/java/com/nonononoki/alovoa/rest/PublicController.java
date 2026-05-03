@@ -1,6 +1,6 @@
 package com.nonononoki.alovoa.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,9 +11,9 @@ import com.nonononoki.alovoa.service.PublicService;
 
 @RestController
 @RequestMapping("/")
+@AllArgsConstructor
 public class PublicController {
 
-	@Autowired
 	private PublicService publicService;
 
 	@GetMapping(value="/text/{value:.+}", produces = "text/plain; charset=UTF-8")

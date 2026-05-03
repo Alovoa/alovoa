@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
@@ -32,39 +33,40 @@ import com.nonononoki.alovoa.repo.UserRepository;
 import com.nonononoki.alovoa.service.UserService;
 
 @Component
+@RequiredArgsConstructor
 public class EventListenerConfig {
 
-	@Autowired
+	@NonNull
 	private UserRepository userRepo;
 
-	@Autowired
+	@NonNull
 	private UserLikeRepository userLikeRepo;
 
-	@Autowired
+	@NonNull
 	private UserHideRepository userHideRepo;
 
-	@Autowired
+	@NonNull
 	private UserBlockRepository userBlockRepo;
 
-	@Autowired
+	@NonNull
 	private UserReportRepository userReportRepo;
 
-	@Autowired
+	@NonNull
 	private UserNotificationRepository userNotificationRepo;
 
-	@Autowired
+	@NonNull
 	private ConversationRepository conversationRepo;
 	
-	@Autowired
+	@NonNull
 	private GenderRepository genderRepo;
 	
-	@Autowired
+	@NonNull
 	private UserMiscInfoRepository userMiscInfoRepo;
 
-	@Autowired
+	@NonNull
 	private UserIntentionRepository userIntentionRepo;
 
-	@Autowired
+	@NonNull
 	private PasswordEncoder passwordEncoder;
 
 	@Value("${app.admin.email}")

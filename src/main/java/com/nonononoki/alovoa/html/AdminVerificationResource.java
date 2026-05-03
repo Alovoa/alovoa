@@ -9,7 +9,7 @@ import com.nonononoki.alovoa.model.UserVerificationDto;
 import com.nonononoki.alovoa.repo.UserVerificationPictureRepository;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,16 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@AllArgsConstructor
 public class AdminVerificationResource {
 
     public static final String URL = "/admin-verification";
-    @Autowired
     private UserVerificationPictureRepository userVerificationPictureRepo;
-    @Autowired
     private TextEncryptorConverter textEncryptor;
-    @Autowired
     private AuthService authService;
-    @Autowired
     private UserService userService;
 
     @GetMapping(URL)

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.PageRequest;
@@ -22,15 +23,16 @@ import com.nonononoki.alovoa.repo.UserRepository;
 @Transactional
 @ConditionalOnProperty("app.scheduling.enabled")
 @Service
+@RequiredArgsConstructor
 public class ScheduleService {
 
-	@Autowired
+	@NonNull
 	private CaptchaRepository captchaRepo;
 
-	@Autowired
+	@NonNull
 	private UserHideRepository userHideRepo;
 
-	@Autowired
+	@NonNull
 	private UserRepository userRepo;
 
 	@Value("${app.schedule.enabled}")

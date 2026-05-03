@@ -66,7 +66,7 @@ class ProfileResourceTest {
 
 	@AfterEach
 	void after() throws Exception {
-		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, userRepo);
 	}
 
 	@Test

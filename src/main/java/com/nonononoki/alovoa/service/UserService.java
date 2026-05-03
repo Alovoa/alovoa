@@ -16,10 +16,11 @@ import com.nonononoki.alovoa.repo.*;
 import com.sipgate.mp3wav.Converter;
 import jakarta.mail.MessagingException;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ByteArrayResource;
@@ -56,6 +57,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
@@ -78,46 +80,47 @@ public class UserService {
     private final Set<Long> familyMiscInfoSet = new HashSet<>(Set.of(UserMiscInfo.FAMILY_WANT, UserMiscInfo.FAMILY_NOT_WANT, UserMiscInfo.FAMILY_NOT_UNSURE));
     private final Set<Long> relationshipTypeMiscInfoSet = new HashSet<>(Set.of(UserMiscInfo.RELATIONSHIP_TYPE_POLYAMOROUS, UserMiscInfo.RELATIONSHIP_TYPE_MONOGAMOUS));
 
-    @Autowired
+    @NonNull
     private AuthService authService;
-    @Autowired
+    @NonNull
     private MediaService mediaService;
-    @Autowired
+    @NonNull
     private UserRepository userRepo;
-    @Autowired
+    @NonNull
     private GenderRepository genderRepo;
-    @Autowired
+    @NonNull
     private UserMiscInfoRepository userMiscInfoRepo;
-    @Autowired
+    @NonNull
     private UserIntentionRepository userIntentionRepo;
-    @Autowired
+    @NonNull
     private UserInterestRepository userInterestRepo;
-    @Autowired
+    @NonNull
     private UserImageRepository userImageRepo;
-    @Autowired
+    @NonNull
     private UserLikeRepository userLikeRepo;
-    @Autowired
+    @NonNull
     private UserHideRepository userHideRepo;
-    @Autowired
+    @NonNull
     private UserBlockRepository userBlockRepo;
-    @Autowired
+    @NonNull
     private UserReportRepository userReportRepo;
-    @Autowired
+    @NonNull
     private UserNotificationRepository userNotificationRepo;
-    @Autowired
+    @NonNull
     private UserProfilePictureRepository userProfilePictureRepository;
-    @Autowired
+    @NonNull
     private UserVerificationPictureRepository userVerificationPictureRepo;
-    @Autowired
+    @NonNull
     private ConversationRepository conversationRepo;
-    @Autowired
+    @NonNull
     private CaptchaService captchaService;
-    @Autowired
+    @NonNull
     private MailService mailService;
-    @Autowired
+    @NonNull
     private TextEncryptorConverter textEncryptor;
-    @Autowired
+    @NonNull
     private ObjectMapper objectMapper;
+
     @Value("${app.age.min}")
     private int minAge;
     @Value("${app.age.max}")

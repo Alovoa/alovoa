@@ -7,6 +7,8 @@ import com.nonononoki.alovoa.model.AlovoaException;
 import com.nonononoki.alovoa.model.UserDto;
 import com.nonononoki.alovoa.service.AuthService;
 import com.nonononoki.alovoa.service.UserService;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -26,9 +28,10 @@ import java.util.Date;
 
 @Controller
 @RequestMapping("/")
+@RequiredArgsConstructor
 public class DeleteAccountResource {
 
-    @Autowired
+    @NonNull
     private TextEncryptorConverter textEncryptor;
 
     @Value("${app.user.delete.duration.valid}")

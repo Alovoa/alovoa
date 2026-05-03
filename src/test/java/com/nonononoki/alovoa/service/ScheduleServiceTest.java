@@ -87,7 +87,7 @@ class ScheduleServiceTest {
 
 	@AfterEach
 	void after() throws Exception {
-		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, conversationRepo, userRepo);
+		RegisterServiceTest.deleteAllUsers(userService, authService, captchaService, userRepo);
 	}
 
 	@Test
@@ -136,7 +136,7 @@ class ScheduleServiceTest {
 	}
 
 	@Test
-	public void testScheduleLong() throws Exception {
+	void testScheduleLong() throws Exception {
 		// CLEAN-UP NON-CONFIRMED USERS
 		var mockNewUsers = RegisterServiceTest.createMockNewUsers(captchaService, registerService, 3);
 		User mockUser1 = mockNewUsers.get(0);

@@ -8,7 +8,8 @@ import com.nonononoki.alovoa.entity.user.UserMiscInfo;
 import com.nonononoki.alovoa.model.*;
 import com.nonononoki.alovoa.service.UserService;
 import jakarta.mail.MessagingException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -30,11 +31,12 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
+    @NonNull
     private ObjectMapper objectMapper;
-    @Autowired
+    @NonNull
     private UserService userService;
     @Value("${app.audio.max-size}")
     private int audioMaxSize;

@@ -2,8 +2,8 @@ package com.nonononoki.alovoa.config;
 
 import com.nonononoki.alovoa.component.*;
 import com.nonononoki.alovoa.repo.UserRepository;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,19 +52,19 @@ public class SecurityConfig {
     @Value("${app.domain}")
     private String domain;
 
-    @Autowired
+    @NonNull
     private Environment env;
 
-    @Autowired
+    @NonNull
     private AuthFailureHandler failureHandler;
 
-    @Autowired
+    @NonNull
     private CustomUserDetailsService customUserDetailsService;
 
-    @Autowired
+    @NonNull
     private CustomOAuth2UserService customOAuth2UserService;
 
-    @Autowired
+    @NonNull
     private UserRepository userRepo;
 
     private final AuthenticationConfiguration configuration;
