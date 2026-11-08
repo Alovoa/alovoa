@@ -10,6 +10,10 @@ import com.nonononoki.alovoa.entity.user.UserVerificationPicture;
 import com.nonononoki.alovoa.model.*;
 import com.nonononoki.alovoa.repo.*;
 import jakarta.mail.MessagingException;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -28,10 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class AdminService {
@@ -178,6 +178,28 @@ public class AdminService {
         userRepo.flush();
     }
 
+    protected void deleteAccount(long id) throws AlovoaException {
+        checkRights();
+
+        final Optional<User> user = userRepo.findById(id);
+
+        if (user.isEmpty()) {
+            throw new AlovoaException(ExceptionHandler.USER_NOT_FOUND);
+        }
+
+        if (user.get().isAdmin()) {
+            throw new AlovoaException("cannot_delete_admin");
+        }
+
+        UserDeleteParams userDeleteParam = UserDeleteParams.builder().conversationRepo(conversationRepo)
+                .userBlockRepo(userBlockRepo).userHideRepo(userHideRepo).userLikeRepo(userLikeRepo)
+                .userNotificationRepo(userNotificationRepo).userRepo(userRepo).userReportRepo(userReportRepo)
+                .userVerificationPictureRepo(userVerificationPictureRepo).build();
+        UserService.removeUserDataCascading(user.get(), userDeleteParam);
+        userRepo.delete(userRepo.findById(id).orElseThrow(() -> new AlovoaException(user.get().getId() + " could not be found")));
+        userRepo.flush();
+    }
+
     public boolean userExists(String email) throws AlovoaException {
         checkRights();
         User u = userRepo.findByEmail(Tools.cleanEmail(URLDecoder.decode(email, StandardCharsets.UTF_8)));
@@ -230,37 +252,51 @@ public class AdminService {
         userRepo.saveAndFlush(user);
     }
 
-    public List<UUID> deleteInvalidUsers() throws AlovoaException {
+    public DeleteInvalidUsersResult deleteInvalidUsers() throws AlovoaException {
         checkRights();
-        Slice<User> slice = userRepo.findAll(PageRequest.of(0, 500));
-        List<User> users = slice.getContent();
-        List<UUID> uuids = new ArrayList<>(deleteInvalidUsers(users));
+        List<Long> usersToBeDeleted = new ArrayList<>();
+        List<Long> usersDeleted = new ArrayList<>();
+        List<Long> usersThatCouldNotBeDeleted = new ArrayList<>();
+        DeleteInvalidUsersResult result
+                = new DeleteInvalidUsersResult(usersToBeDeleted, usersThatCouldNotBeDeleted, usersDeleted);
+        Slice<User> slice = userRepo.findAll(PageRequest.of(0, 10));
+        usersToBeDeleted.addAll(collectInvalidUsers(slice.getContent()));
         while(slice.hasNext()) {
             slice = userRepo.findAll( slice.nextPageable());
-            uuids.addAll(deleteInvalidUsers(slice.get().toList()));
+            usersToBeDeleted.addAll(collectInvalidUsers(slice.get().toList()));
         }
-        return uuids;
+        logger.info("To be deleted: {}", usersToBeDeleted);
+        for(Long id : usersToBeDeleted) {
+            try {
+                deleteAccount(id);
+                usersDeleted.add(id);
+            } catch (Exception e) {
+                usersThatCouldNotBeDeleted.add(id);
+            }
+        }
+        logger.info("Could NOT be deleted: {}", usersThatCouldNotBeDeleted);
+        return result;
     }
 
-    List<UUID> deleteInvalidUsers(List<User> users) {
-        List<UUID> uuids = new ArrayList<>();
-        for(User user : users) {
-            if(user.getEmail() == null) {
-                try {
-                    deleteAccount(AdminAccountDeleteDto.builder().uuid(user.getUuid()).build());
-                    uuids.add(user.getUuid());
-                } catch (AlovoaException e) {
-                    logger.warn(e.toString());
-                }
-            }
-        };
-        return uuids;
+    private List<Long> collectInvalidUsers(List<User> users) {
+        return users.stream()
+                .filter(user ->user.getEmail() == null
+                        || !EmailValidator.getInstance(false).isValid((user.getEmail())))
+                .map(User::getId).toList();
     }
 
     public void checkRights() throws AlovoaException {
         if (!authService.getCurrentUser(true).isAdmin()) {
             throw new AlovoaException("not_admin");
         }
+    }
+    
+    @AllArgsConstructor
+    @Getter
+    public static final class DeleteInvalidUsersResult {
+        List<Long> usersToBeDeleted;
+        List<Long> usersThatCouldNotBeDeleted;
+        List<Long> usersDeleted;
     }
 
 }

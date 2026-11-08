@@ -101,7 +101,7 @@ public class AdminController {
     }
 
     @PostMapping("/delete-invalid-users")
-    public List<UUID> deleteInvalidUsers() throws AlovoaException, IOException {
+    public AdminService.DeleteInvalidUsersResult deleteInvalidUsers() throws AlovoaException, IOException {
         return adminService.deleteInvalidUsers();
     }
 

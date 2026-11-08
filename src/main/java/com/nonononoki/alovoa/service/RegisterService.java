@@ -20,6 +20,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +108,7 @@ public class RegisterService {
 
         dto.setEmail(Tools.cleanEmail(dto.getEmail()));
 
-        if (!isValidEmailAddress(dto.getEmail())) {
+        if (!EmailValidator.getInstance(false).isValid(dto.getEmail())) {
             throw new AlovoaException("email_invalid");
         }
 
@@ -338,18 +339,5 @@ public class RegisterService {
         baseRegisterDto.setRegisterDto(dto);
         baseRegisterDto.setUser(user);
         return baseRegisterDto;
-    }
-
-    private static boolean isValidEmailAddress(String email) {
-        if (email == null) {
-            return false;
-        }
-        try {
-            InternetAddress a = new InternetAddress(email);
-            a.validate();
-            return true;
-        } catch (AddressException ex) {
-            return false;
-        }
     }
 }

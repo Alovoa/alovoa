@@ -146,26 +146,32 @@ class AdminServiceTest {
     void testDeleteInvalidUsers() throws AlovoaException {
 
         User user1 = mock(User.class);
-        when(user1.getEmail()).thenReturn("test@test.com");
-        when(user1.getUuid()).thenReturn(UUID.fromString("b55081fa-9cd1-48c2-95d4-efe2db322a54"));
+        when(user1.getEmail()).thenReturn("test+test@test.com");
+        when(user1.getId()).thenReturn(1L);
         User user2 = mock(User.class);
-        when(user2.getUuid()).thenReturn(UUID.fromString("eb877ec2-bcc4-4404-9eb4-744f7142ea67"));
+        when(user2.getId()).thenReturn(2L);
         when(user2.getEmail()).thenReturn(null);
+        User user3 = mock(User.class);
+        when(user3.getId()).thenReturn(3L);
+        when(user3.getEmail()).thenReturn("invalid-at-invalid-com");
         Page<User> userSlice = mock(Page.class);
         UserRepository userRepoMock = mock(UserRepository.class);
         AdminService adminService = spy(new AdminService());
         ReflectionTestUtils.setField(adminService, "userRepo", userRepoMock);
         when(userSlice.hasNext()).thenReturn(false);
-        when(userSlice.getContent()).thenReturn(List.of(user1, user2));
+        when(userSlice.getContent()).thenReturn(List.of(user1, user2, user3));
         when(userRepoMock.findAll(any(PageRequest.class))).thenReturn(userSlice);
-        doNothing().when(adminService).deleteAccount(any());
+        doNothing().when(adminService).deleteAccount(anyLong());
         doNothing().when(adminService).checkRights();
 
-        List<UUID> uuids = adminService.deleteInvalidUsers();
+        AdminService.DeleteInvalidUsersResult result = adminService.deleteInvalidUsers();
 
-        verify(adminService, times(1)).deleteInvalidUsers(any());
-        assertEquals(1, uuids.size());
-        assertEquals("eb877ec2-bcc4-4404-9eb4-744f7142ea67", uuids.get(0).toString());
+        verify(adminService, times(2)).deleteAccount(anyLong());
+        assertEquals(2L, result.getUsersToBeDeleted().get(0));
+        assertEquals(3L, result.getUsersToBeDeleted().get(1));
+        assertEquals(2L, result.getUsersDeleted().get(0));
+        assertEquals(3L, result.getUsersDeleted().get(1));
+        assertTrue(result.getUsersThatCouldNotBeDeleted().isEmpty());
     }
 
 	private UserReport reportTest(User user1, User user2, User adminUser) throws Exception {

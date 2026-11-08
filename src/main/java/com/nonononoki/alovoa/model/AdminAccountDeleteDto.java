@@ -13,4 +13,5 @@ import java.util.UUID;
 public class AdminAccountDeleteDto {
 	private String email;
 	private UUID uuid;
+    private long id;
 }
