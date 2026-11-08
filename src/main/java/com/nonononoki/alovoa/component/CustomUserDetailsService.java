@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import com.nonononoki.alovoa.entity.User;
 import com.nonononoki.alovoa.repo.UserRepository;
 
-import java.util.UUID;
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -19,17 +17,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) {
-
-        User user = null;
-        try{
-            UUID uuid = UUID.fromString(username);
-            user = userRepo.findByUuid(uuid);
-        } catch (IllegalArgumentException exception){
-            user = userRepo.findByEmail(username);
-        }
-        if (user == null) {
-            throw new UsernameNotFoundException(username);
-        }
+		User user = userRepo.findByEmail(username);
+		if (user == null) {
+			throw new UsernameNotFoundException(username);
+		}
 		return user;
 	}
 }

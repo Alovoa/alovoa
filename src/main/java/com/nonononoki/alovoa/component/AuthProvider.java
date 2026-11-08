@@ -2,7 +2,6 @@ package com.nonononoki.alovoa.component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +45,7 @@ public class AuthProvider implements AuthenticationProvider {
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
 		AuthToken a = (AuthToken) authentication;
-        String userName = a.getUsername();
+		String email = Tools.cleanEmail(a.getUsername());
 		String password = a.getPassword();
 		long captchaId = a.getCaptchaId();
 		String captchaText = a.getCaptchaText();
@@ -55,19 +54,14 @@ public class AuthProvider implements AuthenticationProvider {
 		if (c == null) {
 			throw new BadCredentialsException("");
 		}
-        if (!c.getText().equalsIgnoreCase(captchaText)) {
-            throw new BadCredentialsException("");
-        }
 
-        captchaRepo.delete(c);
+		captchaRepo.delete(c);
 
-        User user = null;
-        try{
-            UUID uuid = UUID.fromString(userName);
-            user = userRepo.findByUuid(uuid);
-        } catch (IllegalArgumentException exception){
-            user = userRepo.findByEmail(Tools.cleanEmail(userName));
-        }
+		if (!c.getText().equalsIgnoreCase(captchaText)) {
+			throw new BadCredentialsException("");
+		}
+
+		User user = userRepo.findByEmail(email);
 
 		if (user == null) {
 			throw new BadCredentialsException("");
@@ -93,7 +87,7 @@ public class AuthProvider implements AuthenticationProvider {
 		}
 		authorities.add(new SimpleGrantedAuthority(role));
 
-		return new UsernamePasswordAuthenticationToken(user.getUuid().toString(), password, authorities);
+		return new UsernamePasswordAuthenticationToken(email, password, authorities);
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package com.nonononoki.alovoa.config;
 
 import com.nonononoki.alovoa.component.*;
-import com.nonononoki.alovoa.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,12 +59,6 @@ public class SecurityConfig {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
-    @Autowired
-    private CustomOAuth2UserService customOAuth2UserService;
-
-    @Autowired
-    private UserRepository userRepo;
 
     private final AuthenticationConfiguration configuration;
 
@@ -136,15 +129,7 @@ public class SecurityConfig {
                                 .deleteCookies(COOKIE_SESSION, COOKIE_REMEMBER)
                                 .logoutUrl("/logout")
                                 .logoutSuccessUrl("/?logout")
-                ).oauth2Login(login -> {
-                    login.loginPage("/?auth-error").defaultSuccessUrl("/login/oauth2/success");
-                    /*
-                    login.userInfoEndpoint(userInfo -> userInfo
-                            .userService(customOAuth2UserService)
-                    );
-
-                     */
-                })
+                ).oauth2Login(login -> login.loginPage("/?auth-error").defaultSuccessUrl("/login/oauth2/success"))
                 .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .rememberMe(remember -> remember.rememberMeServices(oAuthRememberMeServices()).key(rememberKey))
                 .sessionManagement(session -> session.maximumSessions(10).expiredSessionStrategy(getSessionInformationExpiredStrategy())
@@ -209,7 +194,7 @@ public class SecurityConfig {
     @Bean
     TokenBasedRememberMeServices oAuthRememberMeServices() {
         CustomTokenBasedRememberMeServices rememberMeService = new CustomTokenBasedRememberMeServices(rememberKey,
-                customUserDetailsService, userRepo);
+                customUserDetailsService);
         rememberMeService.setAlwaysRemember(true);
         return rememberMeService;
     }
